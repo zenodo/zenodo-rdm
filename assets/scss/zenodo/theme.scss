@@ -8,3 +8,65 @@
 
 @import "variables";
 @import "../invenio_app_rdm/theme";
+
+
+
+$footer-height: 235px;
+$footer-height-sm: 340px;
+$footer-height-xs: 370px;
+$footer-background-color1: #0067c9;
+$footer-background-color2: #0047a8; //lighten($footer-background-color1, 4%);
+$footer-text-color: lighten($footer-background-color1, 50%);
+$footer-heading-text-color: #fff;
+
+html {
+  //@media(min-width: $screen-md-min) {
+    position: relative;
+    min-height: 100%;
+  //}
+}
+
+body {
+
+.footer {
+  @media(min-width: $screen-md-min) {
+    height: $footer-height;
+  }
+  @media (max-width: $screen-sm-max) and (min-width: $screen-sm-min) {
+    height: $footer-height-sm;
+  }
+  @media(max-width: $screen-xs-max) {
+    height: $footer-height-xs;
+  }
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: $footer-background-color2;
+  color: $footer-text-color;
+
+  a {
+    color: $footer-heading-text-color;
+  }
+}
+
+.footer > .menu-wrapper {
+  background-color: $footer-background-color1;
+  color: darken($footer-background-color1, 40%);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+
+  a {
+    color: $footer-text-color;
+  }
+}
+
+.footer .row {
+  padding-top: 15px;
+}
+
+.footer-menu {
+  h5 {
+    font-weight: 400;
+    color: $footer-heading-text-color;
+  }
+}
+}
