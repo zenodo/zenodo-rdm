@@ -1,0 +1,2 @@
+# Ignore local virtualenv (if present)
+.venv/

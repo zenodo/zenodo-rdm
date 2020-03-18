@@ -1,0 +1,121 @@
+# -*- coding: utf-8 -*-
+#
+# This file is part of Invenio.
+#
+# Copyright (C) 2019 CERN.
+# Copyright (C) 2019 Northwestern University.
+#
+# Invenio is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+# Backend services needed for production.
+#
+# Usage::
+#
+#   $ docker-compose up -f docker-compose.full.yml -d
+#   $ ./docker/wait-for-services.sh
+#
+# Following services are included:
+# - Frontend: Nginx (exposed ports: 40 and 443)
+# - UI application: UWSGI (not exposed)
+# - API application: UWSGI (not exposed)
+# - Cache: Redis (exposed port: 6379)
+# - DB: (PostgresSQL/MySQL) (exposed port: 5432 or 3306)
+# - Message queue: RabbitMQ (exposed ports: 5672, 15672)
+# - Elasticsearch (exposed ports: 9200, 9300)
+#
+version: '2.2'
+services:
+  cache:
+    extends:
+      file: docker-services.yml
+      service: cache
+  db:
+    extends:
+      file: docker-services.yml
+      service: db
+  mq:
+    extends:
+      file: docker-services.yml
+      service: mq
+  es:
+    extends:
+      file: docker-services.yml
+      service: es
+  # Frontend
+  frontend:
+    extends:
+      file: docker-services.yml
+      service: frontend
+    volumes:
+      - static_data:/opt/invenio/var/instance/static
+    depends_on:
+      - web-ui
+      - web-api
+    ports:
+      - "80:80"
+      - "443:443"
+  # UI Application
+  web-ui:
+    extends:
+      file: docker-services.yml
+      service: app
+    command: ["uwsgi /opt/invenio/var/instance/uwsgi_ui.ini"]
+    image: zenodo
+    ports:
+      - "5000"
+    volumes:
+      - static_data:/opt/invenio/var/instance/static
+      - uploaded_data:/opt/invenio/var/instance/data
+      - archived_data:/opt/invenio/var/instance/archive
+    depends_on:
+      es:
+        condition: service_started
+      cache:
+        condition: service_started
+      db:
+        condition: service_started
+      mq:
+        condition: service_started
+
+  # API Rest Application
+  web-api:
+    extends:
+      file: docker-services.yml
+      service: app
+    command: ["uwsgi /opt/invenio/var/instance/uwsgi_rest.ini"]
+    image: zenodo
+    ports:
+      - "5000"
+    volumes:
+      - uploaded_data:/opt/invenio/var/instance/data
+      - archived_data:/opt/invenio/var/instance/archive
+    depends_on:
+      es:
+        condition: service_started
+      cache:
+        condition: service_started
+      db:
+        condition: service_started
+      mq:
+        condition: service_started
+  # Worker
+  worker:
+    extends:
+      file: docker-services.yml
+      service: app
+    restart: "always"
+    command: ["celery worker -A invenio_app.celery --loglevel=INFO"]
+    image: zenodo
+    depends_on:
+      es:
+        condition: service_started
+      cache:
+        condition: service_started
+      db:
+        condition: service_started
+      mq:
+        condition: service_started
+volumes:
+  static_data:
+  uploaded_data:
+  archived_data:

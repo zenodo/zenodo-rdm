@@ -1,0 +1,99 @@
+# -*- coding: utf-8 -*-
+#
+# This file is part of Invenio.
+#
+# Copyright (C) 2019 CERN.
+# Copyright (C) 2019 Northwestern University.
+#
+# Invenio is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+#
+
+version: '2.2'
+services:
+  app:
+    build:
+      context: ./
+      args:
+        - ENVIRONMENT=DEV
+    image: zenodo
+    environment:
+      - "INVENIO_ACCOUNTS_SESSION_REDIS_URL=redis://cache:6379/1"
+      - "INVENIO_BROKER_URL=amqp://guest:guest@mq:5672/"
+      - "INVENIO_CACHE_REDIS_URL=redis://cache:6379/0"
+      - "INVENIO_CACHE_TYPE=redis"
+      - "INVENIO_CELERY_BROKER_URL=amqp://guest:guest@mq:5672/"
+      - "INVENIO_CELERY_RESULT_BACKEND=redis://cache:6379/2"
+      - "INVENIO_SEARCH_ELASTIC_HOSTS=['es:9200']"
+      - "INVENIO_SECRET_KEY=CHANGE_ME"
+      - "INVENIO_SQLALCHEMY_DATABASE_URI=postgresql+psycopg2://zenodo:zenodo@db/zenodo"
+      - "INVENIO_WSGI_PROXIES=2"
+      - "INVENIO_RATELIMIT_STORAGE_URL=redis://cache:6379/3"
+  lb:
+    build: ./docker/haproxy/
+    image: zenodo-lb
+    restart: "always"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+  frontend:
+    build: ./docker/nginx/
+    image: zenodo-frontend
+    restart: "always"
+    ports:
+      - "80"
+      - "443"
+  cache:
+    image: redis
+    restart: "always"
+    read_only: true
+    ports:
+      - "6379:6379"
+  db:
+    image: postgres:9.6
+    restart: "always"
+    environment:
+      - "POSTGRES_USER=zenodo"
+      - "POSTGRES_PASSWORD=zenodo"
+      - "POSTGRES_DB=zenodo"
+    ports:
+      - "5432:5432"
+  mq:
+    image: rabbitmq:3-management
+    restart: "always"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+  es:
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.2.0
+    restart: "always"
+    environment:
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - discovery.type=single-node
+    healthcheck:
+      test: ["CMD", "curl", "-f", "localhost:9200/_cluster/health?wait_for_status=green"]
+      interval: 30s
+      timeout: 30s
+      retries: 5
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    mem_limit: 1g
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+  kibana:
+    image: docker.elastic.co/kibana/kibana-oss:7.2.0
+    environment:
+      - "ELASTICSEARCH_HOSTS=http://es:9200"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "5601:5601"
+  flower:
+    image: mher/flower
+    command: --broker=amqp://guest:guest@mq:5672/ --broker_api=http://guest:guest@mq:15672/api/
+    ports:
+      - "5555:5555"
