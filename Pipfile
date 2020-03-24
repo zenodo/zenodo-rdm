@@ -14,7 +14,6 @@ uwsgi = ">=2.0"
 uwsgitop = ">=0.11"
 uwsgi-tools = ">=1.1.1"
 lxml = "<4.2.6,>=3.5.0"
-marshmallow = ">=3.3.0,<4.0.0"
 
 [requires]
 python_version = "3.6"
