@@ -22,6 +22,9 @@ venv_dir="$(pipenv --venv)"
 sed -i -E "s|^project_dir = .+|project_dir = $cur_dir|" .invenio
 sed -i -E "s|^logfile = .+|logfile = $cur_dir/logs/invenio-cli.log|" .invenio
 sed -i -E "s|^instance_path = .+|instance_path = $venv_dir/var/instance|" .invenio
+# Symlink templates and config
+ln -sv "$(realpath templates)" "$venv_dir/var/instance/templates"
+ln -sv "$(realpath invenio.cfg)" "$venv_dir/var/instance/invenio.cfg"
 # Build assets
 invenio-cli update --install-js
 # Start services (DB, ES, etc.)
