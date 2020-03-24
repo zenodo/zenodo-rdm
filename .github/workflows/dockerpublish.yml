@@ -11,12 +11,9 @@ on:
       - v*
 
 env:
-  # TODO: Change variable to your image's name.
   IMAGE_NAME: zenodo-rdm
 
 jobs:
-  # Push image to GitHub Packages.
-  # See also https://docs.docker.com/docker-hub/builds/
   push:
 
     runs-on: ubuntu-latest
@@ -25,27 +22,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Setup Python
-        uses: actions/setup-python@v1
-        with:
-          python-version: 3.6
-
-      - name: Install dependencies with pipenv
-        run: |
-          pip install pipenv
-          pipenv install --deploy --dev
-
-      - name: Lock the packages
-        run: |
-          pipenv lock
-
       - name: Build image
         run: |
-          docker build  . --build-arg include_assets=true --file Dockerfile --tag image
+          docker build . --tag image
 
       - name: Log into registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
-  
+
       - name: Push image
         run: |
           IMAGE_ID=docker.pkg.github.com/${{ github.repository }}/$IMAGE_NAME
