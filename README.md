@@ -27,7 +27,7 @@ ln -sv "$(realpath templates)" "$venv_dir/var/instance/templates"
 ln -sv "$(realpath invenio.cfg)" "$venv_dir/var/instance/invenio.cfg"
 # Build assets
 invenio-cli update --install-js
-# Start services (DB, ES, etc.)
+# Start services (DB, ES, etc.). Use the "--force" option to recreate
 invenio-cli services
 # Run it
 invenio-cli run
