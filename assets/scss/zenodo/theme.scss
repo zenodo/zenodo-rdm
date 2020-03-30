@@ -28,6 +28,12 @@ body {
     @media(max-width: $screen-xs-max) {
       height: $footer-height-xs;
     }
+
+    // Remove when https://github.com/inveniosoftware/invenio-app-rdm/pull/98
+    // is merged.
+    position: absolute;
+    bottom: 0;
+
     width: 100%;
     background-color: $footer-background-color2;
     color: $footer-text-color;
@@ -35,21 +41,22 @@ body {
     a {
       color: $footer-heading-text-color;
     }
-  }
 
-  .footer > .menu-wrapper {
-    background-color: $footer-background-color1;
-    color: darken($footer-background-color1, 40%);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    > .menu-wrapper {
+      background-color: $footer-background-color1;
+      color: darken($footer-background-color1, 40%);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 
-    a {
-      color: $footer-text-color;
+      a {
+        color: $footer-text-color;
+      }
+    }
+
+    .row {
+      padding-top: 15px;
     }
   }
 
-  .footer .row {
-    padding-top: 15px;
-  }
 
   .footer-menu {
     h5 {
