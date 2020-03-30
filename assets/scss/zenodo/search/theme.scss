@@ -10,3 +10,10 @@
 @import "variables";
 @import "../../invenio_app_rdm/search/theme";
 @import "../theme";
+
+header {
+  .ui.container {
+    padding-right: 0px;
+    padding-left: 0px;
+  }
+}
