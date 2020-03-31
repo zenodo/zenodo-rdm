@@ -18,7 +18,13 @@ $footer-text-color: lighten($footer-background-color1, 50%);
 $footer-heading-text-color: #fff;
 
 body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+
   .footer {
+    margin-top: auto;
+
     @media(min-width: $screen-md-min) {
       height: $footer-height;
     }
@@ -28,11 +34,6 @@ body {
     @media(max-width: $screen-xs-max) {
       height: $footer-height-xs;
     }
-
-    // Remove when https://github.com/inveniosoftware/invenio-app-rdm/pull/98
-    // is merged.
-    position: absolute;
-    bottom: 0;
 
     width: 100%;
     background-color: $footer-background-color2;
