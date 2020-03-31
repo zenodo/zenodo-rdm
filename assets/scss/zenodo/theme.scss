@@ -22,6 +22,24 @@ body {
   flex-direction: column;
   min-height: 100vh;
 
+  #navbar {
+    ul.navbar-nav {
+      li {
+        &.active > a {
+          background-color: rgba(255,255,255,.1);
+        }
+
+        > a {
+          color: #dbeaff;
+          &:hover {
+            color: #fff;
+            background-color: rgba(255,255,255,.2);
+          }
+        }
+      }
+    }
+  }
+
   .footer {
     margin-top: auto;
 
