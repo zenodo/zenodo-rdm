@@ -1,0 +1,32 @@
+{%- extends 'invenio_rdm_records/record_landing_page.html' %}
+
+{%- block page_body %}
+  <div class="container record-detail">
+    <div class="row">
+      <div class="col-sm-8 col-md-8 col-left">
+        {%- block record_body %}
+        {{ super() }}
+        {%- endblock record_body %}
+      </div>
+
+      {# Side bar #}
+      <div class="col-sm-4 col-md-4 col-right">
+        <div class="well">
+          <div id="communities-management"></div>
+          {%- include "invenio_rdm_records/details/side_bar.html" %}
+        </div>
+      </div>
+    </div>
+  </div>
+{%- endblock page_body %}
+
+{% block css %}
+{{ webpack['vendor.css'] }}
+{{ super() }}
+{% endblock css %}
+
+{% block javascript %}
+{{ super() }}
+<!-- Add communities records popup -->
+{{ webpack['communities-records.js'] }}
+{% endblock %}
