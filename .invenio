@@ -1,9 +1,6 @@
 [cli]
 flavour = RDM
-project_dir = /home/changeme/src/zenodo-rdm
-instance_path = /home/changeme/Envs/zenodo-rdm-5ubStj9L/var/instance
-services_setup = False
-logfile = /home/changeme/src/zenodo-rdm/logs/invenio-cli.log
+logfile = /logs/invenio-cli.log
 
 [cookiecutter]
 project_name = Zenodo
