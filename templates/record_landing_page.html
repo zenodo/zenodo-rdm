@@ -12,7 +12,11 @@
       {# Side bar #}
       <div class="col-sm-4 col-md-4 col-right">
         <div class="well">
-          <div id="communities-management"></div>
+          <dt class="record-info-title">{{ _('Communities')}}:</dt>
+          <div id="communities-management"
+            data-record='{{ record | tojson }}'
+            data-communities='{{ record.communities.as_dict() | tojson }}'
+            ></div>
           {%- include "invenio_rdm_records/details/side_bar.html" %}
         </div>
       </div>
