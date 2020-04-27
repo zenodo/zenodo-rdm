@@ -24,8 +24,13 @@ invenio-cli update --install-js
 
 # Start services (DB, ES, etc.). Use the "--force" option to recreate
 invenio-cli services
-# Run it
-invenio-cli run
+
+# Run the development server
+pipenv shell
+export FLASK_ENV=development
+invenio run --cert ./docker/nginx/test.crt --key ./docker/nginx/test.key
+# In a separate terminal run the Webpack build server
+invenio webpack run start
 
 # For using local repositories (e.g. invenio-communities):
 # Activate the virtualenv
