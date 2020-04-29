@@ -7,14 +7,5 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 
 -e git+git://github.com/inveniosoftware/invenio-communities.git@rdm#egg=invenio-communities
-# TODO: Remove when https://github.com/inveniosoftware/invenio-indexer/pull/118 is merged
--e git+git://github.com/inveniosoftware/invenio-indexer.git#egg=invenio-indexer
 # TODO: Remove when invenio-records-ui v1.0.2 is released
 -e git+git://github.com/inveniosoftware/invenio-records-ui.git@maint-1.0#egg=invenio-records-ui
-
-# Developer experience
-# TODO: Remove when https://github.com/inveniosoftware/invenio-assets/pull/108 is merged
--e git+git://github.com/inveniosoftware/invenio-assets.git@patch-package#egg=invenio-assets
-# TODO: Remove when https://github.com/inveniosoftware/pywebpack/pull/23 is merged
--e git+git://github.com/inveniosoftware/pywebpack.git@dir-link#egg=pywebpack
-
