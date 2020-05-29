@@ -11,22 +11,25 @@ description = Invenio RDM Zenodo Instance
 author_name = CERN
 author_email = info@zenodo.org
 year = 2020
+python_version = 3.6
 database = postgresql
 elasticsearch = 7
 file_storage = local
 _template = https://github.com/inveniosoftware/cookiecutter-invenio-rdm.git
 
 [files]
-docker = {'nginx': {'test.crt': '58f9265023a48060c2027fd8ff994061513551355ddc26fa5c59b9dd41a38928', 'Dockerfile': '541326766beaba2e8492255c99e11aa76640d71329ceab5bcab1c8d6a979bd5c', 'test.key': '087a035021a683cc2c3526cebf77fbe09af4a971bab27dcf1b431a70cfc53360', 'nginx.conf': '0c82325eb5b35557dffb89d5fd94fb631ef46aa8099b97bacce402b3ddfb2ba1', 'conf.d': {'default.conf': '57949f9485a2466a25c9f45a7c21eb68e7d45d97067295b0dc42eefaabb5023a'}}, 'uwsgi': {'uwsgi_rest.ini': '8c590687cca2a88832804a7542d7fe3a7e1b570edfa53eea7c0d4801035db9b4', 'uwsgi_ui.ini': 'b526cc72a8bdc304b2118c283913c8f070e68025e77cdc000d24ee0aa29076e8'}}
-invenio.cfg = 439861e1bb4dd03329c6f2c53db096053885c257873ed234d0b777c0e1dcd708
+app_data = {'README.md': 'd58978488626bdeddc791a15a39e341a4ed06f202b84d0c0d4aa9ef49481c6d9'}
 docker-services.yml = 9a1d081d382f63578fa3b022449e9512b8b389530baa7f2428a5c72bc6851abe
-dockerfile = 37ec18b05a471c54135dd793fcccac71962d95c3562a427b6198423b16f3896b
-pipfile = cc028d17b629faf345ae973a5dc497e7473226a51b599187120ef423ad05c1b6
-.dockerignore = 21241bc12cdf4ac5f209d6b191adc8f25eb89af93ce5c4c3f72c86661162d7b5
-static = {'images': {'logo.svg': 'b616fba0c52f4c97331daf5d11884cf9ea2edf312cc00b61a7aa7d2fb037e417'}}
-docker-compose.full.yml = b847f167df34ceeb4e1a282707afc2f5deaa5b458a9167ad52f1d4cfed93ac65
-templates = {'.gitkeep': 'd4756cdf68d94c670c924f9d57d44718f666e457727701486435b57a97e52c5f'}
+pipfile = 086597f4d585b7a17078137ebc4ed0753e623332283953dce38d59fa2916189d
+readme.rst = 9c1ff3354243ddc9490f620324d5bd85651abb0f30798ddc6e873884e1ecab47
 docker-compose.yml = f5967bfc1e7345b22a4a8be21ee47ff7b79a3d7e4a022020f18ba6634f6a0463
-readme.rst = 5485b067cec43d5ce63dbf07eff93858a41feab85dcdfe2b61a429ed0fe211c4
-assets = {'scss': {'zenodo': {'variables.scss': '69f090ce812d82b8b21f74fc7a08205484a2b68c6adb1437fa20c3488fdab856', 'search': {'variables.scss': '69f090ce812d82b8b21f74fc7a08205484a2b68c6adb1437fa20c3488fdab856', 'theme.scss': 'c1edc15032b2a241206a68253a7537a733c986e1511e06ae6d5a98620c48b144'}, 'theme.scss': '6ef60214bdbbd50ec136152a2bd4cdb3f0de4e4ffcb78572fe6976520da2c94b'}}, 'templates': {'search': {'.gitkeep': 'd4756cdf68d94c670c924f9d57d44718f666e457727701486435b57a97e52c5f'}}}
+dockerfile = 1cab4d6c2e48e10f11dbcce3f8ed55e1296d34d249101af811b555cc8540bd3d
+templates = {'.gitkeep': 'd4756cdf68d94c670c924f9d57d44718f666e457727701486435b57a97e52c5f'}
+docker-compose.full.yml = b847f167df34ceeb4e1a282707afc2f5deaa5b458a9167ad52f1d4cfed93ac65
+invenio.cfg = c3f7c41485bebc01abd9369e5e1fe997d1359f80191182a3ed172787f5513c13
+.dockerignore = 21241bc12cdf4ac5f209d6b191adc8f25eb89af93ce5c4c3f72c86661162d7b5
+assets = {'templates': {'search': {'.gitkeep': 'd4756cdf68d94c670c924f9d57d44718f666e457727701486435b57a97e52c5f'}}, 'less': {'theme.config': '91b05bf2eb71ffff01c091bac2b79c2584f2590e627a1f3a89862a45fe4fac7e', 'site': {'globals': {'site.variables': 'ed696c8032007733b9266cfe7028c14a27f172fc33db8bfdcbda78b1533232fd', 'site.overrides': 'b90c83132c3c1eedc3327d29436156d3ad71e0d196301ab622e499b3b6762581'}}, 'theme.less': '7a287aba0759b709eff0c421c15f580b25af07b6a53cabde73d489e40d182bcf', 'variables.less': 'e4dd16f579dbc3a4fe78f16a20ba1b79fb0a8aa83e6d8f21122b2faa5667f03b'}}
+.gitignore = 0be2f3d2c1c9489ca861c4ca55a9c1845c22c43cbf92ed0cfaeeabde9b7ab2d2
+docker = {'nginx': {'Dockerfile': '541326766beaba2e8492255c99e11aa76640d71329ceab5bcab1c8d6a979bd5c', 'nginx.conf': '6c9a6e372fc340dfcd3b49e6a30bd7bd36af41d79d1d093b7b3ba5f4c9d781b4', 'conf.d': {'default.conf': 'e67e7706033598798ec422bba13243266a081c255162ba3b2d446cf97e92a148'}, 'test.key': 'c2d5de48f8de8ea923a722b23516dec34cb07de424966fb19a04f8b614d006a4', 'test.crt': '57361c80371aceef112eeba1ae05095d600f88ff223a0c30c03c32620137f7ed'}, 'uwsgi': {'uwsgi_rest.ini': '8c590687cca2a88832804a7542d7fe3a7e1b570edfa53eea7c0d4801035db9b4', 'uwsgi_ui.ini': 'b526cc72a8bdc304b2118c283913c8f070e68025e77cdc000d24ee0aa29076e8'}}
+static = {'images': {'logo.svg': 'b616fba0c52f4c97331daf5d11884cf9ea2edf312cc00b61a7aa7d2fb037e417'}}
 
