@@ -7,7 +7,7 @@ verify_ssl = true
 check-manifest = ">=0.25"
 
 [packages]
-invenio-app-rdm = {extras = ["postgresql", "elasticsearch7"],version = "~=0.9.5"}
+invenio-app-rdm = {extras = ["postgresql", "elasticsearch7"],version = "~=0.10.0"}
 uwsgi = ">=2.0"
 uwsgitop = ">=0.11"
 uwsgi-tools = ">=1.1.1"
