@@ -5,6 +5,3 @@
 #
 # Invenio is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
-
--e git+git://github.com/inveniosoftware/invenio-communities.git@rdm#egg=invenio-communities
--e git+git://github.com/inveniosoftware/invenio-rdm-records.git@communities#egg=invenio-rdm-records
