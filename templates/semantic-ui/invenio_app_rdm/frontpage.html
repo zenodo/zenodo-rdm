@@ -1,9 +1,13 @@
-{%- extends 'semantic-ui/invenio_app_rdm/frontpage.html' %}
+{%- extends "invenio_theme/frontpage.html" %}
+
+{%- block page_header %}
+{%- include "invenio_app_rdm/header_frontpage.html" %}
+{%- endblock page_header %}
 
 {%- block page_body %}
-<div class="ui container">
+<div class="ui container section-content-white-bg">
   <h1 class="ui center aligned huge header">{{config.THEME_SITENAME}} in a nutshell</h1>
-  <div class="ui three column stackable grid">
+  <div class="ui three column stackable padded grid">
     <div class="left floated column">
       <h3 class="ui center aligned icon header">
         <i class="globe icon"></i>
