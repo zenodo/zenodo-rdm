@@ -1,4 +1,10 @@
-{%- extends "semantic-ui/invenio_app_rdm/header_frontpage.html" %}
+{%- extends config.THEME_HEADER_TEMPLATE %}
+
+{#- Remove search field from top bar on frontpage #}
+{%- block navbar_search %}{% endblock %}
+
+{%- block navbar %}
+{{ super() }}
 
 {%- block frontpage_search %}
 <div class="ui grid container two column centered middle aligned">
@@ -18,3 +24,4 @@
   </div>
 </div>
 {%- endblock frontpage_search %}
+{% endblock %}

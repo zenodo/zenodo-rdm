@@ -1,14 +1,3 @@
-# -*- coding: utf-8 -*-
-#
-# This file is part of Invenio.
-#
-# Copyright (C) 2019 CERN.
-# Copyright (C) 2019 Northwestern University.
-#
-# Invenio is free software; you can redistribute it and/or modify it
-# under the terms of the MIT License; see LICENSE file for more details.
-#
-
 version: '2.2'
 services:
   app:
@@ -29,30 +18,22 @@ services:
       - "INVENIO_SQLALCHEMY_DATABASE_URI=postgresql+psycopg2://zenodo:zenodo@db/zenodo"
       - "INVENIO_WSGI_PROXIES=2"
       - "INVENIO_RATELIMIT_STORAGE_URL=redis://cache:6379/3"
-  lb:
-    build: ./docker/haproxy/
-    image: zenodo-lb
-    restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
-      - "8080:8080"
   frontend:
     build: ./docker/nginx/
     image: zenodo-frontend
-    restart: unless-stopped
+    restart: "unless-stopped"
     ports:
       - "80"
       - "443"
   cache:
     image: redis
-    restart: unless-stopped
+    restart: "unless-stopped"
     read_only: true
     ports:
       - "6379:6379"
   db:
-    image: postgres:9.6
-    restart: unless-stopped
+    image: postgres:12.4
+    restart: "unless-stopped"
     environment:
       - "POSTGRES_USER=zenodo"
       - "POSTGRES_PASSWORD=zenodo"
@@ -61,13 +42,13 @@ services:
       - "5432:5432"
   mq:
     image: rabbitmq:3-management
-    restart: unless-stopped
+    restart: "unless-stopped"
     ports:
       - "15672:15672"
       - "5672:5672"
   es:
-    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.2.0
-    restart: unless-stopped
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.9.3
+    restart: "unless-stopped"
     environment:
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
@@ -85,15 +66,3 @@ services:
     ports:
       - "9200:9200"
       - "9300:9300"
-  kibana:
-    image: docker.elastic.co/kibana/kibana-oss:7.2.0
-    environment:
-      - "ELASTICSEARCH_HOSTS=http://es:9200"
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    ports:
-      - "5601:5601"
-  flower:
-    image: mher/flower
-    command: --broker=amqp://guest:guest@mq:5672/ --broker_api=http://guest:guest@mq:15672/api/
-    ports:
-      - "5555:5555"
