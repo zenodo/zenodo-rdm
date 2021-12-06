@@ -40,6 +40,17 @@ services:
       - "POSTGRES_DB=zenodo"
     ports:
       - "5432:5432"
+  pgadmin:
+    image: dpage/pgadmin4:5.2
+    restart: "unless-stopped"
+    ports:
+      - "5050:80"
+      - "5051:443"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "info@zenodo.org"
+      PGADMIN_DEFAULT_PASSWORD: "zenodo"
+    volumes:
+      - ./docker/pgadmin/servers.json:/pgadmin4/servers.json
   mq:
     image: rabbitmq:3-management
     restart: "unless-stopped"
@@ -66,3 +77,10 @@ services:
     ports:
       - "9200:9200"
       - "9300:9300"
+  kibana:
+    image: docker.elastic.co/kibana/kibana-oss:7.2.0
+    environment:
+      - "ELASTICSEARCH_HOSTS=http://es:9200"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "5601:5601"

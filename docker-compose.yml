@@ -16,3 +16,11 @@ services:
     extends:
       file: docker-services.yml
       service: es
+  kibana:
+    extends:
+      file: docker-services.yml
+      service: kibana
+  pgadmin:
+    extends:
+      file: docker-services.yml
+      service: pgadmin

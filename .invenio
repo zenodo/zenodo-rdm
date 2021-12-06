@@ -3,15 +3,15 @@ flavour = RDM
 logfile = /logs/invenio-cli.log
 
 [cookiecutter]
-project_name = Zenodo
-project_shortname = zenodo
-project_site = zenodo.org
+project_name = Zenodo RDM
+project_shortname = zenodo-rdm
+project_site = zenodo-rdm.web.cern.ch
 github_repo = zenodo/zenodo-rdm
 description = Invenio RDM Zenodo Instance
 author_name = CERN
 author_email = info@zenodo.org
 year = 2020
-python_version = 3.6
+python_version = 3.8
 database = postgresql
 elasticsearch = 7
 file_storage = local
@@ -32,4 +32,3 @@ assets = {'templates': {'search': {'.gitkeep': 'd4756cdf68d94c670c924f9d57d44718
 .gitignore = 0be2f3d2c1c9489ca861c4ca55a9c1845c22c43cbf92ed0cfaeeabde9b7ab2d2
 docker = {'nginx': {'Dockerfile': '541326766beaba2e8492255c99e11aa76640d71329ceab5bcab1c8d6a979bd5c', 'nginx.conf': '6c9a6e372fc340dfcd3b49e6a30bd7bd36af41d79d1d093b7b3ba5f4c9d781b4', 'conf.d': {'default.conf': 'e67e7706033598798ec422bba13243266a081c255162ba3b2d446cf97e92a148'}, 'test.key': 'c2d5de48f8de8ea923a722b23516dec34cb07de424966fb19a04f8b614d006a4', 'test.crt': '57361c80371aceef112eeba1ae05095d600f88ff223a0c30c03c32620137f7ed'}, 'uwsgi': {'uwsgi_rest.ini': '8c590687cca2a88832804a7542d7fe3a7e1b570edfa53eea7c0d4801035db9b4', 'uwsgi_ui.ini': 'b526cc72a8bdc304b2118c283913c8f070e68025e77cdc000d24ee0aa29076e8'}}
 static = {'images': {'logo.svg': 'b616fba0c52f4c97331daf5d11884cf9ea2edf312cc00b61a7aa7d2fb037e417'}}
-
