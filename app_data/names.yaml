@@ -1,0 +1,818 @@
+- affiliations: []
+  family_name: Schirrwagen
+  given_name: Jochen
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-0458-1004
+    scheme: orcid
+- affiliations: []
+  family_name: Baglioni
+  given_name: Miriam
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-2273-9004
+    scheme: orcid
+- affiliations: []
+  family_name: De Bonis
+  given_name: Michele
+  identifiers:
+  - identifier: https://orcid.org/0000-0003-2347-6012
+    scheme: orcid
+- affiliations: []
+  family_name: "Melin\u0161\u010Dak Zlodi"
+  given_name: Iva
+  identifiers:
+  - identifier: https://orcid.org/0000-0001-6477-2016
+    scheme: orcid
+- affiliations:
+  - name: the Netherlands eScience Center
+  family_name: Kuzak
+  given_name: Mateusz
+  identifiers:
+  - identifier: https://orcid.org/0000-0003-0087-6021
+    scheme: orcid
+- affiliations: []
+  family_name: Haklay
+  given_name: Mordechai
+  identifiers:
+  - identifier: https://orcid.org/0000-0001-6117-3026
+    scheme: orcid
+- affiliations: []
+  family_name: Ross-Hellauer
+  given_name: Tony
+  identifiers:
+  - identifier: https://orcid.org/0000-0003-4470-7027
+    scheme: orcid
+- affiliations:
+  - name: University of Strathclyde
+  family_name: de Castro
+  given_name: Pablo
+  identifiers:
+  - identifier: https://orcid.org/0000-0001-6300-1033
+    scheme: orcid
+- affiliations: []
+  family_name: Dimopoulos
+  given_name: Alexandros
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-4602-2040
+    scheme: orcid
+- affiliations: []
+  family_name: "B\xE4cker"
+  given_name: Amelie
+  identifiers:
+  - identifier: https://orcid.org/0000-0001-6015-2063
+    scheme: orcid
+- affiliations: []
+  family_name: Manola
+  given_name: Natalia
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-3477-3082
+    scheme: orcid
+- affiliations: []
+  family_name: Scherngell
+  given_name: Thomas
+  identifiers:
+  - identifier: https://orcid.org/0000-0003-4592-4103
+    scheme: orcid
+- affiliations: []
+  family_name: Smith
+  given_name: Tim
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-1567-7116
+    scheme: orcid
+- affiliations: []
+  family_name: Madden
+  given_name: Frances
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-5432-6116
+    scheme: orcid
+- affiliations:
+  - name: University of Glasgow
+  family_name: Jones
+  given_name: Sarah
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-5094-7126
+    scheme: orcid
+- affiliations:
+  - name: Athena Research and Innovation Center in Information Communication and Knowledge
+      Technologies
+  family_name: Pierrakos
+  given_name: Dimitrios
+  identifiers:
+  - identifier: https://orcid.org/0000-0001-6788-4128
+    scheme: orcid
+- affiliations:
+  - name: Athena Research Center
+  family_name: Vergoulis
+  given_name: Thanasis
+  identifiers:
+  - identifier: https://orcid.org/0000-0003-0555-4128
+    scheme: orcid
+- affiliations: []
+  family_name: Laredo
+  given_name: Philippe
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-5014-9132
+    scheme: orcid
+- affiliations: []
+  family_name: Gurdal
+  given_name: Gultekin
+  identifiers:
+  - identifier: https://orcid.org/0000-0001-7259-8134
+    scheme: orcid
+- affiliations: []
+  family_name: Pavone
+  given_name: Gina
+  identifiers:
+  - identifier: https://orcid.org/0000-0003-0087-2151
+    scheme: orcid
+- affiliations: []
+  family_name: Minelli
+  given_name: Annalisa
+  identifiers:
+  - identifier: https://orcid.org/0000-0003-1772-0154
+    scheme: orcid
+- affiliations: []
+  family_name: null
+  given_name: Marcin
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-2355-2161
+    scheme: orcid
+- affiliations: []
+  family_name: Simeonov
+  given_name: Georgi
+  identifiers:
+  - identifier: https://orcid.org/0000-0003-1198-7165
+    scheme: orcid
+- affiliations:
+  - name: Bielefeld University
+  family_name: Czerniak
+  given_name: Andreas
+  identifiers:
+  - identifier: https://orcid.org/0000-0003-3883-4169
+    scheme: orcid
+- affiliations: []
+  family_name: Macan
+  given_name: Bojan
+  identifiers:
+  - identifier: https://orcid.org/0000-0003-1138-4188
+    scheme: orcid
+- affiliations: []
+  family_name: "Pr\xEDncipe"
+  given_name: Pedro
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-8588-4196
+    scheme: orcid
+- affiliations: []
+  family_name: Tatum
+  given_name: Clifford
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-2212-3197
+    scheme: orcid
+- affiliations:
+  - name: European Bioinformatics Institute
+  family_name: PESANT
+  given_name: "St\xE9phane"
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-4936-5209
+    scheme: orcid
+- affiliations:
+  - name: Stichting LIBER
+  family_name: Kalaitzi
+  given_name: Vasso
+  identifiers:
+  - identifier: https://orcid.org/0000-0001-8337-120X
+    scheme: orcid
+- affiliations:
+  - name: Consiglio Nazionale delle Ricerche
+  family_name: Manghi
+  given_name: Paolo
+  identifiers:
+  - identifier: https://orcid.org/0000-0001-7291-3210
+    scheme: orcid
+- affiliations: []
+  family_name: Kakaletris
+  given_name: Georgios
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-2095-1220
+    scheme: orcid
+- affiliations: []
+  family_name: Stojanovski
+  given_name: Jadranka
+  identifiers:
+  - identifier: https://orcid.org/0000-0001-7399-522X
+    scheme: orcid
+- affiliations: []
+  family_name: Grootveld
+  given_name: Marjan
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-2789-322X
+    scheme: orcid
+- affiliations: []
+  family_name: Fava
+  given_name: Ilaria
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-0298-0239
+    scheme: orcid
+- affiliations:
+  - name: Athena Research and Innovation Center
+  family_name: Kokogiannaki
+  given_name: Argiro
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-3880-0244
+    scheme: orcid
+- affiliations:
+  - name: Consiglio Nazionale delle Ricerche Area della Ricerca di Pisa
+  family_name: La Bruzzo
+  given_name: Sandro
+  identifiers:
+  - identifier: https://orcid.org/0000-0003-2855-1245
+    scheme: orcid
+- affiliations:
+  - name: CSC - IT Center for Science (Finland)
+  family_name: Rauste
+  given_name: "P\xE4ivi"
+  identifiers:
+  - identifier: https://orcid.org/0000-0001-8315-5259
+    scheme: orcid
+- affiliations:
+  - name: Simon Fraser University
+  family_name: Stranack
+  given_name: Kevin
+  identifiers:
+  - identifier: https://orcid.org/0000-0001-8790-427X
+    scheme: orcid
+- affiliations: []
+  family_name: ARTINI
+  given_name: MICHELE
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-4406-428X
+    scheme: orcid
+- affiliations: []
+  family_name: Bardi
+  given_name: Alessia
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-1112-1292
+    scheme: orcid
+- affiliations: []
+  family_name: rettberg
+  given_name: najla
+  identifiers:
+  - identifier: https://orcid.org/0000-0003-1888-2294
+    scheme: orcid
+- affiliations:
+  - name: "Universidad Aut\xF3noma del Estado de M\xE9xico"
+  family_name: "Becerril-Garc\xEDa"
+  given_name: Arianna
+  identifiers:
+  - identifier: https://orcid.org/0000-0003-0278-8295
+    scheme: orcid
+- affiliations: []
+  family_name: Peroni
+  given_name: Silvio
+  identifiers:
+  - identifier: https://orcid.org/0000-0003-0530-4305
+    scheme: orcid
+- affiliations:
+  - name: University of Minho
+  family_name: Moura
+  given_name: Paula
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-0573-4308
+    scheme: orcid
+- affiliations: []
+  family_name: Guibault
+  given_name: Lucie
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-9530-9312
+    scheme: orcid
+- affiliations: []
+  family_name: Chiarelli
+  given_name: Andrea
+  identifiers:
+  - identifier: https://orcid.org/0000-0001-7336-8330
+    scheme: orcid
+- affiliations: []
+  family_name: Angelaki
+  given_name: Marina
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-9921-8338
+    scheme: orcid
+- affiliations:
+  - name: "Universit\xE4t Bielefeld"
+  family_name: Pieper
+  given_name: Dirk
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-6083-9348
+    scheme: orcid
+- affiliations:
+  - name: Bielefeld University
+  family_name: Summann
+  given_name: Friedrich
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-6297-3348
+    scheme: orcid
+- affiliations: []
+  family_name: Plomp
+  given_name: Esther
+  identifiers:
+  - identifier: https://orcid.org/0000-0003-3625-1357
+    scheme: orcid
+- affiliations: []
+  family_name: Dillo
+  given_name: Ingrid
+  identifiers:
+  - identifier: https://orcid.org/0000-0001-5654-2392
+    scheme: orcid
+- affiliations: []
+  family_name: Friedman
+  given_name: Jason
+  identifiers:
+  - identifier: https://orcid.org/0000-0001-8478-8402
+    scheme: orcid
+- affiliations: []
+  family_name: Ioannidis
+  given_name: Alex
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-5082-6404
+    scheme: orcid
+- affiliations: []
+  family_name: Ferrari
+  given_name: Tiziana
+  identifiers:
+  - identifier: https://orcid.org/0000-0003-3425-1409
+    scheme: orcid
+- affiliations: []
+  family_name: de Jong
+  given_name: Maaike
+  identifiers:
+  - identifier: https://orcid.org/0000-0003-4803-7411
+    scheme: orcid
+- affiliations:
+  - name: University of Debrecen
+  family_name: Fazekas-Paragh
+  given_name: Judit Eva
+  identifiers:
+  - identifier: https://orcid.org/0000-0003-0364-2423
+    scheme: orcid
+- affiliations: []
+  family_name: Hof
+  given_name: Cees
+  identifiers:
+  - identifier: https://orcid.org/0000-0001-9624-2431
+    scheme: orcid
+- affiliations:
+  - name: Stichting eIFL.net (EIFL)
+  family_name: Kuchma
+  given_name: Iryna
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-2064-3439
+    scheme: orcid
+- affiliations: []
+  family_name: Vieira
+  given_name: "Andr\xE9"
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-4302-645X
+    scheme: orcid
+- affiliations: []
+  family_name: Jahn
+  given_name: Najko
+  identifiers:
+  - identifier: https://orcid.org/0000-0001-5105-1463
+    scheme: orcid
+- affiliations:
+  - name: Cranfield University
+  family_name: Needham
+  given_name: Paul
+  identifiers:
+  - identifier: https://orcid.org/0000-0001-9771-3469
+    scheme: orcid
+- affiliations: []
+  family_name: Lazzeri
+  given_name: Emma
+  identifiers:
+  - identifier: https://orcid.org/0000-0003-0506-046X
+    scheme: orcid
+- affiliations: []
+  family_name: Nielsen
+  given_name: Lars Holm
+  identifiers:
+  - identifier: https://orcid.org/0000-0001-8135-3489
+    scheme: orcid
+- affiliations:
+  - name: Couperin
+  family_name: Dazy
+  given_name: "Andr\xE9"
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-1353-3493
+    scheme: orcid
+- affiliations:
+  - name: CNR - IREA
+  family_name: Casu
+  given_name: Francesco
+  identifiers:
+  - identifier: https://orcid.org/0000-0001-8555-6494
+    scheme: orcid
+- affiliations:
+  - name: Web2Learn
+  family_name: Zourou
+  given_name: Katerina
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-3679-3503
+    scheme: orcid
+- affiliations: []
+  family_name: Papadopoulou
+  given_name: Elli
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-0893-8509
+    scheme: orcid
+- affiliations:
+  - name: McMaster University
+  family_name: Mircea
+  given_name: Gabriela
+  identifiers:
+  - identifier: https://orcid.org/0000-0003-1800-1522
+    scheme: orcid
+- affiliations: []
+  family_name: "Dvo\u0159\xE1k"
+  given_name: Jan
+  identifiers:
+  - identifier: https://orcid.org/0000-0001-8985-152X
+    scheme: orcid
+- affiliations: []
+  family_name: manunta
+  given_name: michele
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-7245-1551
+    scheme: orcid
+- affiliations: []
+  family_name: Leenarts
+  given_name: Ellen
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-5589-756X
+    scheme: orcid
+- affiliations: []
+  family_name: Franck
+  given_name: Gwen
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-9719-0570
+    scheme: orcid
+- affiliations: []
+  family_name: Koers
+  given_name: Hylke
+  identifiers:
+  - identifier: https://orcid.org/0000-0001-6538-7590
+    scheme: orcid
+- affiliations: []
+  family_name: Matas
+  given_name: "Lautaro Juli\xE1n"
+  identifiers:
+  - identifier: https://orcid.org/0000-0003-0272-1592
+    scheme: orcid
+- affiliations: []
+  family_name: Teperek
+  given_name: Marta
+  identifiers:
+  - identifier: https://orcid.org/0000-0001-8520-5598
+    scheme: orcid
+- affiliations:
+  - name: Universiteit Gent
+  family_name: Van Nieuwerburgh
+  given_name: Inge
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-7285-1598
+    scheme: orcid
+- affiliations: []
+  family_name: "Mart\xEDn Hern\xE1ndez"
+  given_name: "Iv\xE1n"
+  identifiers:
+  - identifier: https://orcid.org/0000-0003-4127-6604
+    scheme: orcid
+- affiliations: []
+  family_name: van Horik
+  given_name: "Ren\xE9"
+  identifiers:
+  - identifier: https://orcid.org/0000-0001-6899-760X
+    scheme: orcid
+- affiliations: []
+  family_name: "Hellstr\xF6m"
+  given_name: Margareta
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-4154-2610
+    scheme: orcid
+- affiliations: []
+  family_name: Tziotzios
+  given_name: Diamantis
+  identifiers:
+  - identifier: https://orcid.org/0000-0003-1670-4611
+    scheme: orcid
+- affiliations:
+  - name: "Universit\xE9 du Luxembourg"
+  family_name: England
+  given_name: Jonathan
+  identifiers:
+  - identifier: https://orcid.org/0000-0001-6715-8628
+    scheme: orcid
+- affiliations: []
+  family_name: Marek
+  given_name: "Ji\u0159\xED"
+  identifiers:
+  - identifier: https://orcid.org/0000-0003-2132-762X
+    scheme: orcid
+- affiliations:
+  - name: 4Science
+  family_name: Mornati
+  given_name: Susanna
+  identifiers:
+  - identifier: https://orcid.org/0000-0001-9931-3637
+    scheme: orcid
+- affiliations: []
+  family_name: Atzori
+  given_name: Claudio
+  identifiers:
+  - identifier: https://orcid.org/0000-0001-9613-6639
+    scheme: orcid
+- affiliations: []
+  family_name: Yankelevich
+  given_name: Tatsiana
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-7203-9671
+    scheme: orcid
+- affiliations:
+  - name: Data Archiving and Networked Service (DANS)
+  family_name: Huigen
+  given_name: Frans
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-9482-7679
+    scheme: orcid
+- affiliations: []
+  family_name: "T\xF3th-Czifra"
+  given_name: "Erzs\xE9bet"
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-5350-067X
+    scheme: orcid
+- affiliations: []
+  family_name: Petzold
+  given_name: Andreas
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-2504-1680
+    scheme: orcid
+- affiliations:
+  - name: Universidade do Minho
+  family_name: Rodrigues
+  given_name: Eloy
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-7862-2681
+    scheme: orcid
+- affiliations: []
+  family_name: Asmi
+  given_name: Ari
+  identifiers:
+  - identifier: https://orcid.org/0000-0003-3933-4684
+    scheme: orcid
+- affiliations: []
+  family_name: Venkataraman
+  given_name: Shanmugasundaram
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-3200-2698
+    scheme: orcid
+- affiliations: []
+  family_name: Favre-Nicolin
+  given_name: Vincent
+  identifiers:
+  - identifier: https://orcid.org/0000-0003-0801-6712
+    scheme: orcid
+- affiliations:
+  - name: Data Archiving and Networked Services
+  family_name: Coen
+  given_name: Gerard Peter
+  identifiers:
+  - identifier: https://orcid.org/0000-0001-9915-9721
+    scheme: orcid
+- affiliations:
+  - name: University of Oslo
+  family_name: Jensenius
+  given_name: Alexander Refsum
+  identifiers:
+  - identifier: https://orcid.org/0000-0001-6171-8743
+    scheme: orcid
+- affiliations: []
+  family_name: Jonkers
+  given_name: Koen
+  identifiers:
+  - identifier: https://orcid.org/0000-0001-6226-5758
+    scheme: orcid
+- affiliations: []
+  family_name: von Stein
+  given_name: Ilona
+  identifiers:
+  - identifier: https://orcid.org/0000-0003-3179-0773
+    scheme: orcid
+- affiliations: []
+  family_name: Dijk
+  given_name: Elly
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-5089-8774
+    scheme: orcid
+- affiliations:
+  - name: Confederation of Open Access Repositories
+  family_name: Shearer
+  given_name: Kathleen
+  identifiers:
+  - identifier: https://orcid.org/0000-0001-8617-5781
+    scheme: orcid
+- affiliations: []
+  family_name: Meadows
+  given_name: Alice
+  identifiers:
+  - identifier: https://orcid.org/0000-0003-2161-3781
+    scheme: orcid
+- affiliations:
+  - name: Istituto di ricerca sulla crescita economica sostenibile Consiglio Nazionale
+      delle Ricerche
+  family_name: REALE
+  given_name: EMANUELA
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-2961-1783
+    scheme: orcid
+- affiliations: []
+  family_name: Tsiavos
+  given_name: Prodromos
+  identifiers:
+  - identifier: https://orcid.org/0000-0003-2459-6817
+    scheme: orcid
+- affiliations:
+  - name: CCSD
+  family_name: Tournoy
+  given_name: "Rapha\xEBl"
+  identifiers:
+  - identifier: https://orcid.org/0000-0003-1244-0823
+    scheme: orcid
+- affiliations:
+  - name: Ghent University
+  family_name: Hermans
+  given_name: Emilie
+  identifiers:
+  - identifier: https://orcid.org/0000-0001-6594-7826
+    scheme: orcid
+- affiliations: []
+  family_name: Lange
+  given_name: Christoph
+  identifiers:
+  - identifier: https://orcid.org/0000-0001-9879-3827
+    scheme: orcid
+- affiliations:
+  - name: University of Bremen
+  family_name: Diepenbroek
+  given_name: Michael
+  identifiers:
+  - identifier: https://orcid.org/0000-0003-3096-6829
+    scheme: orcid
+- affiliations: []
+  family_name: Whyte
+  given_name: Angus
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-5198-0833
+    scheme: orcid
+- affiliations: []
+  family_name: Papastefanatos
+  given_name: George
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-9273-9843
+    scheme: orcid
+- affiliations: []
+  family_name: Mannocci
+  given_name: Andrea
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-5193-7851
+    scheme: orcid
+- affiliations: []
+  family_name: Kaiser
+  given_name: Olivia
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-1264-4853
+    scheme: orcid
+- affiliations: []
+  family_name: Correia
+  given_name: Antonia
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-6610-8853
+    scheme: orcid
+- affiliations: []
+  family_name: Bollini
+  given_name: Andrea
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-9029-1854
+    scheme: orcid
+- affiliations: []
+  family_name: Appleton
+  given_name: Owen
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-2571-6860
+    scheme: orcid
+- affiliations: []
+  family_name: Bangert
+  given_name: Daniel
+  identifiers:
+  - identifier: https://orcid.org/0000-0003-4981-2870
+    scheme: orcid
+- affiliations: []
+  family_name: Caluwaerts
+  given_name: Steven
+  identifiers:
+  - identifier: https://orcid.org/0000-0001-7456-3891
+    scheme: orcid
+- affiliations: []
+  family_name: Nunez
+  given_name: Luis
+  identifiers:
+  - identifier: https://orcid.org/0000-0003-4575-5899
+    scheme: orcid
+- affiliations: []
+  family_name: Blomberg
+  given_name: Niklas
+  identifiers:
+  - identifier: https://orcid.org/0000-0003-4155-5910
+    scheme: orcid
+- affiliations: []
+  family_name: O'Connor
+  given_name: Ryan
+  identifiers:
+  - identifier: https://orcid.org/0000-0001-5386-3932
+    scheme: orcid
+- affiliations:
+  - name: Athena Research Center
+  family_name: Chatzigeorgakidis
+  given_name: Georgios
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-5965-7934
+    scheme: orcid
+- affiliations:
+  - name: European Bioinformatics Institute (EMBL-EBI)
+  family_name: McEntyre
+  given_name: Jo
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-1611-6935
+    scheme: orcid
+- affiliations: []
+  family_name: Pispiringas
+  given_name: Leonidas
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-7111-094X
+    scheme: orcid
+- affiliations: []
+  family_name: Antonioli Mantegazzini
+  given_name: Barbara
+  identifiers:
+  - identifier: https://orcid.org/0000-0003-3513-1951
+    scheme: orcid
+- affiliations: []
+  family_name: Johnson
+  given_name: Rob
+  identifiers:
+  - identifier: https://orcid.org/0000-0001-7126-2954
+    scheme: orcid
+- affiliations: []
+  family_name: MacIntyre
+  given_name: Ross
+  identifiers:
+  - identifier: https://orcid.org/0000-0001-8186-6954
+    scheme: orcid
+- affiliations:
+  - name: CESSDA
+  family_name: Dekker
+  given_name: Ron
+  identifiers:
+  - identifier: https://orcid.org/0000-0003-0989-4963
+    scheme: orcid
+- affiliations:
+  - name: European Bioinformatics Institute
+  family_name: "Gr\xE4f"
+  given_name: Florian
+  identifiers:
+  - identifier: https://orcid.org/0000-0003-4890-5979
+    scheme: orcid
+- affiliations: []
+  family_name: Mokrane
+  given_name: Mustapha
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-0925-7983
+    scheme: orcid
+- affiliations: []
+  family_name: Harris
+  given_name: Emma Anne
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-1224-6986
+    scheme: orcid
+- affiliations:
+  - name: Universiteit Leiden
+  family_name: Noyons
+  given_name: Ed
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-3103-2991
+    scheme: orcid
+- affiliations:
+  - name: "Instituto Brasileiro de Informa\xE7\xE3o em Ci\xEAncia e Tecnologia"
+  family_name: Amaro
+  given_name: Bianca
+  identifiers:
+  - identifier: https://orcid.org/0000-0002-4703-8992
+    scheme: orcid
