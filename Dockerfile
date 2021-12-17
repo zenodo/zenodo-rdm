@@ -23,7 +23,12 @@ RUN cp -r ./static/. ${INVENIO_INSTANCE_PATH}/static/ && \
     cp -r ./assets/. ${INVENIO_INSTANCE_PATH}/assets/ && \
     invenio collect --verbose  && \
     invenio webpack create && \
-    invenio webpack install --unsafe && \
+    invenio webpack install --unsafe
+RUN cd ${INVENIO_INSTANCE_PATH}/assets/ && \
+    rm -rf ./node_modules/react-invenio-deposit && \
+    rm -f ./package-lock.json && \
+    npm install https://github.com/ppanero/react-invenio-deposit.git#install
+RUN cd ${WORKING_DIR}/src && \
     invenio webpack build
 
 ENTRYPOINT [ "bash", "-c"]
