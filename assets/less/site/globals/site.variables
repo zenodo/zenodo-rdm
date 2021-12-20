@@ -1,1 +1,1 @@
-@import "../../variables.less";
+@import "@less/invenio_app_rdm/variables";
