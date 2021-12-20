@@ -3,6 +3,12 @@ name: Docker
 on:
   repository_dispatch:
     types: publish-latest
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Reason'
+        required: false
+        default: 'Manual trigger'
   push:
     # Publish `master` as Docker `latest` image.
     branches:
