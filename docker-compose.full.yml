@@ -35,7 +35,7 @@ services:
       file: docker-services.yml
       service: app
     command: ["uwsgi /opt/invenio/var/instance/uwsgi_ui.ini"]
-    image: zenodo
+    image: zenodo:latest
     ports:
       - "5000"
     volumes:
@@ -57,7 +57,7 @@ services:
       file: docker-services.yml
       service: app
     command: ["uwsgi /opt/invenio/var/instance/uwsgi_rest.ini"]
-    image: zenodo
+    image: zenodo:latest
     ports:
       - "5000"
     volumes:
@@ -79,7 +79,7 @@ services:
       service: app
     restart: "always"
     command: ["celery -A invenio_app.celery worker --loglevel=INFO"]
-    image: zenodo
+    image: zenodo:latest
     depends_on:
       es:
         condition: service_started
