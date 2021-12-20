@@ -1,1 +1,18 @@
-@import "../../theme.less";
+@import "@less/invenio_app_rdm/theme";
+
+@navbar_background_image: linear-gradient(to right,#0047A8 0,#2BBCFF 100%);
+@searchButtonColor: #f2711c;
+
+.navbar-search-bar button{
+    background-color: @searchButtonColor !important;
+}
+
+.rdm-logo {
+    width: 150px !important;
+}
+
+.logo-link {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+}
