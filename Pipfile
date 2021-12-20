@@ -10,6 +10,7 @@ check-manifest = ">=0.25"
 invenio-app-rdm = {version = "~=8.0.0.dev1", extras = ["elasticsearch7", "postgresql"]}
 invenio-vocabularies = {editable = true, ref = "names", git = "https://github.com/inveniosoftware/invenio-vocabularies.git"}
 invenio-rdm-records = {editable = true, ref = "names", git = "https://github.com/inveniosoftware/invenio-rdm-records.git"}
+"github3.py" = ">=3.0.0"
 uwsgi = ">=2.0"
 uwsgitop = ">=0.11"
 uwsgi-tools = ">=1.1.1"
