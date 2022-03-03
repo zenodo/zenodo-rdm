@@ -7,14 +7,13 @@ verify_ssl = true
 check-manifest = ">=0.25"
 
 [packages]
-invenio-app-rdm = {version = "~=8.0.0.dev1", extras = ["elasticsearch7", "postgresql"]}
-invenio-vocabularies = {editable = true, ref = "names", git = "https://github.com/inveniosoftware/invenio-vocabularies.git"}
-invenio-rdm-records = {editable = true, ref = "names", git = "https://github.com/inveniosoftware/invenio-rdm-records.git"}
+invenio-app-rdm = {version = "~=8.0.0", extras = ["elasticsearch7", "postgresql"]}
+invenio-logging = {extras = ["sentry-sdk"], version = "~=1.3.0"}
+ipython = "!=8.1.0"
 "github3.py" = ">=3.0.0"
 uwsgi = ">=2.0"
 uwsgitop = ">=0.11"
 uwsgi-tools = ">=1.1.1"
-setuptools = ">=57,<58"
 
 [requires]
 python_version = "3.8"
