@@ -24,10 +24,6 @@ RUN cp -r ./static/. ${INVENIO_INSTANCE_PATH}/static/ && \
     invenio collect --verbose  && \
     invenio webpack create && \
     invenio webpack install --unsafe
-RUN cd ${INVENIO_INSTANCE_PATH}/assets/ && \
-    rm -rf ./node_modules/react-invenio-deposit && \
-    rm -f ./package-lock.json && \
-    npm install https://github.com/zenodo/react-invenio-deposit.git#install
 RUN cd ${WORKING_DIR}/src && \
     invenio webpack build
 
