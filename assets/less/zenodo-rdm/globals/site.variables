@@ -4,3 +4,25 @@
  * Invenio App RDM is free software; you can redistribute it and/or modify it
  * under the terms of the MIT License; see LICENSE file for more details.
  */
+
+// Colors
+@warningColor: #EB9419;
+@positiveColor: #3A833A;
+@negativeColor: #D33B36;
+
+// Navbar
+@navbarBackgroundImage: linear-gradient(to right,#0047A8 0,#2BBCFF 100%);
+
+
+// Footer colors
+@footerLightColor: #0067c9;
+@footerDarkColor: #0047a8;
+@footerTextLightColor: #c9e5ff;
+
+
+// Font weights
+@normal: 300;
+@semibold: 500;
+@bold: 700;
+
+@headerFontWeight: @semibold;
