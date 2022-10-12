@@ -12,14 +12,14 @@ services:
     extends:
       file: docker-services.yml
       service: mq
-  es:
+  search:
     extends:
       file: docker-services.yml
-      service: es
-  kibana:
+      service: search
+  opensearch-dashboards:
     extends:
       file: docker-services.yml
-      service: kibana
+      service: opensearch-dashboards
   pgadmin:
     extends:
       file: docker-services.yml

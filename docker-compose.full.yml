@@ -12,10 +12,14 @@ services:
     extends:
       file: docker-services.yml
       service: mq
-  es:
+  search:
     extends:
       file: docker-services.yml
-      service: es
+      service: search
+  opensearch-dashboards:
+    extends:
+      file: docker-services.yml
+      service: opensearch-dashboards
   # Frontend
   frontend:
     extends:
@@ -43,7 +47,7 @@ services:
       - uploaded_data:/opt/invenio/var/instance/data
       - archived_data:/opt/invenio/var/instance/archive
     depends_on:
-      es:
+      search:
         condition: service_started
       cache:
         condition: service_started
@@ -64,7 +68,7 @@ services:
       - uploaded_data:/opt/invenio/var/instance/data
       - archived_data:/opt/invenio/var/instance/archive
     depends_on:
-      es:
+      search:
         condition: service_started
       cache:
         condition: service_started
@@ -81,7 +85,7 @@ services:
     command: ["celery -A invenio_app.celery worker --loglevel=INFO"]
     image: zenodo:latest
     depends_on:
-      es:
+      search:
         condition: service_started
       cache:
         condition: service_started
