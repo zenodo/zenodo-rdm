@@ -1,4 +1,4 @@
-version: '2.2'
+version: "2.2"
 services:
   app:
     build:
@@ -57,15 +57,23 @@ services:
     ports:
       - "15672:15672"
       - "5672:5672"
-  es:
-    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2
+  search:
+    image: opensearchproject/opensearch:2.3.0
     restart: "unless-stopped"
     environment:
       - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
       - discovery.type=single-node
+      - "DISABLE_SECURITY_PLUGIN=true"
+      - "DISABLE_INSTALL_DEMO_CONFIG=true"
     healthcheck:
-      test: ["CMD", "curl", "-f", "localhost:9200/_cluster/health?wait_for_status=green"]
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "localhost:9200/_cluster/health?wait_for_status=green",
+        ]
       interval: 30s
       timeout: 30s
       retries: 5
@@ -77,10 +85,12 @@ services:
     ports:
       - "9200:9200"
       - "9300:9300"
-  kibana:
-    image: docker.elastic.co/kibana/kibana-oss:7.2.0
-    environment:
-      - "ELASTICSEARCH_HOSTS=http://es:9200"
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+  opensearch-dashboards:
+    image: opensearchproject/opensearch-dashboards:2.3.0
     ports:
       - "5601:5601"
+    expose:
+      - "5601"
+    environment:
+      - "OPENSEARCH_HOSTS=http://search:9200"
+      - "DISABLE_SECURITY_DASHBOARDS_PLUGIN=true"
