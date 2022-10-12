@@ -5,21 +5,26 @@
  * under the terms of the MIT License; see LICENSE file for more details.
  */
 
-@navbarBackgroundImage: linear-gradient(to right,#0047A8 0,#2BBCFF 100%);
-@searchButtonColor: #f2711c;
+body {
+  font-weight: @normal;
 
-.navbar-search-bar button{
-    background-color: @searchButtonColor !important;
+  strong {
+    font-weight: @bold;
+  }
+}
+
+#invenio-nav {
+  min-height: 96px;
+}
+
+.logo {
+  width: 160px;
+  margin-right: 2rem;
 }
 
 .rdm-logo {
-    width: 150px !important;
-}
-
-.logo-link {
-    display: flex !important;
-    justify-content: center;
-    align-items: center;
+    width: 100%;
+    padding-bottom: .5rem;
 }
 
 /*Creatibutors modal*/

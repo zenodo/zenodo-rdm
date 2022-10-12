@@ -29,64 +29,65 @@
 {%- endblock page_header %}
 
 {%- block first_section%}
-<div class="invenio-rdm-project-section section-content white-bg">
-  <div class="ui container">
-    <h1 class="ui center aligned huge header">{{config.THEME_SITENAME}} in a nutshell</h1>
-    <div class="ui three column stackable padded grid">
-      <div class="left floated column">
-        <h3 class="ui center aligned icon header">
-          <i class="globe icon"></i>
-          Research. Shared.
-        </h3>
-        <div class="content">
-          All research outputs from across all fields of research are welcome! Sciences and Humanities, really!
-        </div>
-      </div>
-      <div class="column">
-        <h3 class="ui center aligned icon header">
-          <i class="search icon"></i>
-          Citeable. Discoverable.
-        </h3>
-        <div class="content">
-          Uploads gets a Digital Object Identifier (DOI) to make them easily and uniquely citeable.
-        </div>
-      </div>
-      <div class="right floated column">
-        <h3 class="ui center aligned icon header">
-          <i class="users icon"></i>
-          Communities
-        </h3>
-        <div class="content">
-          Create and curate your own community for a workshop, project, department, journal, into which you can accept or reject uploads. Your own complete digital repository!
-        </div>
-      </div>
-
-      <div class="left floated column">
-        <h3 class="ui center aligned icon header">
-          <i class="money icon"></i>
-          Funding
-        </h3>
-        <div class="content">
-          Identify grants, integrated in reporting lines for research funded by the European Commission via OpenAIRE.
-        </div>
-      </div>
-      <div class="column">
-        <h3 class="ui center aligned icon header">
-          <i class="lock open icon"></i>
-          Flexible licensing
-        </h3>
-        <div class="content">Because not everything is under Creative Commons.</div>
-      </div>
-      <div class="right floated column">
-        <h3 class="ui center aligned icon header">
-          <i class="shield icon"></i>
-          Safe
-        </h3>
-        <div class="content">
-          Your research output is stored safely for the future in the same cloud infrastructure as CERN's own LHC research data.
-        </div>
+<div class="ui container rel-mt-3">
+  <div class="ui stackable grid">
+    <div class="eleven wide computer sixteen wide tablet column">
+      <h2>{{ _("Recent uploads") }}</h2>
+      <div>
+        ...
       </div>
     </div>
+    <aside class="five wide computer sixteen wide tablet column">
+      <section class="ui segment rdm-sidebar">
+        <h2 class="ui small header">{{ _("Need help?") }} </h2>
+        <a href="/support" class="ui button fluid rel-mb-1">Contact us</a>
+        <p>
+          Zenodo prioritizes all requested related to the COVID-19 outbreak.
+
+          We can help with:
+
+            <ul>
+              <li>Uploading your research data, software, preprints, etc.</li>
+              <li>One-on-one with Zenodo supporters.</li>
+              <li>Quota increases beyond our default policy.</li>
+              <li>Scripts for automated uploading of larger datasets.</li>
+            </ul>
+        </p>
+      </section>
+
+      <section class="ui segment rdm-sidebar">
+        <h2 class="ui small header">{{ _("Why use Zenodo?") }} </h2>
+        <p>
+          <ul>
+            <li>
+              <strong>Safe</strong> — your research is stored safely for the future in CERN’s Data Centre for as long as CERN exists.
+            </li>
+            <li>
+              <strong>Trusted</strong> — built and operated by CERN and OpenAIRE to ensure that everyone can join in Open Science.
+            </li>
+            <li>
+              <strong>Citeable</strong> — every upload is assigned a Digital Object Identifier (DOI), to make them citable and trackable.
+            </li>
+            <li>
+              <strong>No waiting time</strong> — Uploads are made available online as soon as you hit publish, and your DOI is registered within seconds.
+            </li>
+            <li>
+              <strong>Open or closed</strong> — Share e.g. anonymized clinical trial data with only medical professionals via our restricted access mode.
+            </li>
+            <li>
+              <strong>Versioning</strong> — Easily update your dataset with our versioning feature.
+            </li>
+            <li>
+              <strong>GitHub integration</strong> — Easily preserve your GitHub repository in Zenodo.
+            </li>
+            <li>
+              <strong>Usage statistics</strong> — All uploads display standards compliant usage statistics
+            </li>
+          </ul>
+        </p>
+      </section>
+    </aside>
   </div>
 </div>
+
 {%- endblock first_section %}

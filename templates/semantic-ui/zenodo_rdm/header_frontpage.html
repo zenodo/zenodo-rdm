@@ -23,27 +23,9 @@
   -#}
   
 {%- extends "invenio_app_rdm/header_frontpage.html" %}
+{%- block navbar_search %}
+  {%- include "invenio_app_rdm/searchbar.html" %}
+{% endblock navbar_search %}
 
 {%- block frontpage_search %}
-<div class="ui container two column centered middle aligned grid">
-  <div class="sixteen wide mobile ten wide computer column">
-    <div class="row middle aligned">
-      <div class="sixteen wide column frontpage-search">
-        {# Don't display the website title #}
-        {%- block frontpage_title %}
-        <div class="ui divider hidden"></div>
-        {%- endblock frontpage_title %}
-        {%- block frontpage_form %}
-        <form action="/search" class="ui form" role="search">
-          <div class="ui fluid action input">
-            <input type="text" name="q" class="form-control" placeholder="{{ _("Search") }}">
-            <button type="submit" class="ui icon button orange" aria-label="Search"><i class="search icon"></i></button>
-          </div>
-        </form>
-        <div class="ui divider hidden"></div>
-        {%- endblock frontpage_form %}
-      </div>
-    </div>
-  </div>
-</div>
 {%- endblock frontpage_search %}
