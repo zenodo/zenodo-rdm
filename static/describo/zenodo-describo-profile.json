@@ -1,0 +1,133 @@
+{
+    "metadata": {
+        "name": "Zenodo Describo Profile",
+        "version": 0.1,
+        "description": "A profile for InvenioRDM reposiory",
+        "warnMissingProperty": true
+    },
+    "layouts": {
+        "Dataset": [
+            { "name": "Basic Information", "description": "Basic metadata.", "inputs": ["title", "author", "datePublished", "license"] }
+        ]
+    },
+    "classes": {
+        "Dataset": {
+            "definition": "override",
+            "subClassOf": [],
+            "inputs": [
+                {
+                    "id": "https://schema.org/name",
+                    "definition": "override",
+                    "name": "name",
+                    "label": "Title",
+                    "type": [
+                        "Text"
+                    ],
+                    "required": true,
+                    "multiple": false,
+                    "help": "Title of the deposit."
+                },
+                {
+                    "id": "https://schema.org/author",
+                    "definition": "override",
+                    "name": "author",
+                    "label": "Authors",
+                    "type": [
+                        "Person",
+                        "Organization"
+                    ],
+                    "required": true,
+                    "multiple": true,
+                    "help": "Authors of the deposit."
+                },
+                {
+                    "id": "https://schema.org/Date",
+                    "definition": "inherit",
+                    "name": "datePublished",
+                    "label": "Publication Date",
+                    "type": [
+                        "Date"
+                    ],
+                    "required": true,
+                    "multiple": false,
+                    "help": "Publication date of the deposit." 
+                },
+                {
+                    "id": "https://schema.org/license",
+                    "definition": "inherit",
+                    "name": "license",
+                    "label": "License",
+                    "type": [
+                        "CreativeWork"
+                    ],
+                    "required": true,
+                    "multiple": false,
+                    "help": "License of the deposit."
+                }
+            ]
+        },
+        "Person": {
+            "definition": "override",
+            "subClassOf": [],
+            "inputs": [
+                {
+                    "id": "https://schema.org/familyName",
+                    "definition": "inherit",
+                    "name": "familyName",
+                    "label": "Family Name",
+                    "type": [
+                        "Text"
+                    ],
+                    "required": true,
+                    "multiple": false,
+                    "help": "Family name of person if known."
+                },
+                {
+                    "id": "https://schema.org/givenName",
+                    "definition": "inherit",
+                    "name": "givenName",
+                    "label": "Given Name",
+                    "type": [
+                        "Text"
+                    ],
+                    "required": false,
+                    "multiple": false,
+                    "help": "Given names of person if known."
+                }
+            ]
+        },
+        "Organization": {
+            "definition": "override",
+            "subClassOf": [],
+            "inputs": [
+                {
+                    "id": "https://schema.org/name",
+                    "definition": "inherit",
+                    "name": "name",
+                    "type": [
+                        "Text"
+                    ],
+                    "required": true,
+                    "multiple": false,
+                    "group": "important",
+                    "help": "Organization name."
+                },
+                {
+                    "id": "https://schema.org/affiliation",
+                    "definition": "inherit",
+                    "name": "affiliation",
+                    "label": "Affiliation",
+                    "type": [
+                        "Text"
+                    ],
+                    "required": false,
+                    "multiple": false,
+                    "help": "Affiliation to the organization."
+                }
+            ]
+        }
+    },
+    "enabledClasses": [
+        "Dataset", "Person", "Organization"
+    ]
+}
