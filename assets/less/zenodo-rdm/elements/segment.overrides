@@ -1,0 +1,21 @@
+/*
+ *   Copyright (C) 2021-2022 CERN.
+ *
+ * Invenio App RDM is free software; you can redistribute it and/or modify it
+ * under the terms of the MIT License; see LICENSE file for more details.
+ */
+
+ .ui.segment.rdm-sidebar {
+   
+  &#record-manage-menu {
+    padding: 0;
+    margin: 0;
+    border: none;
+    box-shadow: none;
+    background-color: transparent;
+
+    #recordManagement {
+      padding: 0;
+    }
+  }
+}
