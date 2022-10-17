@@ -1,0 +1,47 @@
+
+.community-frontpage-cards {
+  background-color: transparent;
+  padding: .5*@defaultPadding;
+  
+  a.ui.card {
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    text-align: center;
+    border-radius: 0;
+
+    &:hover {
+      text-decoration: none;
+      box-shadow: none;
+      border: none;
+    }
+
+    &:not(:last-child){
+      @media screen and (min-width: @tabletBreakpoint) { 
+        border-right: 1px solid @borderColor;
+        padding-right: @defaultPadding;
+      }
+    }
+
+    .image {
+      max-height: @maxLogoHeight;
+      max-width: @maxLogoWidth;
+      margin: 0 auto;
+      border-radius: 0 !important;
+      border-bottom: none;
+
+      &.fallback_image,
+      &.placeholder {
+        img {
+          object-fit: contain;
+          opacity: .5;
+          border-radius: 100%;
+        }
+      }
+    }
+
+    .content {
+      border: none;
+    }
+  }
+}
