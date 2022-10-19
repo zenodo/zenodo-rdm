@@ -2502,6 +2502,10 @@
             ],
             "version": "==0.12.0"
         },
+        "zenodo-rdm": {
+            "editable": true,
+            "path": "./site"
+        },
         "zipp": {
             "hashes": [
                 "sha256:4fcb6f278987a6605757302a6e40e896257570d11c51628968ccb2a47e80c6c1",
