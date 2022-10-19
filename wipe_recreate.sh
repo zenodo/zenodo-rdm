@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2020 CERN.
+# Copyright (C) 2020-2022 CERN.
 #
 # Demo-InvenioRDM is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -33,13 +33,14 @@ invenio files location create --default 'default-location' /opt/invenio/var/inst
 invenio roles create admin
 invenio access allow superuser-access role admin
 invenio index init --force
+invenio rdm-records custom-fields init
+invenio communities custom-fields init
 
 # Add demo and fixtures data
 # -------------
 invenio rdm-records fixtures
+invenio rdm-records demo
 invenio vocabularies import -v names -f ./app_data/vocabularies-future.yaml  # zenodo specific names
-# cannot create records since fixtures are async and might not be present
-# invenio rdm-records demo
 
 # Enable admin user
 invenio users activate admin@inveniosoftware.org
