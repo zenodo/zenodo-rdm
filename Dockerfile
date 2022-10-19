@@ -10,6 +10,7 @@
 
 FROM inveniosoftware/centos8-python:3.8
 
+COPY site ./site
 COPY Pipfile Pipfile.lock ./
 RUN pipenv install --deploy --system --pre
 
