@@ -1,10 +1,7 @@
 names:
-  reader:
-    type: yaml
-    args:
-      origin: "./app_data/names.yaml"
-  writers:
-    - type: service
+  readers:
+    - type: yaml
       args:
-        service_or_name: rdm-names
-        identity: system_identity
+        origin: "./app_data/names.yaml"
+  writers:
+    - type: names-service
