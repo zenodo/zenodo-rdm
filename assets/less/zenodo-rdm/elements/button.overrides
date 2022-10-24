@@ -8,3 +8,7 @@
 .ui.search.button {
   border: 1px solid @borderColor;
 }
+
+.ui.button.transparent {
+  box-shadow: none;
+}

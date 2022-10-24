@@ -21,73 +21,60 @@
   # waive the privileges and immunities granted to it by virtue of its status
   # as an Intergovernmental Organization or submit itself to any jurisdiction.
   -#}
-
+  
 {%- extends "invenio_app_rdm/frontpage.html" %}
 
 {%- block page_header %}
-{%- include "zenodo_rdm/header_frontpage.html" %}
+  {%- include "zenodo_rdm/header_frontpage.html" %}
 {%- endblock page_header %}
 
-{%- block first_section%}
-<div class="ui container rel-mt-3">
-  <div class="ui stackable grid">
-    <div class="eleven wide computer sixteen wide tablet column">
-      <h2>{{ _("Recent uploads") }}</h2>
-      <div>
-        ...
-      </div>
-    </div>
-    <aside class="five wide computer sixteen wide tablet column">
-      <section class="ui segment rdm-sidebar">
-        <h2 class="ui small header">{{ _("Need help?") }} </h2>
-        <a href="/support" class="ui button fluid rel-mb-1">Contact us</a>
-        <p>
-          Zenodo prioritizes all requested related to the COVID-19 outbreak.
+{% block side_column_content %}
+  <section class="ui segment rdm-sidebar">
+    <h2 class="ui small header">{{ _("Need help?") }} </h2>
+    <a href="/support" class="ui button fluid rel-mb-1">Contact us</a>
+    <p>
+      Zenodo prioritizes all requested related to the COVID-19 outbreak.
 
-          We can help with:
+      We can help with:
 
-            <ul>
-              <li>Uploading your research data, software, preprints, etc.</li>
-              <li>One-on-one with Zenodo supporters.</li>
-              <li>Quota increases beyond our default policy.</li>
-              <li>Scripts for automated uploading of larger datasets.</li>
-            </ul>
-        </p>
-      </section>
+        <ul>
+          <li>Uploading your research data, software, preprints, etc.</li>
+          <li>One-on-one with Zenodo supporters.</li>
+          <li>Quota increases beyond our default policy.</li>
+          <li>Scripts for automated uploading of larger datasets.</li>
+        </ul>
+    </p>
+  </section>
 
-      <section class="ui segment rdm-sidebar">
-        <h2 class="ui small header">{{ _("Why use Zenodo?") }} </h2>
-        <p>
-          <ul>
-            <li>
-              <strong>Safe</strong> — your research is stored safely for the future in CERN’s Data Centre for as long as CERN exists.
-            </li>
-            <li>
-              <strong>Trusted</strong> — built and operated by CERN and OpenAIRE to ensure that everyone can join in Open Science.
-            </li>
-            <li>
-              <strong>Citeable</strong> — every upload is assigned a Digital Object Identifier (DOI), to make them citable and trackable.
-            </li>
-            <li>
-              <strong>No waiting time</strong> — Uploads are made available online as soon as you hit publish, and your DOI is registered within seconds.
-            </li>
-            <li>
-              <strong>Open or closed</strong> — Share e.g. anonymized clinical trial data with only medical professionals via our restricted access mode.
-            </li>
-            <li>
-              <strong>Versioning</strong> — Easily update your dataset with our versioning feature.
-            </li>
-            <li>
-              <strong>GitHub integration</strong> — Easily preserve your GitHub repository in Zenodo.
-            </li>
-            <li>
-              <strong>Usage statistics</strong> — All uploads display standards compliant usage statistics
-            </li>
-          </ul>
-        </p>
-      </section>
-    </aside>
-  </div>
-</div>
-
-{%- endblock first_section %}
+  <section class="ui segment rdm-sidebar">
+    <h2 class="ui small header">{{ _("Why use Zenodo?") }} </h2>
+    <p>
+      <ul>
+        <li>
+          <strong>Safe</strong> — your research is stored safely for the future in CERN’s Data Centre for as long as CERN exists.
+        </li>
+        <li>
+          <strong>Trusted</strong> — built and operated by CERN and OpenAIRE to ensure that everyone can join in Open Science.
+        </li>
+        <li>
+          <strong>Citeable</strong> — every upload is assigned a Digital Object Identifier (DOI), to make them citable and trackable.
+        </li>
+        <li>
+          <strong>No waiting time</strong> — Uploads are made available online as soon as you hit publish, and your DOI is registered within seconds.
+        </li>
+        <li>
+          <strong>Open or closed</strong> — Share e.g. anonymized clinical trial data with only medical professionals via our restricted access mode.
+        </li>
+        <li>
+          <strong>Versioning</strong> — Easily update your dataset with our versioning feature.
+        </li>
+        <li>
+          <strong>GitHub integration</strong> — Easily preserve your GitHub repository in Zenodo.
+        </li>
+        <li>
+          <strong>Usage statistics</strong> — All uploads display standards compliant usage statistics
+        </li>
+      </ul>
+    </p>
+  </section>
+{% endblock side_column_content %}
