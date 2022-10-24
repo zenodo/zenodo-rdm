@@ -6,6 +6,7 @@
   Invenio is free software; you can redistribute it and/or modify it
   under the terms of the MIT License; see LICENSE file for more details.
 #}
+{%- from "invenio_communities/macros/communities_carousel.html" import communities_carousel %}
 
 {% extends "invenio_communities/base.html" %}
 
@@ -46,7 +47,9 @@
       <div class="ui divider hidden"></div>
     </div>
   </div>
-  <!-- TODO: Add Featured communities slideshow here -->
+
+  {{ communities_carousel() }}
+  
   <div class="ui container communities-frontpage rel-mt-3 rel-mb-2">
     <div class="flex align-items-center">
       <h2 class="ui header mb-0">{{ _('New communities') }}</h2>
