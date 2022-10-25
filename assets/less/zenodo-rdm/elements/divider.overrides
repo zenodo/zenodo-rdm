@@ -1,0 +1,11 @@
+.ui.divider {
+  font-weight: 300;
+  font-size: @h3;
+  color: @brandColor;
+  margin: .5*@defaultMargin 0;
+
+  &.inverted {
+    color: @invertedTextColor;
+    border-top-color: @invertedTextColor !important;
+  }
+}

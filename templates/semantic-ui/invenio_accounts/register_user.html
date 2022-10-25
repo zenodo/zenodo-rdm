@@ -1,0 +1,95 @@
+{%- extends config.ACCOUNTS_COVER_TEMPLATE %}
+
+{% from "invenio_accounts/_macros.html" import render_field, form_errors %}
+{% block page_body %}
+<div class="ui centered container">
+  <h1 class="ui inverted header text-center">Research. Shared! Sign up today</h1>
+</div>
+
+<div class="ui divider inverted rel-mt-2 rel-mb-3"></div>
+
+<div class="ui grid">
+  <div class="sixteen wide mobile eight wide tablet eight wide computer left aligned column">
+    <dl class="mt-0">
+      <dt class="ui small inverted header"><b>Citeable. Discoverable</b></dt>
+      <dd>Uploads get a Digital Object Identifier (DOI) to make them easily and uniquely citeable.</dd>
+      
+      <dt class="ui small inverted header"><b>Communities</b></dt>
+      <dd>Accept or reject uploads to your own community (e.g workshops, EU projects, institutions or entire disciplines).</dd>
+      
+      <dt class="ui small inverted header"><b>Trusted Research Data Management</b></dt>
+      <dd>uilt on top of CERN's expertise in managing 100s of petabytes of research data from the Large Hadron Collider.</dd>
+    </dl>
+  </div>
+
+  <div class="sixteen wide mobile eight wide tablet eight wide computer column">
+    {%- with form = register_user_form %}
+      <form
+        class="credentials-form"
+        action="{{ url_for_security('register') }}" 
+        method="POST" 
+        name="register_user_form"
+      >
+        {{ form_errors(form) }}
+        {{ form.hidden_tag() }}
+
+        {%- block registration_form_fields scoped %}
+          {{ render_field(form.email, icon="user icon", autofocus=True, errormsg=False) }}
+          {{ render_field(form.password, icon="lock icon", errormsg=False) }}
+          
+          {%- if form.password_confirm %}
+            {{ render_field(form.password_confirm, icon="glyphicon glyphicon-lock", errormsg=False) }}
+          {%- endif %}
+        {%- endblock registration_form_fields %}
+        
+        {%- if form.recaptcha %}
+          <div class="form-group form-group-lg">{{ form.recaptcha() }}</div>
+        {%- endif %}
+
+        <button type="submit" class="ui left labeled icon fluid button warning">
+          <i class="icon edit"></i>
+          {{ _('Sign up') }}
+        </button>
+      </form>
+
+      <div class="ui centered container rel-mt-2">
+        <h2 class="ui small inverted header">
+          {{ _('Already have an account?') }}
+          <a href="{{ url_for_security('login') }}" class="inverted">{{ _('Log in') }}</a>
+        </h2>
+        <a href="https://about.zenodo.org/privacy-policy/" class="inverted">Privacy notice</a>
+      </div>
+    {%- endwith %}
+
+  </div>
+</div>
+
+<div class="ui centered container rel-mt-2">
+  <div class="ui horizontal link list">
+    <a class="item" href="https://www.openaire.eu">
+      <img 
+        src="{{ url_for('static', filename='images/openaire.png') }}" 
+        width="65"
+        height="65"
+        alt="OpenAire logo"
+      />
+    </a>
+    <a class="item rel-ml-2 rel-mr-2" href="https://home.cern">
+      <img 
+        src="{{ url_for('static', filename='images/cern.png') }}" 
+        width="60" 
+        height="60"
+        alt="CERN logo"
+      />
+    </a>
+    <a class="item ml-0" href="https://ec.europa.eu/programmes/horizon2020/">
+      <img 
+        src="{{ url_for('static', filename='images/eu.png') }}" 
+        width="88" 
+        height="60"
+        alt="EU logo"
+      />
+    </a>
+  </div>
+</div>
+{% endblock page_body %}
