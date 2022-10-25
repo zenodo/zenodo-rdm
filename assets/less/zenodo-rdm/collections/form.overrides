@@ -1,0 +1,12 @@
+
+form.credentials-form {
+  
+  .field {
+    margin-bottom: .5rem;
+
+    .input {
+      width: 100%;
+      font-size: @16px;
+    }
+  } 
+}

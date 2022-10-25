@@ -39,3 +39,11 @@ body {
     margin-left: 0.3em;
   }
 }
+
+a.inverted {
+  color: @invertedTextColor;
+}
+
+.ui.primary.header {
+  color: @primaryColor !important;
+}

@@ -9,6 +9,8 @@
 @warningColor: #EB9419;
 @positiveColor: #3A833A;
 @negativeColor: #D33B36;
+@primaryColor: #428bca;
+
 
 // Navbar
 @navbarBackgroundImage: linear-gradient(to right,#0047A8 0,#2BBCFF 100%);
@@ -25,4 +27,11 @@
 @semibold: 500;
 @bold: 700;
 
-@headerFontWeight: @semibold;
+@headerFontWeight: @normal;
+
+
+// Page headings
+@h1 : unit((36 / 14), rem);
+@h2 : unit((30 / 14), rem);
+@h3 : unit((24 / 14), rem);
+@h4 : unit((16 / 14), rem);

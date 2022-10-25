@@ -29,3 +29,15 @@
     }
   }
 }
+
+.ui.segments.very.rounded {
+  border-radius: .8rem;
+
+  &:not(.horizontal) > .segment:first-child {
+    border-radius: .8rem .8rem 0 0;
+  }
+
+  &:not(.horizontal) > .segment:last-child {
+    border-radius: 0 0 .8rem .8rem;
+  }
+}

@@ -1,0 +1,84 @@
+{# -*- coding: utf-8 -*-
+
+  This file is part of Zenodo.
+  Copyright (C) 2022 CERN.
+
+  Zenodo is free software; you can redistribute it
+  and/or modify it under the terms of the GNU General Public License as
+  published by the Free Software Foundation; either version 2 of the
+  License, or (at your option) any later version.
+
+  Zenodo is distributed in the hope that it will be
+  useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Zenodo; if not, write to the
+  Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+  MA 02111-1307, USA.
+
+  In applying this license, CERN does not
+  waive the privileges and immunities granted to it by virtue of its status
+  as an Intergovernmental Organization or submit itself to any jurisdiction.
+#}
+{% extends config.THEME_BASE_TEMPLATE %}
+
+{%- set html_css_classes=['cover-page'] %}
+{%- set body_css_classes=['ui grid doubling middle center aligned cover-page'] %}
+
+{%- block body %}
+  <main class="sixteen wide column centered">
+    {%- block flashmessages %}
+      {%- from "invenio_theme/macros/messages.html" import flashed_messages with context -%}
+      {{ flashed_messages(center_text=true) }}
+    {%- endblock flashmessages %}
+
+    <div class="ui centered grid container">
+      <div class="sixteen wide mobile fourteen wide tablet ten wide computer centered column">
+        {% block page_header %}
+          <div class="ui basic very padded segment">
+            {%- block brand %}
+              {%- if config.THEME_LOGO %}
+                <a href="/">
+                  <img class="ui centered medium image"
+                      src="{{ url_for('static', filename=config.THEME_LOGO) }}"
+                      alt="{{ _(config.THEME_SITENAME) }}"/>
+                </a>
+              {%- elif config.THEME_SITENAME %}
+                <a href="/" class="text-center">
+                  {{ _(config.THEME_SITENAME) }}
+                </a>
+              {% endif %}
+            {%- endblock brand %}
+          </div>
+        {% endblock page_header %}
+
+        {%- block page_body %}
+          <div class="container">
+            <div class="row panel-container">
+              {% block panel %}
+                <div class="column three wide"></div>
+                <div class="column six wide">
+                  <div class="panel panel-default">
+                    <div class="panel-body">
+                      {% block panel_content %}
+                        <h3 class="centered panel-free-title">{{ panel_title }}</h3>
+                      {% endblock panel_content %}
+                    </div>
+                  </div>
+                </div>
+              {% endblock panel %}
+            </div>
+          </div>
+        {%- endblock page_body %}
+      </div>
+    </div>
+    {% block page_footer %}
+    {% endblock page_footer %}
+  </main>
+
+  {%- block javascript %}
+    {{ webpack['theme.js']}}
+  {%- endblock javascript %}
+{%- endblock body %}
