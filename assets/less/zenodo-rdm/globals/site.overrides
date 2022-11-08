@@ -53,3 +53,13 @@ a.inverted {
     color: @footerTextDarkColor;
   }
 }
+
+
+#contact-page {   
+
+  .panel-body {
+    padding-top: 2*@defaultPadding;
+    padding-left: 2*@defaultPadding;
+  }
+}
+
