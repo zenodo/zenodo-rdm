@@ -1,10 +1,10 @@
 """Additional views."""
 
-from flask import Blueprint, render_template
+from flask import Blueprint
 
+from marshmallow import ValidationError
 
-def support():
-    return render_template("zenodo_rdm/support.html")
+from .support.support import ZenodoSupport
 
 
 #
@@ -12,16 +12,31 @@ def support():
 #
 def create_blueprint(app):
     """Register blueprint routes on app."""
+
+    @app.errorhandler(ValidationError)
+    def handle_validation_errors(e):
+        if isinstance(e, ValidationError):
+            dic = e.messages
+            deserialized = []
+            for error_tuple in dic.items():
+                field, value = error_tuple
+                deserialized.append({"field": field, "messages": value})
+            return {"errors": deserialized}, 400
+        return e.message, 400
+
     blueprint = Blueprint(
         "zenodo_rdm",
         __name__,
         template_folder="./templates",
     )
 
-    # Record URL rules
+    # Support URL rule
+    support_endpoint = app.config["SUPPORT_ENDPOINT"] or "/support"
     blueprint.add_url_rule(
-        "/support",
-        view_func=support,
+        support_endpoint,
+        view_func=ZenodoSupport.as_view("support_form"),
     )
+
+    app.register_error_handler(400, handle_validation_errors)
 
     return blueprint

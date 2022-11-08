@@ -20,7 +20,24 @@ theme = WebpackThemeBundle(
         "semantic-ui": dict(
             entry={
                 # Add your webpack entrypoints
+                "zenodo-rdm-support": "./js/zenodo_rdm/src/support/support.js"
             },
+            dependencies={
+                "@babel/runtime": "^7.9.0",
+                "formik": "^2.2.9",
+                "i18next": "^20.3.0",
+                "i18next-browser-languagedetector": "^6.1.0",
+                "prop-types": "^15.7.2",
+                "react-i18next": "^11.11.0",
+                "react-invenio-forms": "^1.0.1",
+                "yup": "^0.32.11",
+                "react": "^16.13.0",
+                "react-dom": "^16.13.0",
+                "lodash": "^4.17.0",
+            },
+            # aliases={
+            #     "@translations/zenodo_rdm": "translations",
+            # } TODO
         ),
     },
 )
