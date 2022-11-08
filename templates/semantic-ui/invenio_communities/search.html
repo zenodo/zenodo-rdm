@@ -1,0 +1,33 @@
+{# -*- coding: utf-8 -*-
+
+    This file is part of Zenodo.
+    Copyright (C) 2022 CERN.
+
+    Zenodo is free software; you can redistribute it and/or modify it
+    under the terms of the MIT License; see LICENSE file for more details.
+#}
+
+{% extends "invenio_communities/base.html" %}
+
+{%- set title = _("Search communities") -%}
+
+{%- block javascript %}
+    {{ super() }}
+    {{ webpack['invenio-communities-search.js'] }}
+{%- endblock %}
+
+{%- block page_body %}
+<div class="ui container fluid page-subheader-outer compact ml-0-mobile mr-0-mobile">
+  <div class="ui container community-search page-subheader">
+    <h1 class="ui header">
+      <i class="users icon inline mr-10"></i>{{_("Communities")}}
+      <small class="computer tablet only"
+        >{{_("created and curated by Zenodo users")}}</small
+      >
+    </h1>
+  </div>
+</div>
+<div id="communities-search" class="rel-mt-3" data-invenio-search-config='{{
+    search_app_communities_config(app_id="communities-search") | tojson }}'>
+</div>
+{%- endblock page_body %}
