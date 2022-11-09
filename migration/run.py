@@ -4,7 +4,7 @@ from nameparser import HumanName
 import uuid
 
 # from pgcopy import CopyManager
-import psycopg2
+# import psycopg2
 from invenio_records.dictutils import dict_set, dict_lookup
 
 
@@ -22,8 +22,8 @@ COPY (
         WHERE
             pidstore_pid.pid_type = 'recid' AND
             pidstore_pid.status = 'R' AND
-            pidstore_pid.object_type = 'rec'
-        LIMIT 1
+            pidstore_pid.object_type = 'rec' AND
+            r.updated >= (:last_load_timestamp)
     ) as records
 ) TO STDOUT;
 """
@@ -111,25 +111,24 @@ class RecordTransform:
             "updated": data["updated"],
             "version_id": data["version_id"],
             "json": {
+                # TODO: Loader is responsible for creating/updating if the PID exists.
                 "id": data["json"]["conceptrecid"],
-                "pid": {
-                    # TODO: Has to be generated in Load
-                    # "pk": 15534,
-                    "status": "R",
-                    "obj_type": "rec",
-                    "pid_type": "recid",
-                },
                 "access": {
                     "owned_by": [{"user": o} for o in data["json"].get("owners", [])]
+                    # TODO: See how we migrate restricted access links. This is
+                    #       different in legacy, where we track links per record version
+                    #       and not on the parent-level.
                 },
             },
         }
-        comms = data.get("communities")
-        if comms:
-            r["communities"] = {
-                "ids": [c for c in comms if c != "zenodo"],
-                "default": comms[0],
-            }
+        # TODO: Enable communities after handling "communities" stream, because we will
+        #       need their PK for inserting entries in `rdm_`
+        # comms = data.get("communities")
+        # if comms:
+        #     r["communities"] = {
+        #         "ids": [c for c in comms if c != "zenodo"],
+        #         "default": comms[0],
+        #     }
         return r
 
     def _record(self, data):
@@ -141,13 +140,6 @@ class RecordTransform:
             "index": data.get("index", 0) + 1,  # in legacy we start at 0
             "json": {
                 "id": str(data["json"]["recid"]),
-                "pid": {
-                    # TODO: Has to be generated in Load
-                    # "pk": 15152,
-                    "status": "R",
-                    "obj_type": "rec",
-                    "pid_type": "recid",
-                },
                 "pids": self._pids(data["json"]),
                 "files": {"enabled": True},
                 "metadata": self._metadata(data["json"]),
@@ -156,7 +148,7 @@ class RecordTransform:
         }
 
     def _draft(self, data):
-        return {}
+        return None
 
     def _files(self, data):
         return [
@@ -187,9 +179,8 @@ class RecordTransform:
                 "draft": self._draft(data),
                 "parent": self._parent(data),
                 # TODO: we should actually have:
-                # "record_files": ...
+                "record_files": self._files(data["json"].get("_files", [])),
                 # "draft_files": ...
-                "files": self._files(data["json"].get("_files", [])),
             },
         }
 
@@ -205,19 +196,34 @@ class Transform:
         return self.stream_transformer().transform(data)
 
 
-class Load:
+def _generate_recid(data):
+    return {
+        "pk": uuid.uuid4().int,
+        "obj_type": "rec",
+        "pid_type": "recid",
+        "status": "R",
+    }
+
+
+class RecordLoad:
 
     PKS = [
         ("record.id", lambda _: str(uuid.uuid4())),
-        ("record.id", lambda _: str(uuid.uuid4())),
-        ("draft.id", lambda _: str(uuid.uuid4())),
+        ("parent.id", lambda _: str(uuid.uuid4())),
+        # ("draft.id", lambda _: str(uuid.uuid4())),
         # TODO: Not sure if this is actually good. We should probably
         #       convert `pidstore_pid.id` to UUID
-        ("record.json.pid.pk", lambda x: uuid.uuid4().int),
-        ("parent.json.pid.pk", lambda x: uuid.uuid4().int),
+        ("record.json.pid", _generate_recid),
+        ("parent.json.pid", _generate_recid),
         # TODO: We also need these:
         # ("record_files[].id", lambda _: str(uuid.uuid4())),
         # ("draft_files[].id", lambda _: str(uuid.uuid4())),
+        ("record.parent_id", lambda d: d["parent"]["id"]),
+        # Record
+        # ("record.bucket_id", lambda x: x),
+        # Draft
+        # ("draft.parent_id", lambda d: d["parent"]["id"]),
+        # ("draft.bucket_id", lambda x: x),
     ]
 
     REFS = [
@@ -277,7 +283,7 @@ class Load:
                 "bucket_id",
                 "parent_id",
                 "expires_at",
-                "fork_verison_id",
+                "fork_version_id",
             ],
         },
         "draft_files": {
@@ -291,6 +297,34 @@ class Load:
                 "key",
                 "record_id",
                 "object_version_id",
+            ],
+        },
+        "version_state": {
+            "table": "rdm_versions_state",
+            "cols": [
+                "latest_index",
+                "parent_id",
+                "latest_id",
+                "next_draft_id",
+            ],
+        },
+        "parents_community": {
+            "table": "rdm_parents_community",
+            "cols": [
+                "community_id",
+                "record_id",
+                "request_id",
+            ],
+        },
+        "pid": {
+            "table": "pidstore_pid",
+            "cols": [
+                "id",
+                "pid_type",
+                "pid_value",
+                "status",
+                "object_type",
+                "object_uuid",
             ],
         },
     }
@@ -315,34 +349,124 @@ class Load:
         for path, pk_func in self.PKS:
             dict_set(data, path, pk_func(data))
 
-    def _copy(self, data):
-        records = [
-            (0, "Jerusalem", 72.2),
-            (1, "New York", 75.6),
-            (2, "Moscow", 54.3),
-        ]
-        conn = psycopg2.connect(database="weather_db")
-        mgr = CopyManager(conn, "measurements_table", cols)
-        mgr.copy(records)
+    def _copy(self, table, tuples):
+        conn = psycopg2.connect(dsn="postgresql://zenodo:zenodo@localhost:5432/zenodo")
+        table_cfg = self.TABLE_MAP[table]
+        mgr = CopyManager(conn, table_cfg["table"], table_cfg["cols"])
+        mgr.copy(tuple)
         conn.commit()
 
-    def _generate_streams(self, data):
-        pass
+    def _generate_db_tuples(self, data):
+        # Record
+        rec = data["record"]
+        pid = rec["json"]["pid"]
+        yield ("records", tuple(rec.get(c) for c in self.TABLE_MAP["record"]["cols"]))
+        # Recid
+        yield (
+            "pid",
+            (
+                pid["pk"],
+                pid["pid_type"],
+                rec["json"]["id"],
+                pid["status"],
+                pid["obj_type"],
+                rec["id"],
+            ),
+        )
+        # DOI
+        if "doi" in rec["json"]["pids"]:
+            yield (
+                "pid",
+                (
+                    uuid.uuid4().int,
+                    "doi",
+                    rec["json"]["pids"]["doi"]["identifier"],
+                    "R",
+                    "rec",
+                    rec["id"],
+                ),
+            )
+        # OAI
+        yield (
+            "pid",
+            (
+                uuid.uuid4().int,
+                "oai",
+                rec["json"]["pids"]["oai"]["identifier"],
+                "R",
+                "rec",
+                rec["id"],
+            ),
+        )
+        # TODO: # Record files
+
+        # TODO: # Draft
+        # TODO: Draft files
+
+        # Parent
+        parent = data["parent"]
+        parent_pid = parent["json"]["pid"]
+        yield ("parent", tuple(parent[c] for c in self.TABLE_MAP["parent"]["cols"]))
+        # Parent Recid
+        yield (
+            "pid",
+            (
+                parent_pid["pk"],
+                parent_pid["pid_type"],
+                parent["json"]["id"],
+                parent_pid["status"],
+                parent_pid["obj_type"],
+                parent["id"],
+            ),
+        )
+
+        # Version state
+        yield (
+            "version_state",
+            (
+                rec["index"],
+                parent["id"],
+                rec["id"],
+                None,
+            ),
+        )
+
+    def load(self, data):
+        TABLE_ORDER = ["pid", "parent", "records", "version_state"]
+        entries = {"records": [], "pid": [], "parent": [], "version_state": []}
+        data = data["data"]
+        self._validate(data)
+        # TODO: We do this in case we want to make an update...
+        # self._resolve_refs(d)
+        self._generate_pks(data)
+        for table, entry in self._generate_db_tuples(data):
+            with open(f"{table}.jsonl", "a") as fp:
+                fp.write(json.dumps(entry))
+                fp.write("\n")
+            # entries[table].append(entry)
+        # for table in TABLE_ORDER:
+        #     print(entries[table])
+
+
+class Load:
+
+    STREAMS = {"record": RecordLoad, "user": None, "community": None}
+
+    def __init__(self, stream):
+        self.stream_loader = self.STREAMS[stream]
 
     def run(self, data):
-        def _gen():
-            for d in data:
-                self._validate(d)
-                # TODO: We do this in case we want to make an update...
-                # self._resolve_refs(d)
-                self._generate_pks(d)
-                yield from self._generate_streams(d)
+        return self.stream_loader().load(data)
 
-        for r in _gen():
-            pass
 
+# NOTE: Usage
+#   gzip -dc records-dump-2022-11-08.jsonl.gz | sed 's/\\\\/\\/g' | python migration/run.py
 
 if __name__ == "__main__":
-    # Load().run()
+
     for l in sys.stdin.buffer:
-        print(Transform(stream="record").run(json.loads(l)))
+        record_transform = Transform(stream="record")
+        record_load = Load(stream="record")
+        transform_result = record_transform.run(json.loads(l))
+        # print("TRANSFORM", transform_result)
+        record_load.run(transform_result)
