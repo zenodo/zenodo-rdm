@@ -1,0 +1,52 @@
+{
+    "stream": "users",
+    "id": 12345,
+    "data": {
+        "base": {
+            "id": 12345,
+            "created": "2022-11-08T15:41:51.438261",
+            "updated": "2022-11-08T15:41:51.438261",
+            "email": "a.ioannidis@cern.ch",
+            "password": "<hash of 123456>",
+        },
+        "profile": {
+            "username": "aioannid",
+            "fullname": "Alex Ioannidis",
+            "affiliations": "CERN",
+        },
+        "tokens": [
+            {
+                "created": "2022-11-08T15:41:51.438261",
+                "updated": "2022-11-08T15:41:51.438261",
+                "id": "641c11c2-3f0b-4de9-9f5d-95e5db8f90c1",
+                "access_token": "929925f7f56c4181805bed318b119170",
+                "type": "personal",
+                "name": "zenodo-read",
+                "scopes": "read-email,read-records"
+            },
+            {
+                "created": "2022-11-08T15:41:51.438261",
+                "updated": "2022-11-08T15:41:51.438261",
+                "id": "543c11c2-3f0b-4de9-9f5d-95e5db8f90c1",
+                "access_token": "9234445f7f56c4181805bed318b119170",
+                "type": "personal",
+                "name": "zenodo-write",
+                "scopes": "full-write"
+            }
+        ],
+        "identities": [
+            {
+                "created": "2022-11-08T15:41:51.438261",
+                "updated": "2022-11-08T15:41:51.438261",
+                "id": "slint",
+                "method": "github",
+            },
+            {
+                "created": "2022-11-08T15:41:51.438261",
+                "updated": "2022-11-08T15:41:51.438261",
+                "id": "0000-0002-5082-6404",
+                "method": "orcid",
+            }
+        ],
+    }
+}

@@ -1,0 +1,192 @@
+// v1.0
+{
+  "stream": "records",
+  "id": "123",
+  "data": {
+    "record": {
+      "created": "2022-10-25 13:18:26.956001",
+      "updated": "2022-10-25 14:26:29.707993",
+      "version_id": 2,
+      "index": 1,
+      "json": {
+        "id": "123",
+        "pid": { "pk": 15152, "status": "R", "obj_type": "rec", "pid_type": "recid" },
+        "pids": {
+          "doi": {
+            "client": "datacite", "provider": "datacite", "identifier": "10.5281/zenodo.123" },
+          "oai": { "provider": "oai", "identifier": "oai:zenodo-rdm.web.cern.ch:123" }
+        },
+        "files": { "enabled": false },
+        "access": {
+          "files": "public",
+          "record": "public",
+          "embargo": {
+            "until": null,
+            "active": false,
+            "reason": null
+          }
+        },
+        "metadata": {
+          "title": "Gene Ontology Data Archive v1.0",
+          "creators": [
+            {
+              "person_or_org": {
+                "type": "personal",
+                "name": "Mungall, Chris",
+                "given_name": "Chris",
+                "family_name": "Mungall",
+                "affiliations": [
+                  { "name": "Lawrence Berkeley National Laboratory" }
+                ],
+                "identifiers": [
+                  { "scheme": "orcid", "identifier": "0000-0002-6601-2165" }
+                ]
+              }
+            },
+            {
+              "person_or_org": {
+                "type": "personal",
+                "name": "Carbon, Seth",
+                "given_name": "Seth",
+                "family_name": "Carbon",
+                "affiliations": [
+                  { "name": "Lawrence Berkeley National Laboratory" }
+                ],
+                "identifiers": [
+                  { "scheme": "orcid", "identifier": "0000-0001-8244-1536" }
+                ]
+              }
+            }
+          ],
+          "description": "<p>Archival bundle of GO data release.</p>",
+          "resource_type": { "id": "dataset" },
+          "publication_date": "2018-07-02",
+          "rights": [ { "id": "cc-by-4.0" } ]
+        },
+        "parent": {
+          "id": "000"
+        }
+      }
+    },
+
+    "draft": {},
+
+    "parent": {
+      "id": "000",
+      "pid": { "pk": 15534, "status": "R", "obj_type": "rec", "pid_type": "recid" },
+      "access": {
+        "links": [],
+        "owned_by": [
+          {"user": 40466}
+        ]
+      },
+      "communities": {
+        "ids": [ "81b6f5b7-5082-47bf-8b4d-4fb66c9c4d58" ],
+        "default": "81b6f5b7-5082-47bf-8b4d-4fb66c9c4d58"
+      }
+    },
+
+    "files": [
+      {
+        "created": "2022-11-08 16:18:51.313497",
+        "updated": "2022-11-08 16:18:51.324319",
+        "version_id": "3",
+        "key": "keyboard-cat.png",
+        "object_version": {
+          "mimetype": "image/png",
+          "file": {
+            "uri": "root://eos/media/zenodo/...",
+            "size": 53356362,
+          }
+        }
+      }
+    ],
+  }
+}
+
+// v2.0
+{
+  "stream": "records",
+  "id": "456",
+  "data": {
+    "record": {
+      "created": "2022-10-25 13:18:26.956001",
+      "updated": "2022-10-25 14:26:29.707993",
+      "version_id": 2,
+      "index": 1,
+      "json": {
+        "id": "456",
+        "pid": { "pk": 15152, "status": "R", "obj_type": "rec", "pid_type": "recid" },
+        "pids": {
+          "doi": {
+            "client": "datacite", "provider": "datacite", "identifier": "10.5281/zenodo.456" },
+          "oai": { "provider": "oai", "identifier": "oai:zenodo-rdm.web.cern.ch:456" }
+        },
+        "files": { "enabled": false },
+        "access": {
+          "files": "public",
+          "record": "public",
+          "embargo": {
+            "until": null,
+            "active": false,
+            "reason": null
+          }
+        },
+        "metadata": {
+          "title": "Gene Ontology Data Archive v2.0",
+          "creators": [
+            {
+              "person_or_org": {
+                "type": "personal",
+                "name": "Mungall, Chris",
+                "given_name": "Chris",
+                "family_name": "Mungall",
+                "affiliations": [
+                  { "name": "Lawrence Berkeley National Laboratory" }
+                ],
+                "identifiers": [
+                  { "scheme": "orcid", "identifier": "0000-0002-6601-2165" }
+                ]
+              }
+            },
+            {
+              "person_or_org": {
+                "type": "personal",
+                "name": "Carbon, Seth",
+                "given_name": "Seth",
+                "family_name": "Carbon",
+                "affiliations": [
+                  { "name": "Lawrence Berkeley National Laboratory" }
+                ],
+                "identifiers": [
+                  { "scheme": "orcid", "identifier": "0000-0001-8244-1536" }
+                ]
+              }
+            }
+          ],
+          "description": "<p>Archival bundle of GO data release.</p>",
+          "resource_type": { "id": "dataset" },
+          "publication_date": "2018-07-02",
+          "rights": [ { "id": "cc-by-4.0" } ]
+        }
+      }
+    },
+
+    "draft": {},
+
+    "parent": {
+      "id": "000",
+      "pid": { "pk": 15534, "status": "R", "obj_type": "rec", "pid_type": "recid" },
+      "access": {
+        "links": [],
+        "owned_by": [
+          {"user": 40466}
+        ]
+      },
+      "communities": {
+        "ids": [ "81b6f5b7-5082-47bf-8b4d-4fb66c9c4d58" ],
+        "default": "81b6f5b7-5082-47bf-8b4d-4fb66c9c4d58"
+      }
+    },
+  }
+}

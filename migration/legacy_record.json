@@ -1,0 +1,67 @@
+{
+  "created": "2016-11-17T14:47:27.034938",
+  "updated": "2020-01-21T07:22:49.981342",
+  "id": "5bc67852-0d67-4ad8-ac44-2ec56c4a8153",
+  "json": {
+    "doi": "10.5281/zenodo.167280",
+    "_oai": {
+      "id": "oai:zenodo.org:167280",
+      "sets": [
+        "openaire_data",
+        "user-hulib",
+        "user-zenodo"
+      ],
+      "updated": "2020-01-21T07:22:49Z"
+    },
+    "recid": 167280,
+    "title": "Exit poll survey data from users of  Helsinki University Library",
+    "_files": [
+      {
+        "key": "ovensuukyselyt.csv",
+        "size": 208046,
+        "type": "csv",
+        "bucket": "e3997142-84d5-4179-87fe-3e22cbf2b6f2",
+        "file_id": "bb6418a0-aa24-4199-b8df-8f420bf946bf",
+        "checksum": "md5:0257bed438382c47fdc5741771e0e01b",
+        "version_id": "8aa190a7-529c-4fc1-b729-2bc1e210c992"
+      }
+    ],
+    "owners": [
+      596
+    ],
+    "license": {
+      "$ref": "https://dx.zenodo.org/licenses/CC-BY-4.0"
+    },
+    "_deposit": {
+      "id": "167280",
+      "pid": {
+        "type": "recid",
+        "value": "167280",
+        "revision_id": 2
+      },
+      "owners": [
+        596
+      ],
+      "status": "published",
+      "created_by": 596
+    },
+    "creators": [
+      {
+        "name": "Helsinki University Library"
+      }
+    ],
+    "communities": [
+      "hulib",
+      "zenodo"
+    ],
+    "description": "<p>Survey data from exit poll user surveys at five Helsinki University Library locations collected from 2015 to 2016. Patrons coming out the library premises were asked about their user category (student at the University of Helsinki, researcher or lecturer, student at another institution, other library user) and the reason for their library visit. Also the duration of the visit was noted and wether they needed help during their stay at the library. The file contains 3084 rows of tabular data in CSV format. The language is Finnish.</p>",
+    "access_right": "open",
+    "conceptrecid": "664875",
+    "resource_type": {
+      "type": "dataset"
+    },
+    "publication_date": "2016-11-17"
+  },
+  "version_id": 10,
+  "index": 0
+}
