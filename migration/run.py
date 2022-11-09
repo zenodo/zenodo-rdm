@@ -2,7 +2,8 @@ import json
 import sys
 from nameparser import HumanName
 import uuid
-from pgcopy import CopyManager
+
+# from pgcopy import CopyManager
 import psycopg2
 from invenio_records.dictutils import dict_set, dict_lookup
 
@@ -35,7 +36,7 @@ class Extract:
         pass
 
 
-class Transform:
+class RecordTransform:
     def _creators(self, data):
         ret = []
         for c in data:
@@ -95,7 +96,7 @@ class Transform:
                 "identifier": data["_oai"]["id"],
             },
         }
-        if data.get('doi'):
+        if data.get("doi"):
             r["doi"] = {
                 "client": "datacite",
                 "provider": "datacite",
@@ -177,10 +178,10 @@ class Transform:
         draft_revision_id = None
         return (recid, record_revision_id, draft_revision_id)
 
-    def run(self, data):
+    def transform(self, data):
         return {
             "stream": "records",
-            "id": self._id(data),
+            "id": self._id(data),  # unique stream id used for check a stream status
             "data": {
                 "record": self._record(data),
                 "draft": self._draft(data),
@@ -191,6 +192,17 @@ class Transform:
                 "files": self._files(data["json"].get("_files", [])),
             },
         }
+
+
+class Transform:
+
+    STREAMS = {"record": RecordTransform, "user": None, "community": None}
+
+    def __init__(self, stream):
+        self.stream_transformer = self.STREAMS[stream]
+
+    def run(self, data):
+        return self.stream_transformer().transform(data)
 
 
 class Load:
@@ -220,36 +232,65 @@ class Load:
         "parent": {
             "table": "rdm_parents_metadata",
             "cols": [
-                "id", "json", "created", "updated", "version_id",
+                "id",
+                "json",
+                "created",
+                "updated",
+                "version_id",
             ],
         },
         "record": {
             "table": "rdm_records_metadata",
             "cols": [
-                "id", "json", "created", "updated", "version_id",
-                "index", "bucket_id", "parent_id",
+                "id",
+                "json",
+                "created",
+                "updated",
+                "version_id",
+                "index",
+                "bucket_id",
+                "parent_id",
             ],
         },
         "record_files": {
             "table": "rdm_records_files",
             "cols": [
-                "id", "json", "created", "updated", "version_id",
-                "key", "record_id", "object_version_id",
+                "id",
+                "json",
+                "created",
+                "updated",
+                "version_id",
+                "key",
+                "record_id",
+                "object_version_id",
             ],
         },
         "draft": {
             "table": "rdm_drafts_metadata",
             "cols": [
-                "id", "json", "created", "updated", "version_id",
-                "index", "bucket_id", "parent_id",
-                "expires_at", "fork_verison_id",
+                "id",
+                "json",
+                "created",
+                "updated",
+                "version_id",
+                "index",
+                "bucket_id",
+                "parent_id",
+                "expires_at",
+                "fork_verison_id",
             ],
         },
         "draft_files": {
             "table": "rdm_records_files",
             "cols": [
-                "id", "json", "created", "updated", "version_id",
-                "key", "record_id", "object_version_id",
+                "id",
+                "json",
+                "created",
+                "updated",
+                "version_id",
+                "key",
+                "record_id",
+                "object_version_id",
             ],
         },
     }
@@ -274,15 +315,14 @@ class Load:
         for path, pk_func in self.PKS:
             dict_set(data, path, pk_func(data))
 
-
     def _copy(self, data):
         records = [
-                (0, 'Jerusalem', 72.2),
-                (1, 'New York', 75.6),
-                (2, 'Moscow', 54.3),
-            ]
-        conn = psycopg2.connect(database='weather_db')
-        mgr = CopyManager(conn, 'measurements_table', cols)
+            (0, "Jerusalem", 72.2),
+            (1, "New York", 75.6),
+            (2, "Moscow", 54.3),
+        ]
+        conn = psycopg2.connect(database="weather_db")
+        mgr = CopyManager(conn, "measurements_table", cols)
         mgr.copy(records)
         conn.commit()
 
@@ -290,7 +330,6 @@ class Load:
         pass
 
     def run(self, data):
-
         def _gen():
             for d in data:
                 self._validate(d)
@@ -306,4 +345,4 @@ class Load:
 if __name__ == "__main__":
     # Load().run()
     for l in sys.stdin.buffer:
-        print(Transform().run(json.loads(l)))
+        print(Transform(stream="record").run(json.loads(l)))
