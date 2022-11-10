@@ -47,3 +47,9 @@ a.inverted {
 .ui.primary.header {
   color: @primaryColor !important;
 }
+
+#rdm-footer-element {
+  a {
+    color: @footerTextDarkColor;
+  }
+}
