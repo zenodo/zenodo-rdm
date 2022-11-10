@@ -1,11 +1,13 @@
 import json
-import sys
-from nameparser import HumanName
 import uuid
+import sys
+from datetime import datetime
+import random
 
-# from pgcopy import CopyManager
-# import psycopg2
 from invenio_records.dictutils import dict_set, dict_lookup
+import psycopg
+from psycopg.types.json import Jsonb
+from nameparser import HumanName
 
 
 EXTRACT_RECORDS_SQL = """
@@ -198,26 +200,30 @@ class Transform:
 
 def _generate_recid(data):
     return {
-        "pk": uuid.uuid4().int,
+        "pk": random.randint(0, 2147483647 - 1),
         "obj_type": "rec",
         "pid_type": "recid",
         "status": "R",
     }
 
 
+# NOTE: We need this to keep track of what Parent IDs we've already inserted in the
+#       PIDs table.
+SEEN_PARENT_IDS = set()
+
 class RecordLoad:
 
     PKS = [
-        ("record.id", lambda _: str(uuid.uuid4())),
-        ("parent.id", lambda _: str(uuid.uuid4())),
-        # ("draft.id", lambda _: str(uuid.uuid4())),
+        ("record.id", lambda _: uuid.uuid4()),
+        ("parent.id", lambda _: uuid.uuid4()),
+        # ("draft.id", lambda _: uuid.uuid4()),
         # TODO: Not sure if this is actually good. We should probably
         #       convert `pidstore_pid.id` to UUID
         ("record.json.pid", _generate_recid),
         ("parent.json.pid", _generate_recid),
         # TODO: We also need these:
-        # ("record_files[].id", lambda _: str(uuid.uuid4())),
-        # ("draft_files[].id", lambda _: str(uuid.uuid4())),
+        # ("record_files[].id", lambda _: uuid.uuid4()),
+        # ("draft_files[].id", lambda _: uuid.uuid4()),
         ("record.parent_id", lambda d: d["parent"]["id"]),
         # Record
         # ("record.bucket_id", lambda x: x),
@@ -325,6 +331,8 @@ class RecordLoad:
                 "status",
                 "object_type",
                 "object_uuid",
+                "created",
+                "updated",
             ],
         },
     }
@@ -349,18 +357,34 @@ class RecordLoad:
         for path, pk_func in self.PKS:
             dict_set(data, path, pk_func(data))
 
-    def _copy(self, table, tuples):
-        conn = psycopg2.connect(dsn="postgresql://zenodo:zenodo@localhost:5432/zenodo")
+    def _copy(self, conn, table, tuples):
         table_cfg = self.TABLE_MAP[table]
-        mgr = CopyManager(conn, table_cfg["table"], table_cfg["cols"])
-        mgr.copy(tuple)
+        name = table_cfg["table"]
+        cols = table_cfg["cols"]
+        with conn.cursor() as cur:
+            with cur.copy(f"COPY {name} ({', '.join(cols)}) FROM STDIN") as copy:
+                for row in tuples:
+                    copy.write_row(row)
         conn.commit()
 
     def _generate_db_tuples(self, data):
+        now = datetime.utcnow()
         # Record
         rec = data["record"]
         pid = rec["json"]["pid"]
-        yield ("records", tuple(rec.get(c) for c in self.TABLE_MAP["record"]["cols"]))
+        yield (
+            "record",
+            (
+                rec["id"],
+                Jsonb(rec["json"]),
+                rec["created"],
+                rec["updated"],
+                rec["version_id"],
+                rec["index"],
+                rec.get("bucket_id"),
+                rec["parent_id"],
+            )
+        )
         # Recid
         yield (
             "pid",
@@ -371,6 +395,8 @@ class RecordLoad:
                 pid["status"],
                 pid["obj_type"],
                 rec["id"],
+                now,
+                now,
             ),
         )
         # DOI
@@ -378,24 +404,28 @@ class RecordLoad:
             yield (
                 "pid",
                 (
-                    uuid.uuid4().int,
+                    random.randint(0, 2147483647 - 1),
                     "doi",
                     rec["json"]["pids"]["doi"]["identifier"],
                     "R",
                     "rec",
                     rec["id"],
+                    now,
+                    now,
                 ),
             )
         # OAI
         yield (
             "pid",
             (
-                uuid.uuid4().int,
+                random.randint(0, 2147483647 - 1),
                 "oai",
                 rec["json"]["pids"]["oai"]["identifier"],
                 "R",
                 "rec",
                 rec["id"],
+                now,
+                now,
             ),
         )
         # TODO: # Record files
@@ -406,46 +436,59 @@ class RecordLoad:
         # Parent
         parent = data["parent"]
         parent_pid = parent["json"]["pid"]
-        yield ("parent", tuple(parent[c] for c in self.TABLE_MAP["parent"]["cols"]))
+        yield (
+            "parent",
+            (
+                parent["id"],
+                Jsonb(parent["json"]),
+                parent["created"],
+                parent["updated"],
+                parent["version_id"],
+            )
+        )
         # Parent Recid
-        yield (
-            "pid",
-            (
-                parent_pid["pk"],
-                parent_pid["pid_type"],
-                parent["json"]["id"],
-                parent_pid["status"],
-                parent_pid["obj_type"],
-                parent["id"],
-            ),
-        )
-
-        # Version state
-        yield (
-            "version_state",
-            (
-                rec["index"],
-                parent["id"],
-                rec["id"],
-                None,
-            ),
-        )
+        if parent["json"]["id"] not in SEEN_PARENT_IDS:
+            SEEN_PARENT_IDS.add(parent["json"]["id"])
+            yield (
+                "pid",
+                (
+                    parent_pid["pk"],
+                    parent_pid["pid_type"],
+                    parent["json"]["id"],
+                    parent_pid["status"],
+                    parent_pid["obj_type"],
+                    parent["id"],
+                    now,
+                    now,
+                ),
+            )
+            # Version state
+            yield (
+                "version_state",
+                (
+                    rec["index"],
+                    parent["id"],
+                    rec["id"],
+                    None,
+                ),
+            )
 
     def load(self, data):
-        TABLE_ORDER = ["pid", "parent", "records", "version_state"]
-        entries = {"records": [], "pid": [], "parent": [], "version_state": []}
+        TABLE_ORDER = ["pid", "parent", "record", "version_state"]
+        entries = {"record": [], "pid": [], "parent": [], "version_state": []}
         data = data["data"]
         self._validate(data)
         # TODO: We do this in case we want to make an update...
         # self._resolve_refs(d)
         self._generate_pks(data)
         for table, entry in self._generate_db_tuples(data):
-            with open(f"{table}.jsonl", "a") as fp:
-                fp.write(json.dumps(entry))
-                fp.write("\n")
-            # entries[table].append(entry)
-        # for table in TABLE_ORDER:
-        #     print(entries[table])
+            # with open(f"{table}.jsonl", "a") as fp:
+            #     fp.write(json.dumps(entry))
+            #     fp.write("\n")
+            entries[table].append(entry)
+        with psycopg.connect("postgresql://zenodo:zenodo@localhost:5432/zenodo") as conn:
+            for table in TABLE_ORDER:
+                self._copy(conn, table, entries[table])
 
 
 class Load:
@@ -460,13 +503,16 @@ class Load:
 
 
 # NOTE: Usage
-#   gzip -dc records-dump-2022-11-08.jsonl.gz | sed 's/\\\\/\\/g' | python migration/run.py
+#   gzip -dc records-dump-2022-11-08.jsonl.gz | head | sed 's/\\\\/\\/g' | python migration/run.py
 
 if __name__ == "__main__":
-
-    for l in sys.stdin.buffer:
+    for idx, l in enumerate(sys.stdin.buffer):
+        if idx % 100 == 0:
+            print(datetime.now().isoformat(), idx)
         record_transform = Transform(stream="record")
         record_load = Load(stream="record")
         transform_result = record_transform.run(json.loads(l))
-        # print("TRANSFORM", transform_result)
-        record_load.run(transform_result)
+
+    # Write everything now:
+
+    record_load.run(transform_result)
