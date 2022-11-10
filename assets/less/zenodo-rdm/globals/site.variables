@@ -19,7 +19,7 @@
 // Footer colors
 @footerLightColor: #0067c9;
 @footerDarkColor: #0047a8;
-@footerTextLightColor: #c9e5ff;
+@footerTextDarkColor: #c9e5ff;
 
 
 // Font weights
