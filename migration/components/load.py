@@ -56,27 +56,28 @@ class RecordLoad:
         # ("draft.bucket_id", lambda x: x),
     ]
 
-    REFS = [
-        ("record.json.id", lambda x: x),
-        ("parent.json.id", lambda x: x),
-        ("record.json.pid.pk", lambda x: x),
-        ("parent.json.pid.pk", lambda x: x),
-        ("draft.id", lambda x: x),
-    ]
+    # REFS = [
+    #     ("record.json.id", lambda x: x),
+    #     ("parent.json.id", lambda x: x),
+    #     ("record.json.pid.pk", lambda x: x),
+    #     ("parent.json.pid.pk", lambda x: x),
+    #     ("draft.id", lambda x: x),
+    # ]
 
     def _validate(self, data):
         # TODO: JSONSchema + marshmallow?
-        return DataSchema().validate(data)
+        # return DataSchema().validate(data)
+        return True
 
-    def _resolve_refs(self, data):
-        # TODO: This is need only for updates (i.e. we lookup if something
-        #       has already been inserted in the system).
-        for path, resolve_func in self.REFS:
-            try:
-                value = dict_lookup(data, path)
-                resolve_func(value, data)
-            except KeyError:
-                pass
+    # def _resolve_refs(self, data):
+    #     # TODO: This is need only for updates (i.e. we lookup if something
+    #     #       has already been inserted in the system).
+    #     for path, resolve_func in self.REFS:
+    #         try:
+    #             value = dict_lookup(data, path)
+    #             resolve_func(value, data)
+    #         except KeyError:
+    #             pass
 
     def _generate_pks(self, data):
         # TODO: Generating PKs also means we have to make sure the referenced
@@ -208,8 +209,8 @@ class RecordLoad:
             # self._resolve_refs(d)
             self._generate_pks(data)
             for table, entry in self._generate_db_tuples(data):
-                # with open(f"migration/tables/{table}.jsonl", "a") as fp:
-                #     fp.write(json.dumps(entry))
+                # with open(f"migration/tables/{table}.csv", "a") as fp:
+                #     fp.write(",".join(json.dumps(entry)))
                 #     fp.write("\n")
                 entries[table].append(entry)
             with psycopg.connect(
@@ -344,6 +345,7 @@ class Load:
     def run(self, data):
         return self.stream_loader(
             self.TABLE_MAP[self.stream],
-            is_db_empty=self.is_db_empty(),
+            is_db_empty=True,
+            # is_db_empty=self.is_db_empty(),
             parent_cache=self.parent_cache,
         ).load(data)

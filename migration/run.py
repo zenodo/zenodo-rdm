@@ -44,11 +44,15 @@ SEEN_PARENT_IDS = set()
 if __name__ == "__main__":
     record_load = Load(stream="record", parent_cache=SEEN_PARENT_IDS)
     record_transform = Transform(stream="record")
+    start_time = datetime.now().isoformat()
+    print(f"Started workflow {start_time}")
     for idx, l in enumerate(sys.stdin.buffer):
         if idx % 100 == 0:
             print(datetime.now().isoformat(), idx)
         transform_result = record_transform.run(json.loads(l))
-        print(transform_result)
+        print(idx, transform_result)
 
-        # Write everything now:
+        # Write each result in csv tables:
         record_load.run(transform_result)
+    end_time = datetime.now().isoformat()
+    print(f"Ended workflow {end_time}")

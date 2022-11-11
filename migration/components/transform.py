@@ -164,5 +164,6 @@ class Transform:
         result = self.stream_transformer().transform(data)
         # the payload is validated in the Loader
         # maybe here is a nice-to-have for avoiding surprises
-        RecordStreamSchema().validate(result)
+        # TODO the schema should not need an
+        # RecordStreamSchema().validate(result)
         return result

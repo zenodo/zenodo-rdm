@@ -1,21 +1,56 @@
-from marshmallow import Schema, fields, INCLUDE
-from invenio_rdm_records.services.schemas import RDMRecordSchema, RDMParentSchema
+from marshmallow import Schema, fields, INCLUDE, validate
+from invenio_rdm_records.services.schemas import (
+    RDMRecordSchema,
+    RDMParentSchema,
+    FilesSchema,
+    AccessSchema,
+)
+from invenio_rdm_records.services.schemas.metadata import (
+    CreatorSchema,
+    PersonOrOrganizationSchema,
+)
 from datetime import datetime, timezone
-from marshmallow_utils.fields import Links, TZDateTime
+from marshmallow_utils.fields import (
+    EDTFDateString,
+    SanitizedUnicode,
+    SanitizedHTML,
+    TZDateTime,
+)
+from invenio_vocabularies.services.schema import (
+    VocabularyRelationSchema as VocabularySchema,
+)
 
 
-class RDMRecord(RDMRecordSchema):
+class PersonOrOrg(PersonOrOrganizationSchema):
+    # TODO proper validate -> requires app_context
+    identifiers = fields.Dict()
 
+
+class Creator(CreatorSchema):
+    person_or_org = fields.Nested(PersonOrOrg, required=True)
+
+
+class MetadataSchema(Schema):
+
+    resource_type = fields.Nested(VocabularySchema, required=True)
+    creators = fields.List(
+        fields.Nested(Creator),
+        required=True,
+        validate=validate.Length(min=1, error="Missing data for required field."),
+    )
+    title = SanitizedUnicode(required=True, validate=validate.Length(min=3))
+    description = SanitizedHTML(validate=validate.Length(min=3))
+    publication_date = EDTFDateString(required=True)
+
+
+class RDMRecord(Schema):
+
+    id = fields.Int(required=True)
+    # TODO proper validate -> requires app_context
     pids = fields.Dict()
-
-
-class ParentSchema(Schema):
-
-    created = TZDateTime(timezone=timezone.utc, format="iso")
-    updated = TZDateTime(timezone=timezone.utc, format="iso")
-    version_id = fields.Int(required=True)
-    id = (fields.Str(required=True),)
-    json = fields.Nested(RDMParentSchema)
+    files = fields.Nested(FilesSchema)
+    metadata = fields.Nested(MetadataSchema)
+    access = fields.Nested(AccessSchema)
 
 
 class RecordSchema(Schema):
@@ -25,6 +60,15 @@ class RecordSchema(Schema):
     version_id = fields.Int(required=True)
     index = fields.Int(required=True)
     json = fields.Nested(RDMRecord)
+
+
+class ParentSchema(Schema):
+
+    created = TZDateTime(timezone=timezone.utc, format="iso")
+    updated = TZDateTime(timezone=timezone.utc, format="iso")
+    version_id = fields.Int(required=True)
+    id = (fields.Str(required=True),)
+    json = fields.Nested(RDMParentSchema)
 
 
 class DataSchema(Schema):
