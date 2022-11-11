@@ -34,18 +34,21 @@ class Extract:
         pass
 
 
+# NOTE: We need this to keep track of what Parent IDs we've already inserted in the
+#       PIDs table.
+SEEN_PARENT_IDS = set()
+
 # NOTE: Usage
 #   gzip -dc records-dump-2022-11-08.jsonl.gz | head | sed 's/\\\\/\\/g' | python migration/run.py
 
 if __name__ == "__main__":
+    record_load = Load(stream="record", parent_cache=SEEN_PARENT_IDS)
+    record_transform = Transform(stream="record")
     for idx, l in enumerate(sys.stdin.buffer):
         if idx % 100 == 0:
             print(datetime.now().isoformat(), idx)
-        record_transform = Transform(stream="record")
-        record_load = Load(stream="record")
         transform_result = record_transform.run(json.loads(l))
         print(transform_result)
 
-    # Write everything now:
-
-    record_load.run(transform_result)
+        # Write everything now:
+        record_load.run(transform_result)

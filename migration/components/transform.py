@@ -38,8 +38,10 @@ class RecordTransform:
             "resource_type": self._resource_type(data["resource_type"]),
             "creators": self._creators(data["creators"]),
         }
-        if data.get("license"):
-            r["rights"] = self._rights(data["license"])
+
+        # TODO: check if license exists or create as custom
+        # if data.get("license"):
+        #     r["rights"] = self._rights(data["license"])
         return r
 
     def _access(self, data):
@@ -138,7 +140,7 @@ class RecordTransform:
 
     def transform(self, data):
         return {
-            "stream": "records",
+            "stream": "record",
             "id": self._id(data),  # unique stream id used for check a stream status
             "data": {
                 "record": self._record(data),
