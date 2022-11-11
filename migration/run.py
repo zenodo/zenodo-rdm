@@ -40,6 +40,7 @@ SEEN_PARENT_IDS = set()
 
 # NOTE: Usage
 #   gzip -dc records-dump-2022-11-08.jsonl.gz | head | sed 's/\\\\/\\/g' | python migration/run.py
+# cat single-record.jsonl | sed 's/\\\\/\\/g' | python migration/run.py
 
 if __name__ == "__main__":
     record_load = Load(stream="record", parent_cache=SEEN_PARENT_IDS)

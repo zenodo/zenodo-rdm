@@ -217,7 +217,10 @@ class RecordLoad:
                 "postgresql://zenodo:zenodo@localhost:5432/zenodo"
             ) as conn:
                 for table in self.TABLE_MAP["order"]:
-                    self._copy(conn, table, entries[table])
+                    try:
+                        self._copy(conn, table, entries[table])
+                    except Exception as e:
+                        print("ERROR!", e)
 
 
 class Load:

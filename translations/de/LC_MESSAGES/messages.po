@@ -1,0 +1,169 @@
+# German translations for PROJECT.
+# Copyright (C) 2022 CERN
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: info@zenodo.org\n"
+"POT-Creation-Date: 2022-11-11 14:07+0100\n"
+"PO-Revision-Date: 2022-11-11 14:10+0100\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: de\n"
+"Language-Team: de <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.11.0\n"
+
+#: /Users/ppanero/Workspace/zenodo/zenodo-rdm/invenio.cfg:88
+msgid "Turkish"
+msgstr ""
+
+#: /Users/ppanero/Workspace/zenodo/zenodo-rdm/templates/semantic-ui/invenio_accounts/login_user.html:11
+msgid "Log in to account"
+msgstr ""
+
+#: /Users/ppanero/Workspace/zenodo/zenodo-rdm/templates/semantic-ui/invenio_accounts/login_user.html:28
+#: /Users/ppanero/Workspace/zenodo/zenodo-rdm/templates/semantic-ui/invenio_accounts/register_user.html:58
+msgid "Log in"
+msgstr ""
+
+#: /Users/ppanero/Workspace/zenodo/zenodo-rdm/templates/semantic-ui/invenio_accounts/login_user.html:40
+#, python-format
+msgid ""
+"\n"
+"                New to %(sitename)s?\n"
+"              "
+msgstr ""
+
+#: /Users/ppanero/Workspace/zenodo/zenodo-rdm/templates/semantic-ui/invenio_accounts/login_user.html:43
+#: /Users/ppanero/Workspace/zenodo/zenodo-rdm/templates/semantic-ui/invenio_accounts/register_user.html:51
+msgid "Sign up"
+msgstr ""
+
+#: /Users/ppanero/Workspace/zenodo/zenodo-rdm/templates/semantic-ui/invenio_accounts/login_user.html:53
+msgid "Forgot password?"
+msgstr ""
+
+#: /Users/ppanero/Workspace/zenodo/zenodo-rdm/templates/semantic-ui/invenio_accounts/register_user.html:57
+msgid "Already have an account?"
+msgstr ""
+
+#: /Users/ppanero/Workspace/zenodo/zenodo-rdm/templates/semantic-ui/invenio_communities/frontpage.html:23
+msgid "Communities"
+msgstr ""
+
+#: /Users/ppanero/Workspace/zenodo/zenodo-rdm/templates/semantic-ui/invenio_communities/frontpage.html:35
+msgid "Search communities"
+msgstr ""
+
+#: /Users/ppanero/Workspace/zenodo/zenodo-rdm/templates/semantic-ui/invenio_communities/frontpage.html:43
+#: /Users/ppanero/Workspace/zenodo/zenodo-rdm/templates/semantic-ui/invenio_communities/frontpage.html:84
+msgid "New community"
+msgstr ""
+
+#: /Users/ppanero/Workspace/zenodo/zenodo-rdm/templates/semantic-ui/invenio_communities/frontpage.html:55
+msgid "New communities"
+msgstr ""
+
+#: /Users/ppanero/Workspace/zenodo/zenodo-rdm/templates/semantic-ui/invenio_communities/frontpage.html:57
+msgid "See all"
+msgstr ""
+
+#: /Users/ppanero/Workspace/zenodo/zenodo-rdm/templates/semantic-ui/zenodo_rdm/footer.html:30
+#: /Users/ppanero/Workspace/zenodo/zenodo-rdm/templates/semantic-ui/zenodo_rdm/footer.html:32
+msgid "About"
+msgstr ""
+
+#: /Users/ppanero/Workspace/zenodo/zenodo-rdm/templates/semantic-ui/zenodo_rdm/footer.html:33
+msgid "Policies"
+msgstr ""
+
+#: /Users/ppanero/Workspace/zenodo/zenodo-rdm/templates/semantic-ui/zenodo_rdm/footer.html:34
+msgid "Infrastructure"
+msgstr ""
+
+#: /Users/ppanero/Workspace/zenodo/zenodo-rdm/templates/semantic-ui/zenodo_rdm/footer.html:35
+msgid "Principles"
+msgstr ""
+
+#: /Users/ppanero/Workspace/zenodo/zenodo-rdm/templates/semantic-ui/zenodo_rdm/footer.html:36
+msgid "Contact"
+msgstr ""
+
+#: /Users/ppanero/Workspace/zenodo/zenodo-rdm/templates/semantic-ui/zenodo_rdm/footer.html:40
+#: /Users/ppanero/Workspace/zenodo/zenodo-rdm/templates/semantic-ui/zenodo_rdm/footer.html:42
+msgid "Blog"
+msgstr ""
+
+#: /Users/ppanero/Workspace/zenodo/zenodo-rdm/templates/semantic-ui/zenodo_rdm/footer.html:46
+msgid "Help"
+msgstr ""
+
+#: /Users/ppanero/Workspace/zenodo/zenodo-rdm/templates/semantic-ui/zenodo_rdm/footer.html:48
+msgid "FAQ"
+msgstr ""
+
+#: /Users/ppanero/Workspace/zenodo/zenodo-rdm/templates/semantic-ui/zenodo_rdm/footer.html:49
+msgid "Features"
+msgstr ""
+
+#: /Users/ppanero/Workspace/zenodo/zenodo-rdm/templates/semantic-ui/zenodo_rdm/footer.html:50
+msgid "What's New"
+msgstr ""
+
+#: /Users/ppanero/Workspace/zenodo/zenodo-rdm/templates/semantic-ui/zenodo_rdm/footer.html:54
+msgid "Developers"
+msgstr ""
+
+#: /Users/ppanero/Workspace/zenodo/zenodo-rdm/templates/semantic-ui/zenodo_rdm/footer.html:56
+msgid "REST API"
+msgstr ""
+
+#: /Users/ppanero/Workspace/zenodo/zenodo-rdm/templates/semantic-ui/zenodo_rdm/footer.html:57
+msgid "OAI-PMH"
+msgstr ""
+
+#: /Users/ppanero/Workspace/zenodo/zenodo-rdm/templates/semantic-ui/zenodo_rdm/footer.html:61
+msgid "Contribute"
+msgstr ""
+
+#: /Users/ppanero/Workspace/zenodo/zenodo-rdm/templates/semantic-ui/zenodo_rdm/footer.html:63
+msgid "GitHub"
+msgstr ""
+
+#: /Users/ppanero/Workspace/zenodo/zenodo-rdm/templates/semantic-ui/zenodo_rdm/footer.html:64
+msgid "Donate"
+msgstr ""
+
+#: /Users/ppanero/Workspace/zenodo/zenodo-rdm/templates/semantic-ui/zenodo_rdm/footer.html:70
+msgid "Funded by"
+msgstr ""
+
+#: /Users/ppanero/Workspace/zenodo/zenodo-rdm/templates/semantic-ui/zenodo_rdm/footer.html:94
+msgid "Status"
+msgstr ""
+
+#: /Users/ppanero/Workspace/zenodo/zenodo-rdm/templates/semantic-ui/zenodo_rdm/footer.html:95
+msgid "Privacy policy"
+msgstr ""
+
+#: /Users/ppanero/Workspace/zenodo/zenodo-rdm/templates/semantic-ui/zenodo_rdm/footer.html:96
+msgid "Terms of Use"
+msgstr ""
+
+#: /Users/ppanero/Workspace/zenodo/zenodo-rdm/templates/semantic-ui/zenodo_rdm/footer.html:97
+msgid "Support"
+msgstr ""
+
+#: /Users/ppanero/Workspace/zenodo/zenodo-rdm/templates/semantic-ui/zenodo_rdm/frontpage.html:33
+msgid "Need help?"
+msgstr ""
+
+#: /Users/ppanero/Workspace/zenodo/zenodo-rdm/templates/semantic-ui/zenodo_rdm/frontpage.html:50
+msgid "Why use Zenodo?"
+msgstr ""
+

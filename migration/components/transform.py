@@ -16,6 +16,8 @@ class RecordTransform:
             name = HumanName(c["name"])
             r["person_or_org"]["given_name"] = name.first
             r["person_or_org"]["family_name"] = name.surnames
+            # autocompleted by RDM Metadata schema
+            r["person_or_org"]["name"] = f"{name.surnames}, {name.first}"
 
             ret.append(r)
         return ret
@@ -97,6 +99,7 @@ class RecordTransform:
         #         "ids": [c for c in comms if c != "zenodo"],
         #         "default": comms[0],
         #     }
+        r["json"]["communities"] = {}
         return r
 
     def _record(self, data):
