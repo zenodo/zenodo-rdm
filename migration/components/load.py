@@ -99,6 +99,8 @@ class RecordLoad:
         # Record
         rec = data["record"]
         pid = rec["json"]["pid"]
+        parent = data["parent"]
+        rec_parent_id = self.parent_cache.get(parent["json"]["id"], rec["parent_id"])
         yield (
             "record",
             (
@@ -109,7 +111,7 @@ class RecordLoad:
                 rec["version_id"],
                 rec["index"],
                 rec.get("bucket_id"),
-                rec["parent_id"],
+                rec_parent_id,
             ),
         )
         # Recid
@@ -163,7 +165,7 @@ class RecordLoad:
         # Parent
         parent = data["parent"]
         if parent["json"]["id"] not in self.parent_cache:
-            self.parent_cache.add(parent["json"]["id"])
+            self.parent_cache[parent["json"]["id"]] = parent["id"]
             parent_pid = parent["json"]["pid"]
             yield (
                 "parent",
@@ -216,11 +218,14 @@ class RecordLoad:
             with psycopg.connect(
                 "postgresql://zenodo:zenodo@localhost:5432/zenodo"
             ) as conn:
-                for table in self.TABLE_MAP["order"]:
-                    try:
+                try:
+                    for table in self.TABLE_MAP["order"]:
                         self._copy(conn, table, entries[table])
-                    except Exception as e:
-                        print("ERROR!", e)
+                except:
+                    print(list(self.parent_cache))
+                    print(f"parent pid object_uuid: {entries['pid'][0]}")
+                    print(f"parent id: {entries['parent'][0]}")
+                    print(f"record parent_id: {entries['record'][-1]}")
 
 
 class Load:

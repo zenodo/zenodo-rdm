@@ -36,7 +36,7 @@ class Extract:
 
 # NOTE: We need this to keep track of what Parent IDs we've already inserted in the
 #       PIDs table.
-SEEN_PARENT_IDS = set()
+SEEN_PARENT_IDS = dict()
 
 # NOTE: Usage
 #   gzip -dc records-dump-2022-11-08.jsonl.gz | head | sed 's/\\\\/\\/g' | python migration/run.py
