@@ -7,7 +7,7 @@
 {%- set user = current_user.is_authenticated and current_user %}
 {%- set userData = user and { 'email': user.email, 'full_name': user.user_profile.full_name }%}
 
-{% block first_section %}
+{% block grid_section %}
     <div id="contact-page" class="ui one column grid container p-15">
         <div class="row">
             <div class="column">
