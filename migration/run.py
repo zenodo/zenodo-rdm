@@ -36,14 +36,25 @@ class Extract:
 
 # NOTE: We need this to keep track of what Parent IDs we've already inserted in the
 #       PIDs table.
-SEEN_PARENT_IDS = dict()
+PARENT_IDS_CACHE = {}
+"""
+{
+    '<parent_pid>': {
+        'id': <generated_parent_uuid>,
+        'version': {
+            'latest_index': 'record_index',
+            'latest_id': 'record id',
+        }
+}
+"""
+
 
 # NOTE: Usage
 #   gzip -dc records-dump-2022-11-08.jsonl.gz | head | sed 's/\\\\/\\/g' | python migration/run.py
 # cat single-record.jsonl | sed 's/\\\\/\\/g' | python migration/run.py
 
 if __name__ == "__main__":
-    record_load = Load(stream="record", parent_cache=SEEN_PARENT_IDS)
+    record_load = Load(stream="record", parent_cache=PARENT_IDS_CACHE)
     record_transform = Transform(stream="record")
     start_time = datetime.now().isoformat()
     print(f"Started workflow {start_time}")
@@ -52,8 +63,9 @@ if __name__ == "__main__":
             print(datetime.now().isoformat(), idx)
         transform_result = record_transform.run(json.loads(l))
         print(idx, transform_result)
-
         # Write each result in csv tables:
         record_load.run(transform_result)
     end_time = datetime.now().isoformat()
+    # populate version_state
+    record_load.load_computed_tables()
     print(f"Ended workflow {end_time}")

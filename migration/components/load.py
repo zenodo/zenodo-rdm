@@ -100,7 +100,7 @@ class RecordLoad:
         rec = data["record"]
         pid = rec["json"]["pid"]
         parent = data["parent"]
-        rec_parent_id = self.parent_cache.get(parent["json"]["id"], rec["parent_id"])
+        rec_parent_id = self.parent_cache.get(parent["json"]["id"])
         yield (
             "record",
             (
@@ -111,7 +111,7 @@ class RecordLoad:
                 rec["version_id"],
                 rec["index"],
                 rec.get("bucket_id"),
-                rec_parent_id,
+                rec_parent_id or rec["parent_id"],
             ),
         )
         # Recid
@@ -165,7 +165,10 @@ class RecordLoad:
         # Parent
         parent = data["parent"]
         if parent["json"]["id"] not in self.parent_cache:
-            self.parent_cache[parent["json"]["id"]] = parent["id"]
+            self.parent_cache[parent["json"]["id"]] = dict(
+                id=parent["id"],
+                version=dict(latest_index=rec["index"], latest_id=rec["id"]),
+            )
             parent_pid = parent["json"]["pid"]
             yield (
                 "parent",
@@ -191,16 +194,13 @@ class RecordLoad:
                     now(),
                 ),
             )
-            # Version state to be populated in the end from the final state
-            # yield (
-            #     "version_state",
-            #     (
-            #         rec["index"],
-            #         parent["id"],
-            #         rec["id"],
-            #         None,
-            #     ),
-            # )
+        else:
+            # parent in cache - update version
+            cached_parent = self.parent_cache[parent["json"]["id"]]
+            cached_parent_version = cached_parent["version"]
+            # check if current record is a new version of the cached one
+            if cached_parent_version["latest_index"] < rec["index"]:
+                cached_parent_version = dict(index=rec["index"], latest_id=rec["id"])
 
     def load(self, data):
         entries = {"record": [], "pid": [], "parent": [], "version_state": []}
@@ -226,6 +226,39 @@ class RecordLoad:
                     print(f"parent pid object_uuid: {entries['pid'][0]}")
                     print(f"parent id: {entries['parent'][0]}")
                     print(f"record parent_id: {entries['record'][-1]}")
+
+    def load_version_state(self):
+        """Load version state."""
+
+        def _generate_db_tuples():
+            for parent_id, parent_state in self.parent_cache.items():
+                # Version state to be populated in the end from the final state
+                yield (
+                    parent_state["version"]["latest_index"],
+                    parent_state["id"],
+                    parent_state["version"]["latest_id"],
+                    None,
+                )
+
+        print("Load version_state table")
+        entries = _generate_db_tuples()
+        with psycopg.connect(
+            "postgresql://zenodo:zenodo@localhost:5432/zenodo"
+        ) as conn:
+            self._copy(conn, "version_state", entries)
+            # except:
+            #     print(
+            #         "Failed to load version_state",
+            #         dict([entry]),
+            #     )
+
+    def load_computed_tables(self):
+        """Load computed tables for 'record' stream."""
+
+        computed_tables = self.TABLE_MAP["computed_tables"]
+        for table in computed_tables:
+            load_table = getattr(self, f"load_{table}", lambda x: x)
+            load_table()
 
 
 class Load:
@@ -298,15 +331,15 @@ class Load:
                 #         "object_version_id",
                 #     ],
                 # },
-                # "version_state": {
-                #     "table": "rdm_versions_state",
-                #     "cols": [
-                #         "latest_index",
-                #         "parent_id",
-                #         "latest_id",
-                #         "next_draft_id",
-                #     ],
-                # },
+                "version_state": {
+                    "table": "rdm_versions_state",
+                    "cols": [
+                        "latest_index",
+                        "parent_id",
+                        "latest_id",
+                        "next_draft_id",
+                    ],
+                },
                 # "parents_community": {
                 #     "table": "rdm_parents_community",
                 #     "cols": [
@@ -330,6 +363,8 @@ class Load:
                 },
             },
             "order": ["pid", "parent", "record"],
+            # tables that are populated in the end from the existing DB state
+            "computed_tables": ["version_state"],
         }
     }
 
@@ -344,6 +379,14 @@ class Load:
                 )
                 res = cur.fetchone()
                 return False if res else True
+
+    def load_computed_tables(self):
+        return self.stream_loader(
+            self.TABLE_MAP[self.stream],
+            is_db_empty=True,
+            # is_db_empty=self.is_db_empty(),
+            parent_cache=self.parent_cache,
+        ).load_computed_tables()
 
     def __init__(self, stream, parent_cache):
         self.stream = stream
