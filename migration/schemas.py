@@ -1,6 +1,5 @@
 from marshmallow import Schema, fields, INCLUDE, validate
 from invenio_rdm_records.services.schemas import (
-    RDMRecordSchema,
     FilesSchema,
     AccessSchema,
 )
@@ -10,6 +9,7 @@ from invenio_rdm_records.services.schemas.metadata import (
     PersonOrOrganizationSchema,
 )
 from invenio_rdm_records.services.schemas.parent.communities import CommunitiesSchema
+from invenio_rdm_records.services.schemas.parent.access import ParentAccessSchema
 from datetime import datetime, timezone
 from marshmallow_utils.fields import (
     EDTFDateString,
@@ -56,6 +56,7 @@ class RDMRecord(Schema):
 
 class RDMParentSchema(BaseRDMParentSchema):
 
+    access = fields.Nested(ParentAccessSchema)
     communities = fields.Nested(CommunitiesSchema, default={})
 
 
