@@ -1,9 +1,13 @@
 import json
 import sys
 from datetime import datetime
+from pathlib import Path
 
 from components.load import Load
 from components.transform import Transform
+
+
+CUR_DIR = Path(__file__).parent
 
 
 EXTRACT_RECORDS_SQL = """
@@ -54,18 +58,32 @@ PARENT_IDS_CACHE = {}
 # cat single-record.jsonl | sed 's/\\\\/\\/g' | python migration/run.py
 
 if __name__ == "__main__":
-    record_load = Load(stream="record", parent_cache=PARENT_IDS_CACHE)
+    record_load = Load(
+        stream="record",
+        parent_cache=PARENT_IDS_CACHE,
+        output_path=CUR_DIR / "tables",
+    )
     record_transform = Transform(stream="record")
-    start_time = datetime.now().isoformat()
-    print(f"Started workflow {start_time}")
+
+    # Delete existing CSV files
+    record_load.reset_load()
+
+    start_time = datetime.now()
+    print(f"Started workflow {start_time.isoformat()}")
     for idx, l in enumerate(sys.stdin.buffer):
         if idx % 100 == 0:
             print(datetime.now().isoformat(), idx)
         transform_result = record_transform.run(json.loads(l))
-        print(idx, transform_result)
+        # print(idx, transform_result)
         # Write each result in csv tables:
-        record_load.run(transform_result)
-    end_time = datetime.now().isoformat()
-    # populate version_state
+        record_load.prepare_load(transform_result)
+    prepare_load_end_time = datetime.now()
+    print(f"Ended prepare load {prepare_load_end_time.isoformat()}")
     record_load.load_computed_tables()
-    print(f"Ended workflow {end_time}")
+    computed_tables_load_end_time = datetime.now()
+    print(f"Ended computed tables load {computed_tables_load_end_time.isoformat()}")
+    record_load.load()
+    end_time = datetime.now()
+    print(f"Ended workflow {end_time.isoformat()}")
+
+    print(f"Total duration: {end_time - start_time}")
