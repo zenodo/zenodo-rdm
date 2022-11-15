@@ -1,16 +1,16 @@
 import { PropTypes } from "prop-types";
 import React, { Component } from "react";
 import { Formik, Form } from "formik";
-import { Form as SemanticForm, Button, Modal } from "semantic-ui-react";
 import { http, TextField, TextAreaField, ToggleField } from "react-invenio-forms";
-import { remove, set } from "lodash";
-import CategoryDropdown from "./CategoryDropdown";
 import FileUploader from './FileUploader';
+import { Form as SemanticForm, Button, Message, Modal } from "semantic-ui-react";
+import CategoryDropdown from "./CategoryDropdown";
+import remove from "lodash/remove";
+import set  from "lodash/set";
+import { humanReadableBytes } from "react-invenio-deposit";
 
 // TODO translations
-// TODO implement error notification
 // TODO implement recaptcha
-// TODO required fields are highlighted by the component and not Formik
 
 const requestConfig = {
     headers: {
@@ -36,11 +36,21 @@ function formikToFormData(values) {
     return formData;
 }
 
+function scrollTop() {
+    window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "smooth",
+    });
+}
 
 class SupportForm extends Component {
 
     constructor(props) {
         super(props);
+        this.state = {
+            errors: undefined
+        };
     }
 
     deserializeFieldErrors = (errors) => {
@@ -76,15 +86,42 @@ class SupportForm extends Component {
             if (apiResponse) {
                 const apiErrors = apiResponse.errors || [];
                 const deserializedErrors = this.deserializeFieldErrors(apiErrors);
-                
+
                 // Highlight errors using formik
                 formikBag.setErrors(deserializedErrors);
-                errorMessage = apiResponse.message || errorMessage;
+                errorMessage = Object.values(deserializedErrors);
             }
 
-            // TODO show error notification
-            console.error(errorMessage);
+            this.setState({
+                errors: ['Form has validation errors. Please correct them and try again.']
+            });
+
+            scrollTop();
         }
+    }
+
+    onFileReject = (rejectedFiles) => {
+        const { maxFileSize } = this.props;
+        const maxFileSizeString = humanReadableBytes(maxFileSize)
+        let errors = [];
+        rejectedFiles.map((err) => {
+            let messages = [];
+            let fileErrors = err.errors;
+            let fileName = err?.file.name;
+            fileErrors.forEach(fileError => {
+                let errorMessage = fileError.message;
+                if (fileError.code === 'file-too-large') {
+                    errorMessage = `File is larger than ${maxFileSizeString}`
+                }
+                messages.push(errorMessage);
+            });
+            let errorString = `${fileName} : ${messages.join(',')}`;
+            errors.push(errorString);
+        });
+        this.setState({
+            errors: errors
+        })
+        scrollTop()
     }
 
 
@@ -109,6 +146,8 @@ class SupportForm extends Component {
             files: []
         }
 
+        const { errors } = this.state;
+
         const sysInfo = `Browser: ${userBrowser} Operating System: ${userPlatform}`;
 
         return (
@@ -123,10 +162,7 @@ class SupportForm extends Component {
                         onDropAccepted: (acceptedFiles) => {
                             setFieldValue("files", acceptedFiles);
                         },
-                        onDropRejected: (rejectedFiles) => {
-                            // TODO: show error message when files are rejected e.g size limit
-                            console.error(rejectedFiles[0].errors);
-                        },
+                        onDropRejected: this.onFileReject,
                         noClick: true,
                         noKeyboard: true,
                         maxSize: maxFileSize,
@@ -137,6 +173,13 @@ class SupportForm extends Component {
                             as={Form}
                             onSubmit={handleSubmit}
                         >
+                            {errors &&
+                                <Message
+                                    negative
+                                    header="Form error"
+                                    list={errors}
+                                />
+                            }
                             <TextField
                                 disabled={isUserAuthenticated}
                                 label='Name'

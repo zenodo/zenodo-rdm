@@ -20,7 +20,7 @@ const FileUploader = ({ dropzoneParams, maxFileSize, name, currentFiles, handleD
                     <div {...getRootProps()}>
                         <input {...inpProps} />
                         <label className="helptext mt-0">
-                            {`Optional. Max attachments size:`} {humanReadableBytes(maxFileSize, false)}
+                            {`Optional. Max attachments size: ${humanReadableBytes(maxFileSize, false)}`}
                         </label>
                         {currentFiles.length > 0
                             &&
