@@ -53,9 +53,8 @@ PARENT_IDS_CACHE = {}
 """
 
 
-# NOTE: Usage
-#   gzip -dc records-dump-2022-11-08.jsonl.gz | head | sed 's/\\\\/\\/g' | python migration/run.py
-# cat single-record.jsonl | sed 's/\\\\/\\/g' | python migration/run.
+# Usage
+# python migration/run.py records-dump-2022-11-08.jsonl
 
 if __name__ == "__main__":
     record_load = Load(
@@ -66,6 +65,7 @@ if __name__ == "__main__":
     record_transform = Transform(stream="record")
 
     # Delete existing CSV files
+    # TODO: Add a "cleanup" step, optional from flag (a la --force)
     record_load.reset_load()
 
     start_time = datetime.now()
