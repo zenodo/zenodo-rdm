@@ -464,14 +464,6 @@ class Load:
                 print(f"Deleting {fpath}")
                 fpath.unlink(missing_ok=True)
 
-    def reset_load(self):
-        for table in self.stream_loader.TABLE_MAP["tables"].values():
-            fpath = self.output_path / f"{table._table_name}.csv"
-            print(f"Checking {fpath}")
-            if fpath.exists():
-                print(f"Deleting {fpath}")
-                fpath.unlink(missing_ok=True)
-
     def prepare_load(self, data):
         return self.stream_loader.prepare_load(data)
 
