@@ -127,10 +127,8 @@ class SupportForm extends Component {
                             // TODO: show error message when files are rejected e.g size limit
                             console.error(rejectedFiles[0].errors);
                         },
-                        noClick: true,
-                        noKeyboard: true,
                         maxSize: maxFileSize,
-                        accept: ".jpeg,.jpg,.png"
+                        accept: ".jpeg,.jpg,.png",
                     };
                     return (
                         <SemanticForm
@@ -143,7 +141,8 @@ class SupportForm extends Component {
                                 fieldPath="name"
                                 required
                                 fluid={false}
-                                width={4}
+                                width={8}
+                                className="field flex"
                             />
                             <TextField
                                 disabled={isUserAuthenticated}
@@ -151,43 +150,30 @@ class SupportForm extends Component {
                                 fieldPath="email"
                                 required
                                 fluid={false}
-                                width={4}
+                                width={8}
+                                className="field flex"
                             />
                             <CategoryDropdown
                                 categories={categories}
                                 defaultCategory={defaultCategory}
+                                className="eight wide field flex"
                             />
                             <TextField
                                 label='Subject'
                                 fieldPath="subject"
-                                required
                                 fluid={false}
-                                className='mt-10'
+                                className='field flex rel-mt-1'
+                                required
                             />
                             <TextAreaField
-                                label='Description'
+                                label='How can we help?'
                                 fieldPath="description"
+                                className="field flex"
                                 required
                             />
-                            <div className="field">
-                                <label>
-                                    {`Browser & OS`}
-                                </label>
-                                <ToggleField
-                                    fieldPath='sysInfo'
-                                    offLabel='Include browser and system information to assist us with narrowing down the cause of your problem.'
-                                    onLabel='Include browser and system information to assist us with narrowing down the cause of your problem.'
-                                    offValue={false}
-                                    onValue={true}
-                                />
-                                <label className="helptext">
-                                    {sysInfo}
-                                </label>
-                            </div>
-                            <div className="field">
-                                <label>
-                                    {`Files`}
-                                </label>
+
+                            <div className="field flex">
+                                <label htmlFor="file-dropzone">Files</label>
                                 <FileUploader
                                     dropzoneParams={dropzoneParams}
                                     maxFileSize={maxFileSize}
@@ -200,7 +186,24 @@ class SupportForm extends Component {
                                     }}
                                 />
                             </div>
-                            <Modal.Actions>
+
+                            <div className="field flex">
+                                <label htmlFor="sysInfo">
+                                    Browser & OS
+                                </label>
+                                <div>
+                                    <ToggleField
+                                        fieldPath='sysInfo'
+                                        offLabel='Include browser and system information to assist us with narrowing down the cause of your problem.'
+                                        onLabel='Include browser and system information to assist us with narrowing down the cause of your problem.'
+                                        offValue={false}
+                                        onValue={true}
+                                    />
+                                    <label className="helptext">{sysInfo}</label>
+                                </div>
+                            </div>
+                            
+                            <Modal.Actions className="label-padding">
                                 <Button type="submit" positive>
                                     Send Request
                                 </Button>
