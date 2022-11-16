@@ -1,13 +1,13 @@
 import contextlib
 import csv
-from dataclasses import dataclass, InitVar, fields
-from pathlib import Path
-import uuid
-from datetime import datetime
-import random
 import json
-from invenio_records.dictutils import dict_set, dict_lookup
 import psycopg
+import random
+import uuid
+from dataclasses import dataclass, InitVar, fields
+from datetime import datetime
+from invenio_records.dictutils import dict_set
+from pathlib import Path
 
 # from schemas import DataSchema
 
