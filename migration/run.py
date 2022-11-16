@@ -3,7 +3,7 @@ from datetime import datetime
 
 from .extract import JSONLExtract
 from .load import RDMRecordLoad
-from .transform import RDMRecordTransform
+from .transform import ZenodoToRDMRecordTransform
 
 
 # Usage
@@ -14,7 +14,7 @@ if __name__ == "__main__":
     filename = sys.argv[1] # TODO: click?
     cleanup = len(sys.argv) > 2  # if there is something we assume is True/--cleanup
     extract = JSONLExtract(filename)
-    record_transform = RDMRecordTransform()
+    record_transform = ZenodoToRDMRecordTransform()
     record_load = RDMRecordLoad()
 
     start_time = datetime.now()
