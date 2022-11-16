@@ -1,5 +1,6 @@
 from .base import Extract
 
+
 class PostgreSQLExtract(Extract):
     """Data extraction from PostgreSQL databases."""
 
