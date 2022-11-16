@@ -66,3 +66,4 @@ logs/
 
 # Invenio-cli per machine file
 .invenio.private
+*/data/*
