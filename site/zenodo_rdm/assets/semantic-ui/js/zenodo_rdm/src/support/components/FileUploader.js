@@ -6,33 +6,30 @@ import FileTable from "./FileTable";
 
 const FileUploader = ({ dropzoneParams, maxFileSize, name, currentFiles, handleDelete }) => {
     return (
-        <Dropzone {...dropzoneParams}>
-            {({ getRootProps, getInputProps }) => {
-                const inpProps = {
-                    ...getInputProps(),
-                    // Display the dropzone input, otherwise it's hidden by default.
-                    style: {
-                        'display': 'block'
-                    },
-                    name: name
-                }
-                return (
-                    <div {...getRootProps()}>
-                        <input {...inpProps} />
-                        <label className="helptext mt-0">
-                            {`Optional. Max attachments size:`} {humanReadableBytes(maxFileSize, false)}
-                        </label>
-                        {currentFiles.length > 0
-                            &&
-                            <FileTable
-                                handleDelete={handleDelete}
-                                filesList={currentFiles}
-                            />
-                        }
+        <div>
+            <Dropzone {...dropzoneParams}>
+                {({ getRootProps, getInputProps }) => (
+                    <div id="file-dropzone" {...getRootProps({className: "dropzone"})}>
+                        <input {...getInputProps()} name={name} />
+                        <p className="ui medium header text-align-center m-0">
+                            Drag files here, or click to select files
+                        </p>
                     </div>
-                )
-            }}
-        </Dropzone>
+                )}
+            </Dropzone>
+
+            <label className="helptext mt-5">
+                {`Optional. Max attachments size:`} {humanReadableBytes(maxFileSize, false)}
+            </label>
+
+            {currentFiles.length > 0
+                &&
+                <FileTable
+                    handleDelete={handleDelete}
+                    filesList={currentFiles}
+                />
+            }
+        </div>
     );
 };
 

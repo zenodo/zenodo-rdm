@@ -55,11 +55,41 @@ a.inverted {
 }
 
 
-#contact-page {   
+#contact-page {
 
-  .panel-body {
-    padding-top: 2*@defaultPadding;
-    padding-left: 2*@defaultPadding;
+  .field.flex {
+    @media screen and (max-width: @largestMobileScreen) {
+      display: block;
+      width: 100% !important;
+    }
+
+    label {
+      min-width: 10rem;
+
+      + div {
+        flex: 1 1 0;
+      }
+    }
+
+    .toggle {
+      text-align: left;
+    }
+  }
+  
+  .label-padding {
+    padding-left: 10rem;
+
+    @media screen and (max-width: @largestMobileScreen) {
+      padding-left: 0;
+    }
+  }
+
+  .dropzone {
+    width: 100%;
+    border: 1px solid @borderColor;
+    border-radius: @defaultBorderRadius;
+    padding: @defaultPadding;
+    cursor: pointer;
   }
 }
 

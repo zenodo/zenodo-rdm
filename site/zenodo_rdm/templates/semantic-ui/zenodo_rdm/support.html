@@ -8,9 +8,9 @@
 {%- set userData = user and { 'email': user.email, 'full_name': user.user_profile.full_name }%}
 
 {% block grid_section %}
-    <div id="contact-page" class="ui one column grid container p-15">
+    <div id="contact-page" class="ui one column grid container rel-pt-3">
         <div class="row">
-            <div class="column">
+            <div class="sixteen wide mobile sixteen wide tablet ten wide computer column">
                 <div class="panel-body mt-5">
                     <h2 class="ui header mb-10">Contact us</h2>
                     <p>Before making a request, you can have a look at our <a href="http://help.zenodo.org">FAQ</a> and <a href="http://about.zenodo.org">other resources</a> for more detailed information about the operation, features and goals of Zenodo.</p>
@@ -21,7 +21,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="column">
+            <div class="sixteen wide mobile sixteen wide tablet ten wide computer column">
                 {% block root_section %}    
                     <div id="zenodo-rdm-support-root" class="panel-body"></div>
                 {% endblock %}

@@ -38,7 +38,7 @@ class CategoryDropdown extends Component {
     }
 
     render() {
-        const { categories } = this.props;
+        const { categories, className } = this.props;
         const { activeCategory} = this.state;
 
         const serializedCategories = categories.map((cat) => (this.serializeCategory(cat)));
@@ -52,8 +52,12 @@ class CategoryDropdown extends Component {
                     required
                     width={4}
                     onChange={this.onChange}
+                    className={className}
                 />
-                {<div dangerouslySetInnerHTML={{ __html: activeCategory?.description }}/>}
+                <div
+                    className="label-padding"
+                    dangerouslySetInnerHTML={{ __html: activeCategory?.description }}
+                />
             </>
         )
     }
@@ -61,12 +65,14 @@ class CategoryDropdown extends Component {
 
 CategoryDropdown.propTypes = {
     categories: PropTypes.array,
-    defaultCategory: PropTypes.string
+    defaultCategory: PropTypes.string,
+    className: PropTypes.string,
 };
 
 CategoryDropdown.defaultProps = {
     categories: [],
-    defaultCategory: ''
+    defaultCategory: '',
+    className: '',
 };
 
 export default CategoryDropdown;
