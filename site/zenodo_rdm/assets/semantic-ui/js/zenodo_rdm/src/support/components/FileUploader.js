@@ -3,8 +3,10 @@ import PropTypes from 'prop-types';
 import Dropzone from "react-dropzone";
 import { humanReadableBytes } from "react-invenio-deposit";
 import FileTable from "./FileTable";
+import { Message } from "semantic-ui-react";
 
-const FileUploader = ({ dropzoneParams, maxFileSize, name, currentFiles, handleDelete }) => {
+const FileUploader = ({ dropzoneParams, maxFileSize, name, currentFiles, handleDelete, errorMessage, rejectedFiles }) => {
+ 
     return (
         <div>
             <Dropzone {...dropzoneParams}>
@@ -18,9 +20,25 @@ const FileUploader = ({ dropzoneParams, maxFileSize, name, currentFiles, handleD
                 )}
             </Dropzone>
 
-            <label className="helptext mt-5">
-                {`Optional. Max attachments size:`} {humanReadableBytes(maxFileSize, false)}
+            <label className="helptext mt-5 mb-0">
+                Optional. Max attachments size: {humanReadableBytes(maxFileSize, false)}.
+                Accepted file formats: {dropzoneParams.accept}.
             </label>
+
+            {errorMessage &&
+                <Message negative>
+                    <p>{errorMessage}</p>
+                </Message>
+            }
+
+            {rejectedFiles.length > 0
+                &&
+                <FileTable
+                    handleDelete={handleDelete}
+                    filesList={rejectedFiles}
+                    negative
+                />
+            }
 
             {currentFiles.length > 0
                 &&
@@ -37,7 +55,14 @@ FileUploader.propTypes = {
     dropzoneParams: PropTypes.object.isRequired,
     maxFileSize: PropTypes.number.isRequired,
     name: PropTypes.string.isRequired,
-    currentFiles: PropTypes.array.isRequired
+    currentFiles: PropTypes.array.isRequired,
+    errorMessage: PropTypes.string,
+    rejectedFiles: PropTypes.array,
 };
+
+FileUploader.defaultProps = {
+    errorMessage: null,
+    rejectedFiles: [],
+}
 
 export default FileUploader;
