@@ -3,7 +3,9 @@ import React, { Component } from "react";
 import { Formik, Form } from "formik";
 import { Form as SemanticForm, Button, Modal } from "semantic-ui-react";
 import { http, TextField, TextAreaField, ToggleField } from "react-invenio-forms";
-import { remove, set } from "lodash";
+import { remove } from "lodash/remove";
+import { set } from "lodash/set";
+
 import CategoryDropdown from "./CategoryDropdown";
 import FileUploader from './FileUploader';
 
@@ -18,6 +20,12 @@ const requestConfig = {
         'Content-Type': 'multipart/form-data',
     },
 };
+
+const ErrorCode = {
+    "file-invalid-type": "The file you selected is the wrong format.",
+    "file-too-large": "The file you selected is too big. Please add a URL to the file or select a different file.",
+    "max-size-exceeded": "Max attachment size exceeded. Please add URLs to the rejected files or make a smaller selection.",
+}
 
 function formikToFormData(values) {
     const formData = new FormData();
@@ -41,6 +49,12 @@ class SupportForm extends Component {
 
     constructor(props) {
         super(props);
+
+        this.state = {
+            fileErrorMessage: null,
+            totalFileSize: 0,
+            rejectedFiles: []
+        }
     }
 
     deserializeFieldErrors = (errors) => {
@@ -87,7 +101,6 @@ class SupportForm extends Component {
         }
     }
 
-
     render() {
         const {
             categories,
@@ -110,6 +123,7 @@ class SupportForm extends Component {
         }
 
         const sysInfo = `Browser: ${userBrowser} Operating System: ${userPlatform}`;
+        const { fileErrorMessage, rejectedFiles } = this.state;
 
         return (
             <Formik
@@ -120,12 +134,31 @@ class SupportForm extends Component {
             >
                 {({ handleSubmit, setFieldValue, values }) => {
                     let dropzoneParams = {
+                        validator: (file) => {
+                            const { totalFileSize } = this.state;
+                            if(totalFileSize + file.size > maxFileSize) {
+                                return {code: "max-size-exceeded"}
+                            }
+                            this.setState({totalFileSize: totalFileSize + file.size});
+                        },
+                        onDrop: () => {
+                            this.setState({ 
+                                fileErrorMessage: null,
+                                totalFileSize: 0,
+                                rejectedFiles: [],
+                            });
+                        },
                         onDropAccepted: (acceptedFiles) => {
                             setFieldValue("files", acceptedFiles);
                         },
                         onDropRejected: (rejectedFiles) => {
-                            // TODO: show error message when files are rejected e.g size limit
-                            console.error(rejectedFiles[0].errors);
+                            const error = rejectedFiles[0].errors[0];
+                            rejectedFiles = rejectedFiles.map(file => file.file);
+
+                            this.setState({
+                                fileErrorMessage: ErrorCode[error.code],
+                                rejectedFiles
+                            });
                         },
                         maxSize: maxFileSize,
                         accept: ".jpeg,.jpg,.png",
@@ -184,6 +217,8 @@ class SupportForm extends Component {
                                         remove(newFiles, file);
                                         setFieldValue("files", newFiles);
                                     }}
+                                    errorMessage={fileErrorMessage}
+                                    rejectedFiles={rejectedFiles}
                                 />
                             </div>
 
