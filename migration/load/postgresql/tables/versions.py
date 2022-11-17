@@ -10,7 +10,7 @@ class RDMVersionStateComputedTable(PostgreSQLTableLoad):
     def __init__(self, parent_cache):
         """Constructor."""
         super().__init__(
-            tables=[RDMVersionState._table_name]
+            tables=[RDMVersionState]
         )
         self.parent_cache = parent_cache
 

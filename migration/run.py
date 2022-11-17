@@ -1,9 +1,9 @@
 import sys
 from datetime import datetime
 
-from .extract import JSONLExtract
-from .load import PostgreSQLCopyLoad
-from .transform import ZenodoToRDMRecordTransform
+from extract import JSONLExtract
+from load import PostgreSQLCopyLoad
+from transform import ZenodoToRDMRecordTransform
 
 # Usage
 # python migration/run.py records-dump-2022-11-08.jsonl

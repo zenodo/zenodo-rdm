@@ -40,9 +40,9 @@ class RDMRecordTableLoad(PostgreSQLTableLoad):
         """Constructor."""
         super().__init__(
             tables=[
-                PersistentIdentifier._table_name,
-                RDMParentMetadata._table_name,
-                RDMRecordMetadata._table_name,
+                PersistentIdentifier,
+                RDMParentMetadata,
+                RDMRecordMetadata,
             ]
         )
         self.parent_cache = parent_cache
@@ -147,21 +147,19 @@ class RDMRecordTableLoad(PostgreSQLTableLoad):
                     latest_index=rec["index"], latest_id=rec["id"]
                 )
 
-
     def prepare(self, output_dir, datagen, **kwargs):
         """Compute rows."""
         # use this context manager to close all opened files at once
         with contextlib.ExitStack() as stack:
             out_files = {}
             for entry in datagen:
-                self._validate(entry)
                 # is_db_empty would come in play and make _generate_pks optional                    
                 self._generate_pks(entry)
                 for entry in self._generate_db_tuples(entry):
                     if entry._table_name not in out_files:
                         fpath = output_dir / f"{entry._table_name}.csv"
                         out_files[entry._table_name] = csv.writer(
-                            stack.enter_context(open(fpath, "a"))
+                            stack.enter_context(open(fpath, "w+"))
                         )
                     writer = out_files[entry._table_name]
                     writer.writerow(as_csv_row(entry))

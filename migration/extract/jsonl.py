@@ -12,7 +12,7 @@ class JSONLExtract(Extract):
 
     def run(self):
         """Yield one element at a time."""
-        with open(self.filename, 'r') as reader:
+        with open(self.filepath, 'r') as reader:
             for l in reader:
                 # TODO JSONl file should be cleaned up before loading
                 l = l.strip().replace("\\\\","\\")

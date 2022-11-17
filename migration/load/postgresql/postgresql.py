@@ -1,5 +1,4 @@
 import contextlib
-from copy import deepcopy
 from dataclasses import fields
 from datetime import datetime
 from pathlib import Path
@@ -42,12 +41,13 @@ class PostgreSQLCopyLoad(Load):
                 }
         }
         """
-        self.cur_dir = Path(__file__).parent
+        self.cur_dir = Path(__file__).parent.parent.parent  # migration/
         self.output_dir = self.cur_dir / f"data/tables{_ts(iso=False)}"
+        self.output_dir.mkdir(parents=True, exist_ok=True)
 
         # tables to prepare from loaders
         self._tables = tables or [
-            RDMRecordTableLoad(),
+            RDMRecordTableLoad(self.parent_cache),
         ]
 
         _computed_tables = computed_tables or [
@@ -72,7 +72,7 @@ class PostgreSQLCopyLoad(Load):
     def _cleanup_files(self):
         """Cleanup files after load."""
         for table in self.stream_loader.TABLE_MAP["tables"].values():
-            fpath = self.output_path / f"{table._table_name}.csv"
+            fpath = self.output_dir / f"{table._table_name}.csv"
             print(f"Checking {fpath}")
             if fpath.exists():
                 print(f"Deleting {fpath}")
@@ -92,9 +92,8 @@ class PostgreSQLCopyLoad(Load):
         for table in self._tables:
             # otherwise the generator is exahusted by the first table
             # TODO: nested generators, how expensive is this copy op?
-            datagenc = deepcopy(datagen)
-            _prepared_tables.append(
-                table.prepare(self.output_dir, datagen=datagenc)
+            _prepared_tables.extend(
+                table.prepare(self.output_dir, datagen=datagen)
             )
         
         return iter(_prepared_tables)  # yield at the end vs yield per table
@@ -110,7 +109,7 @@ class PostgreSQLCopyLoad(Load):
             for table in tablegen:
                 name = table._table_name
                 cols = ", ".join([f.name for f in fields(table)])
-                fpath = self.output_path / f"{name}.csv"
+                fpath = self.output_dir / f"{name}.csv"
                 file_size = fpath.stat().st_size  # total file size for progress logging
 
                 print(f"[{_ts()}] COPY FROM {fpath}")

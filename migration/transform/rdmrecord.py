@@ -1,6 +1,6 @@
 from nameparser import HumanName
 
-from .base import RDMRecordEntry, Transform
+from .base import RDMRecordEntry, RDMRecordTransform
 
 
 class ZenodoToRDMRecordEntry(RDMRecordEntry):
@@ -20,7 +20,7 @@ class ZenodoToRDMRecordEntry(RDMRecordEntry):
 
     def _index(self, entry):
         """Returns the index of the record."""
-        return entry.get("index", 0) + 1,  # in legacy we start at 0
+        return entry.get("index", 0) + 1  # in legacy we start at 0
 
     def _recid(self, entry):
         """Returns the recid of the record."""
@@ -64,7 +64,7 @@ class ZenodoToRDMRecordEntry(RDMRecordEntry):
     def _metadata(self, entry):
         """Transform the metadata of a record."""
 
-        def _creators(self, data):
+        def _creators(data):
             ret = []
             for c in data:
                 r = {"person_or_org": {"type": "personal"}}
@@ -83,7 +83,7 @@ class ZenodoToRDMRecordEntry(RDMRecordEntry):
                 ret.append(r)
             return ret
 
-        def _resource_type(self, data):
+        def _resource_type(data):
             t = data["type"]
             st = data.get("subtype")
             return {"id": f"{t}-{st}"} if st else {"id": t}
@@ -100,7 +100,7 @@ class ZenodoToRDMRecordEntry(RDMRecordEntry):
         return r
 
 
-class ZenodoToRDMRecordTransform(Transform):
+class ZenodoToRDMRecordTransform(RDMRecordTransform):
     """Zenodo to RDM Record class for data transformation."""
 
     def _parent(self, entry):

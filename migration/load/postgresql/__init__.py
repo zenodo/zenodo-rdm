@@ -1,5 +1,5 @@
 from .postgresql import PostgreSQLCopyLoad
 
-__all__(
+__all__ = (
     "PostgreSQLCopyLoad",
 )
