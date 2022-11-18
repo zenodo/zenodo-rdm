@@ -5,11 +5,11 @@ import { Form as SemanticForm, Button, Modal } from "semantic-ui-react";
 import { http, TextField, TextAreaField, ToggleField } from "react-invenio-forms";
 import { remove, set } from "lodash";
 import CategoryDropdown from "./CategoryDropdown";
+import ReCAPTCHA from "react-google-recaptcha";
 import FileUploader from './FileUploader';
 
 // TODO translations
 // TODO implement error notification
-// TODO implement recaptcha
 // TODO required fields are highlighted by the component and not Formik
 
 const requestConfig = {
@@ -76,7 +76,7 @@ class SupportForm extends Component {
             if (apiResponse) {
                 const apiErrors = apiResponse.errors || [];
                 const deserializedErrors = this.deserializeFieldErrors(apiErrors);
-                
+
                 // Highlight errors using formik
                 formikBag.setErrors(deserializedErrors);
                 errorMessage = apiResponse.message || errorMessage;
@@ -87,7 +87,6 @@ class SupportForm extends Component {
         }
     }
 
-
     render() {
         const {
             categories,
@@ -96,7 +95,8 @@ class SupportForm extends Component {
             userBrowser,
             userPlatform,
             userMail,
-            maxFileSize
+            maxFileSize,
+            recaptchaClientKey
         } = this.props;
 
         const defaultCategory = categories.length > 0 ? categories[0].key : '';
@@ -106,7 +106,8 @@ class SupportForm extends Component {
             name: name,
             category: defaultCategory,
             sysInfo: false,
-            files: []
+            files: [],
+            recaptcha: recaptchaClientKey ? false : true
         }
 
         const sysInfo = `Browser: ${userBrowser} Operating System: ${userPlatform}`;
@@ -202,7 +203,17 @@ class SupportForm extends Component {
                                     <label className="helptext">{sysInfo}</label>
                                 </div>
                             </div>
-                            
+                            {
+                                recaptchaClientKey &&
+                                <div className="field flex">
+                                    <ReCAPTCHA
+                                        sitekey={recaptchaClientKey}
+                                        onChange={(value) => {
+                                            setFieldValue('recaptcha', true);
+                                        }}
+                                    />
+                                </div>
+                            }
                             <Modal.Actions className="label-padding">
                                 <Button type="submit" positive>
                                     Send Request
@@ -227,7 +238,8 @@ SupportForm.propTypes = {
     maxFileSize: PropTypes.number,
     descriptionMaxLength: PropTypes.number,
     descriptionMinLength: PropTypes.number,
-    apiEndpoint: PropTypes.string.isRequired
+    apiEndpoint: PropTypes.string.isRequired,
+    recaptchaClientKey: PropTypes.string.isRequired
 };
 
 SubmitEvent.defaultProps = {

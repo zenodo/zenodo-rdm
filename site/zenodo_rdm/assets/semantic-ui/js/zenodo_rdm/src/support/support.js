@@ -14,6 +14,8 @@ const maxFileSize = parseInt(domContainer.dataset.maxFileSize);
 const descriptionMaxLength = parseInt(domContainer.dataset.descriptionMaxLength);
 const descriptionMinLength = parseInt(domContainer.dataset.descriptionMinLength);
 const apiEndpoint = domContainer.dataset.apiEndpoint;
+const recaptchaClientKey = domContainer.dataset.recaptchaClientKey;
+
 
 ReactDOM.render(
     <SupportForm
@@ -27,6 +29,7 @@ ReactDOM.render(
         descriptionMaxLength={descriptionMaxLength}
         descriptionMinLength={descriptionMinLength}
         apiEndpoint={apiEndpoint}
+        recaptchaClientKey={recaptchaClientKey || ''}
     >
     </SupportForm>,
     rootContainer
