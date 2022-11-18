@@ -1,4 +1,4 @@
-from .rdmrecord import ZenodoToRDMRecordTransform
+from .zenodo import ZenodoToRDMRecordTransform
 
 __all__ = (
     "ZenodoToRDMRecordTransform",

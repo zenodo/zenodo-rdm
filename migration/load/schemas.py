@@ -1,103 +1,103 @@
-from datetime import datetime, timezone
+# from datetime import datetime, timezone
 
-from invenio_rdm_records.services.schemas import AccessSchema, FilesSchema
-from invenio_rdm_records.services.schemas import RDMParentSchema as BaseRDMParentSchema
-from invenio_rdm_records.services.schemas.metadata import (
-    CreatorSchema,
-    PersonOrOrganizationSchema,
-)
-from invenio_rdm_records.services.schemas.parent.access import ParentAccessSchema
-from invenio_rdm_records.services.schemas.parent.communities import CommunitiesSchema
-from invenio_vocabularies.services.schema import (
-    VocabularyRelationSchema as VocabularySchema,
-)
-from marshmallow import INCLUDE, Schema, fields, validate
-from marshmallow_utils.fields import (
-    EDTFDateString,
-    SanitizedHTML,
-    SanitizedUnicode,
-    TZDateTime,
-)
-
-
-class PersonOrOrg(PersonOrOrganizationSchema):
-    # TODO proper validate -> requires app_context
-    identifiers = fields.Dict()
+# from invenio_rdm_records.services.schemas import AccessSchema, FilesSchema
+# from invenio_rdm_records.services.schemas import RDMParentSchema as BaseRDMParentSchema
+# from invenio_rdm_records.services.schemas.metadata import (
+#     CreatorSchema,
+#     PersonOrOrganizationSchema,
+# )
+# from invenio_rdm_records.services.schemas.parent.access import ParentAccessSchema
+# from invenio_rdm_records.services.schemas.parent.communities import CommunitiesSchema
+# from invenio_vocabularies.services.schema import (
+#     VocabularyRelationSchema as VocabularySchema,
+# )
+# from marshmallow import INCLUDE, Schema, fields, validate
+# from marshmallow_utils.fields import (
+#     EDTFDateString,
+#     SanitizedHTML,
+#     SanitizedUnicode,
+#     TZDateTime,
+# )
 
 
-class Creator(CreatorSchema):
-    person_or_org = fields.Nested(PersonOrOrg, required=True)
+# class PersonOrOrg(PersonOrOrganizationSchema):
+#     # TODO proper validate -> requires app_context
+#     identifiers = fields.Dict()
 
 
-class MetadataSchema(Schema):
-
-    resource_type = fields.Nested(VocabularySchema, required=True)
-    creators = fields.List(
-        fields.Nested(Creator),
-        required=True,
-        validate=validate.Length(min=1, error="Missing data for required field."),
-    )
-    title = SanitizedUnicode(required=True, validate=validate.Length(min=3))
-    description = SanitizedHTML(validate=validate.Length(min=3))
-    publication_date = EDTFDateString(required=True)
+# class Creator(CreatorSchema):
+#     person_or_org = fields.Nested(PersonOrOrg, required=True)
 
 
-class RDMRecord(Schema):
+# class MetadataSchema(Schema):
 
-    id = fields.Int(required=True)
-    # TODO proper validate -> requires app_context
-    pids = fields.Dict()
-    files = fields.Nested(FilesSchema)
-    metadata = fields.Nested(MetadataSchema)
-    access = fields.Nested(AccessSchema)
-
-
-class RDMParentSchema(BaseRDMParentSchema):
-
-    access = fields.Nested(ParentAccessSchema)
-    communities = fields.Nested(CommunitiesSchema, default={})
+#     resource_type = fields.Nested(VocabularySchema, required=True)
+#     creators = fields.List(
+#         fields.Nested(Creator),
+#         required=True,
+#         validate=validate.Length(min=1, error="Missing data for required field."),
+#     )
+#     title = SanitizedUnicode(required=True, validate=validate.Length(min=3))
+#     description = SanitizedHTML(validate=validate.Length(min=3))
+#     publication_date = EDTFDateString(required=True)
 
 
-class ParentSchema(Schema):
+# class RDMRecord(Schema):
 
-    created = TZDateTime(timezone=timezone.utc, format="iso")
-    updated = TZDateTime(timezone=timezone.utc, format="iso")
-    version_id = fields.Int(required=True)
-    id = (fields.Str(required=True),)
-    json = fields.Nested(RDMParentSchema)
-
-
-class RecordSchema(Schema):
-
-    created = TZDateTime(timezone=timezone.utc, format="iso")
-    updated = TZDateTime(timezone=timezone.utc, format="iso")
-    version_id = fields.Int(required=True)
-    index = fields.Int(required=True)
-    json = fields.Nested(RDMRecord)
+#     id = fields.Int(required=True)
+#     # TODO proper validate -> requires app_context
+#     pids = fields.Dict()
+#     files = fields.Nested(FilesSchema)
+#     metadata = fields.Nested(MetadataSchema)
+#     access = fields.Nested(AccessSchema)
 
 
-class ParentSchema(Schema):
+# class RDMParentSchema(BaseRDMParentSchema):
 
-    created = TZDateTime(timezone=timezone.utc, format="iso")
-    updated = TZDateTime(timezone=timezone.utc, format="iso")
-    version_id = fields.Int(required=True)
-    id = (fields.Str(required=True),)
-    json = fields.Nested(RDMParentSchema)
+#     access = fields.Nested(ParentAccessSchema)
+#     communities = fields.Nested(CommunitiesSchema, default={})
 
 
-class DataSchema(Schema):
-    class Meta:
-        unknown = INCLUDE
+# class ParentSchema(Schema):
 
-    record = fields.Nested(RecordSchema)
-    # draft = fields.Dict()
-    parent = fields.Nested(ParentSchema)
-    # record_files = fields.Dict()
-    # TODO: we should actually have:
-    # "draft_files": ...
+#     created = TZDateTime(timezone=timezone.utc, format="iso")
+#     updated = TZDateTime(timezone=timezone.utc, format="iso")
+#     version_id = fields.Int(required=True)
+#     id = (fields.Str(required=True),)
+#     json = fields.Nested(RDMParentSchema)
 
 
-class RecordStreamSchema(Schema):
-    stream = (fields.Str(required=True),)
-    id = (fields.Str(required=True),)  # unique stream id used for check a stream status
-    data = fields.Nested(DataSchema, required=True)
+# class RecordSchema(Schema):
+
+#     created = TZDateTime(timezone=timezone.utc, format="iso")
+#     updated = TZDateTime(timezone=timezone.utc, format="iso")
+#     version_id = fields.Int(required=True)
+#     index = fields.Int(required=True)
+#     json = fields.Nested(RDMRecord)
+
+
+# class ParentSchema(Schema):
+
+#     created = TZDateTime(timezone=timezone.utc, format="iso")
+#     updated = TZDateTime(timezone=timezone.utc, format="iso")
+#     version_id = fields.Int(required=True)
+#     id = (fields.Str(required=True),)
+#     json = fields.Nested(RDMParentSchema)
+
+
+# class DataSchema(Schema):
+#     class Meta:
+#         unknown = INCLUDE
+
+#     record = fields.Nested(RecordSchema)
+#     # draft = fields.Dict()
+#     parent = fields.Nested(ParentSchema)
+#     # record_files = fields.Dict()
+#     # TODO: we should actually have:
+#     # "draft_files": ...
+
+
+# class RecordStreamSchema(Schema):
+#     stream = (fields.Str(required=True),)
+#     id = (fields.Str(required=True),)  # unique stream id used for check a stream status
+#     data = fields.Nested(DataSchema, required=True)

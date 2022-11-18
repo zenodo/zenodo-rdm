@@ -46,10 +46,20 @@ class RDMRecordTransform(Transform):
         """Transform the draft files."""
         pass
 
-    @abstractmethod
     def _transform(self, entry):
         """Transform a single entry."""
-        pass
+        # the functions receive the full record/data entry
+        # while in most cases the full view is not needed
+        # since this is a low level tool used only by users
+        # with deep system knowledge providing the flexibility
+        # is future proofing and simplifying the interface
+        return {
+            "record": self._record(entry),
+            "draft": self._draft(entry),
+            "parent": self._parent(entry),
+            "record_files": self._record_files(entry),
+            "draft_files": self._draft_files(entry),
+        }
 
     def run(self, datagen):
         """Transform and yield one element at a time."""

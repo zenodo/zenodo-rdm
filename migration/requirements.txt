@@ -1,0 +1,5 @@
+nameparser
+invenio-db[postgresql]
+invenio-pidstore
+invenio-rdm-records
+psycopg

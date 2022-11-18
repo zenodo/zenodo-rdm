@@ -143,17 +143,3 @@ class ZenodoToRDMRecordTransform(RDMRecordTransform):
             }
             for f in files
         ]
-
-    def _transform(self, entry):
-        # the functions receive the full record/data entry
-        # while in most cases the full view is not needed
-        # since this is a low level tool used only by users
-        # with deep system knowledge providing the flexibility
-        # is future proofing and simplifying the interface
-        return {
-            "record": self._record(entry),
-            "draft": self._draft(entry),
-            "parent": self._parent(entry),
-            "record_files": self._record_files(entry),
-            "draft_files": self._draft_files(entry),
-        }
