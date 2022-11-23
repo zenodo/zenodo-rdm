@@ -1,0 +1,6 @@
+records:
+  extract:
+    filepath: /path/to/records.jsonl
+  load:
+    db_uri: "postgresql://zenodo:zenodo@localhost:5432/zenodo"
+    tmp_dir: "/path/to/tmp/"

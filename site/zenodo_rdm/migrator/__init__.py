@@ -1,15 +1,14 @@
 import sys
 
-from stream import RecordStream
+from invenio_rdm_migrator.streams import Runner
+
+from stream import RecordStreamDefinition
 
 
 if __name__ == "__main__":
 
-    filename = sys.argv[1]
-    cleanup = len(sys.argv) > 2  # if there is something we assume is True/--cleanup
-    stream = RecordStream(
-        filename=filename,
-        db_uri="postgresql://zenodo:zenodo@localhost:5432/zenodo",
-        output_path="/Users/ppanero/Workspace/zenodo/zenodo-rdm/migration/data/",
+    runner = Runner(
+        stream_definitions=[RecordStreamDefinition],
+        config_filepath=sys.argv[1],
     )    
-    stream.run(cleanup=cleanup)
+    runner.run()
