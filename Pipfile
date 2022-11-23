@@ -15,6 +15,7 @@ ipython = "!=8.1.0"
 uwsgi = ">=2.0"
 uwsgitop = ">=0.11"
 uwsgi-tools = ">=1.1.1"
+nameparser = ">=1.1.1"
 
 [requires]
 python_version = "3.8"
