@@ -202,7 +202,7 @@ class ZenodoUserEntry(UserEntry):
 
     def _version_id(self, entry):
         """Returns the version id."""
-        return entry.get("version_id", 0)
+        return entry.get("version_id", 1)
 
     def _email(self, entry):
         """Returns the email."""
@@ -237,8 +237,8 @@ class ZenodoUserEntry(UserEntry):
     def _preferences(self, entry):
         """Returns the preferences."""
         return {
-            "visibility": "private",
-            "email_visibility": "private",
+            "visibility": "restricted",
+            "email_visibility": "restricted",
         }
 
     def _login_information(self, entry):
