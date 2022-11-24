@@ -1,7 +1,7 @@
 from datetime import datetime
 from nameparser import HumanName
 
-from invenio_rdm_migrator.streams.records.transform import RDMRecordEntry, RDMRecordTransform
+from invenio_rdm_migrator.streams.records import RDMRecordEntry, RDMRecordTransform
 from invenio_rdm_migrator.streams.users import UserEntry, UserTransform
 
 

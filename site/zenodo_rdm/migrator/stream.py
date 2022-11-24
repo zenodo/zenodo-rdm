@@ -1,5 +1,5 @@
 from invenio_rdm_migrator.streams import StreamDefinition
-from invenio_rdm_migrator.streams.records.load import RDMRecordCopyLoad
+from invenio_rdm_migrator.streams.records import RDMRecordCopyLoad
 from invenio_rdm_migrator.streams.users import UserCopyLoad
 
 from .extract import JSONLExtract
