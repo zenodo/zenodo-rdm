@@ -106,3 +106,6 @@ a.inverted {
   height: 0.85em;
   width: 1.2em;
 }
+.uppercase {
+  text-transform: uppercase !important;
+}

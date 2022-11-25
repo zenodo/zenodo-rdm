@@ -32,14 +32,16 @@ import {
   Pagination,
   ResultsPerPage,
   EmptyResults,
+  Count,
 } from "react-searchkit";
 import { OverridableContext } from "react-overridable";
-import { Grid, Container } from "semantic-ui-react";
+import { Grid, Accordion, Icon } from "semantic-ui-react";
 import _get from "lodash/get";
 import { Results } from "./components/Results";
 import { Filter } from "./components/Filter";
 import { NoCitations } from "./components/NoCitations";
 import { ErrorMessage } from "./components/ErrorMessage";
+import { Counter } from "./components/Counter";
 import { apiConfig } from "./api/config";
 
 const citationSearchAppID = "citationsSearch";
@@ -58,9 +60,18 @@ const overriddenComponents = {
   }) => valuesCmp,
   [`${citationSearchAppID}.EmptyResults.element`]: NoCitations,
   [`${citationSearchAppID}.Error.element`]: ErrorMessage,
+  [`${citationSearchAppID}.Count.element`]: Counter,
 };
 
 export class CitationsSearch extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      active: true,
+    };
+  }
+
   initialState = () => {
     const { recordPIDs } = this.props;
     const doi = _get(recordPIDs, "doi.identifier");
@@ -85,7 +96,13 @@ export class CitationsSearch extends React.Component {
     return new InvenioSearchApi(apiConfigObj);
   };
 
+  handleAccordion = () => {
+    const { active } = this.state;
+    this.setState({ active: !active });
+  };
+
   render() {
+    const { active } = this.state;
     return (
       <OverridableContext.Provider value={overriddenComponents}>
         <ReactSearchKit
@@ -93,58 +110,79 @@ export class CitationsSearch extends React.Component {
           searchApi={this.searchApi()}
           initialQueryState={this.initialState()}
         >
-          <>
-            <Grid padded>
-              <Grid.Row>
-                <Grid.Column width="10">
-                  <Filter />
-                </Grid.Column>
+          <Accordion className="panel">
+            <Accordion.Title
+              active={active}
+              onClick={this.handleAccordion}
+              className="panel-heading"
+            >
+              Citations
+              <a
+                href="https://help.zenodo.org/#citations"
+                target="_blank"
+                className="ml-5 mr-5"
+              >
+                <Icon name="question circle" className="button" />
+              </a>
+              <Count />
+              <Icon name="angle right" />
+            </Accordion.Title>
 
-                <Grid.Column width="6">
-                  <SearchBar placeholder="Search for citation ..." />
-                </Grid.Column>
-              </Grid.Row>
-            </Grid>
+            <Accordion.Content active={active}>
+              <Grid padded>
+                <Grid.Row>
+                  <Grid.Column width="10">
+                    <Filter />
+                  </Grid.Column>
 
-            <Grid>
-              <Grid.Row>
-                <Grid.Column>
-                  <ResultsLoader>
-                    <Results />
-                    <Error />
-                    <EmptyResults />
-                  </ResultsLoader>
-                </Grid.Column>
-              </Grid.Row>
-            </Grid>
+                  <Grid.Column width="6">
+                    <SearchBar placeholder="Search for citation ..." />
+                  </Grid.Column>
+                </Grid.Row>
+              </Grid>
 
-            <Grid padded>
-              <Grid.Row>
-                <Grid.Column
-                  computer="13"
-                  tablet="10"
-                  mobile="16"
-                  textAlign="center"
-                  className="pr-0"
-                >
-                  <Pagination options={{ size: "mini", showEllipsis: true }} />
-                </Grid.Column>
+              <Grid>
+                <Grid.Row>
+                  <Grid.Column>
+                    <ResultsLoader>
+                      <Results />
+                      <Error />
+                      <EmptyResults />
+                    </ResultsLoader>
+                  </Grid.Column>
+                </Grid.Row>
+              </Grid>
 
-                <Grid.Column
-                  computer="3"
-                  tablet="6"
-                  mobile="16"
-                  textAlign="right"
-                  className="pl-0"
-                >
-                  <ResultsPerPage
-                    values={resultsPerPageValues}
-                    label={(cmp) => <>Page size: {cmp}</>}
-                  />
-                </Grid.Column>
-              </Grid.Row>
-            </Grid>
-          </>
+              <Grid padded>
+                <Grid.Row>
+                  <Grid.Column
+                    computer="13"
+                    tablet="10"
+                    mobile="16"
+                    textAlign="center"
+                    className="pr-0"
+                  >
+                    <Pagination
+                      options={{ size: "mini", showEllipsis: true }}
+                    />
+                  </Grid.Column>
+
+                  <Grid.Column
+                    computer="3"
+                    tablet="6"
+                    mobile="16"
+                    textAlign="right"
+                    className="pl-0"
+                  >
+                    <ResultsPerPage
+                      values={resultsPerPageValues}
+                      label={(cmp) => <>Page size: {cmp}</>}
+                    />
+                  </Grid.Column>
+                </Grid.Row>
+              </Grid>
+            </Accordion.Content>
+          </Accordion>
         </ReactSearchKit>
       </OverridableContext.Provider>
     );
