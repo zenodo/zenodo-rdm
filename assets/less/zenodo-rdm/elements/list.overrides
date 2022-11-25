@@ -1,0 +1,9 @@
+.ui.list {
+  &.filter-list {
+    .item {
+      text-transform: capitalize;
+      margin-right: 0.5 * @defaultMargin;
+      margin-left: 0;
+    }
+  }
+}

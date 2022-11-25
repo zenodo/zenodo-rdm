@@ -20,7 +20,8 @@ theme = WebpackThemeBundle(
         "semantic-ui": dict(
             entry={
                 # Add your webpack entrypoints
-                "zenodo-rdm-support": "./js/zenodo_rdm/src/support/support.js"
+                "zenodo-rdm-support": "./js/zenodo_rdm/src/support/support.js",
+                "zenodo-rdm-citations": "./js/zenodo_rdm/src/citations/index.js"
             },
             dependencies={
                 "@babel/runtime": "^7.9.0",

@@ -157,3 +157,9 @@ SUPPORT_EMAIL_CONFIRM_BODY_TEMPLATE = "zenodo_rdm/email_confirm_body.html"
 #: Email title template.
 SUPPORT_EMAIL_CONFIRM_TITLE_TEMPLATE = "zenodo_rdm/email_confirm_title.html"
 
+# Citations
+ZENODO_RECORDS_UI_CITATIONS_ENDPOINT = (
+    "https://zenodo-broker-qa.web.cern.ch/api/relationships"
+)
+
+ZENODO_RECORDS_UI_CITATIONS_ENABLE = False
