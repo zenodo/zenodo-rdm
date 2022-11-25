@@ -8,6 +8,8 @@
 
 {%- extends "invenio_app_rdm/records/detail.html" %}
 
+{%- set citations_enabled = config.ZENODO_RECORDS_UI_CITATIONS_ENABLE %}
+
 {%- block record_files -%}
   {# record has files BUT passed files are empty. This happens when we display are request. #}
   {%- if record.files.enabled -%}
@@ -56,7 +58,26 @@
           </div>
         </div>
       {%- endif %}
-      <div class="ui divider rel-mt-2"></div>
+
     </section>
   {%- endif %}
 {%- endblock record_files -%}
+    
+    
+{%- block record_footer -%}
+  <div class="ui divider rel-mt-2" aria-hidden="true"></div>
+
+  {% if citations_enabled %}
+    <section 
+      id="citations-search" 
+      data-record-pids='{{ record.pids | tojson }}' 
+      data-citations-endpoint="{{config.ZENODO_RECORDS_UI_CITATIONS_ENDPOINT}}" aria-label="{{ _('Record citations')}}"
+    >
+    </section>
+  {% endif %}
+{%- endblock record_footer -%}
+
+{% block javascript %}
+  {{super()}}
+  {{ webpack['zenodo-rdm-citations.js'] }}
+{% endblock javascript %}

@@ -34,18 +34,18 @@ export const CitationRow = ({ citation }) => {
       </Table.Cell>
 
       <Table.Cell>
-        <Header size="small">
+        <Header size="tiny">
           <a href={citation.doiUrl} target="_blank">
-            {_truncate(citation.title, { length: 60 })}
+            {_truncate(citation.title, { length: 80 })}
           </a>
-          <Header.Subheader>
+          <Header.Subheader className="mt-5">
             {citation.creatorNames} {citation.doi && `(DOI: ${citation.doi})`}
           </Header.Subheader>
         </Header>
       </Table.Cell>
 
       <Table.Cell>{citation.publicationYear}</Table.Cell>
-      <Table.Cell width={4}>
+      <Table.Cell collapsing>
         {citation.badges?.map((identifier) => (
           <Popup
             inverted
@@ -58,14 +58,16 @@ export const CitationRow = ({ citation }) => {
                 target="_blank"
                 aria-label={`${identifier.IDScheme}: ${identifier.ID}`}
               >
-                <Label className="primary mr-5">{identifier.IDScheme}</Label>
+                <Label size="tiny" className="primary uppercase mr-5">
+                  {identifier.IDScheme}
+                </Label>
               </a>
             }
           />
         ))}
       </Table.Cell>
 
-      <Table.Cell>
+      <Table.Cell collapsing>
         <Popup
           inverted
           size="mini"
