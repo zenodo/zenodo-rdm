@@ -1,3 +1,9 @@
+- name: "OpenAIRE"
+  spec: "openaire"
+  search_pattern: "access.files:public AND metadata.resource_type.id:(publication OR poster OR presentation)"
 - name: "OpenAIRE Data"
   spec: "openaire_data"
-  search_pattern: "resource_type.type:dataset"s
+  search_pattern: "metadata.resource_type.id:dataset"
+- name: "Software"
+  spec: "software"
+  search_pattern: "metadata.resource_type.id:software"
