@@ -93,3 +93,16 @@ a.inverted {
   }
 }
 
+.signup-social {
+
+  h3.ui.header {
+    color: white;
+    margin-bottom: @h3;
+    text-align: center;
+  }
+}
+
+#signup-orcid-logo {
+  height: 0.85em;
+  width: 1.2em;
+}

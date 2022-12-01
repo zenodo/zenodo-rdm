@@ -13,52 +13,60 @@
     <dl class="mt-0">
       <dt class="ui small inverted header"><b>Citeable. Discoverable</b></dt>
       <dd>Uploads get a Digital Object Identifier (DOI) to make them easily and uniquely citeable.</dd>
-      
+
       <dt class="ui small inverted header"><b>Communities</b></dt>
-      <dd>Accept or reject uploads to your own community (e.g workshops, EU projects, institutions or entire disciplines).</dd>
-      
+      <dd>Accept or reject uploads to your own community (e.g workshops, EU projects, institutions or entire
+        disciplines).</dd>
+
       <dt class="ui small inverted header"><b>Trusted Research Data Management</b></dt>
-      <dd>uilt on top of CERN's expertise in managing 100s of petabytes of research data from the Large Hadron Collider.</dd>
+      <dd>Built on top of CERN's expertise in managing 100s of petabytes of research data from the Large Hadron Collider.
+      </dd>
     </dl>
   </div>
 
   <div class="sixteen wide mobile eight wide tablet eight wide computer column">
+    <div class="signup-social">
+      <a href="{{url_for('invenio_oauthclient.login', remote_app='github')}}" class="ui button fluid">
+        <i class="github icon"></i>
+        {{_('Sign up with GitHub')}}
+      </a>
+      <a href="{{url_for('invenio_oauthclient.login', remote_app='orcid')}}" class="ui button fluid">
+        <i class="icon"><img id="signup-orcid-logo" src="{{ url_for('static', filename='images/orcid.svg')}}"></i>
+        {{_('Sign up with ORCID')}}
+      </a>
+      <h3 class="ui header" id="testheader">— OR —</h3>
+    </div>
     {%- with form = register_user_form %}
-      <form
-        class="credentials-form"
-        action="{{ url_for_security('register') }}" 
-        method="POST" 
-        name="register_user_form"
-      >
-        {{ form_errors(form) }}
-        {{ form.hidden_tag() }}
+    <form class="credentials-form" action="{{ url_for_security('register') }}" method="POST" name="register_user_form">
+      {{ form_errors(form) }}
+      {{ form.hidden_tag() }}
 
-        {%- block registration_form_fields scoped %}
-          {{ render_field(form.email, icon="user icon", autofocus=True, errormsg=False) }}
-          {{ render_field(form.password, icon="lock icon", errormsg=False) }}
-          
-          {%- if form.password_confirm %}
-            {{ render_field(form.password_confirm, icon="glyphicon glyphicon-lock", errormsg=False) }}
-          {%- endif %}
-        {%- endblock registration_form_fields %}
-        
-        {%- if form.recaptcha %}
-          <div class="form-group form-group-lg">{{ form.recaptcha() }}</div>
-        {%- endif %}
+      {%- block registration_form_fields scoped %}
+      {{ render_field(form.email, icon="user icon", autofocus=True, errormsg=False) }}
+      {{ render_field(form.password, icon="lock icon", errormsg=False) }}
 
-        <button type="submit" class="ui left labeled icon fluid button warning">
-          <i class="icon edit"></i>
-          {{ _('Sign up') }}
-        </button>
-      </form>
+      {%- if form.password_confirm %}
+      {{ render_field(form.password_confirm, icon="glyphicon glyphicon-lock", errormsg=False) }}
+      {%- endif %}
+      {%- endblock registration_form_fields %}
 
-      <div class="ui centered container rel-mt-2">
-        <h2 class="ui small inverted header">
-          {{ _('Already have an account?') }}
-          <a href="{{ url_for_security('login') }}" class="inverted">{{ _('Log in') }}</a>
-        </h2>
-        <a href="https://about.zenodo.org/privacy-policy/" class="inverted">Privacy notice</a>
-      </div>
+      {%- if form.recaptcha %}
+      <div class="form-group form-group-lg">{{ form.recaptcha() }}</div>
+      {%- endif %}
+
+      <button type="submit" class="ui left labeled icon fluid button warning">
+        <i class="icon edit"></i>
+        {{ _('Sign up') }}
+      </button>
+    </form>
+
+    <div class="ui centered container rel-mt-2">
+      <h2 class="ui small inverted header">
+        {{ _('Already have an account?') }}
+        <a href="{{ url_for_security('login') }}" class="inverted">{{ _('Log in') }}</a>
+      </h2>
+      <a href="https://about.zenodo.org/privacy-policy/" class="inverted">Privacy notice</a>
+    </div>
     {%- endwith %}
 
   </div>
@@ -67,28 +75,13 @@
 <div class="ui centered container rel-mt-2">
   <div class="ui horizontal link list">
     <a class="item" href="https://www.openaire.eu">
-      <img 
-        src="{{ url_for('static', filename='images/openaire.png') }}" 
-        width="65"
-        height="65"
-        alt="OpenAire logo"
-      />
+      <img src="{{ url_for('static', filename='images/openaire.png') }}" width="65" height="65" alt="OpenAire logo" />
     </a>
     <a class="item rel-ml-2 rel-mr-2" href="https://home.cern">
-      <img 
-        src="{{ url_for('static', filename='images/cern.png') }}" 
-        width="60" 
-        height="60"
-        alt="CERN logo"
-      />
+      <img src="{{ url_for('static', filename='images/cern.png') }}" width="60" height="60" alt="CERN logo" />
     </a>
     <a class="item ml-0" href="https://ec.europa.eu/programmes/horizon2020/">
-      <img 
-        src="{{ url_for('static', filename='images/eu.png') }}" 
-        width="88" 
-        height="60"
-        alt="EU logo"
-      />
+      <img src="{{ url_for('static', filename='images/eu.png') }}" width="88" height="60" alt="EU logo" />
     </a>
   </div>
 </div>
