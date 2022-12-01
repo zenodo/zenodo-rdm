@@ -105,6 +105,20 @@ class ZenodoToRDMRecordEntry(RDMRecordEntry):
 class ZenodoToRDMRecordTransform(RDMRecordTransform):
     """Zenodo to RDM Record class for data transformation."""
 
+    def _community_id(self, entry):
+        communities = entry["json"].get("communities")
+        if communities:
+            # TODO: handle all slugs
+            slug = communities[0]
+            if slug:
+                return {
+                    "ids": [
+                        slug
+                    ],
+                    "default": slug
+                }
+        return {}
+
     def _parent(self, entry):
         parent = {
             "created": entry["created"],  # same as the record
@@ -116,7 +130,7 @@ class ZenodoToRDMRecordTransform(RDMRecordTransform):
                 "access": {
                     "owned_by": [{"user": o} for o in entry["json"].get("owners", [])]
                 },
-                "communities": {}
+                "communities": self._community_id(entry),
             },
         }
 

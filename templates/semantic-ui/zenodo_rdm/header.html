@@ -21,10 +21,14 @@
   # waive the privileges and immunities granted to it by virtue of its status
   # as an Intergovernmental Organization or submit itself to any jurisdiction.
   -#}
-<div class="ui warning flashed top attached manage mb-0 message">
-  <div class="ui container">
-    🚀 <b>ZenodoRDM</b>: This is a demo site of Zenodo's next-generation platform based on InvenioRDM.
-    <a href="https://blog.zenodo.org/"><b> Learn more</b></a>.
+
+{%- extends "invenio_app_rdm/header.html" %}
+
+{%- block site_banner %}
+  <div class="ui warning flashed top attached manage mb-0 message">
+    <div class="ui container">
+      🚀 <b>ZenodoRDM</b>: This is a demo site of Zenodo's next-generation platform based on InvenioRDM.
+      <a href="https://blog.zenodo.org/"><b> Learn more</b></a>.
+    </div>
   </div>
-</div>
-{%- include "invenio_app_rdm/header.html" %}
+{% endblock site_banner %}

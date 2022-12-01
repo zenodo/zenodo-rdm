@@ -33,12 +33,14 @@ SQLALCHEMY_DATABASE_URI="postgresql+psycopg2://zenodo:zenodo@localhost:5432/zeno
   create an empty `users.yaml` file in the instance `app_data` folder.
 
 ```console
+# If on OpenShift
+# bash -l
 invenio shell --no-term-title -c "import redis; redis.StrictRedis.from_url(app.config['CACHE_REDIS_URL']).flushall(); print('Cache cleared')"
 invenio db drop --yes-i-know
 invenio index destroy --force --yes-i-know
 invenio index queue init purge
 invenio db create
-invenio files location create --default 'default-location'  $(pipenv run invenio shell --no-term-title -c "print(app.instance_path)")'/data'
+invenio files location create --default 'default-location' /opt/invenio/var/instance/data
 invenio roles create admin
 invenio access allow superuser-access role admin
 invenio index init --force
@@ -56,6 +58,9 @@ invenio vocabularies import -v names -f ./app_data/vocabularies-future.yaml  # z
   in the `/migration` folder.
 
 - Configure your `streams.yaml` file, you can see an example in this folder.
+  You will need to run in a invenio shell the `dump_communities.py` code so that
+  the `streams.yaml` is populated with the `communities_cache` i.e a map between
+  communities slug names to communities ids.
 
 ## Run!
 
@@ -63,6 +68,18 @@ invenio vocabularies import -v names -f ./app_data/vocabularies-future.yaml  # z
 
 ```shell
 python -m zenodo_rdm.migrator /path/to/streams.yaml
+```
+
+```bash
+# Manual COPY ...
+export DB_URI=${SQLALCHEMY_DATABASE_URI}
+cat rdm_records_metadata.csv | psql $DB_URI -c "COPY rdm_records_metadata (id, json, created, updated, version_id, index, bucket_id, parent_id) FROM STDIN (FORMAT csv);"
+
+pv pidstore_pid.csv | psql $DB_URI -c "COPY pidstore_pid (id, pid_type, pid_value, status, object_type, object_uuid, created, updated) FROM STDIN (FORMAT csv);"
+pv rdm_parents_metadata.csv | psql $DB_URI -c "COPY rdm_parents_metadata (id, json, created, updated, version_id) FROM STDIN (FORMAT csv);"
+pv rdm_records_metadata.csv | psql $DB_URI -c "COPY rdm_records_metadata (id, json, created, updated, version_id, index, bucket_id, parent_id) FROM STDIN (FORMAT csv);"
+pv rdm_parents_community.csv | psql $DB_URI -c "COPY rdm_parents_community (community_id, record_id, request_id) FROM STDIN (FORMAT csv);"
+pv rdm_versions_state.csv | psql $DB_URI -c "COPY rdm_versions_state (latest_index, parent_id, latest_id, next_draft_id) FROM STDIN (FORMAT csv);"
 ```
 
 - Once it has finished, run the re-indexing. Note that this step will strain your CPU rendering your laptop almost useless. In a `invenio-cli pyshell` run:
@@ -82,4 +99,18 @@ current_rdm_records_service.rebuild_index(identity=system_identity)
 ```python
 current_users_service.indexer.refresh()
 current_rdm_records_service.indexer.refresh()
+```
+
+or if memory is an issue then you can generate the index batches with the code below
+
+```
+from invenio_rdm_records.proxies import current_rdm_records_service
+from invenio_db import db
+
+model_cls = current_rdm_records_service.record_cls.model_cls
+records = db.session.query(model_cls.id).filter(
+    model_cls.is_deleted == False,
+).yield_per(1000)
+
+current_rdm_records_service.indexer.bulk_index((rec.id for rec in records))
 ```
