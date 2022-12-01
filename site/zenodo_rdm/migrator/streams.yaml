@@ -1,12 +1,14 @@
 records:
   extract:
-    filepath: "/path/to/records.jsonl"
+    filepath: /path/to/records.jsonl
   load:
-    db_uri: "postgresql://zenodo:zenodo@localhost:5432/zenodo"
-    tmp_dir: "/path/to/tmp/"
+    communities_cache:
+      slug: community_id
+    db_uri: postgresql://zenodo:zenodo@localhost:5432/zenodo
+    tmp_dir: /path/to/tmp
 users:
   extract:
-    filepath: "/path/to/users.jsonl"
+    filepath: /path/to/users.jsonl
   load:
-    db_uri: "postgresql://zenodo:zenodo@localhost:5432/zenodo"
-    tmp_dir: "/path/to/tmp"
+    db_uri: postgresql://zenodo:zenodo@localhost:5432/zenodo
+    tmp_dir: /path/to/tmp
