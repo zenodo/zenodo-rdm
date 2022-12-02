@@ -21,23 +21,12 @@
   # waive the privileges and immunities granted to it by virtue of its status
   # as an Intergovernmental Organization or submit itself to any jurisdiction.
   -#}
-  
+
 {%- extends "invenio_app_rdm/frontpage.html" %}
 
 {%- block page_header %}
   {%- include "zenodo_rdm/header_frontpage.html" %}
 {%- endblock page_header %}
-
-{% block page_body %}
-<div class="ui info flashed top attached manage message">
-  <div class="ui container">
-    This is future Zenodo's sandbox instance for testing purposes. See the
-    <a href="https://blog.zenodo.org/"><b>Zenodo Blog</b></a> for more details.
-  </div>
-</div>
-
-{{ super() }}
-{% endblock page_body %}
 
 {% block side_column_content %}
   <section class="ui segment rdm-sidebar">
