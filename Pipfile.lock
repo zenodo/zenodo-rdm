@@ -855,12 +855,12 @@
                 "opensearch2"
             ],
             "hashes": [
-                "sha256:2938774513382c7a64041a4f0639f55b0b5e10a3a1064d628e312bc1416e6709",
-                "sha256:de2b0d63abcc6baa3a595e837b49d3049b25a3b61e8ace839211a425e15d07bc"
+                "sha256:34a50ec765efe0ac67aace50022f4baba84e8d8075e6f2956c09beb6142169d2",
+                "sha256:c477b249b8191dbe4297e6ed38c5e6c38d63bdb2544897d6467e60bcee5ed097"
             ],
             "index": "pypi",
             "markers": null,
-            "version": "==11.0.0.dev8"
+            "version": "==11.0.0.dev9"
         },
         "invenio-assets": {
             "hashes": [
