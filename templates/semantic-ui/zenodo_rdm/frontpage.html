@@ -22,11 +22,16 @@
   # as an Intergovernmental Organization or submit itself to any jurisdiction.
   -#}
 
+{% from "invenio_app_rdm/macros/records_list.html" import records_list %}
 {%- extends "invenio_app_rdm/frontpage.html" %}
 
 {%- block page_header %}
   {%- include "zenodo_rdm/header_frontpage.html" %}
 {%- endblock page_header %}
+
+{% block main_column_content %}
+  {{ records_list(fetch_url=config.ZENODO_FRONTPAGE_RECENT_UPLOADS_QUERY) }}
+{% endblock main_column_content %}
 
 {% block side_column_content %}
   <section class="ui segment rdm-sidebar">
