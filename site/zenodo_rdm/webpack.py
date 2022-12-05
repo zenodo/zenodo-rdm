@@ -34,6 +34,7 @@ theme = WebpackThemeBundle(
                 "react": "^16.13.0",
                 "react-dom": "^16.13.0",
                 "lodash": "^4.17.0",
+                "react-google-recaptcha": "^2.1.0"
             },
             # aliases={
             #     "@translations/zenodo_rdm": "translations",

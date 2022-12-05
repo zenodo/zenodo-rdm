@@ -29,18 +29,19 @@ class SupportFormSchema(Schema):
     category = fields.String(required=True)
     sysInfo = fields.Boolean()
     files = fields.List(fields.Raw(type="file"))
+    recaptcha = fields.Boolean()
 
     @validates("description")
     def validate_description(self, data, **kwargs):
         if len(data) < min_length_config:
             raise ValidationError(
-                "Description length must be bigger than {} characters".format(
+                "Description length must be longer than {} characters".format(
                     min_length_config
                 )
             )
         if len(data) > max_length_config:
             raise ValidationError(
-                "Description length must be smaller than {} characters".format(
+                "Description length must be shorter than {} characters".format(
                     max_length_config
                 )
             )
@@ -49,6 +50,11 @@ class SupportFormSchema(Schema):
     def validate_category(self, data, **kwargs):
         if data not in self.allowed_categories:
             raise ValidationError("{} is not a valid support category".format(data))
+
+    @validates("recaptcha")
+    def validate_recaptcha(self, data, **kwards):
+        if data == False:
+            raise ValidationError("Recaptcha not completed")
 
     @cached_property
     def allowed_categories(self):
