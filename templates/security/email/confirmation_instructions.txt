@@ -1,0 +1,7 @@
+{{ _('Hello %(username)s!', username=user.username) }}
+
+{{ _('You have received this message because your email address has been registered with Zenodo.
+Verify yourself and confirm your email by the link below.') }}
+
+{{ confirmation_link }}
+
