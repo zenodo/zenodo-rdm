@@ -1,0 +1,21 @@
+{#
+  Copyright (C) 2022 CERN.
+
+  Invenio RDM Records is free software; you can redistribute it and/or modify
+  it under the terms of the MIT License; see LICENSE file for more details.
+#}
+
+
+{%- extends "invenio_app_rdm/records/detail.html"%}
+
+{%- block record_files -%}
+  {%- if record.files.enabled and not files -%}
+    <div class="ui message warning">
+      <div class="header">
+        Looking for files of this record?
+      </div>
+        They are currently under migration process and will be available soon!
+    </div>
+  {% endif %}
+{{ super() }}
+{%- endblock record_files -%}
