@@ -9,7 +9,7 @@
 {%- extends "invenio_app_rdm/records/detail.html"%}
 
 {%- block record_files -%}
-  {%- if record.files.enabled and not files -%}
+  {%- if record.files.enabled and not files.order -%}
     <div class="ui message warning">
       <div class="header">
         Looking for files of this record?
