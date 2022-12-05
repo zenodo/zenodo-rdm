@@ -1,0 +1,9 @@
+{{ _('Welcome %(username)s!', username=user.username) }}
+
+{% if security.confirmable %}
+{{ _('We are excited to have you get started!
+First, you need to confirm your account. Just follow the link below.') }}
+
+{{ confirmation_link }}
+{% endif %}
+

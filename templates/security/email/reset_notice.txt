@@ -1,0 +1,8 @@
+{{ _('Hello %(username)s!', username=user.username) }}
+
+<p>{{ _('Your password has been successfully reset!') }}</p>
+
+<p>{{ _('Go to your account by the link below.') }}</p>
+
+{{ url_for('security.login', _external=True) }}
+

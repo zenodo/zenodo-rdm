@@ -1,0 +1,9 @@
+{{ _('Hello %(username)s!', username=user.username) }}
+
+
+{{ _('There was a request to reset your password.
+If you did not make this request then please ignore this message.
+Otherwise, change your password by the link below.') }}
+
+{{ reset_link }}
+
