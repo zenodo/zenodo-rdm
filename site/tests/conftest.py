@@ -10,6 +10,9 @@
 from collections import namedtuple
 
 import pytest
+from flask_security import login_user
+from flask_security.utils import hash_password
+from invenio_accounts.testutils import login_user_via_session
 from invenio_app.factory import create_api as _create_api
 
 
@@ -57,3 +60,27 @@ def running_app(
 def test_app(running_app):
     """Get current app."""
     return running_app.app
+
+
+@pytest.fixture()
+def users(app, db):
+    """Create example users."""
+    with db.session.begin_nested():
+        datastore = app.extensions["security"].datastore
+        user1 = datastore.create_user(
+            email="info@zenodo.org",
+            password=hash_password("password"),
+            active=True,
+        )
+
+    db.session.commit()
+    return [user1]
+
+
+@pytest.fixture()
+def client_with_login(client, users):
+    """Log in a user to the client."""
+    user = users[0]
+    login_user(user)
+    login_user_via_session(client, email=user.email)
+    return client
