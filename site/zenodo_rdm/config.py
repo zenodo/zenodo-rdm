@@ -163,3 +163,234 @@ ZENODO_RECORDS_UI_CITATIONS_ENDPOINT = (
 )
 
 ZENODO_RECORDS_UI_CITATIONS_ENABLE = False
+
+
+ZENODO_TYPE_SUBTYPE_LEGACY = {
+    "publications": "publication",
+    "books": "publication.book",
+    "books-sections": "publication.section",
+    "conference-papers": "publication.conferencepaper",
+    "journal-articles": "publication.article",
+    "patents": "publication.patent",
+    "preprints": "publication.preprint",
+    "deliverable": "publication.deliverable",
+    "milestone": "publication.milestone",
+    "proposal": "publication.proposal",
+    "reports": "publication.report",
+    "theses": "publication.thesis",
+    "technical-notes": "publication.technicalnote",
+    "working-papers": "publication.workingpaper",
+    "other-publications": "publication.other",
+    "posters": "poster",
+    "presentations": "presentation",
+    "datasets": "dataset",
+    "images": "image",
+    "figures": "image.figure",
+    "drawings": "image.drawing",
+    "diagrams": "image.diagram",
+    "photos": "image.photo",
+    "other-images": "image.other",
+    "videos": "video",
+    "software": "software",
+    "lessons": "lesson",
+    "physicalobject": "physicalobject",
+    "workflows": "workflow",
+    "other": "other",
+}
+
+
+from flask import request, url_for
+
+
+def communities_detail_view_function():
+    # "/communities/about/<id>/" -> GET /communities/<pid_value> (invenio_app_rdm_communities.communities_detail)
+    # "/collection/user-<id>" -> GET /communities/<pid_value> (invenio_app_rdm_communities.communities_detail)
+    # "/communities/<community_id>/about" -> GET /communities/<pid_value> (invenio_app_rdm_communities.communities_detail)
+    _id = request.view_args.get("id", request.view_args.get("community_id"))
+    values = {"pid_value": _id}
+    target = url_for("invenio_app_rdm_communities.communities_detail", **values)
+    return target
+
+
+def communities_settings_view_function():
+    # '/communities/<community_id>/edit', -> GET /communities/<community_id>/settings (invenio_app_rdm_communities.communities_settings)
+    _id = request.view_args.get("id", request.view_args.get("community_id"))
+    values = {"pid_value": _id}
+    target = url_for("invenio_communities.communities_settings", **values)
+    return target
+
+
+def communities_requests_view_function():
+    # '/communities/<community_id>/curate', -> GET /communities/<community_id>/settings (invenio_app_rdm_communities.communities_detail)
+    _id = request.view_args.get("id", request.view_args.get("community_id"))
+    values = {"pid_value": _id}
+    target = url_for("invenio_communities.communities_requests", **values)
+    return target
+
+
+def communities_records_search():
+    # '/communities/<string:community_id>/search', -> invenio_communities.communities_search community_id->q
+    _id = request.view_args.get("id", request.view_args.get("community_id"))
+    values = {"pid_value": _id}
+    _q = request.args.get("q", "")
+    url = url_for("invenio_app_rdm_communities.communities_detail", **values)
+    target = f"{url}?q={_q}"
+    return target
+
+
+def search_view_function():
+    # /collection/<type>" -> GET /search?q=<type> (invenio_search_ui.search)
+    _type = request.view_args["type"]
+    legacy_value = ZENODO_TYPE_SUBTYPE_LEGACY.get(_type)
+    values = {"q": f"metadata.resource_type.id:{legacy_value}"}
+    target = url_for("invenio_search_ui.search", **values)
+    return target
+
+
+def deposit_view_function():
+    # '/deposit/<pid_value>',  -> GET /uploads/<pid_value> (invenio_app_rdm_records.deposit_edit)
+    values = request.view_args
+    target = url_for("invenio_app_rdm_records.deposit_edit", **values)
+    return target
+
+
+def record_view_function():
+    # '/record/<pid_value>', -> GET /records/<pid_value> (invenio_app_rdm_records.record_detail)
+    values = request.view_args
+    target = url_for("invenio_app_rdm_records.record_detail", **values)
+    return target
+
+
+def record_export_view():
+    # '/record/<pid_value>/export/<export_format> -> GET /records/<pid_value>/export/<export_format> (invenio_app_rdm_records.record_export)
+    values = request.view_args
+    target = url_for("invenio_app_rdm_records.record_export", **values)
+    return target
+
+
+def record_file_download_view():
+    # '/record/<pid_value>/export/<export_format> -> GET /records/<pid_value>/export/<export_format> (invenio_app_rdm_records.record_export)
+    values = request.view_args
+    target = url_for("invenio_app_rdm_records.record_file_download", **values)
+    return target
+
+
+def redirect_record_file_preview_view():
+    # '/record/<pid_value>/preview/<filename>', -> /records/<pid_value>/preview/<filename> (invenio_app_rdm_records.record_file_preview)
+    values = request.view_args
+    target = url_for("invenio_app_rdm_records.record_file_preview", **values)
+    return target
+
+
+def redirect_deposit_own_view():
+    # /deposit -> GET /me/uploads (invenio_app_rdm_users.uploads)
+    _q = "&is_published=false"
+    url = url_for("invenio_app_rdm_users.uploads")
+    target = f"{url}?q={_q}"
+    return target
+
+
+def redirect_deposit_new_view():
+    # /deposit/new -> GET /uploads/new (invenio_app_rdm_records.deposit_create)
+    target = url_for("invenio_app_rdm_records.deposit_create")
+    return target
+
+
+REDIRECTOR_RULES = {
+    "redirect_communities_about_legacy": {
+        "source": "/communities/about/<id>/",
+        "target": communities_detail_view_function,
+    },
+    "redirect_communities_search_legacy": {
+        "source": "/collection/<type>",
+        "target": search_view_function,
+    },
+    "redirect_collections_about": {
+        "source": "/collection/user-<id>",
+        "target": communities_detail_view_function,
+    },
+    "redirect_communities_curate": {
+        "source": "/communities/<community_id>/curate",
+        "target": communities_requests_view_function,
+    },
+    "redirect_communities_about": {
+        "source": "/communities/<community_id>/about",
+        "target": communities_detail_view_function,
+    },
+    "redirect_communities_edt": {
+        "source": "/communities/<community_id>/edit",
+        "target": communities_settings_view_function,
+    },
+    "redirect_communities_search": {
+        "source": "/communities/<community_id>/search",
+        "target": communities_records_search,
+    },
+    "redirect_dev": {
+        "source": "/dev",
+        "target": "http://developers.zenodo.org",
+    },
+    "redirect_faq": {
+        "source": "/faq",
+        "target": "http://help.zenodo.org",
+    },
+    "redirect_features": {
+        "source": "/features",
+        "target": "http://help.zenodo.org/features/",
+    },
+    "redirect_whatsnew": {
+        "source": "/whatsnew",
+        "target": "http://help.zenodo.org/whatsnew/",
+    },
+    "redirect_about": {
+        "source": "/about",
+        "target": "http://about.zenodo.org",
+    },
+    "redirect_contact": {
+        "source": "/contact",
+        "target": "http://about.zenodo.org/contact/",
+    },
+    "redirect_policies": {
+        "source": "/policies",
+        "target": "http://about.zenodo.org/policies/",
+    },
+    "redirect_privacy-policy": {
+        "source": "/privacy-policy",
+        "target": "http://about.zenodo.org/privacy-policy/",
+    },
+    "redirect_terms": {
+        "source": "/terms",
+        "target": "http://about.zenodo.org/terms/",
+    },
+    "redirect_donate": {
+        "source": "/donate",
+        "target": "https://donate.cernandsocietyfoundation.cern/zenodo/~my-donation?_cv=1",
+    },
+    "redirect_deposit_id": {
+        "source": "/deposit/<pid_value>",
+        "target": deposit_view_function,
+    },
+    "redirect_record_detail": {
+        "source": "/record/<pid_value>",
+        "target": record_view_function,
+    },
+    "redirect_record_export": {
+        "source": "/record/<pid_value>/export/<export_format>",
+        "target": record_export_view,
+    },
+    "redirect_record_file_download": {
+        "source": "/record/<pid_value>/files/<filename>",
+        "target": record_file_download_view,
+    },
+    "redirect_deposit_own": {
+        "source": "/deposit",
+        "target": redirect_deposit_own_view,
+    },
+    "redirect_deposit_new": {
+        "source": "/deposit/new",
+        "target": redirect_deposit_new_view,
+    },
+    "redirect_record_file_preview": {
+        "source": "/record/<pid_value>/preview/<filename>",
+        "target": redirect_record_file_preview_view,
+    },
+}
