@@ -48,6 +48,7 @@ jobs:
           # Use Docker `latest` tag convention
           [ "$VERSION" == "master" ] && VERSION=latest
 
+          # Use `prod` tag convention if not merge to master
           [ "$VERSION" != "latest" ] && VERSION=prod
 
           echo IMAGE_ID=$IMAGE_ID
