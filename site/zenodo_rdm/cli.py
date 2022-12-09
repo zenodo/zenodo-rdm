@@ -177,13 +177,14 @@ def zenodo_admin():
     "--recid",
     type=str,
     required=True,
-    help="A command to delete a record by giving the pid to delete. This is a temporary solution until the deletion mechanism is implemented in service layer.",
+    help="Delete a record by giving the pid to delete. This is a temporary solution until the deletion mechanism is implemented in service layer.",
 )
 @with_appcontext
 def delete_record(recid):
     """Custom script to delete a record.
 
     A command to delete a record by giving the pid to delete. **This is a temporary solution** until the deletion mechanism is implemented in service layer.
+    Usage: invenio zenodo-admin delete -r <recid>
     """
 
     # Record
