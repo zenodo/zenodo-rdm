@@ -6,9 +6,9 @@ on:
   workflow_dispatch:
     inputs:
       reason:
-        description: 'Reason'
+        description: "Reason"
         required: false
-        default: 'Manual trigger'
+        default: "Manual trigger"
   push:
     # Publish `master` as Docker `latest` image.
     branches:
@@ -23,9 +23,8 @@ env:
 
 jobs:
   push:
-
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v2
 
@@ -48,6 +47,8 @@ jobs:
 
           # Use Docker `latest` tag convention
           [ "$VERSION" == "master" ] && VERSION=latest
+
+          [ "$VERSION" != "latest" ] && VERSION=prod
 
           echo IMAGE_ID=$IMAGE_ID
           echo VERSION=$VERSION
