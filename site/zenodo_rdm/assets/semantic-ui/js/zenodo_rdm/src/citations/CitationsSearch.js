@@ -141,8 +141,8 @@ export class CitationsSearch extends React.Component {
                 </Grid.Row>
               </Grid>
 
-              <Grid>
-                <Grid.Row>
+              <Grid className="mt-0">
+                <Grid.Row className="pt-0">
                   <Grid.Column>
                     <ResultsLoader>
                       <Results />
