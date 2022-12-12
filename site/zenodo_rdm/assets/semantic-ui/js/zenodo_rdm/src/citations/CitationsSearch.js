@@ -109,6 +109,7 @@ export class CitationsSearch extends React.Component {
           appName={citationSearchAppID}
           searchApi={this.searchApi()}
           initialQueryState={this.initialState()}
+          urlHandlerApi={{ enabled: false }}
         >
           <Accordion className="panel">
             <Accordion.Title
