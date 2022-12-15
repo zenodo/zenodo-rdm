@@ -72,10 +72,27 @@
       id="citations-search" 
       data-record-pids='{{ record.pids | tojson }}' 
       data-citations-endpoint="{{config.ZENODO_RECORDS_UI_CITATIONS_ENDPOINT}}" aria-label="{{ _('Record citations')}}"
+      class="rel-mb-1"
     >
     </section>
   {% endif %}
 {%- endblock record_footer -%}
+
+
+{% block record_sidebar %}
+  {% if record.id|int %}
+  <!-- migrated records are following the legacy PID minting format which is an autoincrement integer -->
+  <div class="ui warning icon message">
+    <i class="info circle icon" aria-hidden="true"></i>
+    <p class="content mt-0">
+      <span class="header">This is a cloned record for testing purposes</span>
+      See the original record on <a href="https://zenodo.org/record/{{record.id}}" target="_blank">Zenodo</a>
+    </p>
+  </div>
+  {% endif %}
+  {{super()}}
+{% endblock record_sidebar %}
+
 
 {% block javascript %}
   {{super()}}
