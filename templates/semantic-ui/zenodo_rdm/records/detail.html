@@ -62,15 +62,15 @@
     </section>
   {%- endif %}
 {%- endblock record_files -%}
-    
-    
+
+
 {%- block record_footer -%}
   <div class="ui divider rel-mt-2" aria-hidden="true"></div>
 
   {% if citations_enabled %}
-    <section 
-      id="citations-search" 
-      data-record-pids='{{ record.pids | tojson }}' 
+    <section
+      id="citations-search"
+      data-record-pids='{{ record.pids | tojson }}'
       data-citations-endpoint="{{config.ZENODO_RECORDS_UI_CITATIONS_ENDPOINT}}" aria-label="{{ _('Record citations')}}"
       class="rel-mb-1"
     >
@@ -80,19 +80,12 @@
 
 
 {% block record_sidebar %}
-  {% if record.id|int %}
-  <!-- migrated records are following the legacy PID minting format which is an autoincrement integer -->
-  <div class="ui warning icon message">
-    <i class="info circle icon" aria-hidden="true"></i>
-    <p class="content mt-0">
-      <span class="header">This is a cloned record for testing purposes</span>
-      See the original record on <a href="https://zenodo.org/record/{{record.id}}" target="_blank">Zenodo</a>
-    </p>
-  </div>
-  {% endif %}
   {{super()}}
+  <!-- migrated records are following the legacy PID minting format which is an autoincrement integer -->
+  {% if record.id|int %}
+  <p>See this record on <a href="https://zenodo.org/record/{{record.id}}" target="_blank">Zenodo</a></p>
+  {% endif %}
 {% endblock record_sidebar %}
-
 
 {% block javascript %}
   {{super()}}
