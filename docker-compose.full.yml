@@ -16,6 +16,10 @@ services:
     extends:
       file: docker-services.yml
       service: search
+  pgadmin:
+    extends:
+      file: docker-services.yml
+      service: pgadmin
   opensearch-dashboards:
     extends:
       file: docker-services.yml
