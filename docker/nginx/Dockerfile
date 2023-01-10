@@ -1,4 +1,4 @@
-FROM nginx
+FROM registry.cern.ch/docker.io/library/nginx
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY conf.d/* /etc/nginx/conf.d/
 COPY test.key /etc/ssl/private/test.key
