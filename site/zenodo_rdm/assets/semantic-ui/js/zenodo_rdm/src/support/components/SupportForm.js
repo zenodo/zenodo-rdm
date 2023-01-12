@@ -3,8 +3,8 @@ import React, { Component } from "react";
 import { Formik, Form } from "formik";
 import { Form as SemanticForm, Button, Modal } from "semantic-ui-react";
 import { http, TextField, TextAreaField, ToggleField } from "react-invenio-forms";
-import { remove } from "lodash/remove";
-import { set } from "lodash/set";
+import _remove from "lodash/remove";
+import _set from "lodash/set";
 
 import CategoryDropdown from "./CategoryDropdown";
 import FileUploader from "./FileUploader";
@@ -69,7 +69,7 @@ class SupportForm extends Component {
           Object.prototype.hasOwnProperty.call(e, "field") &&
           Object.prototype.hasOwnProperty.call(e, "messages")
         ) {
-          set(deserializedErrors, e.field, e.messages.join(" "));
+          _set(deserializedErrors, e.field, e.messages.join(" "));
         }
       }
     }
@@ -211,7 +211,7 @@ class SupportForm extends Component {
                   currentFiles={values.files}
                   handleDelete={(file) => {
                     const newFiles = values.files;
-                    remove(newFiles, file);
+                    _remove(newFiles, file);
                     setFieldValue("files", newFiles);
                   }}
                   errorMessage={fileErrorMessage}
