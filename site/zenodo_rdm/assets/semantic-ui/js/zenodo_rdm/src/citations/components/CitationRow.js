@@ -23,6 +23,7 @@
 import React from "react";
 import { Table, Popup, Icon, Label, Header } from "semantic-ui-react";
 import _truncate from "lodash/truncate";
+import { PropTypes } from "prop-types";
 
 export const CitationRow = ({ citation }) => {
   const citationInfo = `Citation procided by ${citation.providerNames}`;
@@ -35,7 +36,7 @@ export const CitationRow = ({ citation }) => {
 
       <Table.Cell>
         <Header size="tiny">
-          <a href={citation.doiUrl} target="_blank">
+          <a href={citation.doiUrl} target="_blank" rel="noreferrer">
             {_truncate(citation.title, { length: 80 })}
           </a>
           <Header.Subheader className="mt-5">
@@ -57,6 +58,7 @@ export const CitationRow = ({ citation }) => {
                 href={identifier.IDURL}
                 target="_blank"
                 aria-label={`${identifier.IDScheme}: ${identifier.ID}`}
+                rel="noreferrer"
               >
                 <Label size="tiny" className="primary uppercase mr-5">
                   {identifier.IDScheme}
@@ -77,4 +79,8 @@ export const CitationRow = ({ citation }) => {
       </Table.Cell>
     </Table.Row>
   );
+};
+
+CitationRow.propTypes = {
+  citation: PropTypes.object.isRequired,
 };

@@ -62,10 +62,7 @@ export const Filter = withState(
             ))}
 
             <List.Item>
-              <Checkbox
-                label="Citations to this version"
-                onChange={toggleGroupBy}
-              />
+              <Checkbox label="Citations to this version" onChange={toggleGroupBy} />
             </List.Item>
           </List>
         </Grid.Column>

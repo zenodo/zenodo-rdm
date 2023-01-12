@@ -22,7 +22,6 @@
 
 import React from "react";
 import { PropTypes } from "prop-types";
-import _truncate from "lodash/truncate";
 import {
   ReactSearchKit,
   InvenioSearchApi,
@@ -55,9 +54,8 @@ const resultsPerPageValues = [
 const overriddenComponents = {
   [`${citationSearchAppID}.BucketAggregation.element`]: ({ containerCmp }) =>
     containerCmp,
-  [`${citationSearchAppID}.BucketAggregationContainer.element`]: ({
+  [`${citationSearchAppID}.BucketAggregationContainer.element`]: ({ valuesCmp }) =>
     valuesCmp,
-  }) => valuesCmp,
   [`${citationSearchAppID}.EmptyResults.element`]: NoCitations,
   [`${citationSearchAppID}.Error.element`]: ErrorMessage,
   [`${citationSearchAppID}.Count.element`]: Counter,
@@ -122,6 +120,7 @@ export class CitationsSearch extends React.Component {
                 href="https://help.zenodo.org/#citations"
                 target="_blank"
                 className="ml-5 mr-5"
+                rel="noreferrer"
               >
                 <Icon name="question circle" className="button" />
               </a>
@@ -163,9 +162,7 @@ export class CitationsSearch extends React.Component {
                     textAlign="center"
                     className="pr-0"
                   >
-                    <Pagination
-                      options={{ size: "mini", showEllipsis: true }}
-                    />
+                    <Pagination options={{ size: "mini", showEllipsis: true }} />
                   </Grid.Column>
 
                   <Grid.Column
@@ -192,4 +189,5 @@ export class CitationsSearch extends React.Component {
 
 CitationsSearch.propTypes = {
   recordPIDs: PropTypes.object.isRequired,
+  endpoint: PropTypes.string.isRequired,
 };
