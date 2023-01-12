@@ -67,4 +67,11 @@ logs/
 # Invenio-cli per machine file
 .invenio.private
 
-.DS_Store
+# Editor
+**DS_Store
+
+# celerybeat
+celerybeat-schedule
+
+# migration data folder
+**/migrator/tmp
