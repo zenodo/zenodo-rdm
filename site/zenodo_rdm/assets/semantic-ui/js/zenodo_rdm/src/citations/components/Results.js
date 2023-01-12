@@ -22,7 +22,6 @@
 
 import React from "react";
 import { PropTypes } from "prop-types";
-import _truncate from "lodash/truncate";
 import { sanitizeCitation } from "../sanitizer";
 import { withState } from "react-searchkit";
 import { Table } from "semantic-ui-react";
@@ -34,10 +33,7 @@ export const Results = withState(({ currentResultsState }) => {
       <Table.Body>
         {currentResultsState?.data.hits.map((result) => {
           return (
-            <CitationRow
-              citation={sanitizeCitation(result)}
-              key={result.metadata.ID}
-            />
+            <CitationRow citation={sanitizeCitation(result)} key={result.metadata.ID} />
           );
         })}
       </Table.Body>

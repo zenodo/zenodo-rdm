@@ -45,7 +45,7 @@ function creatorNamesFilter(relationship) {
 
   if (creators) {
     creatorNames = creators[0].Name;
-    if (creators.length == 2) {
+    if (creators.length === 2) {
       creatorNames = `${creatorNames} & ${creators[1].Name}`;
     } else if (creators.length > 2) {
       creatorNames = `${creatorNames} et al.`;
@@ -64,7 +64,7 @@ function doiUrlFilter(relationship) {
     identifiers.forEach((identifier) => {
       if (identifier.IDURL) {
         url = identifier.IDURL;
-        if (identifier.IDScheme == "doi") {
+        if (identifier.IDScheme === "doi") {
           doiUrl = identifier.IDURL;
         }
       }
@@ -80,7 +80,7 @@ function doiFilter(relationship) {
 
   identifiers &&
     identifiers.forEach((identifier) => {
-      if (identifier.ID && identifier.IDScheme == "doi") {
+      if (identifier.ID && identifier.IDScheme === "doi") {
         doi = identifier.ID;
       }
     });
@@ -100,7 +100,7 @@ function citationTitleFilter(relationship) {
         if (identifier.IDURL) {
           title = `${identifier.IDScheme.toUpperCase()}: ${identifier.ID}`;
 
-          if (identifier.IDScheme == "doi") {
+          if (identifier.IDScheme === "doi") {
             title = `DOI: ${identifier.ID}`;
           }
         }

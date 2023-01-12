@@ -20,6 +20,7 @@
 // waive the privileges and immunities granted to it by virtue of its status
 // as an Intergovernmental Organization or submit itself to any jurisdiction.
 
+import { PropTypes } from "prop-types";
 import React from "react";
 import { Label } from "semantic-ui-react";
 
@@ -28,3 +29,7 @@ export const Counter = ({ totalResults }) => (
     {totalResults}
   </Label>
 );
+
+Counter.propTypes = {
+  totalResults: PropTypes.string.isRequired,
+};
