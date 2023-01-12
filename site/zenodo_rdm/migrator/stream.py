@@ -1,10 +1,22 @@
 from invenio_rdm_migrator.streams import StreamDefinition
+from invenio_rdm_migrator.streams.communities import CommunityCopyLoad
 from invenio_rdm_migrator.streams.records import RDMRecordCopyLoad
 from invenio_rdm_migrator.streams.users import UserCopyLoad
 
 from .extract import JSONLExtract
-from .transform import ZenodoToRDMRecordTransform, ZenodoUserTransform
+from .transform import (
+    ZenodoCommunityTransform,
+    ZenodoToRDMRecordTransform,
+    ZenodoUserTransform,
+)
 
+
+CommunitiesStreamDefinition = StreamDefinition(
+    name="communities",
+    extract_cls=JSONLExtract,
+    transform_cls=ZenodoCommunityTransform,
+    load_cls=CommunityCopyLoad,
+)
 
 RecordStreamDefinition = StreamDefinition(
     name="records",

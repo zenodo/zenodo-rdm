@@ -28,6 +28,8 @@ SQLALCHEMY_DATABASE_URI="postgresql+psycopg2://zenodo:zenodo@localhost:5432/zeno
 ```
 
 - Remove all previous data, but leave (or recreate) vocabularies and fixtures.
+  Note that you **MUST NOT** populate communities fixtures if you want to use
+  the communities stream as you might have clashes on communities slug names.
   Both Invenio-CLI and the `wipe_recreate` script will create one user, which
   should not be there to avoid _id_ clashes (namely, `id=1`). To prevent it,
   create an empty `users.yaml` file in the instance `app_data` folder.
@@ -58,7 +60,7 @@ invenio vocabularies import -v names -f ./app_data/vocabularies-future.yaml  # z
   in the `/migration` folder.
 
 - Configure your `streams.yaml` file, you can see an example in this folder.
-  You will need to run in a invenio shell the `dump_communities.py` code so that
+  You will need to run in a invenio shell the `site.zenodo_rdm.migrator.utils.dump_communities` method so that
   the `streams.yaml` is populated with the `communities_cache` i.e a map between
   communities slug names to communities ids.
 
@@ -88,9 +90,15 @@ pv rdm_versions_state.csv | psql $DB_URI -c "COPY rdm_versions_state (latest_ind
 # You might want to first run users, then rebuild index.
 # Then run records and rebuild its index.
 from invenio_access.permissions import system_identity
+from invenio_communities.proxies import current_communities
 from invenio_rdm_records.proxies import current_rdm_records_service
 from invenio_users_resources.proxies import current_users_service
+# Re-index users
 current_users_service.rebuild_index(identity=system_identity)
+# Re-index communities and members **if communities stream was used to populate communities**
+current_communities.service.rebuild_index(identity=system_identity)
+current_communities.service.members.rebuild_index(identity=system_identity)
+# Re-index records
 current_rdm_records_service.rebuild_index(identity=system_identity)
 ```
 
@@ -98,6 +106,8 @@ current_rdm_records_service.rebuild_index(identity=system_identity)
 
 ```python
 current_users_service.indexer.refresh()
+current_communities.service.indexer.refresh()
+current_communities.service.members.indexer.refresh()
 current_rdm_records_service.indexer.refresh()
 ```
 
@@ -114,3 +124,8 @@ records = db.session.query(model_cls.id).filter(
 
 current_rdm_records_service.indexer.bulk_index((rec.id for rec in records))
 ```
+
+- If you populate communities via the communities stream and not fixtures and a specific
+  user doesn't seem to have the correct roles when visiting a community, then you might
+  need to run the `site.zenodo_rdm.migrator.utils.invalidate_user_community_roles_cache`
+  so users community roles are being re-cached.

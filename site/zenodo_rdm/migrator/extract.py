@@ -13,11 +13,11 @@ class JSONLExtract(Extract):
 
     def run(self):
         """Yield one element at a time."""
-        with open(self.filepath, 'r') as reader:
-            for l in reader:
+        with open(self.filepath, "r") as reader:
+            for line in reader:
                 # TODO JSONl file should be cleaned up before loading
-                l = l.strip().replace("\\\\","\\")
-                yield json.loads(l)
+                line = line.strip().replace("\\\\", "\\")
+                yield json.loads(line)
 
 
 class PostgreSQLExtract(Extract):
