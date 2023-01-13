@@ -56,3 +56,26 @@ jobs:
       - name: Run eslint test
         run: ./run-js-linter.sh -i
       
+      - name: Generate dependencies
+        run: |
+          pip install wheel requirements-builder
+          requirements-builder -e "$EXTRAS" --level=${{ matrix.requirements-level }} setup.py > .${{ matrix.requirements-level }}-${{ matrix.python-version }}-requirements.txt
+          cat .${{ matrix.requirements-level }}-${{ matrix.python-version }}-requirements.txt
+
+      - name: Cache pip
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('.${{ matrix.requirements-level }}-${{ matrix.python-version }}-requirements.txt') }}
+
+      - name: Install dependencies
+        run: |
+          pip install -r .${{ matrix.requirements-level }}-${{ matrix.python-version }}-requirements.txt
+          pip install ".[$EXTRAS]"
+          pip freeze
+          docker --version
+          docker-compose --version
+          
+      - name: Run tests
+        run: |
+          ./run-tests.sh
