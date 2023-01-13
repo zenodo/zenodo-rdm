@@ -1,3 +1,11 @@
+# -*- coding: utf-8 -*-
+#
+# Copyright (C) 2023 CERN.
+#
+# ZenodoRDM is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+"""Implements the support view for ZenodoRDM."""
+
 import smtplib
 from collections import OrderedDict
 
@@ -16,6 +24,7 @@ class ZenodoSupport(MethodView):
     """Zenodo support view."""
 
     def __init__(self):
+        """Constructor."""
         self.template = "zenodo_rdm/support.html"
         self.email_service = SupportEmailService()
         self.support_form_schema = SupportFormSchema()
@@ -51,11 +60,11 @@ class ZenodoSupport(MethodView):
         self.send_confirmation_email(form_data)
 
     def validate_form(self, form_data):
-        """Validates form using a schema"""
+        """Validates form using a schema."""
         return self.support_form_schema.load(form_data)
 
     def send_support_email(self, data):
-        """Send an email to support"""
+        """Send an email to support."""
         try:
             self.email_service.send_support_email(
                 sender_name=data.get("name"),
@@ -110,4 +119,5 @@ class ZenodoSupport(MethodView):
 
     @cached_property
     def support_emails(self):
+        """List of support emails."""
         return current_app.config["SUPPORT_EMAILS"]

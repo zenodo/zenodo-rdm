@@ -21,7 +21,7 @@ on:
     inputs:
       reason:
         description: 'Reason'
-        required: false
+        required: falsenve
         default: 'Manual trigger'
 
 jobs:
@@ -29,10 +29,10 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-          python-version: [3.7, 3.8, 3.9]
+          python-version: [3.9]
           requirements-level: [pypi]
           db-service: [postgresql13]
-          search-service: [opensearch2,elasticsearch7]
+          search-service: [opensearch2]
           include:
           - db-service: postgresql13
             DB_EXTRAS: "postgresql"
@@ -55,12 +55,10 @@ jobs:
 
       - name: Run eslint test
         run: ./run-js-linter.sh -i
-      
+
       - name: Generate dependencies
         run: |
-          pip install wheel requirements-builder
-          requirements-builder -e "$EXTRAS" --level=${{ matrix.requirements-level }} setup.py > .${{ matrix.requirements-level }}-${{ matrix.python-version }}-requirements.txt
-          cat .${{ matrix.requirements-level }}-${{ matrix.python-version }}-requirements.txt
+          pip install pipenv
 
       - name: Cache pip
         uses: actions/cache@v2
@@ -70,12 +68,12 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install -r .${{ matrix.requirements-level }}-${{ matrix.python-version }}-requirements.txt
-          pip install ".[$EXTRAS]"
+          pipenv install --dev
           pip freeze
           docker --version
           docker-compose --version
-          
+
       - name: Run tests
+        working-directory: ./site
         run: |
           ./run-tests.sh

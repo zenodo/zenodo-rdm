@@ -1,3 +1,11 @@
+# -*- coding: utf-8 -*-
+#
+# Copyright (C) 2023 CERN.
+#
+# ZenodoRDM is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+"""Migrator stream definitions."""
+
 from invenio_rdm_migrator.streams import StreamDefinition
 from invenio_rdm_migrator.streams.communities import CommunityCopyLoad
 from invenio_rdm_migrator.streams.records import RDMRecordCopyLoad
@@ -9,7 +17,6 @@ from .transform import (
     ZenodoToRDMRecordTransform,
     ZenodoUserTransform,
 )
-
 
 CommunitiesStreamDefinition = StreamDefinition(
     name="communities",

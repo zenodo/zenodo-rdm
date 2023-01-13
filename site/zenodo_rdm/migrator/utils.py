@@ -1,5 +1,14 @@
-import yaml
+# -*- coding: utf-8 -*-
+#
+# Copyright (C) 2023 CERN.
+#
+# ZenodoRDM is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+"""Utils for zenodo migrator module."""
+
 from pathlib import Path
+
+import yaml
 from invenio_communities.communities.records.models import CommunityMetadata
 
 
@@ -23,8 +32,8 @@ def invalidate_user_community_roles_cache():
     migrated thus new roles are being added in the db.
     """
     from flask_principal import Identity
-    from invenio_communities.utils import on_membership_change
     from invenio_accounts.models import User
+    from invenio_communities.utils import on_membership_change
 
     users = User.query.all()
 

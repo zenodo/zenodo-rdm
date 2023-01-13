@@ -1,5 +1,12 @@
+# -*- coding: utf-8 -*-
+#
+# Copyright (C) 2023 CERN.
+#
+# ZenodoRDM is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+"""Transformers for zenodo migrator module."""
+
 from datetime import datetime
-from nameparser import HumanName
 
 from invenio_rdm_migrator.streams.communities import (
     CommunityEntry,
@@ -8,6 +15,7 @@ from invenio_rdm_migrator.streams.communities import (
 )
 from invenio_rdm_migrator.streams.records import RDMRecordEntry, RDMRecordTransform
 from invenio_rdm_migrator.streams.users import UserEntry, UserTransform
+from nameparser import HumanName
 
 
 class ZenodoCommunityEntry(CommunityEntry):
@@ -91,8 +99,7 @@ class ZenodoCommunityMemberEntry(CommunityMemberEntry):
         return None
 
     def _request_id(self, entry):
-        """Returns the community member request id, if there is any request associated
-        with the community member."""
+        """Returns the community member request id, if there is any request associated with the community member."""
         return None
 
 
@@ -259,6 +266,8 @@ class ZenodoToRDMRecordTransform(RDMRecordTransform):
 
 
 class ZenodoUserTransform(UserTransform):
+    """Zenodo user transform."""
+
     def _user(self, entry):
         """Transform the user."""
         return ZenodoUserEntry().transform(entry)
