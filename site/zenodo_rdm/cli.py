@@ -1,22 +1,29 @@
-import click
+# -*- coding: utf-8 -*-
+#
+# Copyright (C) 2023 CERN.
+#
+# ZenodoRDM is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+"""Zenodo RDM cli commands."""
 
+import click
 from flask.cli import with_appcontext
 from invenio_access.permissions import system_identity
+from invenio_db import db
+from invenio_pidstore.models import PersistentIdentifier
+from invenio_rdm_records.proxies import current_rdm_records_service
+from invenio_rdm_records.records.api import RDMDraft, RDMRecord
 from invenio_rdm_records.records.models import (
-    RDMParentCommunity,
-    RDMRecordMetadata,
     RDMDraftMetadata,
-    RDMVersionsState,
     RDMFileDraftMetadata,
     RDMFileRecordMetadata,
+    RDMParentCommunity,
+    RDMRecordMetadata,
+    RDMVersionsState,
 )
-from invenio_rdm_records.proxies import current_rdm_records_service
-from invenio_rdm_records.records.api import RDMRecord, RDMDraft
-from invenio_requests.records.models import RequestMetadata
-from invenio_requests.records.api import Request
 from invenio_requests.proxies import current_requests_service
-from invenio_pidstore.models import PersistentIdentifier
-from invenio_db import db
+from invenio_requests.records.api import Request
+from invenio_requests.records.models import RequestMetadata
 
 
 def _get_parent(record_model):
@@ -183,10 +190,9 @@ def zenodo_admin():
 def delete_record(recid):
     """Custom script to delete a record.
 
-    A command to delete a record by giving the pid to delete. **This is a temporary solution** until the deletion mechanism is implemented in service layer.
+    a command to delete a record by giving the pid to delete. **This is a temporary solution** until the deletion mechanism is implemented in service layer.
     Usage: invenio zenodo-admin delete -r <recid>
     """
-
     # Record
     (
         record_pid,
