@@ -1,0 +1,8 @@
+include *.sh
+include .gitkeep
+recursive-include tests *.py
+recursive-include zenodo_rdm *.gitkeep
+recursive-include zenodo_rdm *.html
+recursive-include zenodo_rdm *.js
+recursive-include zenodo_rdm *.md
+recursive-include zenodo_rdm *.yaml
