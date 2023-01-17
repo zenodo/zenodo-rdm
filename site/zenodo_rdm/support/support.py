@@ -76,14 +76,14 @@ class ZenodoSupport(MethodView):
                 files=data.get("files"),
                 title="[{}]: {}".format(data.get("category"), data.get("subject")),
             )
-        except (smtplib.SMTPSenderRefused) as e:
+        except smtplib.SMTPSenderRefused as e:
             raise SupportEmailNotSent(
                 "There was an issue sending an email to the provided "
                 "address (ours), please make sure it is correct. "
                 "If this issue persists you can send "
                 "us an email directly to {}".format(self.email_service.support_emails)
             )
-        except (Exception) as e:
+        except Exception as e:
             raise SupportEmailNotSent(
                 "There was an issue sending the support request."
                 "If this issue persists send us an email directly to {}".format(
@@ -95,14 +95,14 @@ class ZenodoSupport(MethodView):
         """Send a confirmation email to the user."""
         try:
             self.email_service.send_confirmation_email(recipients=data.get("email"))
-        except (smtplib.SMTPSenderRefused) as e:
+        except smtplib.SMTPSenderRefused as e:
             raise ConfirmationEmailNotSent(
                 "There was an issue sending a confirmation email to the provided "
                 "address (yours), please make sure it is correct. "
                 "If this issue persists you can send "
                 "us an email directly to {}".format(self.email_service.support_emails)
             )
-        except (Exception) as e:
+        except Exception as e:
             raise ConfirmationEmailNotSent(
                 "There was an issue sending the confirmation email."
                 "If this issue persists send us an email directly to {}".format(

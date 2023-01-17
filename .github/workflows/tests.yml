@@ -21,7 +21,7 @@ on:
     inputs:
       reason:
         description: 'Reason'
-        required: falsenve
+        required: false
         default: 'Manual trigger'
 
 jobs:
@@ -58,17 +58,11 @@ jobs:
 
       - name: Generate dependencies
         run: |
-          pip install pipenv
-
-      - name: Cache pip
-        uses: actions/cache@v2
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('.${{ matrix.requirements-level }}-${{ matrix.python-version }}-requirements.txt') }}
+          pip install "pipenv==2022.11.25"
 
       - name: Install dependencies
         run: |
-          pipenv install --dev
+          pipenv install --dev --deploy --system
           pip freeze
           docker --version
           docker-compose --version

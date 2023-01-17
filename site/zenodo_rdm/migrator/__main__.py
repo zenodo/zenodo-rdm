@@ -17,7 +17,6 @@ from .stream import (
 )
 
 if __name__ == "__main__":
-
     runner = Runner(
         stream_definitions=[
             UserStreamDefinition,
