@@ -4,10 +4,10 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-check-manifest = ">=0.25"
 pytest-invenio = ">=2.1.0,<3.0.0"
 pytest-black = ">=0.3.0"
 sphinx = ">=4.5"
+isort = "<6.0" # Unpin when isort==6.0.0 is released
 
 [packages]
 invenio-app-rdm = {version = "~=11.0.0.dev3", extras = ["opensearch2"]}
