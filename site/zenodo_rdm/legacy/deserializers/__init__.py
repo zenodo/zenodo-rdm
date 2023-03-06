@@ -7,7 +7,6 @@
 
 """Zenodo legacy deserializers."""
 
-from flask_babelex import lazy_gettext as _
 from flask_resources import JSONDeserializer
 
 from .schemas import LegacyRecordTransform
