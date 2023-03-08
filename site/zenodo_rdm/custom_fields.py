@@ -149,8 +149,17 @@ CUSTOM_FIELDS = [
 
 # Custom fields UI components
 CUSTOM_FIELDS_UI = [
-    JOURNAL_CUSTOM_FIELDS_UI,
-    MEETING_CUSTOM_FIELDS_UI,
-    IMPRINT_CUSTOM_FIELDS_UI,
-    THESIS_CUSTOM_FIELDS_UI,
+{
+        "section": _("Publishing information"),
+        "fields": [
+            # journal
+            *JOURNAL_CUSTOM_FIELDS_UI["fields"],
+            # imprint
+            *IMPRINT_CUSTOM_FIELDS_UI["fields"],
+            # thesis
+            *THESIS_CUSTOM_FIELDS_UI["fields"],   
+        ]
+    },
+    # meeting
+    MEETING_CUSTOM_FIELDS_UI
 ]
