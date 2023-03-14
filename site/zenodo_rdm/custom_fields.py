@@ -6,7 +6,7 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Custom fields."""
-
+from invenio_i18n import lazy_gettext as _
 from invenio_rdm_records.contrib.imprint import (
     IMPRINT_CUSTOM_FIELDS,
     IMPRINT_CUSTOM_FIELDS_UI,
@@ -147,19 +147,23 @@ CUSTOM_FIELDS = [
     *THESIS_CUSTOM_FIELDS,
 ]
 
+# hide meeting section
+MEETING_CUSTOM_FIELDS_UI["hidden"] = True
+
 # Custom fields UI components
 CUSTOM_FIELDS_UI = [
-{
+    {
         "section": _("Publishing information"),
+        "hidden": True,
         "fields": [
             # journal
             *JOURNAL_CUSTOM_FIELDS_UI["fields"],
             # imprint
             *IMPRINT_CUSTOM_FIELDS_UI["fields"],
             # thesis
-            *THESIS_CUSTOM_FIELDS_UI["fields"],   
-        ]
+            *THESIS_CUSTOM_FIELDS_UI["fields"],
+        ],
     },
     # meeting
-    MEETING_CUSTOM_FIELDS_UI
+    MEETING_CUSTOM_FIELDS_UI,
 ]
