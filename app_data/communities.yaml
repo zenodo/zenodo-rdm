@@ -96,3 +96,10 @@
     title: Wind Energy
     description: "Gather all the publications that concerns wind energy. All knowledge types are encouraged. We encourage you to group your related publications into well described repositories, so that your research is easily forked and reproduced by others. Articles Reports Slides Videos Graphics Datasets Source Codes Repositories"
     curation_policy: "Only publications dealing with wind energy will be accepted"
+- access:
+    visibility: public
+  slug: biohackathon
+  metadata:
+    title: BioHackathon
+    description: ""
+    curation_policy: "Not specified"
