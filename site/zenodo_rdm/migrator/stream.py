@@ -14,7 +14,7 @@ from invenio_rdm_migrator.streams.users import UserCopyLoad
 from .extract import JSONLExtract
 from .transform import (
     ZenodoCommunityTransform,
-    ZenodoToRDMRecordTransform,
+    ZenodoRecordTransform,
     ZenodoUserTransform,
 )
 
@@ -28,7 +28,7 @@ CommunitiesStreamDefinition = StreamDefinition(
 RecordStreamDefinition = StreamDefinition(
     name="records",
     extract_cls=JSONLExtract,
-    transform_cls=ZenodoToRDMRecordTransform,
+    transform_cls=ZenodoRecordTransform,
     load_cls=RDMRecordCopyLoad,
 )
 """ETL stream for Zenodo to RDM records."""
