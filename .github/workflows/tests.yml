@@ -63,6 +63,7 @@ jobs:
       - name: Install dependencies
         run: |
           pipenv install --dev --deploy --system
+          pip install "./site[$EXTRAS]"
           pip freeze
           docker --version
           docker-compose --version

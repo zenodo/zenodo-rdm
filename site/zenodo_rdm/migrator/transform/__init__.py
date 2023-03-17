@@ -12,5 +12,4 @@ from .communities import ZenodoCommunityTransform
 from .records import ZenodoRecordTransform
 from .users import ZenodoUserTransform
 
-
 __all__ = (ZenodoCommunityTransform, ZenodoRecordTransform, ZenodoUserTransform)

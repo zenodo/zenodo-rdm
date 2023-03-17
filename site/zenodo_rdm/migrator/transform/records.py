@@ -72,23 +72,28 @@ class ZenodoRecordEntry(RDMRecordEntry):
     def _metadata(self, entry):
         """Transform the metadata of a record."""
 
+        def _person_or_org(creatibutor):
+            r = {"type": "personal"}
+            if creatibutor.get("orcid"):
+                r["identifiers"] = [
+                    {"scheme": "orcid", "identifier": creatibutor["orcid"]},
+                ]
+            name = HumanName(creatibutor["name"])
+            r["given_name"] = name.first
+            r["family_name"] = name.surnames
+            # autocompleted by RDM Metadata schema
+            r["name"] = f"{name.surnames}, {name.first}"
+
+            return r
+
         def _creators(data):
             ret = []
             for c in data:
-                r = {"person_or_org": {"type": "personal"}}
+                r = {"person_or_org": _person_or_org(c)}
                 if c.get("affiliation"):
                     r["affiliations"] = [{"name": c["affiliation"]}]
-                if c.get("orcid"):
-                    r["person_or_org"]["identifiers"] = [
-                        {"scheme": "orcid", "identifier": c["orcid"]},
-                    ]
-                name = HumanName(c["name"])
-                r["person_or_org"]["given_name"] = name.first
-                r["person_or_org"]["family_name"] = name.surnames
-                # autocompleted by RDM Metadata schema
-                r["person_or_org"]["name"] = f"{name.surnames}, {name.first}"
-
                 ret.append(r)
+
             return ret
 
         def _resource_type(data):
@@ -96,16 +101,78 @@ class ZenodoRecordEntry(RDMRecordEntry):
             st = data.get("subtype")
             return {"id": f"{t}-{st}"} if st else {"id": t}
 
+        def _contributors(data):
+            return []
+
+        def _supervisors(data):
+            ret = []
+            for c in data:
+                r = {"person_or_org": _person_or_org(c)}
+                if c.get("affiliation"):
+                    r["affiliations"] = [{"name": c["affiliation"]}]
+                r["role"] = {"id": "supervisor"}
+                ret.append(r)
+
+            return ret
+
         record = entry["json"]
+        contributors = _contributors(record.get("contributors", []))
+        contributors.extend(
+            _supervisors(record.get("thesis", {}).get("supervisors", []))
+        )
+
         r = {
             "title": record["title"],
             "description": record["description"],
             "publication_date": record["publication_date"],
             "resource_type": _resource_type(record["resource_type"]),
             "creators": _creators(record["creators"]),
+            "contributors": contributors,
+            "publisher": record.get("imprint", {}).get("publisher"),
         }
 
         return r
+
+    def _custom_fields(self, entry):
+        """Transform custom fields."""
+        metadata = entry.get("json", {})
+        cf = {
+            "journal:journal": {
+                "title": metadata.get("journal", {}).get("title"),
+                "issue": metadata.get("journal", {}).get("issue"),
+                "pages": metadata.get("journal", {}).get("pages"),
+                "volume": metadata.get("journal", {}).get("volume"),
+                "issn": metadata.get("journal", {}).get("issn"),
+            },
+            "meeting:meeting": {
+                "acronym": metadata.get("meeting", {}).get("acronym"),
+                "dates": metadata.get("meeting", {}).get("dates"),
+                "place": metadata.get("meeting", {}).get("place"),
+                "session_part": metadata.get("meeting", {}).get("session_part"),
+                "session": metadata.get("meeting", {}).get("session"),
+                "title": metadata.get("meeting", {}).get("title"),
+                "url": metadata.get("meeting", {}).get("url"),
+            },
+            "imprint:imprint": {
+                "isbn": metadata.get("imprint", {}).get("isbn"),
+                "place": metadata.get("imprint", {}).get("place"),
+                "title": metadata.get("part_of", {}).get("title"),
+                "pages": metadata.get("part_of", {}).get("pages"),
+            },
+            "thesis:university": metadata.get("thesis", {}).get("university"),
+        }
+
+        return self._drop_nones(cf)
+
+    def _drop_nones(self, d):
+        """Recursively drop Nones in dict d and return a new dictionary."""
+        dd = {}
+        for k, v in d.items():
+            if isinstance(v, dict) and v:  # second clause removes empty dicts
+                dd[k] = self._drop_nones(v)
+            elif v is not None:
+                dd[k] = v
+        return dd
 
 
 class ZenodoRecordTransform(RDMRecordTransform):
