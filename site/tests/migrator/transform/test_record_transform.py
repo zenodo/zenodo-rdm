@@ -10,10 +10,8 @@
 import dictdiffer
 import pytest
 
-from zenodo_rdm.migrator.transform.records import (
-    ZenodoRecordEntry,
-    ZenodoRecordTransform,
-)
+from zenodo_rdm.migrator.transform.records import ZenodoRecordTransform
+from zenodo_rdm.migrator.transform.records.records import ZenodoRecordEntry
 
 
 @pytest.fixture(scope="module")
@@ -79,6 +77,14 @@ def zenodo_record_data():
                     "givennames": "John",
                     "affiliation": "CERN",
                 }
+            ],
+            "contributors": [
+                {
+                    "name": "Else, Someone",
+                    "orcid": "0000-0001-6759-6273",
+                    "type": "ContactPerson",
+                    "affiliation": "CERN",
+                },
             ],
             "keywords": ["migration", "test", "Zenodo", "RDM"],
             "_internal": {
@@ -180,6 +186,19 @@ def expected_rdm_record_entry():
                     },
                 ],
                 "contributors": [
+                    {
+                        "person_or_org": {
+                            "type": "personal",
+                            "identifiers": [
+                                {"scheme": "orcid", "identifier": "0000-0001-6759-6273"}
+                            ],
+                            "name": "Else, Someone",
+                            "family_name": "Else",
+                            "given_name": "Someone",
+                        },
+                        "affiliations": [{"name": "CERN"}],
+                        "role": {"id": "contactperson"},
+                    },
                     {
                         "person_or_org": {
                             "type": "personal",
