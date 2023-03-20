@@ -8,7 +8,8 @@
 """Zenodo migrator records transformers."""
 
 from invenio_rdm_migrator.streams.records import RDMRecordEntry, RDMRecordTransform
-from nameparser import HumanName
+
+from .metadata import ZenodoMetadataEntry
 
 
 class ZenodoRecordEntry(RDMRecordEntry):
@@ -71,67 +72,7 @@ class ZenodoRecordEntry(RDMRecordEntry):
 
     def _metadata(self, entry):
         """Transform the metadata of a record."""
-
-        def _person_or_org(creatibutor):
-            r = {"type": "personal"}
-            if creatibutor.get("orcid"):
-                r["identifiers"] = [
-                    {"scheme": "orcid", "identifier": creatibutor["orcid"]},
-                ]
-            name = HumanName(creatibutor["name"])
-            r["given_name"] = name.first
-            r["family_name"] = name.surnames
-            # autocompleted by RDM Metadata schema
-            r["name"] = f"{name.surnames}, {name.first}"
-
-            return r
-
-        def _creators(data):
-            ret = []
-            for c in data:
-                r = {"person_or_org": _person_or_org(c)}
-                if c.get("affiliation"):
-                    r["affiliations"] = [{"name": c["affiliation"]}]
-                ret.append(r)
-
-            return ret
-
-        def _resource_type(data):
-            t = data["type"]
-            st = data.get("subtype")
-            return {"id": f"{t}-{st}"} if st else {"id": t}
-
-        def _contributors(data):
-            return []
-
-        def _supervisors(data):
-            ret = []
-            for c in data:
-                r = {"person_or_org": _person_or_org(c)}
-                if c.get("affiliation"):
-                    r["affiliations"] = [{"name": c["affiliation"]}]
-                r["role"] = {"id": "supervisor"}
-                ret.append(r)
-
-            return ret
-
-        record = entry["json"]
-        contributors = _contributors(record.get("contributors", []))
-        contributors.extend(
-            _supervisors(record.get("thesis", {}).get("supervisors", []))
-        )
-
-        r = {
-            "title": record["title"],
-            "description": record["description"],
-            "publication_date": record["publication_date"],
-            "resource_type": _resource_type(record["resource_type"]),
-            "creators": _creators(record["creators"]),
-            "contributors": contributors,
-            "publisher": record.get("imprint", {}).get("publisher"),
-        }
-
-        return r
+        return ZenodoMetadataEntry.transform(entry["json"])
 
     def _custom_fields(self, entry):
         """Transform custom fields."""
