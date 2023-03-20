@@ -12,14 +12,11 @@ isort = "<6.0" # Unpin when isort==6.0.0 is released
 [packages]
 invenio-app-rdm = {version = "~=12.0.0.dev0", extras = ["opensearch2"]}
 invenio-logging = {extras = ["sentry-sdk"], version = "~=1.3.0"}
-invenio-rdm-migrator = {git = "https://github.com/inveniosoftware/invenio-rdm-migrator", ref="master"}
 zenodo_rdm = {editable="True", path="./site"}
 ipython = "!=8.1.0"
-"github3.py" = ">=3.0.0"
 uwsgi = ">=2.0"
 uwsgitop = ">=0.11"
 uwsgi-tools = ">=1.1.1"
-nameparser = ">=1.1.1"
 
 [requires]
 python_version = "3.9"
