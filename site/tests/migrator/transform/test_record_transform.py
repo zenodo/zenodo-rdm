@@ -136,6 +136,73 @@ def zenodo_record_data():
                     }
                 ],
             },
+            "custom": {
+                # dwc
+                "dwc:basisOfRecord": ["foo", "bar"],
+                "dwc:catalogNumber": ["foo", "bar"],
+                "dwc:class": ["foo", "bar"],
+                "dwc:collectionCode": ["MUSM", "ZMPC"],
+                "dwc:country": ["foo", "bar"],
+                "dwc:county": ["foo", "bar"],
+                "dwc:dateIdentified": ["2011-05-17", "2022-08-18"],
+                "dwc:decimalLatitude": ["foo", "bar"],
+                "dwc:decimalLongitude": ["foo", "bar"],
+                "dwc:eventDate": ["2011-05-17", "2022-08-18"],
+                "dwc:family": ["Cerambycidae"],
+                "dwc:genus": ["Asynapteron"],
+                "dwc:identifiedBy": ["foo", "bar"],
+                "dwc:individualCount": ["foo", "bar"],
+                "dwc:institutionCode": ["foo", "bar"],
+                "dwc:kingdom": ["Animalia"],
+                "dwc:lifeStage": ["foo", "bar"],
+                "dwc:locality": ["foo", "bar"],
+                "dwc:materialSampleID": ["foo", "bar"],
+                "dwc:namePublishedInID": ["foo", "bar"],
+                "dwc:namePublishedInYear": ["foo", "bar"],
+                "dwc:order": ["Coleoptera"],
+                "dwc:otherCatalogNumbers": ["foo", "bar"],
+                "dwc:phylum": ["Arthropoda"],
+                "dwc:preparations": ["foo", "bar"],
+                "dwc:recordedBy": ["foo", "bar"],
+                "dwc:scientificName": ["foo", "bar"],
+                "dwc:scientificNameAuthorship": [
+                    "Ju\u00e1rez-No\u00e9 & Gonz\u00e1lez-Coronado"
+                ],
+                "dwc:scientificNameID": ["foo", "bar"],
+                "dwc:sex": ["foo", "bar"],
+                "dwc:specificEpithet": ["andinum"],
+                "dwc:stateProvince": ["foo", "bar"],
+                "dwc:taxonID": ["foo", "bar"],
+                "dwc:taxonRank": ["species"],
+                "dwc:taxonomicStatus": ["sp. nov."],
+                "dwc:typeStatus": ["holotype"],
+                "dwc:verbatimElevation": ["foo", "bar"],
+                "dwc:verbatimEventDate": ["2011-05-17"],
+                # openbiodiv
+                "openbiodiv:TaxonomicConceptLabel": [
+                    "Asynapteron andinum Ju\u00e1rez-No\u00e9 & Gonz\u00e1lez-Coronado, 2023"
+                ],
+                # ac
+                "ac:associatedSpecimenReference": ["foo", "bar"],
+                "ac:captureDevice": ["foo", "bar"],
+                "ac:physicalSetting": ["foo", "bar"],
+                "ac:resourceCreationTechnique": ["foo", "bar"],
+                "ac:subjectOrientation": ["foo", "bar"],
+                "ac:subjectPart": ["foo", "bar"],
+                # dc
+                "dc:creator": ["foo", "bar"],
+                "dc:rightsHolder": ["foo", "bar"],
+                # openbiodiv
+                "openbiodiv:TaxonomicConceptLabel": ["foo", "bar"],
+                # obo
+                "obo:RO_0002453": [
+                    {"subject": ["foo", "bar"], "object": ["foo", "bar"]},
+                    {"subject": ["foo", "bar"], "object": ["foo", "bar"]},
+                ],
+                # gbif-dwc
+                "gbif-dwc:identifiedByID": ["foo", "bar"],
+                "gbif-dwc:recordedByID": ["foo", "bar"],
+            },
         },
         "version_id": 1,
     }
@@ -243,6 +310,71 @@ def expected_rdm_record_entry():
                     "title": "A book title",
                 },
                 "thesis:university": "Test University",
+                # dwc
+                "dwc:basisOfRecord": ["foo", "bar"],
+                "dwc:catalogNumber": ["foo", "bar"],
+                "dwc:class": ["foo", "bar"],
+                "dwc:collectionCode": ["MUSM", "ZMPC"],
+                "dwc:country": ["foo", "bar"],
+                "dwc:county": ["foo", "bar"],
+                "dwc:dateIdentified": ["2011-05-17", "2022-08-18"],
+                "dwc:decimalLatitude": ["foo", "bar"],
+                "dwc:decimalLongitude": ["foo", "bar"],
+                "dwc:eventDate": ["2011-05-17", "2022-08-18"],
+                "dwc:family": ["Cerambycidae"],
+                "dwc:genus": ["Asynapteron"],
+                "dwc:identifiedBy": ["foo", "bar"],
+                "dwc:individualCount": ["foo", "bar"],
+                "dwc:institutionCode": ["foo", "bar"],
+                "dwc:kingdom": ["Animalia"],
+                "dwc:lifeStage": ["foo", "bar"],
+                "dwc:locality": ["foo", "bar"],
+                "dwc:materialSampleID": ["foo", "bar"],
+                "dwc:namePublishedInID": ["foo", "bar"],
+                "dwc:namePublishedInYear": ["foo", "bar"],
+                "dwc:order": ["Coleoptera"],
+                "dwc:otherCatalogNumbers": ["foo", "bar"],
+                "dwc:phylum": ["Arthropoda"],
+                "dwc:preparations": ["foo", "bar"],
+                "dwc:recordedBy": ["foo", "bar"],
+                "dwc:scientificName": ["foo", "bar"],
+                "dwc:scientificNameAuthorship": [
+                    "Ju\u00e1rez-No\u00e9 & Gonz\u00e1lez-Coronado"
+                ],
+                "dwc:scientificNameID": ["foo", "bar"],
+                "dwc:sex": ["foo", "bar"],
+                "dwc:specificEpithet": ["andinum"],
+                "dwc:stateProvince": ["foo", "bar"],
+                "dwc:taxonID": ["foo", "bar"],
+                "dwc:taxonRank": ["species"],
+                "dwc:taxonomicStatus": ["sp. nov."],
+                "dwc:typeStatus": ["holotype"],
+                "dwc:verbatimElevation": ["foo", "bar"],
+                "dwc:verbatimEventDate": ["2011-05-17"],
+                # openbiodiv
+                "openbiodiv:TaxonomicConceptLabel": [
+                    "Asynapteron andinum Ju\u00e1rez-No\u00e9 & Gonz\u00e1lez-Coronado, 2023"
+                ],
+                # ac
+                "ac:associatedSpecimenReference": ["foo", "bar"],
+                "ac:captureDevice": ["foo", "bar"],
+                "ac:physicalSetting": ["foo", "bar"],
+                "ac:resourceCreationTechnique": ["foo", "bar"],
+                "ac:subjectOrientation": ["foo", "bar"],
+                "ac:subjectPart": ["foo", "bar"],
+                # dc
+                "dc:creator": ["foo", "bar"],
+                "dc:rightsHolder": ["foo", "bar"],
+                # openbiodiv
+                "openbiodiv:TaxonomicConceptLabel": ["foo", "bar"],
+                # obo
+                "obo:RO_0002453": [
+                    {"subject": ["foo", "bar"], "object": ["foo", "bar"]},
+                    {"subject": ["foo", "bar"], "object": ["foo", "bar"]},
+                ],
+                # gbif-dwc
+                "gbif-dwc:identifiedByID": ["foo", "bar"],
+                "gbif-dwc:recordedByID": ["foo", "bar"],
             },
         },
     }
