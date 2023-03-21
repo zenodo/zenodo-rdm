@@ -7,7 +7,7 @@
 
 """Redirector functions and rules."""
 
-from flask import request, url_for
+from flask import current_app, request, url_for
 
 ZENODO_TYPE_SUBTYPE_LEGACY = {
     "publications": "publication",
@@ -161,6 +161,24 @@ def record_export_view():
     :rtype: str
     """
     values = request.view_args
+    target = url_for("invenio_app_rdm_records.record_export", **values)
+    return target
+
+
+def legacy_record_export_view():
+    """Implements redirector view function for legacy values of record export.
+
+    The following routes are redirected as follows:
+        -  /records/<pid_value>/export/<legacy_export_format> -> GET /record/<pid_value>/export/<export_format>
+
+    :return: url for the view 'invenio_app_rdm_records.record_export'
+    :rtype: str
+    """
+    formats = current_app.config["ZENODO_RECORD_EXPORTERS_LEGACY"]
+    args = request.view_args
+    legacy_value = request.path.split("/")[-1]
+
+    values = {"export_format": formats[legacy_value], "pid_value": args["pid_value"]}
     target = url_for("invenio_app_rdm_records.record_export", **values)
     return target
 

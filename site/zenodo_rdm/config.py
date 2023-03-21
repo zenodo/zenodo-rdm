@@ -12,6 +12,7 @@ from .redirector import (
     communities_requests_view_function,
     communities_settings_view_function,
     deposit_view_function,
+    legacy_record_export_view,
     record_export_view,
     record_file_download_view,
     record_view_function,
@@ -191,6 +192,15 @@ ZENODO_RECORDS_UI_CITATIONS_ENABLE = False
 # Redirection
 # ===========
 
+ZENODO_RECORD_EXPORTERS_LEGACY = {
+    "hx": "bibtex",
+    "dcite4": "datacite-xml",
+    "xd": "dublincore",
+    "geojson": "GeoJSON",
+    "xm": "marcxml",
+    "dcat": "DCAT-AP",
+}
+
 REDIRECTOR_RULES = {
     "redirect_communities_about_legacy": {
         "source": "/communities/about/<id>/",
@@ -289,3 +299,13 @@ REDIRECTOR_RULES = {
         "target": redirect_record_file_preview_view,
     },
 }
+
+EXPORT_REDIRECTS = {
+    f"redirect_legacy_record_export_view_{key}": {
+        "source": f"/records/<pid_value>/export/{key}",
+        "target": legacy_record_export_view,
+    }
+    for key in ZENODO_RECORD_EXPORTERS_LEGACY
+}
+
+REDIRECTOR_RULES.update(EXPORT_REDIRECTS)
