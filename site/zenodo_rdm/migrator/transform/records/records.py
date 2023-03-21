@@ -9,6 +9,7 @@
 
 from invenio_rdm_migrator.streams.records import RDMRecordEntry, RDMRecordTransform
 
+from .custom_fields import ZenodoCustomFieldsEntry
 from .metadata import ZenodoMetadataEntry
 
 
@@ -76,44 +77,7 @@ class ZenodoRecordEntry(RDMRecordEntry):
 
     def _custom_fields(self, entry):
         """Transform custom fields."""
-        metadata = entry.get("json", {})
-        cf = {
-            "journal:journal": {
-                "title": metadata.get("journal", {}).get("title"),
-                "issue": metadata.get("journal", {}).get("issue"),
-                "pages": metadata.get("journal", {}).get("pages"),
-                "volume": metadata.get("journal", {}).get("volume"),
-                "issn": metadata.get("journal", {}).get("issn"),
-            },
-            "meeting:meeting": {
-                "acronym": metadata.get("meeting", {}).get("acronym"),
-                "dates": metadata.get("meeting", {}).get("dates"),
-                "place": metadata.get("meeting", {}).get("place"),
-                "session_part": metadata.get("meeting", {}).get("session_part"),
-                "session": metadata.get("meeting", {}).get("session"),
-                "title": metadata.get("meeting", {}).get("title"),
-                "url": metadata.get("meeting", {}).get("url"),
-            },
-            "imprint:imprint": {
-                "isbn": metadata.get("imprint", {}).get("isbn"),
-                "place": metadata.get("imprint", {}).get("place"),
-                "title": metadata.get("part_of", {}).get("title"),
-                "pages": metadata.get("part_of", {}).get("pages"),
-            },
-            "thesis:university": metadata.get("thesis", {}).get("university"),
-        }
-
-        return self._drop_nones(cf)
-
-    def _drop_nones(self, d):
-        """Recursively drop Nones in dict d and return a new dictionary."""
-        dd = {}
-        for k, v in d.items():
-            if isinstance(v, dict) and v:  # second clause removes empty dicts
-                dd[k] = self._drop_nones(v)
-            elif v is not None:
-                dd[k] = v
-        return dd
+        return ZenodoCustomFieldsEntry.transform(entry["json"])
 
 
 class ZenodoRecordTransform(RDMRecordTransform):
