@@ -235,7 +235,7 @@ class SupportForm extends Component {
 
               <Modal.Actions className="label-padding">
                 <Button type="submit" positive>
-                  Send Request
+                  Send request
                 </Button>
               </Modal.Actions>
             </SemanticForm>
