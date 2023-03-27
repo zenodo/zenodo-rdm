@@ -13,6 +13,7 @@ from invenio_rdm_migrator.streams import Runner
 from .stream import (
     CommunitiesStreamDefinition,
     RecordStreamDefinition,
+    RequestStreamDefinition,
     UserStreamDefinition,
 )
 
@@ -22,6 +23,7 @@ if __name__ == "__main__":
             UserStreamDefinition,
             CommunitiesStreamDefinition,
             RecordStreamDefinition,
+            RequestStreamDefinition,
         ],
         config_filepath=sys.argv[1],
     )
