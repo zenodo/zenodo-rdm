@@ -19,3 +19,12 @@ records:
         slug: community_id
     db_uri: postgresql://zenodo:zenodo@localhost:5432/zenodo
     tmp_dir: /path/to/tmp
+requests:
+  extract:
+    filepath: /path/to/requests.jsonl
+  load:
+    cache:
+      communities:
+        slug: community_id
+    db_uri: postgresql://zenodo:zenodo@localhost:5432/zenodo
+    tmp_dir: /path/to/tmp

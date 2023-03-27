@@ -10,6 +10,12 @@
 
 from .communities import ZenodoCommunityTransform
 from .records import ZenodoRecordTransform
+from .requests import ZenodoRequestTransform
 from .users import ZenodoUserTransform
 
-__all__ = (ZenodoCommunityTransform, ZenodoRecordTransform, ZenodoUserTransform)
+__all__ = (
+    ZenodoCommunityTransform,
+    ZenodoRecordTransform,
+    ZenodoRequestTransform,
+    ZenodoUserTransform,
+)

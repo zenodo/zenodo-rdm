@@ -9,12 +9,14 @@
 from invenio_rdm_migrator.streams import StreamDefinition
 from invenio_rdm_migrator.streams.communities import CommunityCopyLoad
 from invenio_rdm_migrator.streams.records import RDMRecordCopyLoad
+from invenio_rdm_migrator.streams.requests import RequestCopyLoad
 from invenio_rdm_migrator.streams.users import UserCopyLoad
 
 from .extract import JSONLExtract
 from .transform import (
     ZenodoCommunityTransform,
     ZenodoRecordTransform,
+    ZenodoRequestTransform,
     ZenodoUserTransform,
 )
 
@@ -39,5 +41,13 @@ UserStreamDefinition = StreamDefinition(
     extract_cls=JSONLExtract,
     transform_cls=ZenodoUserTransform,
     load_cls=UserCopyLoad,
+)
+"""ETL stream for Zenodo to import users."""
+
+RequestStreamDefinition = StreamDefinition(
+    name="requests",
+    extract_cls=JSONLExtract,
+    transform_cls=ZenodoRequestTransform,
+    load_cls=RequestCopyLoad,
 )
 """ETL stream for Zenodo to import users."""
