@@ -1,10 +1,14 @@
-<table style="padding:15px;background-color:#EAECEE;max-width:500px;margin:auto;">
-    <tbody style="text-align:center;font-family:'Lato',Helvetica,Arial,sans-serif;">
+<table style="max-width:500px;border-collapse:collapse;margin:auto;">
+    <tbody style="background-color:#EAECEE;text-align:center;font-family:'Lato',Helvetica,Arial,sans-serif;">
         <tr>
-            <td>
+            <td style="padding:15px 15px 10px 15px;">
                 <a href="{{ url_for('security.login', _external=True) }}">
                     <img src="{{ url_for('static', filename='images/zenodo-gradient-1000.png', _external=True) }}" style="width:250px;border-radius:10px;"/>
                 </a>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding:5px 15px 10px 15px;">
                 <p>{{ _('Welcome %(username)s!', username=user.username) }}</p>
                 <p>{{ _('Your Zenodo account has been created.')}} </p>
                 <p>{{_('We are excited to have you get started!') }} </p>
@@ -13,7 +17,7 @@
 
         {% if security.confirmable %}
             <tr>
-                <td>
+                <td style="padding:5px 15px 15px 15px;text-align:center;">
                     <p>{{ _('First, you need to confirm your account. Just press the button below.') }}</p>
                     <p>
                         <a href="{{ confirmation_link }}" style="display:inline-block;border-radius:5px;background-color:#3498DB;border:none;font-size:15px;text-decoration:none;color:white;padding:10px 24px;">

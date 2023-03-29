@@ -1,18 +1,24 @@
-<table style="padding:15px;background-color:#EAECEE;max-width:500px;margin:auto;">
-    <tbody style="text-align:center;font-family:'Lato',Helvetica,Arial,sans-serif;">
+<table style="max-width:500px;border-collapse:collapse;margin:auto;">
+    <tbody style="background-color:#EAECEE;text-align:center;font-family:'Lato',Helvetica,Arial,sans-serif;">
         <tr>
-            <td>
+            <td style="padding:15px 15px 10px 15px;">
                 <a href="{{ url_for('security.login', _external=True) }}">
                     <img src="{{ url_for('static', filename='images/zenodo-gradient-1000.png', _external=True) }}" style="width:250px;border-radius:10px;"/>
-                </a>
+                </a>               
+            </td>
+        </tr>
+        <tr>
+            <td style="padding:5px 15px 10px 15px;">
                 <p>{{ _('Hello, %(username)s!', username=user.username) }}</p>
                 <p>{{ _('You have received this message because your email address has been registered with Zenodo.') }} </p>
                 <p>{{ _('Verify yourself and confirm your email by clicking below.') }}</p>
-                <p>
-                    <a class="btn confirm_button" href="{{ confirmation_link }}">
-                        {{ _('Confirm my account') }}
-                    </a>
-                </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding:5px 15px 15px 15px;text-align:center;">
+                <a class="btn confirm_button" href="{{ confirmation_link }}">
+                    {{ _('Confirm my account') }}
+                </a>
             </td>
         </tr>
     </tbody>

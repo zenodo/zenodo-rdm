@@ -1,17 +1,21 @@
-<table style="padding:15px;background-color:#EAECEE;max-width:500px;margin:auto;">
-    <tbody style="text-align:center;font-family:'Lato',Helvetica,Arial,sans-serif;">
+<table style="max-width:500px;border-collapse:collapse;margin:auto;">
+    <tbody style="background-color:#EAECEE;text-align:center;font-family:'Lato',Helvetica,Arial,sans-serif;">
         <tr>
-            <td>
+            <td style="padding:15px 15px 10px 15px;">
                 <a href="{{ url_for('security.login', _external=True) }}">
                     <img src="{{ url_for('static', filename='images/zenodo-gradient-1000.png', _external=True) }}" style="width:250px;border-radius:10px;"/>
                 </a>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding:5px 15px 10px 15px;">
                 <p>{{ _('Hello, %(username)s!', username=user.username) }}</p>
                 <p>{{ _('Your password has been successfully changed!') }}</p>
             </td>
         </tr>
         {% if security.recoverable %}
         <tr>
-            <td>
+            <td style="padding:5px 15px 15px 15px;text-align:center;">
                 <p>{{ _('If you did not change your password, press the button below to reset it.') }}</p>
                 <p>
                     <a href="{{ url_for_security('forgot_password', _external=True) }}" style="display:inline-block;border-radius:5px;background-color:#3498DB;border:none;font-size:15px;text-decoration:none;color:white;padding:10px 24px;">
