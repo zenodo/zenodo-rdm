@@ -230,10 +230,14 @@ def redirect_deposit_new_view():
     """Implements redirector view function for deposit creation.
 
     The following routes are redirected as follows:
-        -  /deposit/new -> GET /uploads/new
+        -  /deposit/new?c=<slug> -> GET /uploads/new?community=<slug>
 
     :return: url for the view 'invenio_app_rdm_records.deposit_create'
     :rtype: str
     """
-    target = url_for("invenio_app_rdm_records.deposit_create")
+    values = {}
+    community_slug = request.args.get("c", None)
+    if community_slug:
+        values = {"community": community_slug}
+    target = url_for("invenio_app_rdm_records.deposit_create", **values)
     return target
