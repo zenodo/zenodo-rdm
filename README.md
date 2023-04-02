@@ -1,12 +1,6 @@
-<div align="center">	# Zenodo
-  <img width="500" src="https://about.zenodo.org/static/img/logos/zenodo-black-border.svg">	
-</div>	
-
-
-[![](https://img.shields.io/travis/zenodo/zenodo-rdm.svg)](https://travis-ci.org/zenodo/zenodo-rdm)	Welcome to your InvenioRDM instance.
-[![](https://img.shields.io/coveralls/zenodo/zenodo-rdm.svg)](https://coveralls.io/r/zenodo/zenodo-rdm)	
-[![](https://img.shields.io/github/license/zenodo/zenodo-rdm.svg)](https://github.com/zenodo/zenodo-rdm/blob/master/LICENSE)	
-
+<div align="center">
+  <img width="500" src="https://about.zenodo.org/static/img/logos/zenodo-black-border.svg">
+</div>
 
 ## Deployment instructions
 
@@ -38,3 +32,16 @@ ORCID_APP_CREDENTIALS = {
     "consumer_secret": "CHANGE ME",
 }
 ```
+
+## Development quick start
+
+```
+pip install invenio-cli
+invenio-cli check-requirements --development
+invenio-cli install
+invenio-cli services setup
+invenio-cli run
+```
+
+See the [InvenioRDM Documentation](https://inveniordm.docs.cern.ch/install/)
+for further installation options.
