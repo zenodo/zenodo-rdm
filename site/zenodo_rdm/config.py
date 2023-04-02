@@ -22,6 +22,9 @@ from .redirector import (
     search_view_function,
 )
 
+# Silent warnings
+JSONSCHEMAS_HOST = "unused"
+
 # I18N_TRANSLATIONS_PATHS = [os.path.abspath("./site/zenodo_rdm/translations")]
 
 # Email address of sender.
