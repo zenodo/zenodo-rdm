@@ -7,6 +7,12 @@
 
 """Custom fields."""
 from invenio_i18n import lazy_gettext as _
+from invenio_rdm_records.contrib.codemeta import (
+    CODEMETA_CUSTOM_FIELDS,
+    CODEMETA_CUSTOM_FIELDS_UI,
+    CODEMETA_FACETS,
+    CODEMETA_NAMESPACE,
+)
 from invenio_rdm_records.contrib.imprint import (
     IMPRINT_CUSTOM_FIELDS,
     IMPRINT_CUSTOM_FIELDS_UI,
@@ -74,6 +80,7 @@ NAMESPACES = {
     "openbiodiv": "http://openbiodiv.net/ontology#",
     "obo": "http://purl.obolibrary.org/obo/",
     "dc": "http://purl.org/dc/terms/",
+    **CODEMETA_NAMESPACE,
     **JOURNAL_NAMESPACE,
     **MEETING_NAMESPACE,
     **IMPRINT_NAMESPACE,
@@ -137,6 +144,8 @@ CUSTOM_FIELDS = [
     KeywordCF(name="openbiodiv:TaxonomicConceptLabel", multiple=True),
     # obo
     RelationshipListCF(name="obo:RO_0002453"),
+    # codemeta,
+    *CODEMETA_CUSTOM_FIELDS,
     # journal
     *JOURNAL_CUSTOM_FIELDS,
     # meeting
@@ -152,6 +161,9 @@ MEETING_CUSTOM_FIELDS_UI["hidden"] = True
 
 # Custom fields UI components
 CUSTOM_FIELDS_UI = [
+    # codemeta
+    CODEMETA_CUSTOM_FIELDS_UI,
+    # publishing information
     {
         "section": _("Publishing information"),
         "hidden": True,
@@ -167,3 +179,9 @@ CUSTOM_FIELDS_UI = [
     # meeting
     MEETING_CUSTOM_FIELDS_UI,
 ]
+
+# Custom fields facets
+
+CUSTOM_FIELDS_FACETS = {
+    **CODEMETA_FACETS,
+}
