@@ -7,7 +7,7 @@
 
 """Zenodo migrator custom fields entry transformer."""
 
-from invenio_rdm_migrator.transform import Entry
+from invenio_rdm_migrator.transform import Entry, drop_nones
 
 
 class ZenodoCustomFieldsEntry(Entry):
@@ -122,17 +122,6 @@ class ZenodoCustomFieldsEntry(Entry):
         }
 
     @classmethod
-    def _drop_nones(cls, d):
-        """Recursively drop Nones in dict d and return a new dictionary."""
-        dd = {}
-        for k, v in d.items():
-            if isinstance(v, dict) and v:  # second clause removes empty dicts
-                dd[k] = cls._drop_nones(v)
-            elif v is not None:
-                dd[k] = v
-        return dd
-
-    @classmethod
     def transform(cls, entry):
         """Transform entry."""
         custom_fields = {
@@ -152,4 +141,4 @@ class ZenodoCustomFieldsEntry(Entry):
             **cls._gbif_dwc(entry.get("custom", {})),
         }
 
-        return cls._drop_nones(custom_fields)
+        return drop_nones(custom_fields)

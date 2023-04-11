@@ -10,17 +10,17 @@
 from invenio_rdm_migrator.streams.records import RDMRecordTransform
 
 from .entries.records.record_files import ZenodoRDMRecordFileEntry
-from .entries.records.records import ZenodoRecordEntry
+from .entries.records.records import ZenodoDraftEntry, ZenodoRecordEntry
 
 
 class ZenodoRecordTransform(RDMRecordTransform):
     """Zenodo to RDM Record class for data transformation."""
 
     def _communities(self, entry):
-        communities = entry["json"].get("communities")
-        if communities:
-            slugs = [slug for slug in communities]
-            return {"ids": slugs, "default": slugs[0]}
+        # communities = entry["json"].get("communities")
+        # if communities:
+        #     slugs = [slug for slug in communities]
+        #     return {"ids": slugs, "default": slugs[0]}
         return {}
 
     def _parent(self, entry):
@@ -32,7 +32,9 @@ class ZenodoRecordTransform(RDMRecordTransform):
                 # loader is responsible for creating/updating if the PID exists.
                 "id": entry["json"]["conceptrecid"],
                 "access": {
-                    "owned_by": [{"user": o} for o in entry["json"].get("owners", [])]
+                    "owned_by": [
+                        {"user": 2}
+                    ],  # [{"user": o} for o in entry["json"].get("owners", [])]
                 },
                 "communities": self._communities(entry),
             },
@@ -44,7 +46,7 @@ class ZenodoRecordTransform(RDMRecordTransform):
         return ZenodoRecordEntry().transform(entry)
 
     def _draft(self, entry):
-        return None
+        return ZenodoDraftEntry().transform(entry)
 
     def _draft_files(self, entry):
         return None
@@ -68,3 +70,20 @@ class ZenodoRecordTransform(RDMRecordTransform):
             )
         else:
             return []
+
+    def _transform(self, entry):
+        """Transform a single entry."""
+        is_draft = entry["json"]["_deposit"]["status"] == "draft"
+
+        if is_draft:
+            return {
+                "draft": self._draft(entry),
+                "parent": self._parent(entry),
+                "draft_files": self._draft_files(entry),
+            }
+
+        return {
+            "record": self._record(entry),
+            "parent": self._parent(entry),
+            "record_files": self._record_files(entry),
+        }
