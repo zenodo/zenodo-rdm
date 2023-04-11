@@ -7,11 +7,11 @@
 
 """Zenodo migrator metadata entry transformer."""
 
-from invenio_rdm_migrator.transform import Entry
+from invenio_rdm_migrator.transform import Entry, drop_nones
 from nameparser import HumanName
 
 
-class ZenodoMetadataEntry(Entry):
+class ZenodoRecordMetadataEntry(Entry):
     """Metadata entry transform."""
 
     @classmethod
@@ -328,3 +328,33 @@ class ZenodoMetadataEntry(Entry):
         # "funding": cls._funding(entry.get("grants")),
 
         return metadata
+
+
+class ZenodoDraftMetadataEntry(ZenodoRecordMetadataEntry):
+    """Metadata entry transform."""
+
+    @classmethod
+    def transform(cls, entry):
+        """Transform entry."""
+        contributors = cls._contributors(entry.get("contributors", []))
+        contributors.extend(
+            cls._supervisors(entry.get("thesis", {}).get("supervisors", []))
+        )
+
+        metadata = {
+            "title": entry.get("title"),
+            "description": entry.get("description"),
+            "publication_date": entry.get("publication_date"),
+            "contributors": contributors,
+            "publisher": entry.get("imprint", {}).get("publisher"),
+        }
+
+        resource_type = entry.get("resource_type")
+        if resource_type:
+            metadata["resource_type"] = cls._resource_type(resource_type)
+
+        creators = entry.get("creators")
+        if resource_type:
+            metadata["creators"] = cls._creators(creators)
+
+        return drop_nones(metadata)
