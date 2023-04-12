@@ -6,9 +6,10 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 """Utility functions."""
 
-from flask import url_for
 import re
-from urllib.parse import urlsplit, parse_qs, urlencode, urlunsplit
+from urllib.parse import parse_qs, urlencode, urlsplit, urlunsplit
+
+from flask import url_for
 from invenio_app_rdm.records_ui.utils import dump_external_resource
 
 
