@@ -393,7 +393,7 @@ def expected_rdm_record_parent():
         "json": {
             "id": "10122",
             "access": {"owned_by": [{"user": 1234}]},
-            "communities": {"ids": ["zenodo"], "default": "zenodo"},
+            "communities": {"ids": ["zenodo", "migration"], "default": "zenodo"},
         },
     }
 
