@@ -10,8 +10,10 @@
 import dictdiffer
 import pytest
 
-from zenodo_rdm.migrator.transform.records import ZenodoRecordTransform
-from zenodo_rdm.migrator.transform.records.records import ZenodoRecordEntry
+from zenodo_rdm.migrator.transform.records import (
+    ZenodoRecordEntry,
+    ZenodoRecordTransform,
+)
 
 
 @pytest.fixture(scope="module")

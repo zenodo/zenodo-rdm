@@ -12,6 +12,7 @@ from invenio_rdm_migrator.streams import Runner
 
 from .stream import (
     CommunitiesStreamDefinition,
+    FilesStreamDefinition,
     RecordStreamDefinition,
     RequestStreamDefinition,
     UserStreamDefinition,
@@ -21,6 +22,7 @@ if __name__ == "__main__":
     runner = Runner(
         stream_definitions=[
             UserStreamDefinition,
+            FilesStreamDefinition,
             CommunitiesStreamDefinition,
             RecordStreamDefinition,
             RequestStreamDefinition,
