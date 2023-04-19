@@ -8,4 +8,4 @@
 
 from .communities import ZenodoFeaturedCommunityEntry
 
-__all__ = (ZenodoFeaturedCommunityEntry)
+__all__ = ZenodoFeaturedCommunityEntry

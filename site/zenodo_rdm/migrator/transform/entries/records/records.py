@@ -7,7 +7,7 @@
 
 """Zenodo migrator records transformers."""
 
-from invenio_rdm_migrator.streams.records import RDMRecordEntry, RDMRecordTransform
+from invenio_rdm_migrator.streams.records import RDMRecordEntry
 
 from .custom_fields import ZenodoCustomFieldsEntry
 from .metadata import ZenodoMetadataEntry
@@ -78,55 +78,3 @@ class ZenodoRecordEntry(RDMRecordEntry):
     def _custom_fields(self, entry):
         """Transform custom fields."""
         return ZenodoCustomFieldsEntry.transform(entry["json"])
-
-
-class ZenodoRecordTransform(RDMRecordTransform):
-    """Zenodo to RDM Record class for data transformation."""
-
-    def _communities(self, entry):
-        communities = entry["json"].get("communities")
-        if communities:
-            slugs = [slug for slug in communities]
-            return {"ids": slugs, "default": slugs[0]}
-        return {}
-
-    def _parent(self, entry):
-        parent = {
-            "created": entry["created"],  # same as the record
-            "updated": entry["updated"],  # same as the record
-            "version_id": entry["version_id"],
-            "json": {
-                # loader is responsible for creating/updating if the PID exists.
-                "id": entry["json"]["conceptrecid"],
-                "access": {
-                    "owned_by": [{"user": o} for o in entry["json"].get("owners", [])]
-                },
-                "communities": self._communities(entry),
-            },
-        }
-
-        return parent
-
-    def _record(self, entry):
-        return ZenodoRecordEntry().transform(entry)
-
-    def _draft(self, entry):
-        return None
-
-    def _draft_files(self, entry):
-        return None
-
-    def _record_files(self, entry):
-        files = entry["json"].get("_files", [])
-        return [
-            {
-                "key": f["key"],
-                "object_version": {
-                    "file": {
-                        "size": f["size"],
-                        "checksum": f["checksum"],
-                    },
-                },
-            }
-            for f in files
-        ]

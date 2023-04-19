@@ -58,7 +58,7 @@ class MockDatetime:
         return datetime(2023, 1, 1, 12, 00, 00, 00000)
 
 
-@patch("zenodo_rdm.migrator.transform.requests.datetime", MockDatetime())
+@patch("zenodo_rdm.migrator.transform.entries.requests.datetime", MockDatetime())
 def test_zenodo_request_transform(zenodo_request_data, expected_rdm_request_entry):
     """Test the transformation of a request into a request and a relation."""
     result = ZenodoRequestTransform()._transform(zenodo_request_data)
