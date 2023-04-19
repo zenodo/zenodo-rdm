@@ -13,6 +13,8 @@ from invenio_rdm_migrator.streams.communities import (
     CommunityTransform,
 )
 
+from .entries.communities import ZenodoFeaturedCommunityEntry
+
 
 class ZenodoCommunityEntry(CommunityEntry):
     """Transform Zenodo community to RDM community."""
@@ -108,3 +110,9 @@ class ZenodoCommunityTransform(CommunityTransform):
     def _community_members(self, entry):
         """Transform the community members."""
         return [ZenodoCommunityMemberEntry().transform(entry)]
+
+    def _featured_community(self, entry):
+        """Transform the featured community."""
+        if entry["is_featured"]:
+            return ZenodoFeaturedCommunityEntry().transform(entry)
+        return {}
