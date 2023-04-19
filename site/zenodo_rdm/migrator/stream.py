@@ -26,6 +26,7 @@ CommunitiesStreamDefinition = StreamDefinition(
     transform_cls=ZenodoCommunityTransform,
     load_cls=CommunityCopyLoad,
 )
+"""ETL stream for Zenodo to RDM communities."""
 
 RecordStreamDefinition = StreamDefinition(
     name="records",

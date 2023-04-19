@@ -175,3 +175,25 @@ COPY (
     ) as requests
 ) TO STDOUT;
 """
+
+EXTRACT_COMMUNITIES_SQL = """
+COPY (
+    SELECT
+        row_to_json(communities)
+    FROM
+        (
+            SELECT
+                r.*,
+                CASE
+                    WHEN featured_comm.start_date IS NULL THEN FALSE
+                    ELSE TRUE
+                END as is_featured,
+                featured_comm.start_date as featured_start_date,
+                featured_comm.created as featured_created,
+                featured_comm.updated as featured_updated
+            FROM
+                communities_community as r
+                LEFT OUTER JOIN communities_featured_community featured_comm ON r.id = featured_comm.id_community
+        ) as communities
+) TO STDOUT;
+"""
