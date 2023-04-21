@@ -284,6 +284,7 @@ def expected_rdm_record_entry():
                     },
                 ],
                 "publisher": "CERN's Publishing",
+                "rights": [{"title": {"en": "http://dx.zenodo.org/licenses/cc-zero"}}],
             },
             "access": {
                 "record": "public",
