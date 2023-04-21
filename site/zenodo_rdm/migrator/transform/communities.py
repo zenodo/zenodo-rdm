@@ -28,6 +28,6 @@ class ZenodoCommunityTransform(CommunityTransform):
 
     def _featured_community(self, entry):
         """Transform the featured community."""
-        if entry["is_featured"]:
+        if entry.get("is_featured", False):
             return ZenodoFeaturedCommunityEntry().transform(entry)
         return {}
