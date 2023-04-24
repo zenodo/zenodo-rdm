@@ -217,6 +217,7 @@ def expected_rdm_record_entry():
     Should contain the expected record data of processing `zenodo_record_data`.
     """
     return {
+        "id": "2d6970ea-602d-4e8b-a918-063a59823386",
         "created": "2023-01-01 12:00:00.00000",
         "updated": "2023-01-31 12:00:00.00000",
         "version_id": 1,

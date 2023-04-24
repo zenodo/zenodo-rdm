@@ -18,11 +18,11 @@
     "default": {
         "alembic": {
             "hashes": [
-                "sha256:32a69b13a613aeb7e8093f242da60eff9daed13c0df02fff279c1b06c32965d2",
-                "sha256:b2e0a6cfd3a8ce936a1168320bcbe94aefa3f4463cd773a968a55071beb3cd37"
+                "sha256:295b54bbb92c4008ab6a7dcd1e227e668416d6f84b98b3c4446a2bc6214a556b",
+                "sha256:43942c3d4bf2620c466b91c0f4fca136fe51ae972394a0cc8b90810d664e4f5c"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==1.10.3"
+            "version": "==1.10.4"
         },
         "amqp": {
             "hashes": [
@@ -543,11 +543,11 @@
         },
         "faker": {
             "hashes": [
-                "sha256:170ead9d0d140916168b142df69c44722b8f622ced2070802d0af9c476f0cb84",
-                "sha256:977ad0b7aa7a61ed57287d6a0723a827e9d3dd1f8cc82aaf08707f281b33bacc"
+                "sha256:137c6667583b0b458599b11305eed5a486e3932a14cb792b2b5b82ad1ad1a430",
+                "sha256:64e9ab619d75684cc0593aa9f336170b0b58fa77c07fc0ebc7b2b1258e53b67d"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==18.4.0"
+            "version": "==18.5.1"
         },
         "fastjsonschema": {
             "hashes": [
@@ -1136,11 +1136,11 @@
         },
         "invenio-rdm-migrator": {
             "hashes": [
-                "sha256:0f8bc36dc2e1e9b19f20a55b331e86fa1eb0d70b36eab22e91c37af6873652de",
-                "sha256:d6d243315d1af70396a3c174cbfd7fe24945fcdbf4a5d1d38aaba780ae9d2986"
+                "sha256:518af421ec1c9049e3892d09baa8b274baaa409068d49ff2491f25dc2f283602",
+                "sha256:986d9826fb7cd54d26bd5a1d5cf4cbb06bdcad53ad3baa28b856d01ce5ae6dda"
             ],
-            "markers": "python_version >= '3.7'",
-            "version": "==1.0.0a4"
+            "index": "pypi",
+            "version": "==v1.0.0a5"
         },
         "invenio-rdm-records": {
             "hashes": [
@@ -1151,7 +1151,9 @@
             "version": "==3.1.0"
         },
         "invenio-records": {
-            "extras": [],
+            "extras": [
+                "postgresql"
+            ],
             "hashes": [
                 "sha256:b00662cdb9b6d2660d299a78df4d6504e838d2228af1f1f529451b4e09617db1",
                 "sha256:be7e3490b3c892aea92c35401d92c2d21a631826597365300bfec8bea8a4502b"

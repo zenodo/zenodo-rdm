@@ -16,6 +16,10 @@ from .metadata import ZenodoMetadataEntry
 class ZenodoRecordEntry(RDMRecordEntry):
     """Transform Zenodo record to RDM record."""
 
+    def _id(self, entry):
+        """Returns the rdm record uuid."""
+        return entry["id"]
+
     def _created(self, entry):
         """Returns the creation date of the record."""
         return entry["created"]
