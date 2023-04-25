@@ -55,7 +55,6 @@ class ZenodoRecordTransform(RDMRecordTransform):
                 **file,
                 "created": entry["created"],  # we use the record's created date
                 "updated": entry["updated"],  # we use the record's updated date
-                "version": entry["version_id"],  # we use the record's version
             }
 
         files = entry["json"]["_files"]

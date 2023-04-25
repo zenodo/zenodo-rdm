@@ -32,8 +32,8 @@ class ZenodoRDMRecordFileEntry(RDMRecordFileEntry):
 
     def _version_id(self, entry):
         """Returns the rdm record file version."""
-        # use record version
-        return entry["version"]
+        # we hardcode version to 1 as this is used for optimistic concurrency checks
+        return 1
 
     def _key(self, entry):
         """Returns the rdm record file key name."""
