@@ -129,3 +129,38 @@ current_rdm_records_service.indexer.bulk_index((rec.id for rec in records))
   user doesn't seem to have the correct roles when visiting a community, then you might
   need to run the `site.zenodo_rdm.migrator.utils.invalidate_user_community_roles_cache`
   so users community roles are being re-cached.
+
+## Generating dumps
+
+In order to generate the dumps used by the migrator, you need access to a legacy Zenodo
+database with either live data or a snapshot.
+
+In `zenodo-rdm/site/zenodo_rdm/migrator/extract.py`, you'll find the SQL queries for
+dumping the data needed for each of the migration streams. You can run these queries
+directly on the legacy database, in the following manner:
+
+```shell
+# NOTE: Adjust the connection string as necessary
+DB_URI="postgresql://zenodo@zenodo-legacy-db-host:5432/zenodo"
+
+# Users, ~30min
+psql $DB_URI -f users_dump.sql | sed 's/\\\\/\\/g' | gzip -c > "users-$(date -I).jsonl.gz"
+# Communities, ~5min
+psql $DB_URI -f communities_dump.sql | sed 's/\\\\/\\/g' | gzip -c > "communities-$(date -I).jsonl.gz"
+# Community record inclusion requests, ~10min
+psql $DB_URI -f requests_dump.sql | sed 's/\\\\/\\/g' | gzip -c > "requests-$(date -I).jsonl.gz"
+# Records, ~2-3h
+psql $DB_URI -f records_dump.sql | sed 's/\\\\/\\/g' | gzip -c > "records-$(date -I).jsonl.gz"
+# Deposits/drafts, ~30min
+psql $DB_URI -f deposits_dump.sql | sed 's/\\\\/\\/g' | gzip -c > "deposits-$(date -I).jsonl.gz"
+
+
+# For dumping files we use a different style, since we're not filtering anything:
+
+# File instances, ~10min
+psql $DB_URI -f files_files_dump.sql | gzip -c > "files_files-$(date -I).jsonl.gz"
+# Buckets, ~1min
+psql $DB_URI -f files_bucket_dump.sql | gzip -c > files_bucket-$(date -I).dump.gz
+# File object versions, ~3min
+psql $DB_URI -f files_object_dump.sql | gzip -c > files_object-$(date -I).dump.gz
+```
