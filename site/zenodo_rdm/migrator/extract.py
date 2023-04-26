@@ -23,8 +23,6 @@ class JSONLExtract(Extract):
         """Yield one element at a time."""
         with open(self.filepath, "r") as reader:
             for line in reader:
-                # TODO JSONl file should be cleaned up before loading
-                line = line.strip().replace("\\\\", "\\")
                 yield json.loads(line)
 
 
@@ -82,22 +80,22 @@ COPY (
 """
 
 EXTRACT_RECORDS_SQL = """
-    COPY (
-        SELECT row_to_json(records)
-        FROM (
-            SELECT
-                r.*, pr.index
-            FROM records_metadata as r
-                JOIN pidstore_pid
-                    ON pidstore_pid.object_uuid = r.id
-                JOIN pidrelations_pidrelation as pr
-                    ON pidstore_pid.id = pr.child_id
-            WHERE
-                pidstore_pid.pid_type = 'recid' AND
-                pidstore_pid.status = 'R' AND
-                pidstore_pid.object_type = 'rec'
-        ) as records
-    ) TO STDOUT;
+COPY (
+    SELECT row_to_json(records)
+    FROM (
+        SELECT
+            r.*, pr.index
+        FROM records_metadata as r
+            JOIN pidstore_pid
+                ON pidstore_pid.object_uuid = r.id
+            JOIN pidrelations_pidrelation as pr
+                ON pidstore_pid.id = pr.child_id
+        WHERE
+            pidstore_pid.pid_type = 'recid' AND
+            pidstore_pid.status = 'R' AND
+            pidstore_pid.object_type = 'rec'
+    ) as records
+) TO STDOUT;
 """
 
 EXTRACT_REQUESTS_SQL = """
@@ -178,75 +176,125 @@ COPY (
 
 EXTRACT_COMMUNITIES_SQL = """
 COPY (
+    WITH last_featured_comms AS (
+        SELECT
+            id_community as id,
+            MAX(start_date) as start_date,
+            MAX(created) as created,
+            MAX(updated) as updated
+        FROM communities_featured_community AS fc
+        GROUP BY id_community
+    )
     SELECT
         row_to_json(communities)
     FROM
         (
             SELECT
-                r.*,
+                c.*,
                 CASE
-                    WHEN featured_comm.start_date IS NULL THEN FALSE
+                    WHEN fc.start_date IS NULL THEN FALSE
                     ELSE TRUE
                 END as is_featured,
-                featured_comm.start_date as featured_start_date,
-                featured_comm.created as featured_created,
-                featured_comm.updated as featured_updated
+                fc.start_date as featured_start_date,
+                fc.created as featured_created,
+                fc.updated as featured_updated
             FROM
-                communities_community as r
-                LEFT OUTER JOIN communities_featured_community featured_comm ON r.id = featured_comm.id_community
+                communities_community as c
+                LEFT OUTER JOIN last_featured_comms as fc ON c.id = fc.id
+            WHERE
+                c.deleted_at IS NULL
         ) as communities
 ) TO STDOUT;
 """
 
-EXTRACT_FILES_SQL = """
-COPY (
-    SELECT row_to_json(files)
-    FROM (
-        WITH active_fb AS (
-            SELECT
-                created AS fb_created,
-                updated AS fb_updated,
-                id AS fb_id,
-                default_location AS fb_default_location,
-                default_storage_class AS fb_default_storage_class,
-                size AS fb_size,
-                quota_size AS fb_quota_size,
-                max_file_size AS fb_max_file_size,
-                locked AS fb_locked,
-                deleted AS fb_deleted
-            FROM records_buckets AS rb
-                INNER JOIN files_bucket AS fb ON rb.bucket_id=fb.id
-        ), active_fo AS (
-            SELECT
-                active_fb.*,
-                created AS fo_created,
-                updated AS fo_updated,
-                bucket_id AS fo_bucket_id,
-                key AS fo_key,
-                version_id AS fo_version_id,
-                file_id AS fo_file_id,
-                _mimetype AS fo_mimetype,
-                is_head AS fo_is_head
-            FROM active_fb
-                INNER JOIN files_object ON active_fb.rb_bucket_id=files_object.bucket_id
-        )
+# TODO: Check if we just dump the entire tables (files, objects, buckets) and
+# generate RecordFile/DraftFile via `INSERT INTO () FROM (SELECT ...)`
+# EXTRACT_FILES_SQL = """
+# COPY (
+#     SELECT row_to_json(files)
+#     FROM (
+#         WITH active_fb AS (
+#             SELECT
+#                 created AS fb_created,
+#                 updated AS fb_updated,
+#                 id AS fb_id,
+#                 default_location AS fb_default_location,
+#                 default_storage_class AS fb_default_storage_class,
+#                 size AS fb_size,
+#                 quota_size AS fb_quota_size,
+#                 max_file_size AS fb_max_file_size,
+#                 locked AS fb_locked,
+#                 deleted AS fb_deleted
+#             FROM records_buckets AS rb
+#                 INNER JOIN files_bucket AS fb ON rb.bucket_id=fb.id
+#         ), active_fo AS (
+#             SELECT
+#                 active_fb.*,
+#                 created AS fo_created,
+#                 updated AS fo_updated,
+#                 bucket_id AS fo_bucket_id,
+#                 key AS fo_key,
+#                 version_id AS fo_version_id,
+#                 file_id AS fo_file_id,
+#                 _mimetype AS fo_mimetype,
+#                 is_head AS fo_is_head
+#             FROM active_fb
+#                 INNER JOIN files_object ON active_fb.fb_id=files_object.bucket_id
+#         )
 
+#         SELECT
+#             active_fo.*,
+#             created AS ff_created,
+#             updated AS ff_updated,
+#             id AS ff_id,
+#             uri AS ff_uri,
+#             storage_class AS ff_storage_class,
+#             size AS ff_size,
+#             checksum AS ff_checksum,
+#             readable AS ff_readable,
+#             writable AS ff_writable,
+#             last_check_at AS ff_last_check_at,
+#             last_check AS ff_last_check
+#         FROM active_fo
+#                 INNER JOIN files_files ON active_fo.fo_file_id=files_files.id
+#     ) as files
+# ) TO STDOUT;
+# """
+
+# NOTE: We're using a binary export for the files tables, since we're not filtering
+EXTRACT_FILE_INSTANCES_SQL = """
+COPY (
+  SELECT
+      created,
+      updated,
+      id,
+      uri,
+      'L' as storage_class,
+      size,
+      checksum,
+      readable,
+      writable,
+      last_check_at,
+      last_check
+  FROM files_files
+) TO STDOUT WITH (FORMAT binary);
+"""
+EXTRACT_FILE_BUCKETS_SQL = "COPY files_bucket TO STDOUT WITH (FORMAT binary);"
+EXTRACT_FILE_OBJECT_VERSIONS_SQL = "COPY files_object TO STDOUT WITH (FORMAT binary);"
+
+EXTRACT_DEPOSITS_SQL = """
+COPY (
+    SELECT row_to_json(deposits)
+    FROM (
         SELECT
-            active_fo.*,
-            created AS ff_created,
-            updated AS ff_updated,
-            id AS ff_id,
-            uri AS ff_uri,
-            storage_class AS ff_storage_class,
-            size AS ff_size,
-            checksum AS ff_checksum,
-            readable AS ff_readable,
-            writable AS ff_writable,
-            last_check_at AS ff_last_check_at,
-            last_check AS ff_last_check
-        FROM active_fo
-                INNER JOIN files_files ON active_fo.fo_file_id=files_files.id
-    ) as files
-    LIMIT 5
+            r.*
+        FROM records_metadata as r
+            JOIN pidstore_pid
+                ON pidstore_pid.object_uuid = r.id
+        WHERE
+            pidstore_pid.pid_type = 'depid' AND
+            pidstore_pid.status = 'R' AND
+            pidstore_pid.object_type = 'rec'
+    ) as deposits
 ) TO STDOUT;
 """
