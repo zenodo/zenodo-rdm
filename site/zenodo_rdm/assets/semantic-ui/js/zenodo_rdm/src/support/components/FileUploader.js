@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Dropzone from "react-dropzone";
-import { humanReadableBytes } from "react-invenio-deposit";
+import { humanReadableBytes } from "@js/invenio_rdm_records";
 import FileTable from "./FileTable";
 import { Message } from "semantic-ui-react";
 
