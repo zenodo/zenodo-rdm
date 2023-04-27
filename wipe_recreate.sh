@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2020-2022 CERN.
+# Copyright (C) 2020-2023 CERN.
 #
 # Demo-InvenioRDM is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -38,9 +38,10 @@ invenio communities custom-fields init
 
 # Add demo and fixtures data
 # -------------
-invenio rdm-records fixtures
-invenio rdm-records demo
+invenio rdm-records fixture
+psql << "DELETE FROM accounts_user WHERE id=1;"  # remove admin@inveniosoftware.org
+# invenio rdm-records demo
 invenio vocabularies import -v names -f ./app_data/vocabularies-future.yaml  # zenodo specific names
 
 # Enable admin user
-invenio users activate admin@inveniosoftware.org
+# invenio users activate admin@inveniosoftware.org
