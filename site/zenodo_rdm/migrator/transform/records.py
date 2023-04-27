@@ -17,10 +17,10 @@ class ZenodoRecordTransform(RDMRecordTransform):
     """Zenodo to RDM Record class for data transformation."""
 
     def _communities(self, entry):
-        # communities = entry["json"].get("communities")
-        # if communities:
-        #     slugs = [slug for slug in communities]
-        #     return {"ids": slugs, "default": slugs[0]}
+        communities = entry["json"].get("communities")
+        if communities:
+            slugs = [slug for slug in communities]
+            return {"ids": slugs, "default": slugs[0]}
         return {}
 
     def _parent(self, entry):
@@ -76,9 +76,13 @@ class ZenodoRecordTransform(RDMRecordTransform):
         is_draft = entry["json"]["_deposit"]["status"] == "draft"
 
         if is_draft:
+            # FIXME: draft communities could be review or addition
+            # we might need to differentiate those
+            parent = self._parent(entry)
+            parent["communities"] = {}
             return {
                 "draft": self._draft(entry),
-                "parent": self._parent(entry),
+                "parent": parent,
                 "draft_files": self._draft_files(entry),
             }
 
