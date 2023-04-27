@@ -47,6 +47,13 @@ RecordStreamDefinition = StreamDefinition(
 )
 """ETL stream for Zenodo to RDM records."""
 
+DraftStreamDefinition = StreamDefinition(
+    name="drafts",
+    extract_cls=JSONLExtract,
+    transform_cls=ZenodoRecordTransform,
+    load_cls=RDMRecordCopyLoad,
+)
+"""ETL stream for Zenodo to RDM drafts."""
 
 UserStreamDefinition = StreamDefinition(
     name="users",
