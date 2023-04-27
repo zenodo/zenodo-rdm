@@ -282,9 +282,9 @@ COPY (
 EXTRACT_FILE_INSTANCES_SQL = """
 COPY (
   SELECT
+      id,
       created,
       updated,
-      id,
       uri,
       'L' as storage_class,
       size,
@@ -296,8 +296,36 @@ COPY (
   FROM files_files
 ) TO STDOUT WITH (FORMAT binary);
 """
-EXTRACT_FILE_BUCKETS_SQL = "COPY files_bucket TO STDOUT WITH (FORMAT binary);"
-EXTRACT_FILE_OBJECT_VERSIONS_SQL = "COPY files_object TO STDOUT WITH (FORMAT binary);"
+EXTRACT_FILE_BUCKETS_SQL = """
+COPY (
+  SELECT
+      id,
+      created,
+      updated,
+      default_location,
+      'L' as default_storage_class,
+      size,
+      quota_size,
+      max_file_size,
+      locked,
+      deleted
+  FROM files_bucket
+) TO STDOUT WITH (FORMAT binary);
+"""
+EXTRACT_FILE_OBJECT_VERSIONS_SQL = """
+COPY (
+  SELECT
+      version_id,
+      created,
+      updated,
+      key,
+      bucket_id,
+      file_id,
+      _mimetype,
+      is_head
+  FROM files_object
+) TO STDOUT WITH (FORMAT binary);
+"""
 
 EXTRACT_DEPOSITS_SQL = """
 COPY (

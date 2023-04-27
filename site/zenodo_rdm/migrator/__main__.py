@@ -12,7 +12,6 @@ from invenio_rdm_migrator.streams import Runner
 
 from .stream import (
     CommunitiesStreamDefinition,
-    FilesStreamDefinition,
     RecordStreamDefinition,
     RequestStreamDefinition,
     UserStreamDefinition,
@@ -22,7 +21,6 @@ if __name__ == "__main__":
     runner = Runner(
         stream_definitions=[
             UserStreamDefinition,
-            FilesStreamDefinition,
             CommunitiesStreamDefinition,
             RecordStreamDefinition,
             RequestStreamDefinition,
@@ -30,3 +28,4 @@ if __name__ == "__main__":
         config_filepath=sys.argv[1],
     )
     runner.run()
+    # files should ideally run here but now must be loaded separately

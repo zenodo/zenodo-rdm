@@ -4,12 +4,6 @@ users:
   load:
     db_uri: postgresql://zenodo:zenodo@localhost:5432/zenodo
     tmp_dir: /path/to/tmp
-files:
-  extract:
-    filepath: /path/to/files.jsonl
-  load:
-    db_uri: postgresql://zenodo:zenodo@localhost:5432/zenodo
-    tmp_dir: /path/to/tmp
 communities:
   extract:
     filepath: /path/to/communities.jsonl
