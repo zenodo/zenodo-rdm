@@ -277,57 +277,23 @@ class ZenodoRecordMetadataEntry(Entry):
             "creators": cls._creators(entry["creators"]),
             "contributors": contributors,
             "publisher": entry.get("imprint", {}).get("publisher"),
+            "additional_descriptions": cls._additional_descriptions(entry.get("notes")),
+            "rights": cls._rights(entry.get("license")),
+            "languages": cls._languages(entry.get("language")),
+            "subjects": cls._subjects(entry.get("keywords")),
+            "identifiers": cls._identifiers(entry.get("alternate_identifiers")),
+            "related_identifiers": cls._related_identifiers(
+                entry.get("related_identifiers")
+            ),
+            "references": cls._references(entry.get("references")),
+            "dates": cls._dates(entry.get("dates")),
+            # TODO: fix location entry
+            # "locations": cls._locations(entry.get("locations")),
+            # TODO funding is not implemented yet
+            # "funding": cls._funding(entry.get("grants"))
         }
 
-        additional_descriptions = cls._additional_descriptions(entry.get("notes"))
-        if additional_descriptions:
-            metadata.update({"additional_descriptions": additional_descriptions})
-
-        rights = cls._rights(entry.get("license"))
-        if rights:
-            metadata.update({"rights": rights})
-
-        languages = cls._languages(entry.get("language"))
-        if languages:
-            metadata.update({"languages": languages})
-
-        version = entry.get("version")
-        if version:
-            metadata.update({"version": version})
-
-        subjects = cls._subjects(entry.get("keywords"))
-        if subjects:
-            metadata.update({"subjects": subjects})
-
-        identifiers = cls._identifiers(entry.get("alternate_identifiers"))
-        if identifiers:
-            metadata.update({"identifiers": identifiers})
-
-        related_identifiers = cls._related_identifiers(entry.get("related_identifiers"))
-        if related_identifiers:
-            metadata.update({"related_identifiers": related_identifiers})
-
-        references = cls._references(entry.get("references"))
-        if references:
-            metadata.update({"references": references})
-
-        dates = cls._dates(entry.get("dates"))
-        if dates:
-            # TODO uncomment after tested
-            # metadata.update({"dates": dates})
-            pass
-
-        # TODO: fix location entry
-        # locations = cls._locations(entry.get("locations"))
-        # if locations:
-        #     # TODO uncomment after tested
-        #     # metadata.update({"locations", locations})
-        #     pass
-
-        # # TODO funding
-        # "funding": cls._funding(entry.get("grants")),
-
-        return metadata
+        return drop_nones(metadata)
 
 
 class ZenodoDraftMetadataEntry(ZenodoRecordMetadataEntry):
