@@ -78,9 +78,10 @@ class FileStream(Stream):
         """Constructor."""
         self.tmp_dir = tmp_dir
         self.db_uri = db_uri
+        self.models = ["files_files", "files_bucket", "files_object"]
         self.model_map = {
-            "files_bucket": FilesBucket,
             "files_files": FilesInstance,
+            "files_bucket": FilesBucket,
             "files_object": FilesObjectVersion,
         }
 
@@ -102,7 +103,7 @@ class FileStream(Stream):
             return ", ".join([f.name for f in fields(model)])
 
         with psycopg.connect(self.db_uri) as conn:
-            for name in self.model_map.keys():
+            for name in self.models:
                 fpath = Path(self.tmp_dir) / f"{name}.csv"
                 cols = get_cols(self.model_map[name])
                 if fpath.exists():
