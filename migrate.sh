@@ -1,3 +1,11 @@
+##############
+#
+# Initial notes, read first.
+#
+# -  To be able to see deposits (with admin user), the owner of records must be hardcoded to the admin user id.
+#
+##############
+
 # Clear DB
 # Only run if DB has data.
 invenio shell --no-term-title -c "import redis; redis.StrictRedis.from_url(app.config['CACHE_REDIS_URL']).flushall(); print('Cache cleared')"
@@ -24,8 +32,9 @@ invenio communities custom-fields init
 python -m zenodo_rdm.migrator site/zenodo_rdm/migrator/streams.yaml
 
 # Update ID sequences in DB
-psql -h <host> -U zenodo -d zenodo
+# This is developed programatically, not need to run it manually.
 <<com
+psql -h <host> -U zenodo -d zenodo
 SELECT MAX(id) from accounts_user;
 ALTER SEQUENCE ALTER SEQUENCE accounts_user_id_seq RESTART WITH {ID}; # Insert ID from before
 com

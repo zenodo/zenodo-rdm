@@ -211,7 +211,7 @@ class ZenodoRecordMetadataEntry(Entry):
                 else:
                     # TODO what to do
                     rdm_date = f"{start_date}/{end_date}"
-            if start_date:
+            elif start_date:
                 rdm_date = start_date
 
             elif end_date:
@@ -233,12 +233,13 @@ class ZenodoRecordMetadataEntry(Entry):
 
         return ret
 
+    @classmethod
     def _locations(cls, locations):
         """Parses a location from Zenodo."""
         if not locations:
             return None
 
-        ret = []
+        features = []
         for legacy_location in locations:
             lat = legacy_location.get("lat")
             lon = legacy_location.get("lon")
@@ -254,12 +255,9 @@ class ZenodoRecordMetadataEntry(Entry):
             if description:
                 feature.update({"description": description})
 
-            # TODO missing identifiers
+            features.append(feature)
 
-            rdm_location = {"features": [feature]}
-            ret.append(rdm_location)
-
-        return ret
+        return {"features": features}
 
     @classmethod
     def transform(cls, entry):
@@ -287,8 +285,7 @@ class ZenodoRecordMetadataEntry(Entry):
             ),
             "references": cls._references(entry.get("references")),
             "dates": cls._dates(entry.get("dates")),
-            # TODO: fix location entry
-            # "locations": cls._locations(entry.get("locations")),
+            "locations": cls._locations(entry.get("locations")),
             # TODO funding is not implemented yet
             # "funding": cls._funding(entry.get("grants"))
         }
@@ -323,6 +320,7 @@ class ZenodoDraftMetadataEntry(ZenodoRecordMetadataEntry):
             ),
             "references": cls._references(entry.get("references")),
             "dates": cls._dates(entry.get("dates")),
+            "locations": cls._locations(entry.get("locations")),
         }
 
         resource_type = entry.get("resource_type")

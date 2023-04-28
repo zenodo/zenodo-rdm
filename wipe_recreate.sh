@@ -38,8 +38,8 @@ invenio communities custom-fields init
 
 # Add demo and fixtures data
 # -------------
-invenio rdm-records fixture
-psql << "DELETE FROM accounts_user WHERE id=1;"  # remove admin@inveniosoftware.org
+invenio rdm-records fixtures
+# psql << "DELETE FROM accounts_user WHERE id=1;"  # remove admin@inveniosoftware.org
 # invenio rdm-records demo
 invenio vocabularies import -v names -f ./app_data/vocabularies-future.yaml  # zenodo specific names
 

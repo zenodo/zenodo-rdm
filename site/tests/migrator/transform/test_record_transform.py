@@ -96,6 +96,59 @@ def zenodo_record_data():
                     "affiliation": "CERN",
                 },
             ],
+            "dates": [
+                {
+                    "start": "2018-03-21",
+                    "end": "2018-03-25",
+                    "type": "Collected",
+                    "description": "Another collection period.",
+                },
+                {
+                    "start": "2018-03-21",
+                    "end": "2018-03-21",
+                    "type": "Valid",
+                    "description": "A date",
+                },
+                {
+                    "start": "2018-03-21",
+                    "type": "Withdrawn",
+                    "description": "A date",
+                },
+                {
+                    "end": "2018-03-21",
+                    "type": "Collected",
+                    "description": "A date",
+                },
+            ],
+            "locations": [
+                {"lat": 34.02577, "lon": -118.7804, "place": "Los Angeles"},
+                {
+                    "place": "Mt.Fuji, Japan",
+                    "description": "Sample found 100ft from the foot of the mountain.",
+                },
+            ],
+            "notes": "A note",
+            "license": {"$ref": "https://dx.zenodo.org/licenses/CC-BY-4.0"},
+            "language": "eng",
+            "alternate_identifiers": [
+                {
+                    "identifier": "10.13039/901100010730",
+                    "resource_type": {"subtype": "thesis", "type": "publication"},
+                    "scheme": "doi",
+                }
+            ],
+            "related_identifiers": [
+                {
+                    "identifier": "10.13039/901100010730",
+                    "relation": "isCitedBy",
+                    "resource_type": {
+                        "subtype": "annotationcollection",
+                        "type": "publication",
+                    },
+                    "scheme": "doi",
+                }
+            ],
+            "references": [{"raw_reference": "Test reference"}],
             "keywords": ["migration", "test", "Zenodo", "RDM"],
             "_internal": {
                 "source": {
@@ -293,11 +346,67 @@ def expected_rdm_record_entry():
                 ],
                 "publisher": "CERN's Publishing",
                 "rights": [{"title": {"en": "http://dx.zenodo.org/licenses/cc-zero"}}],
+                "dates": [
+                    {
+                        "date": "2018-03-21/2018-03-25",
+                        "type": {"id": "collected"},
+                        "description": "Another collection period.",
+                    },
+                    {
+                        "date": "2018-03-21",
+                        "type": {"id": "valid"},
+                        "description": "A date",
+                    },
+                    {
+                        "date": "2018-03-21",
+                        "type": {"id": "withdrawn"},
+                        "description": "A date",
+                    },
+                    {
+                        "date": "2018-03-21",
+                        "type": {"id": "collected"},
+                        "description": "A date",
+                    },
+                ],
+                "locations": {
+                    "features": [
+                        {
+                            "place": "Los Angeles",
+                            "geometry": {
+                                "type": "Point",
+                                "coordinates": [-118.7804, 34.02577],
+                            },
+                        },
+                        {
+                            "place": "Mt.Fuji, Japan",
+                            "description": "Sample found 100ft from the foot of the mountain.",
+                        },
+                    ]
+                },
                 "subjects": [
                     {"subject": "migration"},
                     {"subject": "test"},
                     {"subject": "Zenodo"},
                     {"subject": "RDM"},
+                ],
+                "rights": [
+                    {"title": {"en": "https://dx.zenodo.org/licenses/CC-BY-4.0"}}
+                ],
+                "languages": [{"id": "eng"}],
+                "identifiers": [
+                    {"scheme": "doi", "identifier": "10.13039/901100010730"}
+                ],
+                "related_identifiers": [
+                    {
+                        "scheme": "doi",
+                        "identifier": "10.13039/901100010730",
+                        "relation_type": {"id": "iscitedby"},
+                        "resource_type": {"id": "publication-annotationcollection"},
+                    }
+                ],
+                "references": [{"reference": "Test reference"}],
+                "additional_descriptions": [
+                    {"description": "A note", "type": {"id": "other"}}
                 ],
             },
             "access": {
@@ -520,6 +629,13 @@ def zenodo_draft_data():
                 "volume": "20",
                 "issn": "2414-2948",
             },
+            "locations": [
+                {"lat": 34.02577, "lon": -118.7804, "place": "Los Angeles"},
+                {
+                    "place": "Mt.Fuji, Japan",
+                    "description": "Sample found 100ft from the foot of the mountain.",
+                },
+            ],
             "meeting": {
                 "url": "http://test-meeting.com/",
                 "dates": "20th–30th Jan 2023",
@@ -691,6 +807,21 @@ def expected_rdm_draft_entry():
                         "role": {"id": "supervisor"},
                     },
                 ],
+                "locations": {
+                    "features": [
+                        {
+                            "place": "Los Angeles",
+                            "geometry": {
+                                "type": "Point",
+                                "coordinates": [-118.7804, 34.02577],
+                            },
+                        },
+                        {
+                            "place": "Mt.Fuji, Japan",
+                            "description": "Sample found 100ft from the foot of the mountain.",
+                        },
+                    ]
+                },
                 "publisher": "CERN's Publishing",
                 "rights": [{"title": {"en": "http://dx.zenodo.org/licenses/cc-zero"}}],
                 "subjects": [
