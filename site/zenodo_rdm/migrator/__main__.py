@@ -12,8 +12,8 @@ from invenio_rdm_migrator.streams import Runner
 
 from .stream import (
     CommunitiesStreamDefinition,
-    RecordStreamDefinition,
     DraftStreamDefinition,
+    RecordStreamDefinition,
     RequestStreamDefinition,
     UserStreamDefinition,
 )
