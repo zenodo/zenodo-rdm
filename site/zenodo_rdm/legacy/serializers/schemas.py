@@ -10,7 +10,7 @@
 from invenio_access.permissions import system_identity
 from invenio_pidstore.errors import PIDDeletedError, PIDDoesNotExistError
 from invenio_records_resources.proxies import current_service_registry
-from marshmallow import Schema, fields, missing, post_dump
+from marshmallow import Schema, fields, missing, post_dump, pre_dump
 from marshmallow_utils.fields import SanitizedHTML, SanitizedUnicode
 
 from zenodo_rdm.legacy.deserializers.schemas import FUNDER_ROR_TO_DOI
@@ -49,6 +49,62 @@ class CreatorSchema(Schema):
         return result
 
 
+class ContributorSchema(CreatorSchema):
+    """Contributor schema."""
+
+    type = fields.Method("dump_role")
+
+    def dump_role(self, obj):
+        """Loads role field."""
+        role = obj.get("role")
+
+        if role:
+            # English title matches DataCite prop, used in legacy Zenodo
+            return role.get("title", {}).get("en")
+
+
+class JournalSchema(Schema):
+    """Journal schema."""
+
+    title = SanitizedUnicode()
+    volume = SanitizedUnicode()
+    issue = SanitizedUnicode()
+    pages = SanitizedUnicode()
+
+
+class MeetingSchema(Schema):
+    """Meeting schema."""
+
+    title = SanitizedUnicode()
+    acronym = SanitizedUnicode()
+    dates = SanitizedUnicode()
+    place = SanitizedUnicode()
+    url = SanitizedUnicode()
+    session = SanitizedUnicode()
+    session_part = SanitizedUnicode()
+
+
+class ImprintSchema(Schema):
+    """Imprint schema."""
+
+    publisher = SanitizedUnicode()
+    isbn = SanitizedUnicode()
+    place = SanitizedUnicode()
+
+
+class PartOfSchema(Schema):
+    """'Part of' schema."""
+
+    pages = SanitizedUnicode()
+    title = SanitizedUnicode()
+
+
+class ThesisSchema(Schema):
+    """Thesis schema."""
+
+    university = SanitizedUnicode()
+
+
 class MetadataSchema(Schema):
     """Metadata schema."""
 
@@ -59,6 +115,42 @@ class MetadataSchema(Schema):
     grants = fields.Method("dump_grants")
 
     license = fields.Method("dump_license")
+
+    contributors = fields.List(fields.Nested(ContributorSchema), dump_only=True)
+
+    journal = fields.Nested(JournalSchema, attribute="custom_fields.journal:journal")
+
+    meeting = fields.Nested(MeetingSchema, attribute="custom_fields.meeting:meeting")
+
+    imprint = fields.Nested(ImprintSchema, attribute="custom_fields.imprint:imprint")
+
+    part_of = fields.Nested(PartOfSchema, data_key="part_of")
+
+    thesis = fields.Nested(ThesisSchema, attribute="custom_fields.thesis:university")
+
+    @pre_dump
+    def hook_contributors_thesis(self, data, **kwargs):
+        """Hooks university key to thesis."""
+        university = data.get("custom_fields").get("thesis:university")
+        if university:
+            new_thesis = {"university": university}
+            data["custom_fields"]["thesis:university"] = new_thesis
+        return data
+
+    @pre_dump
+    def hook_imprint_partof(self, data, **kwargs):
+        """Hooks imprint and part_of. fields."""
+        # custom_fields.imprint:imprint was already the attribute of another field.
+        imprint = data.get("custom_fields", {}).get("imprint:imprint")
+        publisher = data.get("publisher")
+        if imprint:
+            data["part_of"] = imprint
+        if publisher:
+            data["custom_fields"]["imprint:imprint"] = {
+                **imprint,
+                "publisher": publisher,
+            }
+        return data
 
     @post_dump(pass_original=True)
     def dump_resource_type(self, result, original, **kwargs):
@@ -167,6 +259,15 @@ class MetadataSchema(Schema):
 
         return legacy_license
 
+    @post_dump(pass_original=True)
+    def dump_notes(self, result, original, **kwargs):
+        """Dump notes."""
+        additional_descriptions = original.get("additional_descriptions", [])
+        notes = "".join([ad.get("description", "") for ad in additional_descriptions])
+        if notes:
+            result["notes"] = notes
+        return result
+
 
 class LegacySchema(Schema):
     """Legacy schema."""
@@ -197,6 +298,12 @@ class LegacySchema(Schema):
         """Dump files."""
         # TODO: pass files via service
         return []
+
+    @pre_dump
+    def hook_metadata_custom_fields(self, data, **kwargs):
+        """Hooks 'custom_fields' to 'metadata.custom_fields'."""
+        data["metadata"]["custom_fields"] = data.get("custom_fields")
+        return data
 
     @post_dump(pass_original=True)
     def dump_state(self, result, original, **kwargs):

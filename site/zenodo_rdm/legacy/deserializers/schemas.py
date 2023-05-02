@@ -9,6 +9,7 @@
 
 from datetime import date
 
+from invenio_records.dictutils import clear_none
 from nameparser import HumanName
 
 from ..vocabularies.licenses import LEGACY_LICENSES, legacy_to_rdm
@@ -59,18 +60,51 @@ class LegacyRecordTransform:
     def _creators(self, data):
         ret = []
         for c in data:
-            r = {"person_or_org": {"type": "personal"}}
-            if c.get("affiliation"):
-                r["affiliations"] = [{"name": c["affiliation"]}]
-            if c.get("orcid"):
-                r["person_or_org"]["identifiers"] = [
-                    {"scheme": "orcid", "identifier": c["orcid"]},
-                ]
-            name = HumanName(c["name"])
-            r["person_or_org"]["given_name"] = name.first
-            r["person_or_org"]["family_name"] = name.surnames
+            creator = self._creator(c)
+            ret.append(creator)
+        return ret
 
-            ret.append(r)
+    def _creator(self, data):
+        """Deserialize one creator."""
+        r = {"person_or_org": {"type": "personal"}}
+        if data.get("affiliation"):
+            r["affiliations"] = [{"name": data["affiliation"]}]
+
+        identifiers = []
+        if data.get("orcid"):
+            identifiers.append({"scheme": "orcid", "identifier": data["orcid"]})
+        if data.get("gnd"):
+            identifiers.append({"scheme": "gnd", "identifier": data["gnd"]})
+
+        if identifiers:
+            r["person_or_org"]["identifiers"] = identifiers
+
+        name = HumanName(data["name"])
+        r["person_or_org"]["given_name"] = name.first
+        r["person_or_org"]["family_name"] = name.surnames
+        return r
+
+    def _contributors(self, data):
+        """Load contributors from Zenodo."""
+        if not data:
+            return None
+
+        supervisors = data.get("thesis", {}).get("supervisors", [])
+        if supervisors:
+            for supervisor in supervisors:
+                supervisor["type"] = "Supervisor"
+        contributors = data.get("contributors", [])
+        contributors.extend(supervisors)
+
+        ret = []
+        for c in contributors:
+            contributor = self._creator(c)
+            type = c.get("type")
+            if type:
+                # Zenodo role matches ZenodoRDM ids, lower cased
+                contributor["role"] = {"id": type.lower()}
+            ret.append(contributor)
+
         return ret
 
     def _funding(self, grants):
@@ -112,6 +146,103 @@ class LegacyRecordTransform:
 
         return [ret]
 
+    def _custom_fields(self, data):
+        """Transform metadata into custom fields."""
+
+        def _journal(data):
+            """Load journal field."""
+            if not data:
+                return None
+
+            journal_title = data.get("title")
+            journal_volume = data.get("volume")
+            journal_issue = data.get("issue")
+            journal_pages = data.get("pages")
+
+            rdm_journal = {
+                "title": journal_title,
+                "volume": journal_volume,
+                "issue": journal_issue,
+                "pages": journal_pages,
+            }
+
+            clear_none(rdm_journal)
+            return rdm_journal
+
+        def _meeting(data):
+            """Load meeting field."""
+            if not data:
+                return None
+
+            title = data.get("title")
+            acronym = data.get("acronym")
+            dates = data.get("dates")
+            place = data.get("place")
+            url = data.get("url")
+            session = data.get("session")
+            session_part = data.get("session_part")
+
+            rdm_meeting = {
+                "title": title,
+                "acronym": acronym,
+                "dates": dates,
+                "place": place,
+                "url": url,
+                "session": session,
+                "session_part": session_part,
+            }
+
+            clear_none(rdm_meeting)
+            return rdm_meeting
+
+        def _imprint(data):
+            """Load imprint field."""
+            if not data:
+                return None
+
+            title = data.get("title")
+            pages = data.get("pages")
+            isbn = data.get("isbn")
+            place = data.get("place")
+
+            rdm_imprint = {
+                "title": title,
+                "pages": pages,
+                "isbn": isbn,
+                "place": place,
+            }
+
+            clear_none(rdm_imprint)
+            return rdm_imprint
+
+        if not data:
+            return None
+
+        journal = _journal(data.get("journal"))
+        meeting = _meeting(data.get("meeting"))
+        imprint = _imprint({**data.get("imprint"), **data.get("part_of")})
+        university = data.get("thesis", {}).get("university")
+
+        custom_fields = {
+            "journal:journal": journal,
+            "meeting:meeting": meeting,
+            "imprint:imprint": imprint,
+            "thesis:university": university,
+        }
+
+        clear_none(custom_fields)
+
+        return custom_fields
+
+    def _additional_descriptions(self, data):
+        """Transform notes of a legacy record."""
+        if not data:
+            return None
+
+        rdm_additional_descriptions = [{"description": data, "type": {"id": "other"}}]
+
+        return rdm_additional_descriptions
+
     def _metadata(self, data):
         """Transform the metadata of a record."""
         if data:
@@ -128,12 +259,20 @@ class LegacyRecordTransform:
                 "publisher": "Zenodo",
                 "funding": self._funding(data.get("grants", [])),
                 "rights": self._rights(data.get("license")),
+                "contributors": self._contributors(data),
+                "additional_descriptions": self._additional_descriptions(
+                    data.get("notes")
+                ),
             }
 
     def load(self, data):
         """Transform data."""
+        if not data:
+            return {}
+
         return {
             "metadata": self._metadata(data.get("metadata")),
+            "custom_fields": self._custom_fields(data.get("metadata")),
             # TODO: Map old access rights to RDM access
             # "access": self._access(data.get('access')),
             "files": {"enabled": True},
