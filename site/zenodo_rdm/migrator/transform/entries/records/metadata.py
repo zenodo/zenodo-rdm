@@ -313,6 +313,16 @@ class ZenodoDraftMetadataEntry(ZenodoRecordMetadataEntry):
             "publication_date": entry.get("publication_date"),
             "contributors": contributors,
             "publisher": entry.get("imprint", {}).get("publisher"),
+            "additional_descriptions": cls._additional_descriptions(entry.get("notes")),
+            "rights": cls._rights(entry.get("license")),
+            "languages": cls._languages(entry.get("language")),
+            "subjects": cls._subjects(entry.get("keywords")),
+            "identifiers": cls._identifiers(entry.get("alternate_identifiers")),
+            "related_identifiers": cls._related_identifiers(
+                entry.get("related_identifiers")
+            ),
+            "references": cls._references(entry.get("references")),
+            "dates": cls._dates(entry.get("dates")),
         }
 
         resource_type = entry.get("resource_type")

@@ -32,9 +32,7 @@ class ZenodoRecordTransform(RDMRecordTransform):
                 # loader is responsible for creating/updating if the PID exists.
                 "id": entry["json"]["conceptrecid"],
                 "access": {
-                    "owned_by": [
-                        {"user": 2}
-                    ],  # [{"user": o} for o in entry["json"].get("owners", [])]
+                    "owned_by": [{"user": o} for o in entry["json"].get("owners", [])]
                 },
                 "communities": self._communities(entry),
             },

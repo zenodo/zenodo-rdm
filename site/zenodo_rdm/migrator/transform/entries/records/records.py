@@ -101,13 +101,19 @@ class ZenodoDraftEntry(ZenodoRecordEntry):
 
     def _fork_version_id(self, entry):
         """Transform the forked version of the draft."""
-        # FIXME: how to obtain this
+        # It is always None. It is calculated in the table generator
+        # extracting it from the record version if it is in the cache.
         return None
 
     def _index(self, entry):
         """Returns the index of the record."""
         idx = entry.get("index")  # there are cases of {index: None}
         return idx + 1 if idx else 1  # in legacy we start at 0
+
+    def _recid(self, entry):
+        """Returns the recid of the draft."""
+        legacy_recid = entry.get("_deposit", {}).get("pid", {}).get("value")
+        return legacy_recid or entry["json"]["recid"]
 
     def _pids(self, entry):
         draft = entry["json"]

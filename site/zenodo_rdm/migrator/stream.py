@@ -7,11 +7,10 @@
 """Migrator stream definitions."""
 
 import contextlib
-
 from datetime import datetime
 from pathlib import Path
 
-from invenio_rdm_migrator.streams import StreamDefinition, Stream
+from invenio_rdm_migrator.streams import Stream, StreamDefinition
 from invenio_rdm_migrator.streams.communities import CommunityCopyLoad
 from invenio_rdm_migrator.streams.files.models import (
     FilesBucket,
@@ -74,6 +73,8 @@ RequestStreamDefinition = StreamDefinition(
 
 # TODO: move this to a proper place or support custom stream classes
 class FileStream(Stream):
+    """ETL stream for Zenodo to import files."""
+
     def __init__(self, db_uri, tmp_dir):
         """Constructor."""
         self.tmp_dir = tmp_dir
@@ -153,6 +154,3 @@ class FileStream(Stream):
         print(f"Stream ended {end_time.isoformat()}")
 
         print(f"Execution time: {end_time - start_time}")
-
-
-"""ETL stream for Zenodo to import files."""
