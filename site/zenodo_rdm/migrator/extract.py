@@ -53,7 +53,7 @@ COPY (
             coalesce(user_i.identities, null) AS identities,
             coalesce(user_sa.session_activity, null) AS session_activity
         FROM accounts_user AS u
-        JOIN userprofiles_userprofile up ON u.id = up.user_id
+        LEFT JOIN userprofiles_userprofile up ON u.id = up.user_id
         LEFT JOIN LATERAL (
             SELECT json_agg(row_to_json(_t)) AS tokens
             FROM (

@@ -57,9 +57,11 @@ class ZenodoUserEntry(UserEntry):
 
     def _profile(self, entry):
         """Returns the profile."""
-        return {
-            "full_name": entry.get("full_name"),
-        }
+        res = {}
+        full_name = entry.get("full_name")
+        if full_name:
+            res["full_name"] = full_name
+        return res
 
     def _preferences(self, entry):
         """Returns the preferences."""

@@ -30,8 +30,8 @@ SELECT MAX(id) from accounts_user;
 ALTER SEQUENCE ALTER SEQUENCE accounts_user_id_seq RESTART WITH {ID}; # Insert ID from before
 com
 
-# Fixtures 
-invenio rdm-records fixtures 
+# Fixtures
+invenio rdm-records fixtures
 invenio vocabularies import -v names -f ./app_data/vocabularies-future.yaml  # zenodo specific names
 
 # Reindex records and communities
