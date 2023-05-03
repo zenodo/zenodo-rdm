@@ -14,6 +14,9 @@ invenio shell --no-term-title -c "import redis; redis.StrictRedis.from_url(app.c
 #       Just need to drop all tables from it.
 invenio db drop --yes-i-know
 invenio index destroy --force --yes-i-know
+
+# NOTE: This one doesn't purge all the indexer queues (e.g. `records`)...
+#       We need a new command to do so, using the indexer registry?
 invenio index queue init purge
 
 # Recreate
@@ -28,8 +31,12 @@ invenio index init --force
 invenio rdm-records custom-fields init
 invenio communities custom-fields init
 
+# Backup and drop FK/PK/unique constraints and indices
+
 # Run migration
 python -m zenodo_rdm.migrator site/zenodo_rdm/migrator/streams.yaml
+
+# Restore FK/PK/unique constraints and indices
 
 # Update ID sequences in DB
 # This is developed programatically, not need to run it manually.
