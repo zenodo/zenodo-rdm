@@ -24,7 +24,6 @@ from invenio_rdm_migrator.streams.users import UserCopyLoad
 from .extract import JSONLExtract
 from .transform import (
     ZenodoCommunityTransform,
-    ZenodoFilesTransform,
     ZenodoRecordTransform,
     ZenodoRequestTransform,
     ZenodoUserTransform,

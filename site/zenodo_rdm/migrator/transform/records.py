@@ -57,7 +57,7 @@ class ZenodoRecordTransform(RDMRecordTransform):
                 "updated": entry["updated"],  # we use the record's updated date
             }
 
-        files = entry["json"]["_files"]
+        files = entry["json"].get("_files")
         if files:
             # add to files record information that will be used for populating the record files table
             _files_with_record_metadata = list(

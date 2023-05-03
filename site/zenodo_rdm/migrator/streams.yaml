@@ -14,17 +14,21 @@ records:
   extract:
     filepath: /path/to/records.jsonl
   load:
-    cache:
-      communities:
-        slug: community_id
+    db_uri: postgresql://zenodo:zenodo@localhost:5432/zenodo
+    tmp_dir: /path/to/tmp
+deposits:
+  extract:
+    filepath: /path/to/deposits.jsonl
+  load:
     db_uri: postgresql://zenodo:zenodo@localhost:5432/zenodo
     tmp_dir: /path/to/tmp
 requests:
   extract:
     filepath: /path/to/requests.jsonl
   load:
-    cache:
-      communities:
-        slug: community_id
+    db_uri: postgresql://zenodo:zenodo@localhost:5432/zenodo
+    tmp_dir: /path/to/tmp
+files:
+  load:
     db_uri: postgresql://zenodo:zenodo@localhost:5432/zenodo
     tmp_dir: /path/to/tmp
