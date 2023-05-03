@@ -328,7 +328,7 @@ class ZenodoDraftMetadataEntry(ZenodoRecordMetadataEntry):
             metadata["resource_type"] = cls._resource_type(resource_type)
 
         creators = entry.get("creators")
-        if resource_type:
+        if creators:
             metadata["creators"] = cls._creators(creators)
 
         return drop_nones(metadata)

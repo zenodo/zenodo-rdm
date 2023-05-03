@@ -71,7 +71,7 @@ class ZenodoRecordTransform(RDMRecordTransform):
 
     def _transform(self, entry):
         """Transform a single entry."""
-        is_draft = entry["json"]["_deposit"]["status"] == "draft"
+        is_draft = "deposits" in entry["json"]["$schema"]
 
         if is_draft:
             # FIXME: draft communities could be review or addition
