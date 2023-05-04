@@ -7,8 +7,13 @@
 
 """Zenodo legacy serializer schemas."""
 
-from marshmallow import Schema, fields, post_dump
+from invenio_access.permissions import system_identity
+from invenio_pidstore.errors import PIDDeletedError, PIDDoesNotExistError
+from invenio_records_resources.proxies import current_service_registry
+from marshmallow import Schema, fields, missing, post_dump
 from marshmallow_utils.fields import SanitizedHTML, SanitizedUnicode
+
+from zenodo_rdm.legacy.deserializers.schemas import FUNDER_ROR_TO_DOI
 
 
 class FileSchema(Schema):
@@ -49,8 +54,8 @@ class MetadataSchema(Schema):
     title = SanitizedUnicode()
     publication_date = SanitizedUnicode()
     description = SanitizedHTML()
-
     creators = fields.List(fields.Nested(CreatorSchema), dump_only=True)
+    grants = fields.Method("dump_grants")
 
     @post_dump(pass_original=True)
     def dump_resource_type(self, result, original, **kwargs):
@@ -62,6 +67,87 @@ class MetadataSchema(Schema):
             if "-" in resource_type_id:
                 result[f"{upload_type}_type"] = resource_type_id.split("-")[-1]
         return result
+
+    def _funder(self, funder):
+        """Serialize RDM funder into Zenodo legacy funder."""
+        legacy_funder = {"name": funder["name"]}
+
+        for identifier in funder.get("identifiers"):
+            scheme = identifier["scheme"]
+
+            if scheme == "doi":
+                legacy_funder["doi"] = identifier["identifier"]
+
+        value = funder.get("country")
+        if value:
+            legacy_funder["country"] = value
+
+        return legacy_funder
+
+    def _award(self, award):
+        """Serialize an RDM award into a legacy Zenodo grant."""
+        funder_ror = award["funder"]["id"]
+        funder_doi_or_ror = FUNDER_ROR_TO_DOI.get(funder_ror, funder_ror)
+        legacy_grant = {
+            "code": award["number"],
+            "internal_id": f"{funder_doi_or_ror}::{award['id']}",
+        }
+
+        try:
+            title = award["title"].get("en", next(iter(award["title"])))
+            legacy_grant["title"] = title
+        except StopIteration:
+            pass
+
+        value = award.get("acronym")
+        if value:
+            legacy_grant["acronym"] = value
+
+        for identifier in award.get("identifiers"):
+            scheme = identifier["scheme"]
+
+            if scheme == "url":
+                legacy_grant["url"] = identifier["identifier"]
+
+            if scheme == "doi":
+                legacy_grant["doi"] = identifier["doi"]
+
+        return legacy_grant
+
+    def dump_grants(self, obj):
+        """Dump grants from funding field."""
+        funding = obj.get("funding")
+        if not funding:
+            return missing
+
+        for funding_item in funding:
+            award = funding_item.get("award")
+
+            # in case there are multiple funding entries, service calls could be
+            # optimized calling read_many
+            aid = award.get("id")
+            if aid:
+                a_service = current_service_registry.get("awards")
+                try:
+                    award = a_service.read(system_identity, aid).to_dict()
+                except (PIDDeletedError, PIDDoesNotExistError):
+                    # funder only funding, or custom awards are not supported in the
+                    # legacy API
+                    return missing
+
+            # we are ignoring funding.funder.id in favour of the awards.funder.id
+            fid = award["funder"]["id"]
+            f_service = current_service_registry.get("funders")
+            # every vocabulary award must be linked to a vocabulary funder
+            # therefore this read call cannot fail
+            funder = f_service.read(system_identity, fid).to_dict()
+
+            # No custom funder/awards in legacy therefore it would always resolve
+            # the read ops above.
+            legacy_grant = self._award(award)
+            legacy_grant["funder"] = self._funder(funder)
+
+            return legacy_grant
 
 
 class LegacySchema(Schema):
