@@ -9,14 +9,12 @@
 
 
 from .communities import ZenodoCommunityTransform
-from .files import ZenodoFilesTransform
 from .records import ZenodoRecordTransform
 from .requests import ZenodoRequestTransform
 from .users import ZenodoUserTransform
 
 __all__ = (
     ZenodoCommunityTransform,
-    ZenodoFilesTransform,
     ZenodoRecordTransform,
     ZenodoRequestTransform,
     ZenodoUserTransform,
