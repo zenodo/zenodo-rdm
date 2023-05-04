@@ -31,20 +31,34 @@ invenio index init --force
 invenio rdm-records custom-fields init
 invenio communities custom-fields init
 
-# Backup and drop FK/PK/unique constraints and indices
+# Backup FK/PK/unique constraints
+cd scripts
+DB_URI="postgresql://zenodo:zenodo@localhost/zenodo"
+
+psql $DB_URI --tuples-only --quiet -f gen_create_constraints.sql > create_constraints.sql
+psql $DB_URI --tuples-only --quiet -f gen_delete_constraints.sql > delete_constraints.sql
+
+# Drop constraints
+psql $DB_URI -f delete_constraints.sql
+
+# Backup indices
+psql $DB_URI -f backup_indices.sql
+psql $DB_URI -f drop_indices.sql
+
 
 # Run migration
 python -m zenodo_rdm.migrator site/zenodo_rdm/migrator/streams.yaml
 
+# TODO: These should be fixed in the legacy/source
+# Apply various consistency fixes
+
+
 # Restore FK/PK/unique constraints and indices
+psql $DB_URI -f create_constraints.sql
+psql $DB_URI -f restore_indices.sql
 
 # Update ID sequences in DB
-# This is developed programatically, not need to run it manually.
-<<com
-psql -h <host> -U zenodo -d zenodo
-SELECT MAX(id) from accounts_user;
-ALTER SEQUENCE ALTER SEQUENCE accounts_user_id_seq RESTART WITH {ID}; # Insert ID from before
-com
+psql $DB_URI -f update_sequences.sql
 
 # Fixtures
 invenio rdm-records fixtures

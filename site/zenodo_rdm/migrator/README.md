@@ -113,7 +113,7 @@ current_rdm_records_service.indexer.refresh()
 
 or if memory is an issue then you can generate the index batches with the code below
 
-```
+```python
 from invenio_rdm_records.proxies import current_rdm_records_service
 from invenio_db import db
 
