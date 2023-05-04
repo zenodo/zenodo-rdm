@@ -30,7 +30,8 @@ class ZenodoRecordTransform(RDMRecordTransform):
             "version_id": entry["version_id"],
             "json": {
                 # loader is responsible for creating/updating if the PID exists.
-                "id": entry["json"]["conceptrecid"],
+                # TODO: There are deposits that don't have a `conceptrecid` apparently
+                "id": entry["json"].get("conceptrecid"),
                 "access": {
                     "owned_by": [{"user": o} for o in entry["json"].get("owners", [])]
                 },
