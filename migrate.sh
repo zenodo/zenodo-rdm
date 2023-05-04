@@ -24,45 +24,48 @@ invenio index queue init purge
 # NOTE: db init is not needed since DB keeps being created
 #       Just need to create all tables from it.
 invenio db create
-# TODO: add back when pipenv access problem is fixed
-#invenio files location create --default 'default-location'  $(pipenv run invenio shell --no-term-title -c "print(app.instance_path)")'/data'
-invenio files location create --default 'default-location' /opt/invenio/var/instance/data
+invenio files location create --default 'default-location'  $(pipenv run invenio shell --no-term-title -c "print(app.instance_path)")'/data'
 invenio index init --force
 invenio rdm-records custom-fields init
 invenio communities custom-fields init
 
+# Script base path
+script_path=$( cd -- "$(dirname "$0")" && pwd )
+migrator_path=$script_path/site/zenodo_rdm/migrator
+migrator_scripts_folder_path=$migrator_path/scripts
+
 # Backup FK/PK/unique constraints
-cd scripts
 DB_URI="postgresql://zenodo:zenodo@localhost/zenodo"
 
-psql $DB_URI --tuples-only --quiet -f gen_create_constraints.sql > create_constraints.sql
-psql $DB_URI --tuples-only --quiet -f gen_delete_constraints.sql > delete_constraints.sql
+psql $DB_URI --tuples-only --quiet -f $migrator_scripts_folder_path/gen_create_constraints.sql > $migrator_scripts_folder_path/create_constraints.sql
+psql $DB_URI --tuples-only --quiet -f $migrator_scripts_folder_path/gen_delete_constraints.sql > $migrator_scripts_folder_path/delete_constraints.sql
 
 # Drop constraints
-psql $DB_URI -f delete_constraints.sql
+psql $DB_URI -f $migrator_scripts_folder_path/delete_constraints.sql
 
 # Backup indices
-psql $DB_URI -f backup_indices.sql
-psql $DB_URI -f drop_indices.sql
+psql $DB_URI -f $migrator_scripts_folder_path/backup_indices.sql
+psql $DB_URI -f $migrator_scripts_folder_path/drop_indices.sql
 
 
 # Run migration
-python -m zenodo_rdm.migrator site/zenodo_rdm/migrator/streams.yaml
+# python -m zenodo_rdm.migrator site/zenodo_rdm/migrator/streams.yaml
+python -m zenodo_rdm.migrator $migrator_path/tmp/10k/streams.yaml
 
 # TODO: These should be fixed in the legacy/source
 # Apply various consistency fixes
 
 
 # Restore FK/PK/unique constraints and indices
-psql $DB_URI -f create_constraints.sql
-psql $DB_URI -f restore_indices.sql
+psql $DB_URI -f $migrator_scripts_folder_path/create_constraints.sql
+psql $DB_URI -f $migrator_scripts_folder_path/restore_indices.sql
 
 # Update ID sequences in DB
-psql $DB_URI -f update_sequences.sql
+psql $DB_URI -f $migrator_scripts_folder_path/update_sequences.sql
 
 # Fixtures
 invenio rdm-records fixtures
-invenio vocabularies import -v names -f ./app_data/vocabularies-future.yaml  # zenodo specific names
+invenio vocabularies import -v names -f $script_path/app_data/vocabularies-future.yaml  # zenodo specific names
 
 # Reindex records and communities
 invenio rdm-records rebuild-index
