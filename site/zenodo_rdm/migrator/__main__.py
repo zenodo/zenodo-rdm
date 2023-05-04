@@ -13,7 +13,7 @@ from invenio_rdm_migrator.streams import Runner
 from .stream import (
     CommunitiesStreamDefinition,
     DraftStreamDefinition,
-    FileStream,
+    FilesStreamDefinition,
     RecordStreamDefinition,
     RequestStreamDefinition,
     UserStreamDefinition,
@@ -23,6 +23,7 @@ if __name__ == "__main__":
     runner = Runner(
         stream_definitions=[
             UserStreamDefinition,
+            FilesStreamDefinition,
             CommunitiesStreamDefinition,
             RecordStreamDefinition,
             DraftStreamDefinition,
@@ -30,13 +31,6 @@ if __name__ == "__main__":
         ],
         config_filepath=sys.argv[1],
     )
-
-    # TODO: This could be integrate into the main runner above
-    cfg = runner._read_config(sys.argv[1])
-    FileStream(
-        tmp_dir=cfg["files"]["load"]["tmp_dir"],
-        db_uri=cfg["files"]["load"]["db_uri"],
-    ).run()
 
     # Now we run the rest of the streams
     runner.run()
