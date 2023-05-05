@@ -7,9 +7,6 @@
 
 """Zenodo migrator files loader."""
 
-import contextlib
-from pathlib import Path
-
 from invenio_rdm_migrator.load.postgresql import PostgreSQLCopyLoad, TableGenerator
 from invenio_rdm_migrator.streams.files.models import (
     FilesBucket,
@@ -44,7 +41,7 @@ class ZenodoFilesLoad(PostgreSQLCopyLoad):
             tmp_dir=tmp_dir,
         )
         # override default as we don't generate the table files again
-        self.tmp_dir = Path(tmp_dir)
+        self.tmp_dir = tmp_dir
 
     def _validate(self):
         """Validate data before loading."""
