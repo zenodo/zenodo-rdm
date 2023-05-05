@@ -50,7 +50,7 @@ psql $DB_URI -f $migrator_scripts_folder_path/drop_indices.sql
 
 # Run migration
 # python -m zenodo_rdm.migrator site/zenodo_rdm/migrator/streams.yaml
-python -m zenodo_rdm.migrator $migrator_path/tmp/10k/streams.yaml
+python -m zenodo_rdm.migrator $migrator_path/streams.yaml
 
 # TODO: These should be fixed in the legacy/source
 # Apply various consistency fixes
