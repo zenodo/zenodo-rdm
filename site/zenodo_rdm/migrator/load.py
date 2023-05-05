@@ -10,9 +10,7 @@
 import contextlib
 from pathlib import Path
 
-import psycopg
-from invenio_rdm_migrator.load import Load
-from invenio_rdm_migrator.load.postgresql import PostgreSQLCopyLoad, TableGenerator, _ts
+from invenio_rdm_migrator.load.postgresql import PostgreSQLCopyLoad, TableGenerator
 from invenio_rdm_migrator.streams.files.models import (
     FilesBucket,
     FilesInstance,
