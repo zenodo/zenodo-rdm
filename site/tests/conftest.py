@@ -29,6 +29,7 @@ from invenio_vocabularies.proxies import current_service as vocabulary_service
 from invenio_vocabularies.records.api import Vocabulary
 
 from zenodo_rdm.custom_fields import CUSTOM_FIELDS, CUSTOM_FIELDS_UI, NAMESPACES
+from zenodo_rdm.legacy.requests.record_upgrade import LegacyRecordUpgrade
 from zenodo_rdm.permissions import ZenodoRDMRecordPermissionPolicy
 
 
@@ -43,6 +44,7 @@ def app_config(app_config):
     app_config["RDM_CUSTOM_FIELDS"] = CUSTOM_FIELDS
     app_config["RDM_CUSTOM_FIELDS_UI"] = CUSTOM_FIELDS_UI  #  UI components
     app_config["RDM_PERMISSION_POLICY"] = ZenodoRDMRecordPermissionPolicy
+    app_config["REQUESTS_REGISTERED_TYPES"] = [LegacyRecordUpgrade()]
     return app_config
 
 
@@ -497,10 +499,10 @@ def minimal_record():
         "pids": {},
         "access": {
             "record": "public",
-            "files": "public",
+            "files": "restricted",
         },
         "files": {
-            "enabled": False,  # Most tests don't care about files
+            "enabled": True,  # Most tests don't care about files
         },
         "metadata": {
             "creators": [
@@ -533,6 +535,18 @@ def minimal_community():
             "title": "Biodiversity Literature Repository",
             "type": {"id": "topic"},
         },
+    }
+
+
+@pytest.fixture()
+def minimal_community2():
+    """Data for a minimal community two."""
+    return {
+        "slug": "rdm",
+        "access": {
+            "visibility": "public",
+        },
+        "metadata": {"title": "Research Data Management", "type": {"id": "topic"}},
     }
 
 
@@ -670,8 +684,32 @@ def community(running_app, community_type_record, community_owner, minimal_commu
 
 
 @pytest.fixture()
+def community2(running_app, community_type_record, community_owner, minimal_community2):
+    """Get the current RDM records service."""
+    return _community_get_or_create(minimal_community2, community_owner.identity)
+
+
+@pytest.fixture()
 def community_with_uploader_owner(
     running_app, community_type_record, uploader, minimal_community
 ):
     """Create a community with an uploader owner."""
     return _community_get_or_create(minimal_community, uploader.identity)
+
+
+@pytest.fixture(scope="function")
+def superuser(app, db, UserFixture, superuser_role_need):
+    """Superuser fixture."""
+    u = UserFixture(
+        email="superuser@inveniosoftware.org",
+        password="superuser",
+    )
+    u.create(app, db)
+
+    datastore = app.extensions["security"].datastore
+    _, role = datastore._prepare_role_modify_args(u.user, "superuser-access")
+
+    datastore.add_role_to_user(u.user, role)
+    db.session.commit()
+
+    return u
