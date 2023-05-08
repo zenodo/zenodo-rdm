@@ -11,6 +11,8 @@ from datetime import date
 
 from nameparser import HumanName
 
+from ..vocabularies.licenses import LEGACY_LICENSES, legacy_to_rdm
+
 # based on
 # DOI to id https://digital-repositories.web.cern.ch/zenodo/support/operations/#openaire-grants-import
 # id to ROR: https://github.com/inveniosoftware/invenio-vocabularies/blob/master/invenio_vocabularies/config.py#L64
@@ -93,6 +95,23 @@ class LegacyRecordTransform:
             )
         return _funding
 
+    def _rights(self, data):
+        """Transform rights (licenses)."""
+        if not data:
+            return None
+
+        rdm_license = legacy_to_rdm(data)
+
+        ret = {}
+        if rdm_license:
+            ret = {"id": rdm_license}
+        else:
+            # If license does not exist in RDM, it is added as custom
+            legacy_license = LEGACY_LICENSES.get(data)
+            ret = {"title": {"en": legacy_license["title"]}}
+
+        return [ret]
+
     def _metadata(self, data):
         """Transform the metadata of a record."""
         if data:
@@ -108,6 +127,7 @@ class LegacyRecordTransform:
                 # NOTE: Hardcoded for DataCite
                 "publisher": "Zenodo",
                 "funding": self._funding(data.get("grants", [])),
+                "rights": self._rights(data.get("license")),
             }
 
     def load(self, data):

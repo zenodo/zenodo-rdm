@@ -1,3 +1,6 @@
 resourcetypes:
   pid-type: rsrct
   data-file: vocabularies/resource_types.yaml
+licenses:
+  pid-type: lic
+  data-file: vocabularies/licenses.csv

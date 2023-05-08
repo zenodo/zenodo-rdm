@@ -13,6 +13,7 @@ from invenio_rdm_migrator.transform import Entry, drop_nones
 from nameparser import HumanName
 
 from zenodo_rdm.legacy.deserializers.schemas import FUNDER_DOI_TO_ROR
+from zenodo_rdm.legacy.vocabularies.licenses import LEGACY_LICENSES, legacy_to_rdm
 
 
 class ZenodoRecordMetadataEntry(Entry):
@@ -87,9 +88,17 @@ class ZenodoRecordMetadataEntry(Entry):
         if not license:
             return None
 
-        # TODO this is a vocabulary that should be matched. We're importing them as custom for now.
+        # Legacy license is stored like: '{"$ref": "https://dx.zenodo.org/licenses/other-open"}'
         right_ref = license.get("$ref")
-        right = {"title": {"en": right_ref}}
+        legacy_license = right_ref.split("/")[-1]
+        rdm_right = legacy_to_rdm(legacy_license)
+
+        if rdm_right:
+            right = {"id": rdm_right}
+        else:
+            # If the license does not exist in RDM, add it as a custom license.
+            right_title = LEGACY_LICENSES.get(legacy_license, {}).get("title", "")
+            right = {"title": {"en": right_title}}
 
         return [right]
 

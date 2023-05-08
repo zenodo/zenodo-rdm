@@ -7,3 +7,5 @@ recursive-include zenodo_rdm *.js
 recursive-include zenodo_rdm *.md
 recursive-include zenodo_rdm *.sql
 recursive-include zenodo_rdm *.yaml
+recursive-include zenodo_rdm *.json
+recursive-include zenodo_rdm *.py

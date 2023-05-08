@@ -131,7 +131,7 @@ def zenodo_record_data():
                 },
             ],
             "notes": "A note",
-            "license": {"$ref": "https://dx.zenodo.org/licenses/CC-BY-4.0"},
+            "license": {"$ref": "https://dx.zenodo.org/licenses/cc-zero"},
             "language": "eng",
             "alternate_identifiers": [
                 {
@@ -348,7 +348,7 @@ def expected_rdm_record_entry():
                     },
                 ],
                 "publisher": "CERN's Publishing",
-                "rights": [{"title": {"en": "http://dx.zenodo.org/licenses/cc-zero"}}],
+                "rights": [{"id": "cc-by-1.0"}],
                 "dates": [
                     {
                         "date": "2018-03-21/2018-03-25",
@@ -398,9 +398,7 @@ def expected_rdm_record_entry():
                     {"subject": "Zenodo"},
                     {"subject": "RDM"},
                 ],
-                "rights": [
-                    {"title": {"en": "https://dx.zenodo.org/licenses/CC-BY-4.0"}}
-                ],
+                "rights": [{"id": "cc0-1.0"}],
                 "languages": [{"id": "eng"}],
                 "identifiers": [
                     {"scheme": "doi", "identifier": "10.13039/901100010730"}
@@ -841,7 +839,7 @@ def expected_rdm_draft_entry():
                     ]
                 },
                 "publisher": "CERN's Publishing",
-                "rights": [{"title": {"en": "http://dx.zenodo.org/licenses/cc-zero"}}],
+                "rights": [{"id": "cc0-1.0"}],
                 "subjects": [
                     {"subject": "migration"},
                     {"subject": "test"},
