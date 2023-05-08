@@ -14,6 +14,7 @@ from marshmallow import Schema, fields, missing, post_dump
 from marshmallow_utils.fields import SanitizedHTML, SanitizedUnicode
 
 from zenodo_rdm.legacy.deserializers.schemas import FUNDER_ROR_TO_DOI
+from zenodo_rdm.legacy.vocabularies.licenses import rdm_to_legacy
 
 
 class FileSchema(Schema):
@@ -56,6 +57,8 @@ class MetadataSchema(Schema):
     description = SanitizedHTML()
     creators = fields.List(fields.Nested(CreatorSchema), dump_only=True)
     grants = fields.Method("dump_grants")
+
+    license = fields.Method("dump_license")
 
     @post_dump(pass_original=True)
     def dump_resource_type(self, result, original, **kwargs):
@@ -148,6 +151,21 @@ class MetadataSchema(Schema):
             legacy_grant["funder"] = self._funder(funder)
 
             return legacy_grant
+
+    def dump_license(self, data):
+        """Dumps license field."""
+        license = data.get("rights", [])
+
+        if not license:
+            return missing
+
+        # Zenodo legacy only accepts one right.
+        license = license[0]
+
+        legacy_id = rdm_to_legacy(license["id"])
+        legacy_license = {"id": legacy_id}
+
+        return legacy_license
 
 
 class LegacySchema(Schema):
