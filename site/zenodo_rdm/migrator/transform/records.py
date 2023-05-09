@@ -9,6 +9,7 @@
 
 from invenio_rdm_migrator.streams.records import RDMRecordTransform
 
+from ..errors import NoConceptRecidForDraft
 from .entries.records.record_files import ZenodoRDMRecordFileEntry
 from .entries.records.records import ZenodoDraftEntry, ZenodoRecordEntry
 
@@ -24,14 +25,20 @@ class ZenodoRecordTransform(RDMRecordTransform):
         return {}
 
     def _parent(self, entry):
+        # check if conceptrecid exists and bail otherwise
+        # this is the case for some deposits and they should be fixed in prod as it
+        # should not happen!
+        parent_pid = entry["json"].get("conceptrecid")
+        if not parent_pid:
+            # we raise so the error logger writes these cases in the log file
+            raise NoConceptRecidForDraft(draft=entry)
         parent = {
             "created": entry["created"],  # same as the record
             "updated": entry["updated"],  # same as the record
             "version_id": entry["version_id"],
             "json": {
                 # loader is responsible for creating/updating if the PID exists.
-                # TODO: There are deposits that don't have a `conceptrecid` apparently
-                "id": entry["json"].get("conceptrecid"),
+                "id": parent_pid,
                 "access": {
                     "owned_by": [{"user": o} for o in entry["json"].get("owners", [])]
                 },
@@ -59,6 +66,7 @@ class ZenodoRecordTransform(RDMRecordTransform):
             }
 
         files = entry["json"].get("_files")
+
         if files:
             # add to files record information that will be used for populating the record files table
             _files_with_record_metadata = list(
@@ -78,7 +86,7 @@ class ZenodoRecordTransform(RDMRecordTransform):
             # FIXME: draft communities could be review or addition
             # we might need to differentiate those
             parent = self._parent(entry)
-            parent["communities"] = {}
+            parent["json"]["communities"] = {}
             return {
                 "draft": self._draft(entry),
                 "parent": parent,
