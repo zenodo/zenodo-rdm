@@ -7,8 +7,12 @@
 
 """Zenodo migrator metadata entry transformer."""
 
+import re
+
 from invenio_rdm_migrator.transform import Entry, drop_nones
 from nameparser import HumanName
+
+from zenodo_rdm.legacy.deserializers.schemas import FUNDER_DOI_TO_ROR
 
 
 class ZenodoRecordMetadataEntry(Entry):
@@ -260,6 +264,37 @@ class ZenodoRecordMetadataEntry(Entry):
         return {"features": features}
 
     @classmethod
+    def _funding(cls, grants):
+        """Parses grants from Zenodo to RDM funding."""
+        if not grants:
+            return None
+
+        ret = []
+
+        for grant in grants:
+            # format:    "http://dx.zenodo.org/grants/10.13039/501100000780::278850"
+            # Regex matches the last part of the url (e.g. 10.13039/501100000780::278850)
+            # Regex has two groups returned as a tuple:
+            # - 10.13039/501100000780 (funder doi)
+            # - 278850 (award id)
+            re_search = re.search("(\d+\.\d+\/\d+)::(\d+.*)", grant["$ref"])
+            groups = re_search.groups()
+            assert len(groups) == 2
+
+            funder_doi, award_id = groups
+
+            funder_doi_or_ror = FUNDER_DOI_TO_ROR.get(funder_doi, funder_doi)
+
+            ret.append(
+                {
+                    "funder": {"id": funder_doi_or_ror},
+                    "award": {"id": f"{funder_doi_or_ror}::{award_id}"},
+                }
+            )
+
+        return ret
+
+    @classmethod
     def transform(cls, entry):
         """Transform entry."""
         contributors = cls._contributors(entry.get("contributors", []))
@@ -286,8 +321,7 @@ class ZenodoRecordMetadataEntry(Entry):
             "references": cls._references(entry.get("references")),
             "dates": cls._dates(entry.get("dates")),
             "locations": cls._locations(entry.get("locations")),
-            # TODO funding is not implemented yet
-            # "funding": cls._funding(entry.get("grants"))
+            "funding": cls._funding(entry.get("grants")),
         }
 
         return drop_nones(metadata)
@@ -321,6 +355,7 @@ class ZenodoDraftMetadataEntry(ZenodoRecordMetadataEntry):
             "references": cls._references(entry.get("references")),
             "dates": cls._dates(entry.get("dates")),
             "locations": cls._locations(entry.get("locations")),
+            "funding": cls._funding(entry.get("grants")),
         }
 
         resource_type = entry.get("resource_type")

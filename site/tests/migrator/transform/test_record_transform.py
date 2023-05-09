@@ -120,6 +120,9 @@ def zenodo_record_data():
                     "description": "A date",
                 },
             ],
+            "grants": [
+                {"$ref": "http://dx.zenodo.org/grants/10.13039/501100000780::278850"}
+            ],
             "locations": [
                 {"lat": 34.02577, "lon": -118.7804, "place": "Los Angeles"},
                 {
@@ -367,6 +370,12 @@ def expected_rdm_record_entry():
                         "type": {"id": "collected"},
                         "description": "A date",
                     },
+                ],
+                "funding": [
+                    {
+                        "award": {"id": "00k4n6c32::278850"},
+                        "funder": {"id": "00k4n6c32"},
+                    }
                 ],
                 "locations": {
                     "features": [
@@ -622,6 +631,9 @@ def zenodo_draft_data():
             },
             "communities": ["zenodo", "migration"],
             "description": "This is a full Zenodo record that needs to be tested for migration",
+            "grants": [
+                {"$ref": "http://dx.zenodo.org/grants/10.13039/501100000780::278850"}
+            ],
             "journal": {
                 "title": "Testing journal",
                 "issue": "10",
@@ -806,6 +818,12 @@ def expected_rdm_draft_entry():
                         "affiliations": [{"name": "CERN"}],
                         "role": {"id": "supervisor"},
                     },
+                ],
+                "funding": [
+                    {
+                        "award": {"id": "00k4n6c32::278850"},
+                        "funder": {"id": "00k4n6c32"},
+                    }
                 ],
                 "locations": {
                     "features": [
