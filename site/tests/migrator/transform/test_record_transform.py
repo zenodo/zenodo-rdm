@@ -121,7 +121,7 @@ def zenodo_record_data():
                 },
             ],
             "grants": [
-                {"$ref": "http://dx.zenodo.org/grants/10.13039/501100000780::278850"}
+                {"$ref": "https://dx.zenodo.org/grants/10.13039/501100000780::278850"}
             ],
             "locations": [
                 {"lat": 34.02577, "lon": -118.7804, "place": "Los Angeles"},
@@ -630,7 +630,7 @@ def zenodo_draft_data():
             "communities": ["zenodo", "migration"],
             "description": "This is a full Zenodo record that needs to be tested for migration",
             "grants": [
-                {"$ref": "http://dx.zenodo.org/grants/10.13039/501100000780::278850"}
+                {"$ref": "https://dx.zenodo.org/grants/10.13039/501100000780::278850"}
             ],
             "journal": {
                 "title": "Testing journal",

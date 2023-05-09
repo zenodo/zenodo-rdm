@@ -7,7 +7,7 @@
 
 """Zenodo migrator metadata entry transformer."""
 
-import re
+from urllib.parse import urlparse
 
 from invenio_rdm_migrator.transform import Entry, drop_nones
 from nameparser import HumanName
@@ -282,15 +282,16 @@ class ZenodoRecordMetadataEntry(Entry):
 
         for grant in grants:
             # format:    "http://dx.zenodo.org/grants/10.13039/501100000780::278850"
-            # Regex matches the last part of the url (e.g. 10.13039/501100000780::278850)
-            # Regex has two groups returned as a tuple:
-            # - 10.13039/501100000780 (funder doi)
-            # - 278850 (award id)
-            re_search = re.search("(\d+\.\d+\/\d+)::(\d+.*)", grant["$ref"])
-            groups = re_search.groups()
+            split = urlparse(grant["$ref"]).path.split("/", 2)
+            # returns ['', 'grants', '10.13039/501100000780::278850']
+            assert len(split) == 3
+
+            grant_string = split[-1]
+            groups = grant_string.split("::", 1)
             assert len(groups) == 2
 
-            funder_doi, award_id = groups
+            funder_doi = groups[0]
+            award_id = groups[1]
 
             funder_doi_or_ror = FUNDER_DOI_TO_ROR.get(funder_doi, funder_doi)
 
