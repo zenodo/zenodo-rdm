@@ -764,13 +764,7 @@ def expected_rdm_draft_entry():
         "index": 1,
         "json": {
             "id": "10123",
-            "pids": {
-                "doi": {
-                    "client": "datacite",
-                    "provider": "datacite",
-                    "identifier": "10.5281/zenodo.1234567",
-                },
-            },
+            "pids": {},
             "files": {"enabled": True},
             "metadata": {
                 "title": "Migration test photo",

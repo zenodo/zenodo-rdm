@@ -14,6 +14,8 @@ from invenio_rdm_migrator.streams.records import RDMRecordEntry
 from .custom_fields import ZenodoCustomFieldsEntry
 from .metadata import ZenodoDraftMetadataEntry, ZenodoRecordMetadataEntry
 
+ZENODO_DATACITE_PREFIX = "10.5281"
+
 
 class ZenodoRecordEntry(RDMRecordEntry):
     """Transform Zenodo record to RDM record."""
@@ -44,6 +46,7 @@ class ZenodoRecordEntry(RDMRecordEntry):
 
     def _pids(self, entry):
         record = entry["json"]
+
         r = {
             "oai": {
                 "provider": "oai",
@@ -51,11 +54,19 @@ class ZenodoRecordEntry(RDMRecordEntry):
             },
         }
         if record.get("doi"):
-            r["doi"] = {
-                "client": "datacite",
-                "provider": "datacite",
-                "identifier": record["doi"],
-            }
+            _doi = record["doi"]
+            if _doi.startswith(ZENODO_DATACITE_PREFIX):
+                r["doi"] = {
+                    "client": "datacite",
+                    "provider": "datacite",
+                    "identifier": record["doi"],
+                }
+            else:
+                # external doi
+                r["doi"] = {
+                    "provider": "external",
+                    "identifier": record["doi"],
+                }
 
         return r
 
@@ -119,18 +130,17 @@ class ZenodoDraftEntry(ZenodoRecordEntry):
         draft = entry["json"]
         r = {}
 
-        if draft.get("_oai"):
-            r["oai"] = {
-                "provider": "oai",
-                "identifier": draft["_oai"]["id"],
-            }
-
+        # we only keep external "doi" for drafts as otherwise the
+        # published record is used to enforce all pids to the draft
+        # and "new" drafts don't have managed doi
         if draft.get("doi"):
-            r["doi"] = {
-                "client": "datacite",
-                "provider": "datacite",
-                "identifier": draft["doi"],
-            }
+            _doi = draft["doi"]
+            if not _doi.startswith(ZENODO_DATACITE_PREFIX):
+                # external doi
+                r["doi"] = {
+                    "provider": "external",
+                    "identifier": draft["doi"],
+                }
 
         return r
 
