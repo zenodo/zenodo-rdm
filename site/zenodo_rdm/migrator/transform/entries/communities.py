@@ -8,9 +8,11 @@
 
 from invenio_rdm_migrator.streams.communities import (
     CommunityEntry,
+    CommunityFileEntry,
     CommunityMemberEntry,
     FeaturedCommunityEntry,
 )
+from invenio_rdm_migrator.streams.files import FilesBucketEntry, FilesObjectVersionEntry
 
 
 class ZenodoFeaturedCommunityEntry(FeaturedCommunityEntry):
@@ -112,3 +114,79 @@ class ZenodoCommunityMemberEntry(CommunityMemberEntry):
     def _request_id(self, entry):
         """Returns the community member request id, if there is any request associated with the community member."""
         return None
+
+
+class ZenodoCommunityFileEntry(CommunityFileEntry):
+    """Transform Zenodo community file."""
+
+    def _created(self, entry):
+        return entry["created"]
+
+    def _updated(self, entry):
+        return entry["updated"]
+
+    def _json(self, entry):
+        return {}
+
+    def _version_id(self, entry):
+        return 1
+
+    def _key(self, entry):
+        return "logo"
+
+    def _id(self, entry):
+        """Returns the file id."""
+        return entry["logo_file_id"]
+
+
+class ZenodoFileBucketEntry(FilesBucketEntry):  # TODO rename
+    """Transform zenodo community logo to rdm file."""
+
+    def _id(self, entry):
+        pass  # TODO auto generate it?
+
+    def _created(self, entry):
+        return entry["created"]
+
+    def _updated(self, entry):
+        return entry["updated"]
+
+    def _default_location(self, entry):
+        return 1
+
+    def _default_storage_class(self, entry):
+        return "L"
+
+    def _size(self, entry):
+        return 0  # TODO should be the logo size?
+
+    def _quota_size(self, entry):
+        return None
+
+    def _max_file_size(self, entry):
+        return None
+
+    def _locked(self, entry):
+        return False
+
+    def _deleted(self, entry):
+        return False
+
+
+class ZenodoObjectVersionEntry(FilesObjectVersionEntry):  # TODO rename
+    """Transform zenodo file object to RDM."""
+
+    def _created(self, entry):
+        return entry["created"]
+
+    def _updated(self, entry):
+        return entry["updated"]
+
+    def _key(self, entry):
+        return "logo"
+
+    def _mimetype(self, entry):
+        return None
+
+    def _is_head(self, entry):
+        return True
