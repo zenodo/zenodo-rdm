@@ -144,23 +144,23 @@ directly on the legacy database, in the following manner:
 DB_URI="postgresql://zenodo@zenodo-legacy-db-host:5432/zenodo"
 
 # Users, ~30min
-psql $DB_URI -f users_dump.sql | sed 's/\\\\/\\/g' | gzip -c > "users-$(date -I).jsonl.gz"
+psql $DB_URI -f scripts/users_dump.sql | sed 's/\\\\/\\/g' | gzip -c > "dumps/users-$(date -I).jsonl.gz"
 # Communities, ~5min
-psql $DB_URI -f communities_dump.sql | sed 's/\\\\/\\/g' | gzip -c > "communities-$(date -I).jsonl.gz"
+psql $DB_URI -f scripts/communities_dump.sql | sed 's/\\\\/\\/g' | gzip -c > "dumps/communities-$(date -I).jsonl.gz"
 # Community record inclusion requests, ~10min
-psql $DB_URI -f requests_dump.sql | sed 's/\\\\/\\/g' | gzip -c > "requests-$(date -I).jsonl.gz"
+psql $DB_URI -f scripts/requests_dump.sql | sed 's/\\\\/\\/g' | gzip -c > "dumps/requests-$(date -I).jsonl.gz"
 # Records, ~2-3h
-psql $DB_URI -f records_dump.sql | sed 's/\\\\/\\/g' | gzip -c > "records-$(date -I).jsonl.gz"
+psql $DB_URI -f scripts/records_dump.sql | sed 's/\\\\/\\/g' | gzip -c > "dumps/records-$(date -I).jsonl.gz"
 # Deposits/drafts, ~30min
-psql $DB_URI -f deposits_dump.sql | sed 's/\\\\/\\/g' | gzip -c > "deposits-$(date -I).jsonl.gz"
+psql $DB_URI -f scripts/deposits_dump.sql | sed 's/\\\\/\\/g' | gzip -c > "dumps/deposits-$(date -I).jsonl.gz"
 
 
 # For dumping files we use a different style, since we're not filtering anything:
 
 # File instances, ~10min
-psql $DB_URI -f files_files_dump.sql | gzip -c > "files_files-$(date -I).jsonl.gz"
+psql $DB_URI -f scripts/files_files_dump.sql | gzip -c > "dumps/files_files-$(date -I).jsonl.gz"
 # Buckets, ~1min
-psql $DB_URI -f files_bucket_dump.sql | gzip -c > files_bucket-$(date -I).dump.gz
+psql $DB_URI -f scripts/files_bucket_dump.sql | gzip -c > "dumps/files_bucket-$(date -I).dump.gz"
 # File object versions, ~3min
-psql $DB_URI -f files_object_dump.sql | gzip -c > files_object-$(date -I).dump.gz
+psql $DB_URI -f scripts/files_object_dump.sql | gzip -c > "dumps/files_object-$(date -I).dump.gz"
 ```
