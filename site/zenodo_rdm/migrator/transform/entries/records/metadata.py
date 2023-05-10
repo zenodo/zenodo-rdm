@@ -281,6 +281,10 @@ class ZenodoRecordMetadataEntry(Entry):
         ret = []
 
         for grant in grants:
+            if "id" in grant:
+                # we skip grants of the format {"id": <grant_id>}
+                # TODO: what do we do with the above?
+                continue
             # format:    "http://dx.zenodo.org/grants/10.13039/501100000780::278850"
             split = urlparse(grant["$ref"]).path.split("/", 2)
             # returns ['', 'grants', '10.13039/501100000780::278850']
