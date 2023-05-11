@@ -12,10 +12,10 @@ from invenio_rdm_migrator.streams.communities import CommunityTransform
 from .entries.communities import (
     ZenodoCommunityEntry,
     ZenodoCommunityFileEntry,
+    ZenodoCommunityFilesBucketEntry,
+    ZenodoCommunityFilesObjectVersionEntry,
     ZenodoCommunityMemberEntry,
     ZenodoFeaturedCommunityEntry,
-    ZenodoFileBucketEntry,
-    ZenodoObjectVersionEntry,
 )
 
 
@@ -43,6 +43,6 @@ class ZenodoCommunityTransform(CommunityTransform):
         )
         return {
             "file": file_entry,
-            "bucket": ZenodoFileBucketEntry().transform(entry),
-            "file_object": ZenodoObjectVersionEntry().transform(entry),
+            "bucket": ZenodoCommunityFilesBucketEntry().transform(entry),
+            "file_object": ZenodoCommunityFilesObjectVersionEntry().transform(entry),
         }

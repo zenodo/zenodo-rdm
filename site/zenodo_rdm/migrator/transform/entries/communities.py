@@ -120,18 +120,23 @@ class ZenodoCommunityFileEntry(CommunityFileEntry):
     """Transform Zenodo community file."""
 
     def _created(self, entry):
+        """Returns the creation date."""
         return entry["created"]
 
     def _updated(self, entry):
+        """Returns the update date."""
         return entry["updated"]
 
     def _json(self, entry):
+        """Returns an empty object as the file's metadata."""
         return {}
 
     def _version_id(self, entry):
+        """Returns the file version id, hardcoded to one."""
         return 1
 
     def _key(self, entry):
+        """The filepath must be 'logo' for the community logo."""
         return "logo"
 
     def _id(self, entry):
@@ -139,54 +144,81 @@ class ZenodoCommunityFileEntry(CommunityFileEntry):
         return entry["logo_file_id"]
 
 
-class ZenodoFileBucketEntry(FilesBucketEntry):  # TODO rename
+class ZenodoCommunityFilesBucketEntry(FilesBucketEntry):
     """Transform zenodo community logo to rdm file."""
 
     def _id(self, entry):
-        pass  # TODO auto generate it?
+        """The file bucket id is empty for now and auto generated after."""
+        pass
 
     def _created(self, entry):
+        """Returns the creation date."""
         return entry["created"]
 
     def _updated(self, entry):
+        """Returns the update date."""
         return entry["updated"]
 
     def _default_location(self, entry):
+        """Returns the file bucket default location, hardcoded to one."""
         return 1
 
     def _default_storage_class(self, entry):
+        """Returns the file bucket default storage class, hardcoded to 'L' ('local')."""
         return "L"
 
     def _size(self, entry):
+        """Returns the file bucket size, since the logo is not yet updated it returns 0."""
         return 0  # TODO should be the logo size?
 
     def _quota_size(self, entry):
+        """The file bucket quota size is nullable."""
         return None
 
     def _max_file_size(self, entry):
+        """The file bucket max file size is nullable."""
         return None
 
     def _locked(self, entry):
+        """The file bucket is not locked."""
         return False
 
     def _deleted(self, entry):
+        """The file bucket is not deleted."""
         return False
 
 
-class ZenodoObjectVersionEntry(FilesObjectVersionEntry):  # TODO rename
+class ZenodoCommunityFilesObjectVersionEntry(FilesObjectVersionEntry):
     """Transform zenodo file object to RDM."""
 
     def _created(self, entry):
+        """Returns the creation date."""
         return entry["created"]
 
     def _updated(self, entry):
+        """Returns the update date."""
         return entry["updated"]
 
     def _key(self, entry):
+        """The file key name must be 'logo' for the community logo."""
         return "logo"
 
     def _mimetype(self, entry):
+        """Mimetype is nullable."""
         return None
 
     def _is_head(self, entry):
+        """Community file logo will be the head."""
         return True
+
+    def _version_id(self, entry):
+        """Version id will be later auto generated."""
+        return None
+
+    def _bucket_id(self, entry):
+        """The bucket id is added afterwards."""
+        return None
+
+    def _file_id(self, entry):
+        """The file id is added afterwards."""
+        return None
