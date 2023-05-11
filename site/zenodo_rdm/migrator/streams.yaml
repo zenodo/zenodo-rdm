@@ -1,3 +1,4 @@
+data_dir: /path/to/data
 tmp_dir: /path/to/tmp
 cache_dir: /path/to/cache
 log_dir: /path/to/log

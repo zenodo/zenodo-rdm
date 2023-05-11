@@ -36,21 +36,15 @@ class ZenodoFilesTableGenerator(TableGenerator):
 class ZenodoFilesLoad(PostgreSQLCopyLoad):
     """Zenodo to RDM Files class for data loading."""
 
-    def __init__(self, db_uri, tmp_dir, **kwargs):
+    def __init__(self, db_uri, data_dir, **kwargs):
         """Constructor."""
         super().__init__(
             db_uri=db_uri,
             table_generators=[ZenodoFilesTableGenerator()],
-            tmp_dir=tmp_dir,
+            data_dir=data_dir,
+            existing_data=True,
         )
-        # override default as we don't generate the table files again
-        self.tmp_dir = Path(tmp_dir)
 
     def _validate(self):
         """Validate data before loading."""
         return True
-
-    def _prepare(self, entries):
-        """Dump entries in csv files for COPY command."""
-        files_table_generator = self.table_generators[0]
-        return iter(files_table_generator.tables)
