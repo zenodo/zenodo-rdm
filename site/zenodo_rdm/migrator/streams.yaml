@@ -12,6 +12,8 @@ communities:
 records:
   extract:
     filepath: /path/to/records.jsonl
+  load:
+    versioning: false
 drafts:
   extract:
     filepath: /path/to/deposits.jsonl
