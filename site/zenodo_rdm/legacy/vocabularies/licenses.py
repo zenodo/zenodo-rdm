@@ -6,17 +6,7 @@
 # it under the terms of the MIT License; see LICENSE file for more details.
 """Licenses vocabularies for legacy compatibility."""
 
-import importlib.resources as pkg_resources
-import json
-
-from zenodo_rdm.legacy.vocabularies import data
-
-
-def _load_json(filename):
-    with pkg_resources.open_text(data, filename) as raw_data:
-        loaded = json.load(raw_data)
-    return loaded
-
+from zenodo_rdm.legacy.vocabularies.utils import _load_json
 
 LEGACY_LICENSES = {l["id"]: l for l in _load_json("legacy_licenses.json")}
 
