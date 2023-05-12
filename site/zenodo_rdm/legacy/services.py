@@ -15,7 +15,7 @@ from invenio_rdm_records.services import (
 )
 from invenio_records_resources.services import ConditionalLink
 from invenio_records_resources.services.files import FileLink, FileService
-from invenio_records_resources.services.records.links import RecordLink
+from invenio_records_resources.services.records.links import Link, RecordLink
 from invenio_records_resources.services.uow import unit_of_work
 
 
@@ -74,6 +74,17 @@ class LegacyRecordServiceConfig(RDMRecordServiceConfig):
         "discard": RecordLink(
             "{+api}/deposit/depositions/{id}/actions/discard", when=is_draft
         ),
+        "doi_url": Link(
+            "https://doi.org/{+pid_doi}",
+            when=is_record,
+            vars=lambda record, vars: vars.update(
+                {
+                    f"pid_{scheme}": pid["identifier"]
+                    for (scheme, pid) in record.pids.items()
+                }
+            ),
+        ),
+        "record_url": RecordLink("{+ui}/records/{id}", when=is_record),
     }
 
 
@@ -84,13 +95,18 @@ class LegacyRecordService(RDMRecordService):
     def create(self, identity, data, uow=None, expand=False):
         """Create a draft and prereserve the DOI."""
         res = super().create(identity, data, uow=uow, expand=False)
-        res = self.pids.create(
-            identity=identity,
-            id_=res.id,
-            scheme="doi",
-            expand=True,
-            uow=uow,
-        )
+        pids = data.get("pids", {})
+
+        # If pids is provided, it is created automatically.
+        if not pids:
+            res = self.pids.create(
+                identity=identity,
+                id_=res.id,
+                scheme="doi",
+                expand=True,
+                uow=uow,
+            )
+
         return res
 
 
