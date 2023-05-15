@@ -63,8 +63,8 @@ RequestStreamDefinition = StreamDefinition(
 
 FilesStreamDefinition = StreamDefinition(
     name="files",
-    extract_cls=None,
-    transform_cls=None,
+    extract_cls=None,  # will use IdentityExtract
+    transform_cls=None,  # will use IdentityTransform
     load_cls=ZenodoFilesLoad,
 )
 """ETL stream for Zenodo to import files."""

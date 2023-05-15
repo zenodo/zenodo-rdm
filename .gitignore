@@ -75,3 +75,6 @@ celerybeat-schedule
 
 # migration data folder
 **/migrator/tmp
+
+# migration private script
+*migrate.private.sh
