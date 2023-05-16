@@ -6,6 +6,7 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 """Utils for zenodo migrator module."""
 
+import json
 from pathlib import Path
 
 import yaml
@@ -16,12 +17,11 @@ def dump_communities():
     """Dump communities map of slug -> community id."""
     community_map = {comm.slug: str(comm.id) for comm in CommunityMetadata.query.all()}
     streams_path = str(Path("site/zenodo_rdm/migrator/streams.yaml").absolute())
-    streams = {}
     with open(streams_path, "r") as fp:
-        streams = yaml.safe_load(fp)
-    streams["records"]["load"]["cache"]["communities"] = community_map
-    with open(streams_path, "w") as fp:
-        yaml.safe_dump(streams, fp, default_flow_style=False)
+        streams_conf = yaml.safe_load(fp)
+    cache_dir = streams_conf["cache_dir"]
+    with open(cache_dir, "w") as fp:
+        fp.write(json.dumps(community_map))
 
 
 def invalidate_user_community_roles_cache():
