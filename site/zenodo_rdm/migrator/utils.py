@@ -35,9 +35,7 @@ def invalidate_user_community_roles_cache():
     from invenio_accounts.models import User
     from invenio_communities.utils import on_membership_change
 
-    users = User.query.all()
-
-    for user in users:
+    for user in User.query.yield_per(1000):
         user_identity = Identity(user.id)
         # delete cache
         on_membership_change(user_identity)
