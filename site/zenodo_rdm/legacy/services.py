@@ -8,6 +8,7 @@
 """Zenodo legacy services."""
 
 from invenio_drafts_resources.services.records.config import is_draft, is_record
+from invenio_rdm_records.proxies import current_record_communities_service
 from invenio_rdm_records.services import (
     RDMFileDraftServiceConfig,
     RDMRecordService,
@@ -16,7 +17,7 @@ from invenio_rdm_records.services import (
 from invenio_records_resources.services import ConditionalLink
 from invenio_records_resources.services.files import FileLink, FileService
 from invenio_records_resources.services.records.links import RecordLink
-from invenio_records_resources.services.uow import unit_of_work
+from invenio_records_resources.services.uow import IndexRefreshOp, unit_of_work
 
 
 class LegacyRecordLink(RecordLink):
@@ -91,7 +92,43 @@ class LegacyRecordService(RDMRecordService):
             expand=True,
             uow=uow,
         )
+        communities = data.get("communities", [])
+        p = self.add_communities(communities, identity, uow, res._record)
+
+        # TODO how
+        # uow.register(IndexRefreshOp(indexer=current_record_communities_service.indexer))
+
         return res
+
+    def add_communities(self, communities, identity, uow, record):
+        """Creates community inclusion requests for a record's communities.
+
+        This bypasses the record communities service checks on community add.
+        """
+        if not communities:
+            return
+
+        processed = []
+        errored = []
+        for community in communities:
+            community_id = community["id"]
+            comment = community.get("comment", None)
+            require_review = community.get("require_review", False)
+
+            result = {
+                "community_id": community_id,
+            }
+            try:
+                request_item = current_record_communities_service._include(
+                    identity, community_id, comment, require_review, record, uow
+                )
+                result["request_id"] = str(request_item.data["id"])
+                result["request"] = request_item.to_dict()
+                processed.append(result)
+            except Exception as e:
+                errored.append(e)
+                raise e
+        return processed
 
 
 class LegacyFileLink(FileLink):

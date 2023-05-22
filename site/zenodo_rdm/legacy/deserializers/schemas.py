@@ -265,6 +265,13 @@ class LegacyRecordTransform:
                 ),
             }
 
+    def _communities(self, data):
+        """Transforms communities of a record."""
+        if not data:
+            return None
+
+        return [{"id": comm} for comm in data]
+    
     def load(self, data):
         """Transform data."""
         if not data:
@@ -276,4 +283,7 @@ class LegacyRecordTransform:
             # TODO: Map old access rights to RDM access
             # "access": self._access(data.get('access')),
             "files": {"enabled": True},
+            "communities": self._communities(
+                data.get("metadata", {}).get("communities")
+            ),
         }
