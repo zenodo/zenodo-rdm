@@ -18,4 +18,17 @@ class NoConceptRecidForDraft(Exception):
     @property
     def description(self):
         """Exception's description."""
-        return "No conceptrecid for draft: {draft}".format(draft=self.draft)
+        return f"No conceptrecid for draft: {self.draft}"
+
+
+class InvalidIdentifier(Exception):
+    """Invalid identifiers, for example a missing scheme."""
+
+    def __init__(self, identifier):
+        """Initialise error."""
+        self.identifier = identifier
+
+    @property
+    def description(self):
+        """Exception's description."""
+        return f"Invalid identifier {self.identifier}"

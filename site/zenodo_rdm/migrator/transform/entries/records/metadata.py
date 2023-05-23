@@ -9,11 +9,14 @@
 
 from urllib.parse import urlparse
 
+from idutils import detect_identifier_schemes
 from invenio_rdm_migrator.transform import Entry, drop_nones
 from nameparser import HumanName
 
 from zenodo_rdm.legacy.deserializers.schemas import FUNDER_DOI_TO_ROR
 from zenodo_rdm.legacy.vocabularies.licenses import LEGACY_LICENSES, legacy_to_rdm
+
+from ....errors import InvalidIdentifier
 
 
 class ZenodoRecordMetadataEntry(Entry):
@@ -141,6 +144,18 @@ class ZenodoRecordMetadataEntry(Entry):
         return ret
 
     @classmethod
+    def _validate_identifier(cls, identifier):
+        """Validates the information of an identifier and completes it if needed."""
+        value = identifier.get("identifier", "")
+        scheme = identifier.get("scheme")
+        if not scheme:
+            guess = detect_identifier_schemes(value)
+            if guess:
+                identifier["scheme"] = guess[0]  # default to first guess
+            else:
+                raise InvalidIdentifier(identifier)
+
+    @classmethod
     def _identifiers(cls, alternate_identifiers):
         """Parses identifiers from zenodo alternate identifiers."""
         if not alternate_identifiers:
@@ -149,6 +164,7 @@ class ZenodoRecordMetadataEntry(Entry):
         ret = []
 
         for identifier in alternate_identifiers:
+            cls._validate_identifier(identifier)
             _identifier = {
                 "scheme": identifier["scheme"],
                 "identifier": identifier["identifier"],
@@ -165,6 +181,7 @@ class ZenodoRecordMetadataEntry(Entry):
 
         ret = []
         for legacy_identifier in related_identifiers:
+            cls._validate_identifier(legacy_identifier)
             rdm_identifier = {
                 "scheme": legacy_identifier["scheme"],
                 "identifier": legacy_identifier["identifier"],

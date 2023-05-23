@@ -13,6 +13,10 @@ from unittest.mock import patch
 import dictdiffer
 import pytest
 
+from zenodo_rdm.migrator.errors import InvalidIdentifier
+from zenodo_rdm.migrator.transform.entries.records.metadata import (
+    ZenodoRecordMetadataEntry,
+)
 from zenodo_rdm.migrator.transform.records import (
     ZenodoDraftEntry,
     ZenodoRecordEntry,
@@ -982,3 +986,48 @@ def test_draft_entry_no_access(zenodo_draft_data):
             },
         )
     )
+
+
+###
+# FIELDS
+###
+
+
+def test_valid_identifiers():
+    metadata_entry = ZenodoRecordMetadataEntry()
+    valid = [
+        {"identifier": "978-65-997142-0-7"},  # minimal
+        {"relation": "isIdenticalTo", "identifier": "tel-00011634"},  # with extra info
+        # full
+        {
+            "scheme": "ads",
+            "relation": "isIdenticalTo",
+            "identifier": "2004PhDT........43B",
+        },
+        # with format in the identifier
+        {
+            "scheme": "arxiv",
+            "relation": "isSupplementTo",
+            "identifier": "arXiv:1601.08082",
+        },
+    ]
+
+    for identifier in valid:
+        metadata_entry._validate_identifier(identifier)
+        assert "scheme" in identifier.keys()
+        assert identifier["scheme"]  # not empty
+
+
+def test_invalid_identifiers():
+    metadata_entry = ZenodoRecordMetadataEntry()
+    invalid = [
+        {"identifier": "local:"},  # incomplete
+        {"relation": "isSupplementTo", "identifier": "hello"},  # text
+        {"relation": "isSupplementTo", "identifier": "ISSN"},  # scheme as value
+        {"relation": "isSupplementTo", "identifier": "arXiv:1601_.08082"},  # malformed
+        {"identifier": "10.21105.joss.00018"},  # unknown
+    ]
+
+    for identifier in invalid:
+        with pytest.raises(InvalidIdentifier):
+            metadata_entry._validate_identifier(identifier)
