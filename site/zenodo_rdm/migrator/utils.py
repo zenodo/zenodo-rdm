@@ -13,13 +13,13 @@ import yaml
 from invenio_communities.communities.records.models import CommunityMetadata
 
 
-def dump_communities():
+def dump_communities(streams_filepath="site/zenodo_rdm/migrator/streams.yaml"):
     """Dump communities map of slug -> community id."""
     community_map = {comm.slug: str(comm.id) for comm in CommunityMetadata.query.all()}
-    streams_path = str(Path("site/zenodo_rdm/migrator/streams.yaml").absolute())
+    streams_path = str(Path(streams_filepath).absolute())
     with open(streams_path, "r") as fp:
         streams_conf = yaml.safe_load(fp)
-    cache_dir = streams_conf["cache_dir"]
+    cache_dir = Path(streams_conf["cache_dir"]) / "communities.json"
     with open(cache_dir, "w") as fp:
         fp.write(json.dumps(community_map))
 
