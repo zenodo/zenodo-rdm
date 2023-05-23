@@ -9,7 +9,7 @@
 
 from flask_resources import JSONDeserializer
 
-from .schemas import LegacyRecordTransform
+from .schemas import LegacySchema
 
 
 class LegacyJSONDeserializer(JSONDeserializer):
@@ -18,4 +18,4 @@ class LegacyJSONDeserializer(JSONDeserializer):
     def deserialize(self, data):
         """Deserialize the payload."""
         data = super().deserialize(data)
-        return LegacyRecordTransform().load(data)
+        return LegacySchema().load(data)

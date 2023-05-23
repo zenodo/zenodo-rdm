@@ -13,8 +13,14 @@ from invenio_records_resources.proxies import current_service_registry
 from marshmallow import Schema, fields, missing, post_dump, pre_dump, validate
 from marshmallow_utils.fields import EDTFDateString, SanitizedHTML, SanitizedUnicode
 
-from zenodo_rdm.legacy.deserializers.schemas import FUNDER_ROR_TO_DOI
+from zenodo_rdm.legacy.deserializers.metadata import FUNDER_ROR_TO_DOI
 from zenodo_rdm.legacy.vocabularies.licenses import rdm_to_legacy
+from invenio_vocabularies.proxies import current_service as vocabulary_service
+
+
+def to_camel_case(string, split_char=" "):
+    """Returns a camel cased string."""
+    return "".join(word.title() for word in string.split(split_char))
 
 
 class FileSchema(Schema):
@@ -28,7 +34,9 @@ class FileSchema(Schema):
 class CreatorSchema(Schema):
     """Creator schema."""
 
-    name = SanitizedUnicode(attribute="person_or_org.name")
+    name = SanitizedUnicode(
+        attribute="person_or_org.name"
+    )  # TODO rdm name is different than legacy zenodo
     affiliation = fields.Method("dump_affiliation")
 
     def dump_affiliation(self, obj):
@@ -42,10 +50,11 @@ class CreatorSchema(Schema):
         ids = original.get("person_or_org", {}).get("identifiers", [])
         if ids:
             for i in ids:
+                _id = i["identifier"]
                 if i["scheme"] == "orcid":
-                    result["orcid"] = i["identifier"]
+                    result["orcid"] = _id.replace("orcid:", "")
                 if i["scheme"] == "gnd":
-                    result["gnd"] = i["identifier"]
+                    result["gnd"] = _id.replace("gnd:", "")
         return result
 
 
@@ -56,53 +65,11 @@ class ContributorSchema(CreatorSchema):
 
     def dump_role(self, obj):
         """Loads role field."""
-        role = obj.get("role")
-
+        # English title matches DataCite prop, used in legacy Zenodo
+        role = obj.get("role", {})
         if role:
-            # English title matches DataCite prop, used in legacy Zenodo
-            return role.get("title", {}).get("en")
-
-
-class JournalSchema(Schema):
-    """Journal schema."""
-
-    title = SanitizedUnicode()
-    volume = SanitizedUnicode()
-    issue = SanitizedUnicode()
-    pages = SanitizedUnicode()
-
-
-class MeetingSchema(Schema):
-    """Meeting schema."""
-
-    title = SanitizedUnicode()
-    acronym = SanitizedUnicode()
-    dates = SanitizedUnicode()
-    place = SanitizedUnicode()
-    url = SanitizedUnicode()
-    session = SanitizedUnicode()
-    session_part = SanitizedUnicode()
-
-
-class ImprintSchema(Schema):
-    """Imprint schema."""
-
-    publisher = SanitizedUnicode()
-    isbn = SanitizedUnicode()
-    place = SanitizedUnicode()
-
-
-class PartOfSchema(Schema):
-    """'Part of' schema."""
-
-    pages = SanitizedUnicode()
-    title = SanitizedUnicode()
-
-
-class ThesisSchema(Schema):
-    """Thesis schema."""
-
-    university = SanitizedUnicode()
+            title_en = role.get("title", {}).get("en")
+            return to_camel_case(title_en, " ")
 
 
 class DateSchema(Schema):
@@ -143,12 +110,17 @@ class RelatedIdentifierSchema(Schema):
     """Related identifier schema."""
 
     identifier = SanitizedUnicode()
-    relation = SanitizedUnicode(attribute="relation_type.id")
+    relation = SanitizedUnicode(
+        attribute="relation_type.id"
+    )  # TODO convert from lowercase to camel case
     resource_type = SanitizedUnicode(attribute="resource_type.id")
+    scheme = SanitizedUnicode()
 
 
 class MetadataSchema(Schema):
     """Metadata schema."""
+
+    # TODO missing conference
 
     title = SanitizedUnicode()
     publication_date = SanitizedUnicode()
@@ -160,15 +132,34 @@ class MetadataSchema(Schema):
 
     contributors = fields.List(fields.Nested(ContributorSchema), dump_only=True)
 
-    journal = fields.Nested(JournalSchema, attribute="custom_fields.journal:journal")
+    journal_title = SanitizedUnicode(attribute="custom_fields.journal:journal.title")
+    journal_volume = SanitizedUnicode(attribute="custom_fields.journal:journal.volume")
+    journal_issue = SanitizedUnicode(attribute="custom_fields.journal:journal.issue")
+    journal_pages = SanitizedUnicode(attribute="custom_fields.journal:journal.pages")
 
-    meeting = fields.Nested(MeetingSchema, attribute="custom_fields.meeting:meeting")
+    conference_title = SanitizedUnicode(attribute="custom_fields.meeting:meeting.title")
+    conference_acronym = SanitizedUnicode(
+        attribute="custom_fields.meeting:meeting.acronym"
+    )
+    conference_dates = SanitizedUnicode(attribute="custom_fields.meeting:meeting.dates")
+    conference_place = SanitizedUnicode(attribute="custom_fields.meeting:meeting.place")
+    conference_url = SanitizedUnicode(attribute="custom_fields.meeting:meeting.url")
+    conference_session = SanitizedUnicode(
+        attribute="custom_fields.meeting:meeting.session"
+    )
+    conference_session_part = SanitizedUnicode(
+        attribute="custom_fields.meeting:meeting.session_part"
+    )
 
-    imprint = fields.Nested(ImprintSchema, attribute="custom_fields.imprint:imprint")
+    # Imprint publisher does not exist in RDM, it comes from the record itself.
+    imprint_publisher = SanitizedUnicode(attribute="publisher")
+    imprint_isbn = SanitizedUnicode(attribute="custom_fields.imprint:imprint.isbn")
+    imprint_place = SanitizedUnicode(attribute="custom_fields.imprint:imprint.place")
 
-    part_of = fields.Nested(PartOfSchema, data_key="part_of")
+    partof_pages = SanitizedUnicode(attribute="custom_fields.imprint:imprint.pages")
+    partof_title = SanitizedUnicode(attribute="custom_fields.imprint:imprint.title")
 
-    thesis = fields.Nested(ThesisSchema, attribute="custom_fields.thesis:university")
+    thesis_university = SanitizedUnicode(attribute="custom_fields.thesis:university")
 
     locations = fields.Method("dump_locations")
 
@@ -185,30 +176,6 @@ class MetadataSchema(Schema):
     access_right = fields.Method("dump_access_right")
 
     embargo_date = fields.String(attribute="access.embargo.until")
-
-    @pre_dump
-    def hook_contributors_thesis(self, data, **kwargs):
-        """Hooks university key to thesis."""
-        university = data.get("custom_fields").get("thesis:university")
-        if university:
-            new_thesis = {"university": university}
-            data["custom_fields"]["thesis:university"] = new_thesis
-        return data
-
-    @pre_dump
-    def hook_imprint_partof(self, data, **kwargs):
-        """Hooks imprint and part_of. fields."""
-        # custom_fields.imprint:imprint was already the attribute of another field.
-        imprint = data.get("custom_fields", {}).get("imprint:imprint")
-        publisher = data.get("publisher")
-        if imprint:
-            data["part_of"] = imprint
-            if publisher:
-                data["custom_fields"]["imprint:imprint"] = {
-                    **imprint,
-                    "publisher": publisher,
-                }
-        return data
 
     @pre_dump
     def hook_alternate_identifiers(self, data, **kwargs):
@@ -346,6 +313,7 @@ class MetadataSchema(Schema):
         if not funding:
             return missing
 
+        ret = []
         for funding_item in funding:
             award = funding_item.get("award")
 
@@ -373,7 +341,12 @@ class MetadataSchema(Schema):
             legacy_grant = self._award(award)
             legacy_grant["funder"] = self._funder(funder)
 
-            return legacy_grant
+            award_number = award["number"]
+            funder_doi = FUNDER_ROR_TO_DOI.get(funder["id"])
+            serialized_grant = {"id": f"{funder_doi}::{award_number}"}
+            ret.append(serialized_grant)
+
+        return ret
 
     def dump_license(self, data):
         """Dumps license field."""
@@ -386,7 +359,7 @@ class MetadataSchema(Schema):
         license = license[0]
 
         legacy_id = rdm_to_legacy(license["id"])
-        legacy_license = {"id": legacy_id}
+        legacy_license = legacy_id
 
         return legacy_license
 
