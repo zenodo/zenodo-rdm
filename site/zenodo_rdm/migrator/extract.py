@@ -231,60 +231,6 @@ COPY (
 ) TO STDOUT;
 """
 
-# TODO: Check if we just dump the entire tables (files, objects, buckets) and
-# generate RecordFile/DraftFile via `INSERT INTO () FROM (SELECT ...)`
-# EXTRACT_FILES_SQL = """
-# COPY (
-#     SELECT row_to_json(files)
-#     FROM (
-#         WITH active_fb AS (
-#             SELECT
-#                 created AS fb_created,
-#                 updated AS fb_updated,
-#                 id AS fb_id,
-#                 default_location AS fb_default_location,
-#                 default_storage_class AS fb_default_storage_class,
-#                 size AS fb_size,
-#                 quota_size AS fb_quota_size,
-#                 max_file_size AS fb_max_file_size,
-#                 locked AS fb_locked,
-#                 deleted AS fb_deleted
-#             FROM records_buckets AS rb
-#                 INNER JOIN files_bucket AS fb ON rb.bucket_id=fb.id
-#         ), active_fo AS (
-#             SELECT
-#                 active_fb.*,
-#                 created AS fo_created,
-#                 updated AS fo_updated,
-#                 bucket_id AS fo_bucket_id,
-#                 key AS fo_key,
-#                 version_id AS fo_version_id,
-#                 file_id AS fo_file_id,
-#                 _mimetype AS fo_mimetype,
-#                 is_head AS fo_is_head
-#             FROM active_fb
-#                 INNER JOIN files_object ON active_fb.fb_id=files_object.bucket_id
-#         )
-
-#         SELECT
-#             active_fo.*,
-#             created AS ff_created,
-#             updated AS ff_updated,
-#             id AS ff_id,
-#             uri AS ff_uri,
-#             storage_class AS ff_storage_class,
-#             size AS ff_size,
-#             checksum AS ff_checksum,
-#             readable AS ff_readable,
-#             writable AS ff_writable,
-#             last_check_at AS ff_last_check_at,
-#             last_check AS ff_last_check
-#         FROM active_fo
-#                 INNER JOIN files_files ON active_fo.fo_file_id=files_files.id
-#     ) as files
-# ) TO STDOUT;
-# """
-
 # NOTE: We're using a binary export for the files tables, since we're not filtering
 EXTRACT_FILE_INSTANCES_SQL = """
 COPY (
