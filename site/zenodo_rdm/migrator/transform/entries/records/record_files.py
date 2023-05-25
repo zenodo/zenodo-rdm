@@ -16,15 +16,19 @@ class ZenodoRDMRecordFileEntry(RDMRecordFileEntry):
     Connects records with files.
     """
 
+    def __init__(self, context):
+        """Constructor."""
+        self.context = context
+
     def _created(self, entry):
         """Returns the creation date."""
         # use record created date
-        return entry["created"]
+        return self.context["created"]
 
     def _updated(self, entry):
         """Returns the update date."""
         # use record updated date
-        return entry["updated"]
+        return self.context["updated"]
 
     def _json(self, entry):
         """Returns the rdm record file metadata."""
