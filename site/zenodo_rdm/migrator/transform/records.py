@@ -54,29 +54,20 @@ class ZenodoRecordTransform(RDMRecordTransform):
     def _draft(self, entry):
         return ZenodoDraftEntry().transform(entry)
 
+    def _file_records(self, entry):
+        """Transform file records for an entry."""
+        files = entry["json"].get("_files", [])
+        return list(map(ZenodoRDMRecordFileEntry(context=entry).transform, files))
+
     def _draft_files(self, entry):
-        return None
+        """Transform file records of a record."""
+        # draft files are migrated as post load since new versions/new drafts
+        # do not have _files until they are saved so we cannot rely on it
+        return {}
 
     def _record_files(self, entry):
-        def _update_files_with_record_information(file):
-            return {
-                **file,
-                "created": entry["created"],  # we use the record's created date
-                "updated": entry["updated"],  # we use the record's updated date
-            }
-
-        files = entry["json"].get("_files")
-
-        if files:
-            # add to files record information that will be used for populating the record files table
-            _files_with_record_metadata = list(
-                map(_update_files_with_record_information, files)
-            )
-            return list(
-                map(ZenodoRDMRecordFileEntry().transform, _files_with_record_metadata)
-            )
-        else:
-            return []
+        """Transform file records of a record."""
+        return self._file_records(entry)
 
     def _transform(self, entry):
         """Transform a single entry."""
