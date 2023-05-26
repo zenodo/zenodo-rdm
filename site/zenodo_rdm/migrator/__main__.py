@@ -11,9 +11,11 @@ import sys
 from invenio_rdm_migrator.streams import Runner
 
 from .stream import (
+    AwardsStreamDefinition,
     CommunitiesStreamDefinition,
     DraftStreamDefinition,
     FilesStreamDefinition,
+    FundersStreamDefinition,
     RecordStreamDefinition,
     RequestStreamDefinition,
     UserStreamDefinition,
@@ -28,6 +30,8 @@ if __name__ == "__main__":
             RecordStreamDefinition,
             DraftStreamDefinition,
             RequestStreamDefinition,
+            FundersStreamDefinition,
+            AwardsStreamDefinition,
         ],
         config_filepath=sys.argv[1],
     )
