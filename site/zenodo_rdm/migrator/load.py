@@ -7,9 +7,6 @@
 
 """Zenodo migrator files loader."""
 
-import contextlib
-from pathlib import Path
-
 from invenio_rdm_migrator.load.postgresql import PostgreSQLCopyLoad, TableGenerator
 from invenio_rdm_migrator.streams.files.models import (
     FilesBucket,
@@ -17,14 +14,16 @@ from invenio_rdm_migrator.streams.files.models import (
     FilesObjectVersion,
 )
 
+from .models import Awards, Funders
 
-class ZenodoFilesTableGenerator(TableGenerator):
-    """Zenodo to RDM table generator for files."""
 
-    def __init__(self):
+class ZenodoExistingDataTableGenaratorBase(TableGenerator):
+    """Zenodo to RDM table generator for directly loaded data streams."""
+
+    def __init__(self, tables):
         """Constructor."""
         super().__init__(
-            tables=[FilesInstance, FilesBucket, FilesObjectVersion],
+            tables=tables,
             pks=[],
         )
 
@@ -33,18 +32,54 @@ class ZenodoFilesTableGenerator(TableGenerator):
         pass
 
 
-class ZenodoFilesLoad(PostgreSQLCopyLoad):
+class ZenodoExistingDataLoadBase(PostgreSQLCopyLoad):
+    """Zenodo to RDM load class for direct data loading."""
+
+    def __init__(self, db_uri, data_dir, table_generators, **kwargs):
+        """Constructor."""
+        super().__init__(
+            db_uri=db_uri,
+            table_generators=table_generators,
+            data_dir=data_dir,
+            existing_data=True,
+        )
+
+
+class ZenodoFilesLoad(ZenodoExistingDataLoadBase):
     """Zenodo to RDM Files class for data loading."""
 
     def __init__(self, db_uri, data_dir, **kwargs):
         """Constructor."""
         super().__init__(
             db_uri=db_uri,
-            table_generators=[ZenodoFilesTableGenerator()],
+            table_generators=[
+                ZenodoExistingDataTableGenaratorBase(
+                    tables=[FilesInstance, FilesBucket, FilesObjectVersion]
+                )
+            ],
             data_dir=data_dir,
-            existing_data=True,
         )
 
-    def _validate(self):
-        """Validate data before loading."""
-        return True
+
+class ZenodoFundersLoad(ZenodoExistingDataLoadBase):
+    """Zenodo to RDM funders class for data loading."""
+
+    def __init__(self, db_uri, data_dir, **kwargs):
+        """Constructor."""
+        super().__init__(
+            db_uri=db_uri,
+            table_generators=[ZenodoExistingDataTableGenaratorBase(tables=[Funders])],
+            data_dir=data_dir,
+        )
+
+
+class ZenodoAwardsLoad(ZenodoExistingDataLoadBase):
+    """Zenodo to RDM awards class for data loading."""
+
+    def __init__(self, db_uri, data_dir, **kwargs):
+        """Constructor."""
+        super().__init__(
+            db_uri=db_uri,
+            table_generators=[ZenodoExistingDataTableGenaratorBase(tables=[Awards])],
+            data_dir=data_dir,
+        )

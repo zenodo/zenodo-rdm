@@ -22,3 +22,7 @@ drafts:
 requests:
   extract:
     filepath: /path/to/requests.jsonl
+funders:
+  existing_data: True
+awards:
+  existing_data: True
