@@ -20,13 +20,6 @@ from .models import Awards, Funders
 class ZenodoExistingDataTableGenaratorBase(TableGenerator):
     """Zenodo to RDM table generator for directly loaded data streams."""
 
-    def __init__(self, tables):
-        """Constructor."""
-        super().__init__(
-            tables=tables,
-            pks=[],
-        )
-
     def _generate_rows(self, **kwargs):
         """Yield generated rows."""
         pass
@@ -49,7 +42,7 @@ class ZenodoFilesLoad(ZenodoExistingDataLoadBase):
             db_uri=db_uri,
             table_generators=[
                 ZenodoExistingDataTableGenaratorBase(
-                    tables=[FilesInstance, FilesBucket, FilesObjectVersion]
+                    tables=[FilesInstance, FilesBucket, FilesObjectVersion], pks=[]
                 )
             ],
             data_dir=data_dir,
@@ -64,7 +57,12 @@ class ZenodoFundersLoad(ZenodoExistingDataLoadBase):
         """Constructor."""
         super().__init__(
             db_uri=db_uri,
-            table_generators=[ZenodoExistingDataTableGenaratorBase(tables=[Funders])],
+            table_generators=[
+                ZenodoExistingDataTableGenaratorBase(
+                    tables=[Funders],
+                    pks=[],
+                )
+            ],
             data_dir=data_dir,
             existing_data=True,
         )
@@ -77,7 +75,12 @@ class ZenodoAwardsLoad(ZenodoExistingDataLoadBase):
         """Constructor."""
         super().__init__(
             db_uri=db_uri,
-            table_generators=[ZenodoExistingDataTableGenaratorBase(tables=[Awards])],
+            table_generators=[
+                ZenodoExistingDataTableGenaratorBase(
+                    tables=[Awards],
+                    pks=[],
+                )
+            ],
             data_dir=data_dir,
             existing_data=True,
         )
