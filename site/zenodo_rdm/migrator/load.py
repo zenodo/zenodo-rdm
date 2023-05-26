@@ -35,15 +35,6 @@ class ZenodoExistingDataTableGenaratorBase(TableGenerator):
 class ZenodoExistingDataLoadBase(PostgreSQLCopyLoad):
     """Zenodo to RDM load class for direct data loading."""
 
-    def __init__(self, db_uri, data_dir, table_generators, **kwargs):
-        """Constructor."""
-        super().__init__(
-            db_uri=db_uri,
-            table_generators=table_generators,
-            data_dir=data_dir,
-            existing_data=True,
-        )
-
     def _validate(self):
         """Validate data before loading."""
         return True
@@ -62,6 +53,7 @@ class ZenodoFilesLoad(ZenodoExistingDataLoadBase):
                 )
             ],
             data_dir=data_dir,
+            existing_data=True,
         )
 
 
@@ -74,6 +66,7 @@ class ZenodoFundersLoad(ZenodoExistingDataLoadBase):
             db_uri=db_uri,
             table_generators=[ZenodoExistingDataTableGenaratorBase(tables=[Funders])],
             data_dir=data_dir,
+            existing_data=True,
         )
 
 
@@ -86,4 +79,5 @@ class ZenodoAwardsLoad(ZenodoExistingDataLoadBase):
             db_uri=db_uri,
             table_generators=[ZenodoExistingDataTableGenaratorBase(tables=[Awards])],
             data_dir=data_dir,
+            existing_data=True,
         )
