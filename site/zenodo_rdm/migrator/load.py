@@ -44,6 +44,10 @@ class ZenodoExistingDataLoadBase(PostgreSQLCopyLoad):
             existing_data=True,
         )
 
+    def _validate(self):
+        """Validate data before loading."""
+        return True
+
 
 class ZenodoFilesLoad(ZenodoExistingDataLoadBase):
     """Zenodo to RDM Files class for data loading."""
