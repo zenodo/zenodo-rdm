@@ -52,7 +52,7 @@
   tags:
     - depositable
     - linkable
-- id: publication-section
+- id: publication-chapter
   icon: file alternate
   props:
     csl: chapter
@@ -106,7 +106,7 @@
   tags:
     - depositable
     - linkable
-- id: publication-datamanagementplan
+- id: publication-outputmanagementplan
   icon: file alternate
   props:
     csl: report
