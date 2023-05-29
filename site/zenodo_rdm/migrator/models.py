@@ -14,11 +14,11 @@ class Funders:
     """Funders dataclass model."""
 
     id: str
+    pid: str
+    json: dict
     created: str
     updated: str
-    json: dict
     version_id: int
-    pid: str
 
     _table_name: InitVar[str] = "funder_metadata"
 
@@ -28,10 +28,10 @@ class Awards:
     """Awards dataclass model."""
 
     id: str
+    pid: str
+    json: dict
     created: str
     updated: str
-    json: dict
     version_id: int
-    pid: str
 
     _table_name: InitVar[str] = "award_metadata"
