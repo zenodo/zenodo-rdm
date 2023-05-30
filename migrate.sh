@@ -95,5 +95,5 @@ from invenio_users_resources.proxies import current_users_service
 current_users_service.indexer.refresh()
 com
 
-# invenio roles create admin
-# invenio access allow superuser-access role admin
+# Add admin users (Pablo, Alex, Zach, Manuel)
+sh $migrator_scripts_folder_path/add_admins.sh
