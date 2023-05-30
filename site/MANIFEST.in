@@ -9,3 +9,4 @@ recursive-include zenodo_rdm *.sql
 recursive-include zenodo_rdm *.yaml
 recursive-include zenodo_rdm *.json
 recursive-include zenodo_rdm *.py
+recursive-include zenodo_rdm *.sh
