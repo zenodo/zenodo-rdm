@@ -52,7 +52,7 @@
   tags:
     - depositable
     - linkable
-- id: publication-chapter
+- id: publication-section
   icon: file alternate
   props:
     csl: chapter
@@ -62,7 +62,7 @@
     openaire_type: publication
     eurepo: info:eu-repo/semantics/bookPart
     schema.org: https://schema.org/ScholarlyArticle
-    subtype: publication-chapter
+    subtype: publication-section
     type: publication
   title:
     en: Book chapter
@@ -106,7 +106,7 @@
   tags:
     - depositable
     - linkable
-- id: publication-outputmanagementplan
+- id: publication-datamanagementplan
   icon: file alternate
   props:
     csl: report
@@ -116,7 +116,7 @@
     openaire_type: publication
     eurepo: info:eu-repo/semantics/technicalDocumentation
     schema.org: https://schema.org/CreativeWork
-    subtype: publication-outputmanagementplan
+    subtype: publication-datamanagementplan
     type: publication
   title:
     en: Output management plan
