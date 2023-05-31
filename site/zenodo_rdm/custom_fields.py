@@ -156,7 +156,7 @@ CUSTOM_FIELDS = [
     *THESIS_CUSTOM_FIELDS,
 ]
 
-# hide meeting section
+# hide meeting section from Additional details in landing page
 MEETING_CUSTOM_FIELDS_UI["hidden"] = True
 
 # Custom fields UI components
@@ -166,7 +166,7 @@ CUSTOM_FIELDS_UI = [
     # publishing information
     {
         "section": _("Publishing information"),
-        "hidden": True,
+        "hidden": True,  # hide meeting section from Additional details in landing page
         "fields": [
             # journal
             *JOURNAL_CUSTOM_FIELDS_UI["fields"],
