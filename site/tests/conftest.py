@@ -38,6 +38,7 @@ def app_config(app_config):
     app_config["REST_CSRF_ENABLED"] = False
     app_config["DATACITE_ENABLED"] = True
     app_config["DATACITE_PREFIX"] = "10.5281"
+    app_config["DATACITE_FORMAT"] = "{prefix}/zenodo.{id}"
     app_config["RDM_NAMESPACES"] = NAMESPACES
     app_config["RDM_CUSTOM_FIELDS"] = CUSTOM_FIELDS
     app_config["RDM_CUSTOM_FIELDS_UI"] = CUSTOM_FIELDS_UI  #  UI components

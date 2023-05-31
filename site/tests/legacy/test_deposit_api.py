@@ -12,8 +12,6 @@ from datetime import datetime, timedelta
 import dictdiffer
 import pytest
 
-from zenodo_rdm.legacy.resources import LegacyRecordResourceConfig
-
 
 @pytest.fixture(scope="function")
 def test_data():
@@ -215,24 +213,12 @@ def expected_record_metadata():
     )
 
 
-@pytest.fixture
-def get_json():
-    """Function for extracting json from response."""
-
-    def inner(response, code=None):
-        """Decode JSON from response."""
-        data = response.get_data(as_text=True)
-        if code is not None:
-            assert response.status_code == code, data
-        return json.loads(data)
-
-    return inner
-
-
-@pytest.fixture
-def deposit_url():
-    """Deposit API URL."""
-    return f"/api{LegacyRecordResourceConfig.url_prefix}"
+def get_json(response, code=None):
+    """Decode JSON from response."""
+    data = response.get_data(as_text=True)
+    if code is not None:
+        assert response.status_code == code, data
+    return json.loads(data)
 
 
 def test_invalid_create(test_app, client_with_login, deposit_url, headers):
@@ -262,7 +248,6 @@ def test_input_output(
     client_with_login,
     headers,
     deposit_url,
-    get_json,
     test_data,
     expected_record_metadata,
 ):

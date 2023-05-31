@@ -181,7 +181,7 @@ class MetadataSchema(Schema):
 
     title = SanitizedUnicode()
     description = SanitizedUnicode()
-    publication_date = SanitizedUnicode(default=date.today().isoformat())
+    publication_date = SanitizedUnicode(load_default=lambda: date.today().isoformat())
     resource_type = fields.Str()
     creators = fields.List(fields.Nested(CreatorSchema))
     publisher = fields.Constant("Zenodo")  # TODO is it?

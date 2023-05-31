@@ -180,13 +180,15 @@ class LegacySchema(Schema):
     def _pids(self, result, original, **kwargs):
         """Transform legacy doi in RDM pid with external provider."""
         metadata = original.get("metadata")
-        doi = metadata.get("doi")
-
-        if doi:
-            provider = "external"
-
-            if doi.startswith("10.5281/"):
-                provider = "datacite"
+        if metadata:
+            doi = metadata.get("doi")
+            if doi:
+                provider = "external"
+                # TODO: Fetch prefix from config (or pass via schema context)
+                if doi.startswith("10.5281/"):
+                    provider = "datacite"
+                result["pids"] = {"doi": {"identifier": doi, "provider": provider}}
+        return result
 
             rdm_external_pid = {"doi": {"identifier": doi, "provider": provider}}
 
