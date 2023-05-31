@@ -17,7 +17,7 @@ from invenio_access.permissions import superuser_access, system_identity
 from invenio_accounts.models import Role
 from invenio_accounts.testutils import login_user_via_session
 from invenio_administration.permissions import administration_access_action
-from invenio_app.factory import create_app as _create_app
+from invenio_app import factory as app_factory
 from invenio_communities import current_communities
 from invenio_communities.communities.records.api import Community
 from invenio_pidstore.errors import PIDDoesNotExistError
@@ -48,7 +48,7 @@ def app_config(app_config):
 @pytest.fixture(scope="module")
 def create_app(instance_path):
     """Application factory fixture."""
-    return _create_app
+    return app_factory.create_app
 
 
 RunningApp = namedtuple(

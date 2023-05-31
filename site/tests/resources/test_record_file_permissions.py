@@ -9,8 +9,10 @@
 
 from io import BytesIO
 
+import pytest
+from invenio_app import factory as app_factory
 from invenio_rdm_records.proxies import current_rdm_records_service
-from invenio_rdm_records.records import RDMParent, RDMRecord
+from invenio_rdm_records.records import RDMRecord
 
 
 def create_record_w_file(client, record, headers):
