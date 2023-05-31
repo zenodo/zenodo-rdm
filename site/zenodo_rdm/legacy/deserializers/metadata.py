@@ -297,7 +297,7 @@ class MetadataSchema(Schema):
             )
 
         if rdm_additional_descriptions:
-            result["additional_decriptions"] = rdm_additional_descriptions
+            result["additional_descriptions"] = rdm_additional_descriptions
 
         return result
 
@@ -480,5 +480,8 @@ class MetadataSchema(Schema):
     @validates_schema
     def validate_metadata_schema(self, data, **kwargs):
         """Validates metadata schema."""
-        if not len(data.keys()):
+        keys = list(data.keys())
+
+        # Publisher is hardcoded to "Zenodo".
+        if len(keys) == 1 and keys[0] == "publisher":
             raise ValidationError("Metadata must be non-empty")

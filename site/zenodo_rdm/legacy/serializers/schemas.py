@@ -23,6 +23,45 @@ def to_camel_case(string, split_char=" "):
     return "".join(word.title() for word in string.split(split_char))
 
 
+# Maps RDM relation_type to legacy relation
+RELATION_TYPE_MAPPING = {
+    "iscitedby": "isCitedBy",
+    "cites": "cites",
+    "issupplementto": "isSupplementTo",
+    "issupplementedby": "isSupplementedBy",
+    "iscontinuedby": "isContinuedBy",
+    "continues": "continues",
+    "isdescribedby": "isDescribedBy",
+    "describes": "describes",
+    "hasmetadata": "hasMetadata",
+    "ismetadatafor": "isMetadataFor",
+    "hasversion": "hasVersion",
+    "isversionof": "isVersionOf",
+    "isnewversionof": "isNewVersionOf",
+    "ispreviousversionof": "isPreviousVersionOf",
+    "ispartof": "isPartOf",
+    "haspart": "hasPart",
+    "ispublishedin": "isPublishedIn",
+    "isreferencedby": "isReferencedBy",
+    "references": "references",
+    "isdocumentedby": "isDocumentedBy",
+    "documents": "documents",
+    "iscompiledby": "isCompiledBy",
+    "compiles": "compiles",
+    "isvariantformof": "isVariantFormOf",
+    "isoriginalformof": "isOriginalFormOf",
+    "isidenticalto": "isIdenticalTo",
+    "isreviewedby": "isReviewedBy",
+    "reviews": "reviews",
+    "isderivedfrom": "isDerivedFrom",
+    "issourceof": "isSourceOf",
+    "isrequiredby": "isRequiredBy",
+    "requires": "requires",
+    "isobsoletedby": "isObsoletedBy",
+    "obsoletes": "obsoletes",
+}
+
+
 class FileSchema(Schema):
     """File schema."""
 
@@ -110,11 +149,21 @@ class RelatedIdentifierSchema(Schema):
     """Related identifier schema."""
 
     identifier = SanitizedUnicode()
-    relation = SanitizedUnicode(
-        attribute="relation_type.id"
-    )  # TODO convert from lowercase to camel case
+    relation = fields.Method("dump_relation")
     resource_type = SanitizedUnicode(attribute="resource_type.id")
     scheme = SanitizedUnicode()
+
+    def dump_relation(self, obj):
+        """Dumps relation type."""
+        resource_type_id = obj.get("relation_type", {}).get("id")
+
+        if not resource_type_id:
+            return missing
+
+        legacy_relation = RELATION_TYPE_MAPPING.get(resource_type_id)
+
+        # Or throw an error
+        return legacy_relation or missing
 
 
 class MetadataSchema(Schema):

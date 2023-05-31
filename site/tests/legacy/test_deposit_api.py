@@ -11,13 +11,6 @@ from datetime import datetime, timedelta
 
 import dictdiffer
 import pytest
-from flask import url_for
-from flask_security import login_user
-from flask_security.utils import hash_password
-from invenio_accounts.testutils import login_user_via_session
-from invenio_pidstore.models import PersistentIdentifier
-from invenio_search import current_search
-from six import BytesIO
 
 from zenodo_rdm.legacy.resources import LegacyRecordResourceConfig
 
@@ -242,9 +235,7 @@ def deposit_url():
     return f"/api{LegacyRecordResourceConfig.url_prefix}"
 
 
-def test_invalid_create(
-    test_app, client_with_login, es, deposit_url, get_json, headers, db
-):
+def test_invalid_create(test_app, client_with_login, deposit_url, headers):
     """Test invalid deposit creation.
 
     Test ported from https://github.com/zenodo/zenodo/blob/master/tests/unit/deposit/test_api_metadata.py.
@@ -267,9 +258,8 @@ def test_invalid_create(
 
 
 def test_input_output(
+    test_app,
     client_with_login,
-    es,
-    db,
     headers,
     deposit_url,
     get_json,
@@ -308,9 +298,5 @@ def test_input_output(
     differences = list(
         dictdiffer.diff(data["metadata"], expected_record_metadata, ignore=ignored_keys)
     )
-
-    # Known issues:
-    # - related_identifiers relation expects 'isCitedBy' but returns lower cased.
-    # - notes are not returned (additional_descriptions is empty)
 
     assert not differences

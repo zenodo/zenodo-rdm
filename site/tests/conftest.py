@@ -417,7 +417,7 @@ def contributors_role_v(app, contributors_role_type):
 
 @pytest.fixture(scope="module")
 def description_type(app):
-    """title vocabulary type."""
+    """Title vocabulary type."""
     return vocabulary_service.create_type(system_identity, "descriptiontypes", "dty")
 
 
@@ -484,7 +484,7 @@ def relation_type_v(app, relation_type):
 
 
 @pytest.fixture(scope="function")
-def initialise_custom_fields(app, location, db, search_clear, cli_runner):
+def initialise_custom_fields(app, db, location, search_clear, cli_runner):
     """Fixture initialises custom fields."""
     return cli_runner(create_records_custom_field)
 
