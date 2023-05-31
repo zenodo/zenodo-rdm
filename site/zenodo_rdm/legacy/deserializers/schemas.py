@@ -16,7 +16,11 @@ from .metadata import MetadataSchema
 class LegacySchema(Schema):
     """Transform a Zenodo legacy record to an RDM record."""
 
-    unknown = RAISE
+    class Meta:
+        """Meta class."""
+
+        unknown = RAISE
+
     #         "custom_fields": self._custom_fields(data.get("metadata")),
     #         # TODO: Map old access rights to RDM access
     #         "access": self._access(data),

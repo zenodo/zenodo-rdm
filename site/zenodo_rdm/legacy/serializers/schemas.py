@@ -10,12 +10,12 @@
 from invenio_access.permissions import system_identity
 from invenio_pidstore.errors import PIDDeletedError, PIDDoesNotExistError
 from invenio_records_resources.proxies import current_service_registry
+from invenio_vocabularies.proxies import current_service as vocabulary_service
 from marshmallow import Schema, fields, missing, post_dump, pre_dump, validate
 from marshmallow_utils.fields import EDTFDateString, SanitizedHTML, SanitizedUnicode
 
 from zenodo_rdm.legacy.deserializers.metadata import FUNDER_ROR_TO_DOI
 from zenodo_rdm.legacy.vocabularies.licenses import rdm_to_legacy
-from invenio_vocabularies.proxies import current_service as vocabulary_service
 
 
 def to_camel_case(string, split_char=" "):

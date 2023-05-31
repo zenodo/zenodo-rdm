@@ -9,10 +9,6 @@
 
 from collections import namedtuple
 
-
-from invenio_vocabularies.proxies import current_service as vocabulary_service
-from invenio_vocabularies.records.api import Vocabulary
-from invenio_access.permissions import superuser_access, system_identity
 import pytest
 from flask_security import login_user
 from flask_security.utils import hash_password
@@ -22,15 +18,11 @@ from invenio_accounts.models import Role
 from invenio_accounts.testutils import login_user_via_session
 from invenio_administration.permissions import administration_access_action
 from invenio_app.factory import create_app as _create_app
+from invenio_rdm_records.cli import create_records_custom_field
 from invenio_records_resources.proxies import current_service_registry
 from invenio_vocabularies.contrib.awards.api import Award
 from invenio_vocabularies.contrib.funders.api import Funder
-from invenio_rdm_records.cli import create_records_custom_field
-from zenodo_rdm.custom_fields import (
-    CUSTOM_FIELDS_UI,
-    CUSTOM_FIELDS,
-    NAMESPACES,
-)
+from zenodo_rdm.custom_fields import CUSTOM_FIELDS, CUSTOM_FIELDS_UI, NAMESPACES
 from invenio_communities import current_communities
 from invenio_communities.communities.records.api import Community
 from invenio_pidstore.errors import PIDDoesNotExistError
