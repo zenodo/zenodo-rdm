@@ -72,8 +72,8 @@ def zenodo_record_data():
             "$schema": "https://zenodo.org/schemas/records/record-v1.0.0.json",
             "license": {"$ref": "http://dx.zenodo.org/licenses/cc-zero"},
             "_buckets": {
-                "record": "264de9f5-d321-4427-93cc-3280ca82f148",
-                "deposit": "7868b45e-1c8d-4490-8a3d-9a759422ef9c",
+                "record": "bur3c0rd-1234-abcd-1ab2-1234abcd56ef",
+                "deposit": "bud3p0s1-1234-abcd-1ab2-1234abcd56ef",
             },
             "_deposit": {
                 "id": "7695",
@@ -290,6 +290,7 @@ def expected_rdm_record_entry():
         "updated": "2023-01-31 12:00:00.00000",
         "version_id": 1,
         "index": 1,
+        "bucket_id": "bur3c0rd-1234-abcd-1ab2-1234abcd56ef",
         "json": {
             "id": "10123",
             "pids": {
@@ -590,6 +591,10 @@ def zenodo_draft_data():
         "updated": "2023-01-31 12:00:00.00000",
         "id": "2d6970ea-602d-4e8b-a918-063a59823386",
         "json": {
+            "_buckets": {
+                "record": "bur3c0rd-1234-abcd-1ab2-1234abcd56ef",
+                "deposit": "bud3p0s1-1234-abcd-1ab2-1234abcd56ef",
+            },
             "doi": "10.5281/zenodo.1234567",
             "conceptrecid": "10122",
             "recid": "10123",
@@ -764,6 +769,7 @@ def expected_rdm_draft_entry():
         "fork_version_id": None,
         "version_id": 1,
         "index": 1,
+        "bucket_id": "bud3p0s1-1234-abcd-1ab2-1234abcd56ef",
         "json": {
             "id": "10123",
             "pids": {},

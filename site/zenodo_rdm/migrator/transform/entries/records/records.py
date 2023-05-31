@@ -70,6 +70,10 @@ class ZenodoRecordEntry(RDMRecordEntry):
 
         return r
 
+    def _bucket_id(self, entry):
+        """Transform the bucket of a record."""
+        return entry["json"]["_buckets"]["record"]
+
     def _files(self, entry):
         """Transform the files of a record."""
         return {"enabled": True}
@@ -143,6 +147,10 @@ class ZenodoDraftEntry(ZenodoRecordEntry):
                 }
 
         return r
+
+    def _bucket_id(self, entry):
+        """Transform the bucket of a record."""
+        return entry["json"]["_buckets"]["deposit"]
 
     def _access(self, entry):
         draft = entry["json"]
