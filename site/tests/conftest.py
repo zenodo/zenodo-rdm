@@ -527,6 +527,7 @@ def minimal_community():
         "slug": "blr",
         "access": {
             "visibility": "public",
+            "review_policy": "open",
         },
         "metadata": {
             "title": "Biodiversity Literature Repository",

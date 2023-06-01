@@ -43,6 +43,11 @@ from invenio_records_resources.services.custom_fields import (
 from marshmallow import fields
 from marshmallow_utils.fields import SanitizedUnicode
 
+LEGACY_CUSTOM_FIELDS = [
+    KeywordCF(name="legacy:communities", multiple=True),
+]
+"""Legacy compatibility custom fields."""
+
 
 class RelationshipListCF(BaseCF):
     """Relationship list custom field."""
@@ -80,6 +85,7 @@ NAMESPACES = {
     "openbiodiv": "http://openbiodiv.net/ontology#",
     "obo": "http://purl.obolibrary.org/obo/",
     "dc": "http://purl.org/dc/terms/",
+    "legacy": "",
     **CODEMETA_NAMESPACE,
     **JOURNAL_NAMESPACE,
     **MEETING_NAMESPACE,
@@ -154,6 +160,8 @@ CUSTOM_FIELDS = [
     *IMPRINT_CUSTOM_FIELDS,
     # thesis
     *THESIS_CUSTOM_FIELDS,
+    # legacy
+    *LEGACY_CUSTOM_FIELDS,
 ]
 
 # hide meeting section from Additional details in landing page

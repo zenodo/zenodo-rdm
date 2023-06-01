@@ -226,6 +226,15 @@ class MetadataSchema(Schema):
 
     embargo_date = fields.String(attribute="access.embargo.until")
 
+    communities = fields.Method("dump_communities")
+
+    def dump_communities(self, obj):
+        """Dump communities."""
+        communities = obj.get("custom_fields", {}).get("legacy:communities", [])
+        if communities:
+            return [{"identifier": c} for c in communities]
+        return missing
+
     @pre_dump
     def hook_alternate_identifiers(self, data, **kwargs):
         """Hooks 'identifiers' into related identifiers."""
@@ -496,11 +505,11 @@ class LegacySchema(Schema):
 
     files = fields.Method("dump_files", dump_only=True)
 
-    record_url = fields.Method(dump_only=True)
+    # record_url = fields.Method(dump_only=True)
 
-    doi_url = fields.Method(dump_only=True)
+    # doi_url = fields.Method(dump_only=True)
 
-    doi = fields.String(attribute="pids.doi.identifier", dump_only=True)
+    # doi = fields.Method("dump_doi", dump_only=True)
 
     def dump_owner(self, obj):
         """Dump owner."""

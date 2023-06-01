@@ -120,7 +120,8 @@ class LegacySchema(Schema):
         clear_none(custom_fields)
 
         if custom_fields:
-            result["custom_fields"] = custom_fields
+            result.setdefault("custom_fields", {})
+            result["custom_fields"].update(custom_fields)
 
         return result
 
@@ -190,8 +191,13 @@ class LegacySchema(Schema):
                 result["pids"] = {"doi": {"identifier": doi, "provider": provider}}
         return result
 
-            rdm_external_pid = {"doi": {"identifier": doi, "provider": provider}}
+    @post_load(pass_original=True)
+    def load_communities(self, result, original, **kwargs):
+        """Store the legacy communities field as a custom field."""
+        communities = original.get("metadata", {}).get("communities", [])
 
-            result["pids"] = rdm_external_pid
-
+        if communities:
+            community_ids = [c["identifier"] for c in communities]
+            result.setdefault("custom_fields", {})
+            result["custom_fields"].update({"legacy:communities": community_ids})
         return result

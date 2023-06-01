@@ -8,6 +8,7 @@
 """Zenodo legacy services."""
 
 from invenio_drafts_resources.services.records.config import is_draft, is_record
+from invenio_rdm_records.proxies import current_record_communities_service
 from invenio_rdm_records.services import (
     RDMFileDraftServiceConfig,
     RDMRecordService,
@@ -16,7 +17,11 @@ from invenio_rdm_records.services import (
 from invenio_records_resources.services import ConditionalLink
 from invenio_records_resources.services.files import FileLink, FileService
 from invenio_records_resources.services.records.links import Link, RecordLink
-from invenio_records_resources.services.uow import unit_of_work
+from invenio_records_resources.services.uow import (
+    IndexRefreshOp,
+    RecordCommitOp,
+    unit_of_work,
+)
 
 
 class LegacyRecordLink(RecordLink):
@@ -106,6 +111,39 @@ class LegacyRecordService(RDMRecordService):
                 expand=True,
                 uow=uow,
             )
+
+        return res
+
+    @unit_of_work()
+    def publish(self, identity, id_, uow=None, expand=False):
+        """Publish a draft."""
+        res = super().publish(identity, id_, uow=uow, expand=expand)
+        record = res._record
+
+        # Deal with communities
+        communities = record.get("custom_fields", {}).pop("legacy:communities", [])
+
+        community_ops = []
+        # TODO: Check if we need to actually remove communities
+        # TODO: Check if user is owner/curator of all the communities (i.e. auto-accept)
+        for community_id in communities:
+            try:
+                community_ops.append(
+                    current_record_communities_service._include(
+                        identity,
+                        community_id,
+                        comment=None,
+                        require_review=False,
+                        record=record,
+                        uow=uow,
+                    )
+                )
+            # TODO: See if we can narrow down what exceptions we want to handle
+            except Exception:
+                pass
+        if community_ops:
+            uow.register(RecordCommitOp(record, indexer=self.indexer))
+            uow.register(IndexRefreshOp(indexer=self.indexer))
 
         return res
 
