@@ -20,8 +20,8 @@ def test_autoaccept_owned_communities(
     deposit_url,
 ):
     """Automatically accept records requested by community owners."""
-    community = community_with_uploader_owner
-    client = uploader.login(client)
+    community = community_with_uploader_owner.data
+    client = uploader.api_login(client)
 
     # Create a new deposit
     res = client.post(

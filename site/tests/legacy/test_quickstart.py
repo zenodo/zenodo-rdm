@@ -26,7 +26,7 @@ def test_quickstart_workflow(
     assert res.status_code == 403
 
     # Try get deposits as logged-in user
-    client = test_user.login(client)
+    client = test_user.api_login(client)
     res = client.get(deposit_url, headers=headers)
     assert res.status_code == 200
     # TODO: Should be:
