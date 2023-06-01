@@ -184,7 +184,7 @@ class MetadataSchema(Schema):
     publication_date = SanitizedUnicode(load_default=lambda: date.today().isoformat())
     resource_type = fields.Str()
     creators = fields.List(fields.Nested(CreatorSchema))
-    publisher = fields.Constant("Zenodo")  # TODO is it?
+    publisher = fields.Constant("Zenodo")
     funding = fields.Method(deserialize="load_funding", data_key="grants")
     rights = fields.Method(deserialize="load_rights", data_key="license")
     contributors = fields.List(fields.Dict())

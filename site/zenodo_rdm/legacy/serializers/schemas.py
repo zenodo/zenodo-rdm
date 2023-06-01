@@ -169,8 +169,6 @@ class RelatedIdentifierSchema(Schema):
 class MetadataSchema(Schema):
     """Metadata schema."""
 
-    # TODO missing conference
-
     title = SanitizedUnicode()
     publication_date = SanitizedUnicode()
     description = SanitizedHTML()
@@ -543,7 +541,12 @@ class LegacySchema(Schema):
     @post_dump(pass_original=True)
     def dump_prereserve_doi(self, result, original, **kwargs):
         """Dump prereserved DOI information."""
-        provider = original["pids"]["doi"]["provider"]
+        provider = original.get("pids", {}).get("doi", {}).get("provider")
+
+        # New versions don't have pids provider out of the box
+        if not provider:
+            return result
+
         recid = original["id"]
         # For external DOIs, the prereserve_doi is injected in the response.
         if provider == "external":

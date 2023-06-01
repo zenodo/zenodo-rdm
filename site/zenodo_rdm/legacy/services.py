@@ -38,6 +38,11 @@ class LegacyRecordLink(RecordLink):
         )
 
 
+def is_latest_draft(record, ctx):
+    """Shortcut for links to determine if record is the latest draft."""
+    return record.is_draft and record.versions.is_latest_draft
+
+
 class LegacyRecordServiceConfig(RDMRecordServiceConfig):
     """Legacy record service config."""
 
@@ -61,11 +66,11 @@ class LegacyRecordServiceConfig(RDMRecordServiceConfig):
             else_=RecordLink("{+api}/deposit/depositions/{id}/files"),
         ),
         "bucket": LegacyRecordLink("{+api}/files/{bucket_id}"),
-        #
         # Versioning
-        #
-        # TODO: Pass latest versioning IDs
-        # "latest_draft": RecordLink("{+api}/deposit/depositions/{id}", when=is_draft),
+        "versions": RecordLink("{+api}/records/{id}/versions", when=is_record),
+        "latest_draft": RecordLink(
+            "{+api}/deposit/depositions/{id}", when=is_latest_draft
+        ),
         # "latest_draft_html": RecordLink("{+ui}/deposit/{id}", when=is_draft),
         #
         # Actions

@@ -10,18 +10,17 @@
 from collections import namedtuple
 
 import pytest
-from flask_security import login_user
 from flask_security.utils import hash_password
 from invenio_access.models import ActionRoles
 from invenio_access.permissions import superuser_access, system_identity
 from invenio_accounts.models import Role
-from invenio_accounts.testutils import login_user_via_session
 from invenio_administration.permissions import administration_access_action
 from invenio_app import factory as app_factory
 from invenio_communities import current_communities
 from invenio_communities.communities.records.api import Community
 from invenio_pidstore.errors import PIDDoesNotExistError
 from invenio_rdm_records.cli import create_records_custom_field
+from invenio_rdm_records.services.pids import providers
 from invenio_records_resources.proxies import current_service_registry
 from invenio_vocabularies.contrib.awards.api import Award
 from invenio_vocabularies.contrib.funders.api import Funder
@@ -32,12 +31,34 @@ from zenodo_rdm.custom_fields import CUSTOM_FIELDS, CUSTOM_FIELDS_UI, NAMESPACES
 from zenodo_rdm.legacy.requests.record_upgrade import LegacyRecordUpgrade
 from zenodo_rdm.permissions import ZenodoRDMRecordPermissionPolicy
 
+from .fake_datacite_client import FakeDataCiteClient
+
 
 @pytest.fixture(scope="module")
 def app_config(app_config):
     """Mimic an instance's configuration."""
     app_config["REST_CSRF_ENABLED"] = False
     app_config["DATACITE_ENABLED"] = True
+    app_config["RDM_PERSISTENT_IDENTIFIER_PROVIDERS"] = [
+        # DataCite DOI provider with fake client
+        providers.DataCitePIDProvider(
+            "datacite",
+            client=FakeDataCiteClient("datacite", config_prefix="DATACITE"),
+            label=("DOI"),
+        ),
+        # DOI provider for externally managed DOIs
+        providers.ExternalPIDProvider(
+            "external",
+            "doi",
+            validators=[providers.BlockedPrefixes(config_names=["DATACITE_PREFIX"])],
+            label=("DOI"),
+        ),
+        # OAI identifier
+        providers.OAIPIDProvider(
+            "oai",
+            label=("OAI ID"),
+        ),
+    ]
     app_config["DATACITE_PREFIX"] = "10.5281"
     app_config["DATACITE_FORMAT"] = "{prefix}/zenodo.{id}"
     app_config["RDM_NAMESPACES"] = NAMESPACES
@@ -45,6 +66,8 @@ def app_config(app_config):
     app_config["RDM_CUSTOM_FIELDS_UI"] = CUSTOM_FIELDS_UI  #  UI components
     app_config["RDM_PERMISSION_POLICY"] = ZenodoRDMRecordPermissionPolicy
     app_config["REQUESTS_REGISTERED_TYPES"] = [LegacyRecordUpgrade()]
+    # TODO this is a temporary fix for https://github.com/zenodo/zenodo-rdm/issues/380
+    app_config["ACCOUNTS_USERINFO_HEADERS"] = False
     return app_config
 
 
@@ -137,18 +160,20 @@ def users(app, db):
             password=hash_password("password"),
             active=True,
         )
+        user2 = datastore.create_user(
+            email="test@zsenodo.org",
+            password=hash_password("password"),
+            active=True,
+        )
 
     db.session.commit()
-    return [user1]
+    return [user1, user2]
 
 
 @pytest.fixture()
-def client_with_login(client, users):
+def client_with_login(client, uploader):
     """Log in a user to the client."""
-    user = users[0]
-    login_user(user)
-    login_user_via_session(client, email=user.email)
-    return client
+    return uploader.api_login(client)
 
 
 @pytest.fixture(scope="module")
@@ -204,7 +229,7 @@ def resource_type_v(app, resource_type_type):
         },
     )
 
-    vocab = vocabulary_service.create(
+    vocabulary_service.create(
         system_identity,
         {
             "id": "publication-book",
@@ -221,6 +246,50 @@ def resource_type_v(app, resource_type_type):
                 "type": "publication",
             },
             "title": {"en": "Book", "de": "Buch"},
+            "tags": ["depositable", "linkable"],
+            "type": "resourcetypes",
+        },
+    )
+
+    vocabulary_service.create(
+        system_identity,
+        {
+            "id": "presentation",
+            "icon": "group",
+            "props": {
+                "csl": "speech",
+                "datacite_general": "Text",
+                "datacite_type": "Presentation",
+                "openaire_resourceType": "0004",
+                "openaire_type": "publication",
+                "eurepo": "info:eu-repo/semantics/lecture",
+                "schema.org": "https://schema.org/PresentationDigitalDocument",
+                "subtype": "",
+                "type": "presentation",
+            },
+            "title": {"en": "Presentation", "de": "Präsentation"},
+            "tags": ["depositable", "linkable"],
+            "type": "resourcetypes",
+        },
+    )
+
+    vocabulary_service.create(
+        system_identity,
+        {
+            "id": "publication",
+            "icon": "file alternate",
+            "props": {
+                "csl": "report",
+                "datacite_general": "Text",
+                "datacite_type": "",
+                "openaire_resourceType": "0017",
+                "openaire_type": "publication",
+                "eurepo": "info:eu-repo/semantics/other",
+                "schema.org": "https://schema.org/CreativeWork",
+                "subtype": "",
+                "type": "publication",
+            },
+            "title": {"en": "Publication", "de": "Publikation"},
             "tags": ["depositable", "linkable"],
             "type": "resourcetypes",
         },
@@ -282,25 +351,12 @@ def languages_v(app, languages_type):
 
 
 @pytest.fixture(scope="module")
-def funders_v(app):
+def funders_v(app, funder_data):
     """Funder vocabulary record."""
     funders_service = current_service_registry.get("funders")
     funder = funders_service.create(
         system_identity,
-        {
-            "id": "00rbzpz17",
-            "identifiers": [
-                {
-                    "identifier": "00rbzpz17",
-                    "scheme": "ror",
-                },
-            ],
-            "name": "Agence Nationale de la Recherche",
-            "title": {
-                "fr": "National Agency for Research",
-            },
-            "country": "FR",
-        },
+        funder_data,
     )
 
     Funder.index.refresh()
@@ -487,7 +543,7 @@ def relation_type_v(app, relation_type):
 
 
 @pytest.fixture(scope="function")
-def initialise_custom_fields(app, db, location, search_clear, cli_runner):
+def initialise_custom_fields(app, db, location, cli_runner):
     """Fixture initialises custom fields."""
     return cli_runner(create_records_custom_field)
 
@@ -611,6 +667,23 @@ def superuser_identity(admin, superuser_role_need):
 
 
 @pytest.fixture()
+def superuser(UserFixture, app, db, superuser_role_need):
+    """Superuser."""
+    u = UserFixture(
+        email="superuser@inveniosoftware.org",
+        password="superuser",
+    )
+    u.create(app, db)
+
+    datastore = app.extensions["security"].datastore
+    _, role = datastore._prepare_role_modify_args(u.user, "superuser-access")
+
+    datastore.add_role_to_user(u.user, role)
+    db.session.commit()
+    return u
+
+
+@pytest.fixture()
 def admin_role_need(db):
     """Store 1 role with 'superuser-access' ActionNeed.
 
@@ -697,19 +770,21 @@ def community_with_uploader_owner(
     return _community_get_or_create(minimal_community, uploader.identity)
 
 
-@pytest.fixture(scope="function")
-def superuser(app, db, UserFixture, superuser_role_need):
-    """Superuser fixture."""
-    u = UserFixture(
-        email="superuser@inveniosoftware.org",
-        password="superuser",
-    )
-    u.create(app, db)
-
-    datastore = app.extensions["security"].datastore
-    _, role = datastore._prepare_role_modify_args(u.user, "superuser-access")
-
-    datastore.add_role_to_user(u.user, role)
-    db.session.commit()
-
-    return u
+@pytest.fixture(scope="module")
+def funder_data():
+    """Implements a funder's data."""
+    return {
+        "id": "00rbzpz17",
+        "identifiers": [
+            {
+                "identifier": "00rbzpz17",
+                "scheme": "ror",
+            },
+            {"identifier": "10.13039/501100001665", "scheme": "doi"},
+        ],
+        "name": "Agence Nationale de la Recherche",
+        "title": {
+            "fr": "National Agency for Research",
+        },
+        "country": "FR",
+    }
