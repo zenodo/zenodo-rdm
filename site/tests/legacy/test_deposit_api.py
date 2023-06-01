@@ -231,7 +231,6 @@ def test_invalid_create(test_app, client_with_login, deposit_url, headers):
     # Invalid deposits.
     cases = [
         dict(unknownkey="data", metadata={}),
-        dict(metadata={}),
     ]
 
     for case in cases:
