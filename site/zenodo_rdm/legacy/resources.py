@@ -19,6 +19,7 @@ from flask_resources import (
     response_handler,
     route,
 )
+from invenio_i18n import gettext as _
 from invenio_rdm_records.resources.config import (
     RDMDraftFilesResourceConfig,
     RDMRecordResourceConfig,

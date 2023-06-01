@@ -21,18 +21,13 @@ class LegacySchema(Schema):
 
         unknown = RAISE
 
-    #         "custom_fields": self._custom_fields(data.get("metadata")),
-    #         # TODO: Map old access rights to RDM access
-    #         "access": self._access(data),
-    #         "files": {"enabled": True},
-    #         "pids": self._pids(data),
-
     metadata = fields.Nested(MetadataSchema)
     files = fields.Constant({"enabled": True})
-    # Fields are added on post load
-    custom_fields = fields.List(fields.Dict())
-    access = fields.Dict()
-    pids = fields.Dict()
+
+    # Fields are added on post load:
+    # custom_fields
+    # access
+    # pids
 
     @post_load(pass_original=True)
     def load_custom_fields(self, result, original, **kwargs):
