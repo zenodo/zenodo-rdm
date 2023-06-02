@@ -1,0 +1,6 @@
+{%- from "invenio_app_rdm/records/macros/detail.html" import list_string_values %}
+
+<dt class="ui tiny header">{{ "Host of"}}</dt>
+{% for value in field_value %}
+({{list_string_values(value["subject"])}}) → ({{list_string_values(value["object"])}})
+{% endfor %}
