@@ -221,10 +221,6 @@ REDIRECTOR_RULES = {
         "source": "/communities/<community_id>/curate",
         "target": communities_requests_view_function,
     },
-    "redirect_communities_about": {
-        "source": "/communities/<community_id>/about",
-        "target": communities_detail_view_function,
-    },
     "redirect_communities_edt": {
         "source": "/communities/<community_id>/edit",
         "target": communities_settings_view_function,
