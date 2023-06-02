@@ -164,17 +164,340 @@ CUSTOM_FIELDS = [
     *LEGACY_CUSTOM_FIELDS,
 ]
 
+ZENODO_CUSTOM_FIELDS_UI = {
+    "section": _("Biodiversity"),
+    "hide_from_upload_form": True,
+    "fields": [
+        # dwc
+        dict(
+            field="dwc:basisOfRecord",
+            props=dict(
+                label="Basis of record",
+            ),
+        ),
+        dict(
+            field="dwc:catalogNumber",
+            props=dict(
+                label="Catalog number",
+            ),
+        ),
+        dict(
+            field="dwc:class",
+            props=dict(
+                label="Class",
+            ),
+        ),
+        dict(
+            field="dwc:collectionCode",
+            props=dict(
+                label="Collection code",
+            ),
+        ),
+        dict(
+            field="dwc:country",
+            props=dict(
+                label="Country",
+            ),
+        ),
+        dict(
+            field="dwc:county",
+            props=dict(
+                label="County",
+            ),
+        ),
+        dict(
+            field="dwc:dateIdentified",
+            props=dict(
+                label="Date identified",
+            ),
+        ),
+        dict(
+            field="dwc:decimalLatitude",
+            props=dict(
+                label="Decimal latitude",
+            ),
+        ),
+        dict(
+            field="dwc:decimalLongitude",
+            props=dict(
+                label="Decimal longitude",
+            ),
+        ),
+        dict(
+            field="dwc:eventDate",
+            props=dict(
+                label="Event date",
+            ),
+        ),
+        dict(
+            field="dwc:family",
+            props=dict(
+                label="Family",
+            ),
+        ),
+        dict(
+            field="dwc:genus",
+            props=dict(
+                label="Genus",
+            ),
+        ),
+        dict(
+            field="dwc:identifiedBy",
+            props=dict(
+                label="Identified by",
+            ),
+        ),
+        dict(
+            field="dwc:individualCount",
+            props=dict(
+                label="Individual count",
+            ),
+        ),
+        dict(
+            field="dwc:institutionCode",
+            props=dict(
+                label="Institution code",
+            ),
+        ),
+        dict(
+            field="dwc:kingdom",
+            props=dict(
+                label="Kingdom",
+            ),
+        ),
+        dict(
+            field="dwc:lifeStage",
+            props=dict(
+                label="Life stage",
+            ),
+        ),
+        dict(
+            field="dwc:locality",
+            props=dict(
+                label="Locality",
+            ),
+        ),
+        dict(
+            field="dwc:materialSampleID",
+            props=dict(
+                label="Material sample ID",
+            ),
+        ),
+        dict(
+            field="dwc:namePublishedInID",
+            props=dict(
+                label="Name published in ID",
+            ),
+        ),
+        dict(
+            field="dwc:namePublishedInYear",
+            props=dict(
+                label="Name published in year",
+            ),
+        ),
+        dict(
+            field="dwc:order",
+            props=dict(
+                label="Order",
+            ),
+        ),
+        dict(
+            field="dwc:class",
+            props=dict(
+                label="Class",
+            ),
+        ),
+        dict(
+            field="dwc:otherCatalogNumbers",
+            props=dict(
+                label="Other catalog numbers",
+            ),
+        ),
+        dict(
+            field="dwc:phylum",
+            props=dict(
+                label="Phylum",
+            ),
+        ),
+        dict(
+            field="dwc:preparations",
+            props=dict(
+                label="Preparations",
+            ),
+        ),
+        dict(
+            field="dwc:recordedBy",
+            props=dict(
+                label="Recorded by",
+            ),
+        ),
+        dict(
+            field="dwc:scientificName",
+            props=dict(
+                label="Scientific name",
+            ),
+        ),
+        dict(
+            field="dwc:scientificNameAuthorship",
+            props=dict(
+                label="Scientific name authorship",
+            ),
+        ),
+        dict(
+            field="dwc:scientificNameID",
+            props=dict(
+                label="Scientific name ID",
+            ),
+        ),
+        dict(
+            field="dwc:sex",
+            props=dict(
+                label="Sex",
+            ),
+        ),
+        dict(
+            field="dwc:specificEpithet",
+            props=dict(
+                label="Species",
+            ),
+        ),
+        dict(
+            field="dwc:taxonID",
+            props=dict(
+                label="Taxon ID",
+            ),
+        ),
+        dict(
+            field="dwc:taxonomicStatus",
+            props=dict(
+                label="Taxonomic status",
+            ),
+        ),
+        dict(
+            field="dwc:taxonRank",
+            props=dict(
+                label="Taxon rank",
+            ),
+        ),
+        dict(
+            field="dwc:typeStatus",
+            props=dict(
+                label="Type status",
+            ),
+        ),
+        dict(
+            field="dwc:verbatimElevation",
+            props=dict(
+                label="Verbatim elevation",
+            ),
+        ),
+        dict(
+            field="dwc:verbatimEventDate",
+            props=dict(
+                label="Verbatim event date",
+            ),
+        ),
+        # gbif-dwc
+        dict(
+            field="gbif-dwc:recordedByID",
+            props=dict(
+                label="Recorded by ID",
+            ),
+        ),
+        dict(
+            field="gbif-dwc:identifiedByID",
+            props=dict(
+                label="Identified by ID",
+            ),
+        ),
+        dict(
+            field="ac:associatedSpecimenReference",
+            props=dict(
+                label="Associated specimen reference",
+            ),
+        ),
+        dict(
+            field="ac:physicalSetting",
+            props=dict(
+                label="Physical setting",
+            ),
+        ),
+        dict(
+            field="ac:associatedSpecimenReference",
+            props=dict(
+                label="Associated specimen reference",
+            ),
+        ),
+        dict(
+            field="ac:captureDevice",
+            props=dict(
+                label="Capture device",
+            ),
+        ),
+        dict(
+            field="ac:resourceCreationTechnique",
+            props=dict(
+                label="Resource creation technique",
+            ),
+        ),
+        dict(
+            field="ac:subjectOrientation",
+            props=dict(
+                label="Subject orientation",
+            ),
+        ),
+        dict(
+            field="ac:subjectPart",
+            props=dict(
+                label="Subject part",
+            ),
+        ),
+        # dc
+        dict(
+            field="dc:creator",
+            props=dict(
+                label="Creator",
+            ),
+        ),
+        dict(
+            field="dc:rightsHolder",
+            props=dict(
+                label="Rights holder",
+            ),
+        ),
+        # openbiodiv
+        dict(
+            field="openbiodiv:TaxonomicConceptLabel",
+            props=dict(
+                label="Taxonomic concept label",
+            ),
+        ),
+        # obo
+        dict(
+            field="obo:RO_0002453",
+            template="zenodo_rdm/obo.html",
+            props=dict(
+                label="Host of",
+            ),
+        ),
+    ],
+}
+
 # hide meeting section from Additional details in landing page
-MEETING_CUSTOM_FIELDS_UI["hidden"] = True
+MEETING_CUSTOM_FIELDS_UI["hide_from_landing_page"] = True
+
+CODEMETA_CUSTOM_FIELDS_UI["hide_from_upload_form"] = True
 
 # Custom fields UI components
 CUSTOM_FIELDS_UI = [
+    # zenodo custom fields
+    ZENODO_CUSTOM_FIELDS_UI,
     # codemeta
     CODEMETA_CUSTOM_FIELDS_UI,
     # publishing information
     {
         "section": _("Publishing information"),
-        "hidden": True,  # hide meeting section from Additional details in landing page
+        "hide_from_landing_page": True,  # hide meeting section from Additional details in landing page
         "fields": [
             # journal
             *JOURNAL_CUSTOM_FIELDS_UI["fields"],
