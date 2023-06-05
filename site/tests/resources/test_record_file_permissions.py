@@ -18,7 +18,6 @@ from invenio_rdm_records.records import RDMRecord
 def create_record_w_file(client, record, headers):
     """Create record with a file."""
     # Create draft
-    record["files"] = {"enabled": True}
     response = client.post("/records", json=record, headers=headers)
     assert response.status_code == 201
     recid = response.json["id"]
@@ -81,7 +80,6 @@ def test_community_can_not_access_restricted_files(
     record_owner = uploader.login(client)
 
     # publish a record with restricted files
-    minimal_record["access"]["files"] = "restricted"
     recid = create_record_w_file(record_owner, minimal_record, headers)
     req_item = service.read(uploader.identity, recid)
 
@@ -128,7 +126,6 @@ def test_community_can_access_restricted_files(
     record_owner = uploader.login(client)
 
     # publish a record with restricted files
-    minimal_record["access"]["files"] = "restricted"
     recid = create_record_w_file(record_owner, minimal_record, headers)
     req_item = service.read(uploader.identity, recid)
 
@@ -175,7 +172,6 @@ def test_community_can_access_restricted_files_missing_flag(
     record_owner = uploader.login(client)
 
     # publish a record with restricted files
-    minimal_record["access"]["files"] = "restricted"
     recid = create_record_w_file(record_owner, minimal_record, headers)
     req_item = service.read(uploader.identity, recid)
 
@@ -225,7 +221,6 @@ def test_community_can_access_restricted_files_missing_field(
     record_owner = uploader.login(client)
 
     # publish a record with restricted files
-    minimal_record["access"]["files"] = "restricted"
     recid = create_record_w_file(record_owner, minimal_record, headers)
     req_item = service.read(uploader.identity, recid)
 
@@ -269,6 +264,7 @@ def test_everybody_can_access_public_files_flag_is_true(
     record_owner = uploader.login(client)
 
     # publish a record with public files
+    minimal_record["access"]["files"] = "public"
     recid = create_record_w_file(record_owner, minimal_record, headers)
     req_item = service.read(uploader.identity, recid)
 
@@ -311,6 +307,7 @@ def test_everybody_can_access_public_files_flag_is_false(
     record_owner = uploader.login(client)
 
     # publish a record with public files
+    minimal_record["access"]["files"] = "public"
     recid = create_record_w_file(record_owner, minimal_record, headers)
     req_item = service.read(uploader.identity, recid)
 
@@ -351,7 +348,6 @@ def test_only_owners_can_download_restricted_file(
     """Test that only record owner can download restricted files (can_community_access flag is False)."""
     service = current_rdm_records_service
     record_owner = uploader.login(client)
-    minimal_record["access"]["files"] = "restricted"
     recid = create_record_w_file(record_owner, minimal_record, headers)
     req_item = service.read(uploader.identity, recid)
 
@@ -397,7 +393,6 @@ def test_communinty_can_download_restricted_file(
     """Test that only record owner can download restricted files (can_community_access flag is True)."""
     service = current_rdm_records_service
     record_owner = uploader.login(client)
-    minimal_record["access"]["files"] = "restricted"
     recid = create_record_w_file(record_owner, minimal_record, headers)
     req_item = service.read(uploader.identity, recid)
 
@@ -443,6 +438,7 @@ def test_everybody_can_download_public_files_flag_is_true(
 
     # Create minimal record with public files
     record_owner = uploader.login(client)
+    minimal_record["access"]["files"] = "public"
     recid = create_record_w_file(record_owner, minimal_record, headers)
     req_item = service.read(uploader.identity, recid)
     uploader.logout(client)
@@ -476,6 +472,7 @@ def test_everybody_can_download_public_files_flag_is_false(
 
     # Create minimal record with public files
     record_owner = uploader.login(client)
+    minimal_record["access"]["files"] = "public"
     recid = create_record_w_file(record_owner, minimal_record, headers)
     req_item = service.read(uploader.identity, recid)
     uploader.logout(client)
@@ -510,7 +507,6 @@ def test_community_owner_is_record_owner_flag_false(
     owner = uploader.login(client)
 
     # publish a record with restricted files
-    minimal_record["access"]["files"] = "restricted"
     recid = create_record_w_file(owner, minimal_record, headers)
     req_item = service.read(uploader.identity, recid)
 
@@ -540,7 +536,6 @@ def test_community_owner_is_record_owner_flag_true(
     owner = uploader.login(client)
 
     # publish a record with restricted files
-    minimal_record["access"]["files"] = "restricted"
     recid = create_record_w_file(owner, minimal_record, headers)
     req_item = service.read(uploader.identity, recid)
 

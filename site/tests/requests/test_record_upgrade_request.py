@@ -39,7 +39,6 @@ def _send_post_action(action, request_id, client, headers, expected_status_code)
 def create_record_w_file(client, record, headers):
     """Create record with a file."""
     # Create draft
-    record["files"] = {"enabled": True}
     response = client.post("/records", json=record, headers=headers)
     assert response.status_code == 201
     recid = response.json["id"]
