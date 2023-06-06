@@ -939,11 +939,12 @@
                 "opensearch2"
             ],
             "hashes": [
-                "sha256:b0c738cc9a51cf4f93c3a41aecb61cb52e5247e0ff0943d88ce03a15c3c16df1",
-                "sha256:e680a087abe1a397caff5d88837645560dff60e6b88e16dc794a8ed89b387329"
+                "sha256:1ab9f3570a3611e61748b5ab0f7149f592c4184328aa9b14585eaac192f50a5c",
+                "sha256:5087a365f5dcf6ef837bb758087c18329b981cc54a660ae6dfd411e1c64d804e"
             ],
             "index": "pypi",
-            "version": "==12.0.0b2.dev5"
+            "markers": null,
+            "version": "==12.0.0b2.dev6"
         },
         "invenio-assets": {
             "hashes": [
@@ -1150,11 +1151,11 @@
         },
         "invenio-rdm-records": {
             "hashes": [
-                "sha256:946a77bc86f57c04fd6b827f9a2d33a888c2de0f8ffadc0c3c2cddfc00aaae8f",
-                "sha256:ae9c3f4140cbe19545a1ca6025c53f350db3e94f6bbfcd0c1807b32af30f0c2c"
+                "sha256:b545d9900351a54f2448bec651fcb3d8c6f2a88bb662528eb201750c4c2e611b",
+                "sha256:c2acbaf5de647841137201fa263e31f6769ff6ab5a1d4b0797a93ed7d9af1411"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==4.2.4"
+            "version": "==4.2.5"
         },
         "invenio-records": {
             "hashes": [
