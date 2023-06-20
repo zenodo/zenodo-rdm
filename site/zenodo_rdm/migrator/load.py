@@ -7,7 +7,10 @@
 
 """Zenodo migrator files loader."""
 
-from invenio_rdm_migrator.load.postgresql import PostgreSQLCopyLoad, TableGenerator
+from invenio_rdm_migrator.load.postgresql import (
+    ExistingDataTableGenerator,
+    PostgreSQLCopyLoad,
+)
 from invenio_rdm_migrator.streams.files.models import (
     FilesBucket,
     FilesInstance,
@@ -17,23 +20,7 @@ from invenio_rdm_migrator.streams.files.models import (
 from .models import Awards, Funders
 
 
-class ZenodoExistingDataTableGenaratorBase(TableGenerator):
-    """Zenodo to RDM table generator for directly loaded data streams."""
-
-    def _generate_rows(self, **kwargs):
-        """Yield generated rows."""
-        pass
-
-
-class ZenodoExistingDataLoadBase(PostgreSQLCopyLoad):
-    """Zenodo to RDM load class for direct data loading."""
-
-    def _validate(self):
-        """Validate data before loading."""
-        return True
-
-
-class ZenodoFilesLoad(ZenodoExistingDataLoadBase):
+class ZenodoFilesLoad(PostgreSQLCopyLoad):
     """Zenodo to RDM Files class for data loading."""
 
     def __init__(self, db_uri, data_dir, **kwargs):
@@ -41,7 +28,7 @@ class ZenodoFilesLoad(ZenodoExistingDataLoadBase):
         super().__init__(
             db_uri=db_uri,
             table_generators=[
-                ZenodoExistingDataTableGenaratorBase(
+                ExistingDataTableGenerator(
                     tables=[FilesInstance, FilesBucket, FilesObjectVersion], pks=[]
                 )
             ],
@@ -50,7 +37,7 @@ class ZenodoFilesLoad(ZenodoExistingDataLoadBase):
         )
 
 
-class ZenodoFundersLoad(ZenodoExistingDataLoadBase):
+class ZenodoFundersLoad(PostgreSQLCopyLoad):
     """Zenodo to RDM funders class for data loading."""
 
     def __init__(self, db_uri, data_dir, **kwargs):
@@ -58,7 +45,7 @@ class ZenodoFundersLoad(ZenodoExistingDataLoadBase):
         super().__init__(
             db_uri=db_uri,
             table_generators=[
-                ZenodoExistingDataTableGenaratorBase(
+                ExistingDataTableGenerator(
                     tables=[Funders],
                     pks=[],
                 )
@@ -68,7 +55,7 @@ class ZenodoFundersLoad(ZenodoExistingDataLoadBase):
         )
 
 
-class ZenodoAwardsLoad(ZenodoExistingDataLoadBase):
+class ZenodoAwardsLoad(PostgreSQLCopyLoad):
     """Zenodo to RDM awards class for data loading."""
 
     def __init__(self, db_uri, data_dir, **kwargs):
@@ -76,7 +63,7 @@ class ZenodoAwardsLoad(ZenodoExistingDataLoadBase):
         super().__init__(
             db_uri=db_uri,
             table_generators=[
-                ZenodoExistingDataTableGenaratorBase(
+                ExistingDataTableGenerator(
                     tables=[Awards],
                     pks=[],
                 )
