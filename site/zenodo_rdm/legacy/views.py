@@ -7,7 +7,10 @@
 
 """Zenodo legacy views."""
 
-from flask import Blueprint
+from functools import wraps
+
+from flask import Blueprint, Flask, abort, jsonify, request
+from flask.views import MethodView
 
 blueprint = Blueprint("zenodo_rdm_legacy", __name__)
 
@@ -34,3 +37,81 @@ def create_draft_files_bp(app):
     """Create legacy draft files blueprint."""
     ext = app.extensions["zenodo-rdm-legacy"]
     return ext.legacy_draft_files_resource.as_blueprint()
+
+
+#
+# Legacy REST API Stubs
+#
+stub_blueprint = Blueprint("zenodo_rdm_legacy_stub", __name__)
+
+
+def pass_extra_formats_mimetype(
+    from_query_string=None, from_content_type=None, from_accept=None
+):
+    """Decorator to validate the request's extra formats MIMEType."""
+    assert from_content_type or from_accept or from_query_string
+
+    def decorator(f):
+        @wraps(f)
+        def inner(*args, **kwargs):
+            mimetype = None
+            if from_query_string:
+                mimetype = request.args.get("mimetype")
+            if not mimetype and from_content_type:
+                mimetype = request.headers.get("Content-Type")
+            if not mimetype and from_accept:
+                mimetype = next((m for m, _ in request.accept_mimetypes), None)
+            if not mimetype:
+                return abort(400, "Invalid extra format MIMEType.")
+            return f(*args, mimetype=mimetype, **kwargs)
+
+        return inner
+
+    return decorator
+
+
+class StubDepositExtraFormatsResource(MethodView):
+    """Deposit extra formats resource."""
+
+    @pass_extra_formats_mimetype(from_query_string=True, from_accept=True)
+    def get(self, pid_value, mimetype=None):
+        """Get an extra format."""
+        return {"message": f'Dummy content for "{mimetype}".'}
+
+    @pass_extra_formats_mimetype(from_content_type=True)
+    def put(self, pid_value, mimetype=None):
+        """Create or replace an extra format."""
+        return {"message": f'Extra format "{mimetype}" updated.'}
+
+    @pass_extra_formats_mimetype(from_content_type=True)
+    def delete(self, pid_value, mimetype=None):
+        """Delete an extra format."""
+        return {"message": f'Extra format "{mimetype}" deleted.'}
+
+    def options(self, pid_value):
+        """Get a list of all extra formats."""
+        return jsonify([])
+
+
+class StubRecordExtraFormatsResource(MethodView):
+    """Record extra formats resource."""
+
+    @pass_extra_formats_mimetype(from_query_string=True, from_accept=True)
+    def get(self, pid_value, mimetype=None):
+        """Get extra format."""
+        return {"message": f'Dummy content for "{mimetype}".'}
+
+    def options(self, pid_value):
+        """Get available extra formats."""
+        return jsonify([])
+
+
+stub_blueprint.add_url_rule(
+    "/deposit/depositions/<pid_value>/formats",
+    view_func=StubDepositExtraFormatsResource.as_view("draft_extra_formats_stub"),
+)
+
+stub_blueprint.add_url_rule(
+    "/records/<pid_value>/formats",
+    view_func=StubRecordExtraFormatsResource.as_view("record_extra_formats_stub"),
+)

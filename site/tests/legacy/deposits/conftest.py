@@ -213,9 +213,3 @@ def expected_record_metadata():
         title="Test title",
         upload_type="publication",
     )
-
-
-@pytest.fixture
-def deposit_url():
-    """Deposit API URL."""
-    return f"/api{LegacyRecordResourceConfig.url_prefix}"
