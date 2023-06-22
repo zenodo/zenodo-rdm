@@ -1,6 +1,6 @@
 data_dir: /path/to/data
 tmp_dir: /path/to/tmp
-cache_dir: /path/to/cache
+state_dir: /path/to/cache
 log_dir: /path/to/log
 db_uri: postgresql://zenodo:zenodo@localhost:5432/zenodo
 users:
