@@ -16,6 +16,8 @@ from .stream import (
     DraftStreamDefinition,
     FilesStreamDefinition,
     FundersStreamDefinition,
+    OAuthClientStreamDefinition,
+    OAuthServerStreamDefinition,
     RecordStreamDefinition,
     RequestStreamDefinition,
     UserStreamDefinition,
@@ -32,6 +34,8 @@ if __name__ == "__main__":
             RequestStreamDefinition,
             FundersStreamDefinition,
             AwardsStreamDefinition,
+            OAuthClientStreamDefinition,
+            OAuthServerStreamDefinition,
         ],
         config_filepath=sys.argv[1],
     )
