@@ -8,15 +8,15 @@
 
 from invenio_rdm_migrator.streams import StreamDefinition
 from invenio_rdm_migrator.streams.communities import CommunityCopyLoad
-from invenio_rdm_migrator.streams.records import RDMRecordCopyLoad
-from invenio_rdm_migrator.streams.requests import RequestCopyLoad
-from invenio_rdm_migrator.streams.users import UserCopyLoad
 from invenio_rdm_migrator.streams.oauth import (
     OAuthClientCopyLoad,
     OAuthRemoteTokenTransform,
     OAuthServerCopyLoad,
     OAuthServerTokenTransform,
 )
+from invenio_rdm_migrator.streams.records import RDMRecordCopyLoad
+from invenio_rdm_migrator.streams.requests import RequestCopyLoad
+from invenio_rdm_migrator.streams.users import UserCopyLoad
 
 from .extract import JSONLExtract
 from .load import ZenodoAwardsLoad, ZenodoFilesLoad, ZenodoFundersLoad
