@@ -30,6 +30,7 @@ from invenio_records_resources.resources.files.resource import (
     request_stream,
     request_view_args,
 )
+from invenio_records_resources.services.errors import FileKeyNotFoundError
 from invenio_records_resources.services.uow import UnitOfWork
 
 from .deserializers import LegacyJSONDeserializer
@@ -158,7 +159,8 @@ class LegacyDraftFilesResource(FileResource):
         with UnitOfWork() as uow:
             self.service.init_files(g.identity, pid_value, [{"key": key}], uow=uow)
             self.service.set_file_content(g.identity, pid_value, key, file, uow=uow)
-            item = self.service.commit_file(g.identity, pid_value, key)
+            item = self.service.commit_file(g.identity, pid_value, key, uow=uow)
+            uow.commit()
 
         return item.to_dict(), 201
 
@@ -190,9 +192,12 @@ class LegacyDraftFilesResource(FileResource):
         # TODO: Maybe move this to the service?
         with UnitOfWork() as uow:
             # If the file exists already, delete first
-            item = self.service.get_file_content(g.identity, record["id"], key)
-            if item:
-                self.service.delete_file(g.identity, record["id"], key, uow=uow)
+            try:
+                item = self.service.get_file_content(g.identity, record["id"], key)
+                if item:
+                    self.service.delete_file(g.identity, record["id"], key, uow=uow)
+            except FileKeyNotFoundError:
+                pass
 
             self.service.init_files(g.identity, record["id"], [{"key": key}], uow=uow)
             self.service.set_file_content(
@@ -203,7 +208,8 @@ class LegacyDraftFilesResource(FileResource):
                 content_length=content_length,
                 uow=uow,
             )
-            item = self.service.commit_file(g.identity, record["id"], key)
+            item = self.service.commit_file(g.identity, record["id"], key, uow=uow)
+            uow.commit()
 
         return item.to_dict(), 201
 

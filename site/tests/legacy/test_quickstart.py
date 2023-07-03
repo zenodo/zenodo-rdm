@@ -16,6 +16,7 @@ def test_quickstart_workflow(
     test_user,
     client,
     headers,
+    files_headers,
     deposit_url,
 ):
     """Test quickstart workflow."""
@@ -84,6 +85,24 @@ def test_quickstart_workflow(
     # assert data["filesize"] == 7
     assert data["size"] == 7
     # assert data["id"]
+
+    # Upload a file with /api/files
+    files = {
+        "file": (BytesIO(b"1, 2, 3"), "myfirstfile.csv"),
+        "name": "myfirstfile.csv",
+    }
+    bucket_url = deposit_links["bucket"]
+    res = client.put(
+        f"{bucket_url}/mysecondfile.csv",
+        headers=files_headers,
+        data=BytesIO(b"4, 5, 6"),
+    )
+    assert res.status_code == 201
+    data = res.json
+    assert data["mimetype"] == "text/csv"
+    assert data["checksum"] == "md5:c2d626f8beba73ad0cf4e66214f7d949"
+    assert data["key"] == "mysecondfile.csv"
+    assert data["size"] == 7
 
     # modify deposit
     deposit = {

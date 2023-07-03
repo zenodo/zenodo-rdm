@@ -150,6 +150,15 @@ def headers():
     }
 
 
+@pytest.fixture(scope="session")
+def files_headers():
+    """Default headers for making file upload requests."""
+    return {
+        "content-type": "application/octet-stream",
+        "accept": "application/json",
+    }
+
+
 @pytest.fixture()
 def users(app, db):
     """Create example users."""
