@@ -7,6 +7,7 @@
 """Additional views."""
 
 from flask import Blueprint, current_app, g, render_template
+from invenio_communities.proxies import current_communities
 from invenio_rdm_records.proxies import current_rdm_records
 from invenio_rdm_records.resources.serializers import UIJSONSerializer
 from invenio_records_resources.resources.records.utils import search_preference
@@ -33,10 +34,17 @@ def frontpage_view_function():
         record_ui = UIJSONSerializer().dump_obj(record)
         records_ui.append(record_ui)
 
+    featured_communities = current_communities.service.featured_search(
+        identity=g.identity,
+        params=None,
+        search_preference=search_preference(),
+    )
+
     return render_template(
         current_app.config["THEME_FRONTPAGE_TEMPLATE"],
         show_intro_section=current_app.config["THEME_SHOW_FRONTPAGE_INTRO_SECTION"],
         recent_uploads=records_ui,
+        featured_communities=featured_communities,
     )
 
 

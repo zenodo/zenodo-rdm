@@ -1,0 +1,11 @@
+/***********************************************
+    Invenio App RDM Transition Variables
+***********************************************/
+
+@carouselPageHeightComputer: 15rem;
+@carouselPageHeightTablet: 18rem;
+@carouselPageHeightMobile: 40rem;
+
+@carouselItemWidthComputer: 68rem;
+@carouselItemWidthTablet: 40rem;
+@carouselItemWidthMobile: 15rem;

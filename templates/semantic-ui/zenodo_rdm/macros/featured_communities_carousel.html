@@ -1,0 +1,75 @@
+{#
+# This file is part of Zenodo.
+# Copyright (C) 2023 CERN.
+#
+# Zenodo is free software; you can redistribute it
+# and/or modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation; either version 2 of the
+# License, or (at your option) any later version.
+#
+# Zenodo is distributed in the hope that it will be
+# useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Zenodo; if not, write to the
+# Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+# MA 02111-1307, USA.
+#
+# In applying this license, CERN does not
+# waive the privileges and immunities granted to it by virtue of its status
+# as an Intergovernmental Organization or submit itself to any jurisdiction.
+-#}
+
+{% from "zenodo_rdm/macros/communities_carousel_slides.html" import communities_carousel_slides %}
+
+{% macro featured_communities_carousel(
+    communities,
+    title=_("Featured communities"),
+    interval_delay="10000",
+    animation_speed="300"
+  )
+%}
+  <div
+    id="communities-carousel"
+    data-title="{{ title }}"
+    data-animation-speed="{{ animation_speed }}"
+    data-interval-delay="{{ interval_delay }}"
+  >
+    <div class="ui fluid container carousel rel-pt-2 rel-pb-2 ml-0-mobile mr-0-mobile">
+      <div class="ui container rel-mb-1">
+        <h2 class="ui header">{{ title }}</h2>
+      </div>
+
+      <div class="ui container grid">
+        <div class="left aligned middle aligned two wide column pr-0">
+          <i
+            id="prev-slide-btn"
+            role="button"
+            tabindex="0"
+            aria-label="{{ _('Previous slide') }}"
+            class="angle left huge inverted icon carousel-arrow"
+          >
+          </i>
+        </div>
+        <div class="twelve wide column">
+          {{ communities_carousel_slides(communities) }}
+        </div>
+        <div class="right aligned middle aligned two wide column pl-0">
+          <i
+            id="next-slide-btn"
+            role="button"
+            tabindex="0"
+            aria-label="{{ _('Next slide') }}"
+            class="angle right huge inverted icon carousel-arrow"
+            >
+          </i>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  {{ webpack['zenodo-rdm-communities-carousel.js'] }}
+{% endmacro %}
+
