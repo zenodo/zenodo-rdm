@@ -75,7 +75,7 @@ invenio vocabularies import -v names -f ./app_data/vocabularies-future.yaml  # z
 
 ### Configure the streams
 
-Configure your `streams.yaml` file, you can see an example in this folder. 
+Configure your `streams.yaml` file, you can see an example in this folder.
 
 **Prepopulate communities cache**
 
