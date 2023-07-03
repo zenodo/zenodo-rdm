@@ -22,25 +22,14 @@
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 -#}
 
-{% from "zenodo_rdm/macros/record_item.html" import record_item %}
+{% from "zenodo_rdm/macros/carousel_item.html" import carousel_item %}
 
-{% macro recent_uploads_list(title="Recent uploads", records=None) %}
-  <div id="records-list" data-title="{{ title }}">
-
-    <h2 class="ui header">{{ title }}</h2>
-
-    <div class="ui container rel-mb-2 ml-0-mobile mr-0-mobile">
-      <ul class="ui divided link relaxed items pl-0">
-        {% for record in records %}
-          {{ record_item(record=record) }}
-        {% endfor %}
-      </ul>
+{% macro communities_carousel_slides(communities) %}
+    <div id="carousel-container">
+        <div id="carousel-slides" class="ui items flex align-items-center">
+          {% for community in communities|list %}
+            {{ carousel_item(community=community, index=loop.index) }}
+          {% endfor %}
+        </div>
     </div>
-
-    <div class="ui center aligned container">
-      <a class="ui button" href="/search" aria-label="See more records">
-        More
-      </a>
-    </div>
-  </div>
 {% endmacro %}

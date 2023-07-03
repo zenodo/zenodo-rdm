@@ -23,11 +23,18 @@
   -#}
 
 {% from "zenodo_rdm/macros/recent_uploads_list.html" import recent_uploads_list %}
+{% from "zenodo_rdm/macros/featured_communities_carousel.html" import featured_communities_carousel %}
 {%- extends "invenio_app_rdm/frontpage.html" %}
 
 {%- block page_header %}
   {%- include "zenodo_rdm/header_frontpage.html" %}
 {%- endblock page_header %}
+
+{%- block top_banner %}
+  {% if featured_communities %}
+    {{ featured_communities_carousel(communities=featured_communities) }}
+  {% endif %}
+{%- endblock top_banner %}
 
 {% block main_column_content %}
   {% if recent_uploads %}

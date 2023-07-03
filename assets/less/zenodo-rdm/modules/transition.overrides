@@ -1,0 +1,88 @@
+/***********************************************
+    Zenodo RDM Transition Overrides
+***********************************************/
+
+#carousel-container {
+  position: relative;
+  min-height: @carouselPageHeightComputer;
+  width: 100%;
+
+  @media screen and (max-width: @largestTabletScreen) {
+    min-height: @carouselPageHeightTablet;
+  }
+
+  @media screen and (max-width: @largestMobileScreen) {
+    min-height: @carouselPageHeightMobile;
+  }
+
+
+  #carousel-slides.ui.items {
+    position: relative;
+    width: max-content;
+    min-height: @carouselPageHeightComputer;
+
+    @media screen and (max-width: @largestTabletScreen) {
+      min-height: @carouselPageHeightTablet;
+    }
+
+    @media screen and (max-width: @largestMobileScreen) {
+      min-height: @carouselPageHeightMobile;
+    }
+
+    @media screen and (min-width: @computerBreakpoint) {
+      margin-top: 0 !important;
+    }
+
+    > .item.slide {
+      position: relative;
+      width: @carouselItemWidthComputer;
+      margin: 0 !important;
+      padding: 0 1rem;
+
+      @media screen and (max-width: @largestTabletScreen) {
+        width: @carouselItemWidthTablet;
+      }
+      @media screen and (max-width: @largestMobileScreen) {
+        text-align: center;
+        width: @carouselItemWidthMobile;
+      }
+
+      &.visible {
+        animation: fadein .3s;
+        animation-fill-mode: forwards;
+      }
+      &.hidden {
+        animation: fadeout .3s;
+        animation-fill-mode: forwards;
+      }
+
+      .ui.mini.button {
+        @media screen and (max-width: @largestMobileScreen) {
+          margin-bottom: .5rem;
+        }
+      }
+    }
+
+  }
+}
+
+
+  
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+@keyframes fadeout {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
