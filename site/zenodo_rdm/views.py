@@ -6,10 +6,38 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 """Additional views."""
 
-from flask import Blueprint
+from flask import Blueprint, current_app, g, render_template
+from invenio_rdm_records.proxies import current_rdm_records
+from invenio_rdm_records.resources.serializers import UIJSONSerializer
+from invenio_records_resources.resources.records.utils import search_preference
 from marshmallow import ValidationError
 
 from .support.support import ZenodoSupport
+
+
+#
+# Views
+#
+def frontpage_view_function():
+    """Zenodo frontpage view."""
+    recent_uploads = current_rdm_records.records_service.search(
+        identity=g.identity,
+        params={"sort": "newest", "size": 10},
+        search_preference=search_preference(),
+        expand=False,
+    )
+
+    records_ui = []
+
+    for record in recent_uploads:
+        record_ui = UIJSONSerializer().dump_obj(record)
+        records_ui.append(record_ui)
+
+    return render_template(
+        current_app.config["THEME_FRONTPAGE_TEMPLATE"],
+        show_intro_section=current_app.config["THEME_SHOW_FRONTPAGE_INTRO_SECTION"],
+        recent_uploads=records_ui,
+    )
 
 
 #
