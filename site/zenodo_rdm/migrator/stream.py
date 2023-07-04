@@ -19,11 +19,17 @@ from invenio_rdm_migrator.streams.requests import RequestCopyLoad
 from invenio_rdm_migrator.streams.users import UserCopyLoad
 
 from .extract import JSONLExtract
-from .load import ZenodoAwardsLoad, ZenodoFilesLoad, ZenodoFundersLoad
+from .load import (
+    ZenodoAwardsLoad,
+    ZenodoFilesLoad,
+    ZenodoFundersLoad,
+    ZenodoTransactionLoad,
+)
 from .transform import (
     ZenodoCommunityTransform,
     ZenodoRecordTransform,
     ZenodoRequestTransform,
+    ZenodoTransactionGroupTransform,
     ZenodoUserTransform,
 )
 
@@ -110,3 +116,11 @@ OAuthServerStreamDefinition = StreamDefinition(
     load_cls=OAuthServerCopyLoad,
 )
 """ETL stream for Zenodo to import OAutch clients related information."""
+
+ActionStreamDefinition = StreamDefinition(
+    name="action",
+    extract_cls=JSONLExtract,
+    transform_cls=ZenodoTransactionGroupTransform,
+    load_cls=ZenodoTransactionLoad,
+)
+"""ETL stream for Zenodo to import awards."""

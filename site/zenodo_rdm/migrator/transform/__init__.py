@@ -11,11 +11,13 @@
 from .communities import ZenodoCommunityTransform
 from .records import ZenodoRecordTransform
 from .requests import ZenodoRequestTransform
+from .transactions import ZenodoTransactionGroupTransform
 from .users import ZenodoUserTransform
 
 __all__ = (
     ZenodoCommunityTransform,
     ZenodoRecordTransform,
     ZenodoRequestTransform,
+    ZenodoTransactionGroupTransform,
     ZenodoUserTransform,
 )

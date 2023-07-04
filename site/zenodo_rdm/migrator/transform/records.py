@@ -7,6 +7,7 @@
 
 """Zenodo migrator records transformers."""
 
+import json
 from invenio_rdm_migrator.streams.records import RDMRecordTransform
 
 from ..errors import NoConceptRecidForDraft
@@ -89,3 +90,13 @@ class ZenodoRecordTransform(RDMRecordTransform):
             "parent": self._parent(entry),
             "record_files": self._record_files(entry),
         }
+
+
+class ZenodoActionRecordTransform(ZenodoRecordTransform):
+    """Temporary hack until the json attribute loading is solved."""
+
+    def _transform(self, entry):
+        """Transform a single entry."""
+        entry["json"] = json.loads(entry["json"])
+
+        return super()._transform(entry)

@@ -13,7 +13,7 @@ from idutils import detect_identifier_schemes
 from invenio_rdm_migrator.transform import Entry, drop_nones
 from nameparser import HumanName
 
-from zenodo_rdm.legacy.deserializers.metadata import FUNDER_DOI_TO_ROR
+# from zenodo_rdm.legacy.deserializers.metadata import FUNDER_DOI_TO_ROR
 from zenodo_rdm.legacy.vocabularies.licenses import LEGACY_LICENSES, legacy_to_rdm
 
 from ....errors import InvalidIdentifier
@@ -314,7 +314,9 @@ class ZenodoRecordMetadataEntry(Entry):
             funder_doi = groups[0]
             award_id = groups[1]
 
-            funder_doi_or_ror = FUNDER_DOI_TO_ROR.get(funder_doi, funder_doi)
+            # FIXME: dependency chaining forces flask-resources and other due to imports
+            # move FUNDER_DOI_TO_ROR to a separate file
+            funder_doi_or_ror = {}.get(funder_doi, funder_doi)
 
             ret.append(
                 {
