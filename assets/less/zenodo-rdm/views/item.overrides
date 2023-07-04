@@ -7,3 +7,40 @@
         font-weight: @bold;
     }
 }
+
+
+.ui.items {
+
+    &.link > .item:hover .content .header {
+      color: @darkTextColor;
+    }
+  
+    &.carousel.page {
+      width: 100%;
+  
+      &:first-child {
+        margin: 1.5em 0 !important;
+      }
+    }
+  
+    & > .carousel.item {
+      min-width: 100%;
+    }
+  
+    .content {
+      width: 100% !important;
+  
+      &.flex.right-column {
+          flex-direction: column;
+          align-items: end;
+      };
+    }
+  }
+  
+  #records-list {
+    .ui.items {
+      li.item {
+        padding-left: 0 !important; // Needed because of override for li ~ .item
+      }
+    }
+  }

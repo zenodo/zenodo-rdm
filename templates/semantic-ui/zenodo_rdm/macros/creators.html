@@ -1,0 +1,71 @@
+{#
+# This file is part of Zenodo.
+# Copyright (C) 2022 CERN.
+#
+# Zenodo is free software; you can redistribute it
+# and/or modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation; either version 2 of the
+# License, or (at your option) any later version.
+#
+# Zenodo is distributed in the hope that it will be
+# useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Zenodo; if not, write to the
+# Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+# MA 02111-1307, USA.
+#
+# In applying this license, CERN does not
+# waive the privileges and immunities granted to it by virtue of its status
+# as an Intergovernmental Organization or submit itself to any jurisdiction.
+-#}
+
+{% macro creators(creators=None) %}
+  {% for creator in creators %}
+    {% set creator_name = creator.person_or_org.get("name", "No name") if creator.person_or_org %}
+    {% set ids = creator.person_or_org.get("identifiers", []) if creator.person_or_org %}
+
+    <span class="creatibutor-wrap separated">
+      <a
+        class="creatibutor-link"
+        href="/search?q=metadata.creators.person_or_org.name:{{ creator_name }}"
+        title="{{ creator_name }}: {{_('Search')}}"
+      >
+        <span class="creatibutor-name">{{ creator_name }}</span>
+      </a>
+
+      {{ creator_icons(creator_name=creator_name, ids=ids) }}
+    </span>
+  {% endfor%}
+{% endmacro %}
+
+
+{% macro creator_icons(creator_name=None, ids=None) %}
+  {% for id in ids %}
+    {% if id.scheme == "orcid" %}
+      {% set link = "https://orcid.org/{identifier}".format(identifier=id.identifier) %}
+      {% set link_title = _("ORCID profile") %}
+      {% set icon = "/static/images/orcid.svg" %}
+
+    {% elif id.scheme == "ror" %}
+      {% set link = "https://ror.org/{identifier}".format(identifier=id.identifier) %}
+      {% set link_title = _("ROR profile") %}
+      {% set icon = "/static/images/ror-icon.svg" %}
+
+    {% elif id.scheme == "gnd" %}
+      {% set link = "https://d-nb.info/gnd/{identifier}".format(identifier=id.identifier) %}
+      {% set link_title = _("GND profile") %}
+      {% set icon = "/static/images/gnd-icon.svg" %}
+    {% endif %}
+    <a
+      class="no-text-decoration mr-0"
+      href="{{ link }}"
+      aria-label="{{ creator_name }}: {{ link_title }}"
+      title="{{ creator_name }}: {{ link_title }}"
+    >
+      <img class="inline-id-icon ml-5" src="{{ icon }}" alt="" />
+    </a>
+  {% endfor %}
+{% endmacro %}

@@ -1,0 +1,135 @@
+{#
+# This file is part of Zenodo.
+# Copyright (C) 2022 CERN.
+#
+# Zenodo is free software; you can redistribute it
+# and/or modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation; either version 2 of the
+# License, or (at your option) any later version.
+#
+# Zenodo is distributed in the hope that it will be
+# useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Zenodo; if not, write to the
+# Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+# MA 02111-1307, USA.
+#
+# In applying this license, CERN does not
+# waive the privileges and immunities granted to it by virtue of its status
+# as an Intergovernmental Organization or submit itself to any jurisdiction.
+-#}
+
+{% from "zenodo_rdm/macros/creators.html" import creators %}
+
+{% macro record_item(record=None) %}
+  <li class="item">
+    <div class="content">
+
+      {# Top labels #}
+      <div class="extra labels-actions">
+        <div class="ui small horizontal primary label">
+          {{ record.ui.publication_date_l10n_long }} ({{ record.ui.version }})
+        </div>
+        <div class="ui small horizontal neutral label">
+          {{ record.ui.resource_type.title_l10n }}
+        </div>
+
+        {% set access_status_id = record.ui.access_status.get("id", "open") %}
+        {% set access_status = record.ui.access_status.get("title_l10n", "Open") %}
+        {% set access_status_icon = record.ui.access_status.get("icon", "unlock") %}
+
+        <div class="ui small horizontal label access-status {{ access_status_id }}">
+            <i class="icon {{ access_status_icon }}" aria-hidden="true"></i>
+            {{ access_status }}
+        </div>
+      </div>
+
+      {# Title #}
+      <div class="header">
+        <a href="/records/{{ record.id }}">{{ record.metadata.title }}</a>
+      </div>
+
+      {# Creators #}
+      <div class="ui item creatibutors">
+        {% set creators_list = record.ui.creators.creators %}
+        {% set creators_sliced = creators_list[:3] %}
+
+        {{ creators(creators=creators_sliced) }}
+      </div>
+
+      {# Description #}
+      <p class="description">
+        {% set description = record.ui.get("description_stripped", "No description") %}
+
+        {{ description | truncate(length=350, end='...') }}
+      </p>
+
+      <div class="extra">
+        <div class="flex justify-space-between align-items-end">
+          {# Publishing details #}
+          {% set created_date = record.ui.created_date_l10n_long %}
+          {% set publishing_journal = record.ui.publishing_information.get("journal") if record.ui.publishing_information %}
+
+          <small>
+            {% if created_date %}
+              {{ _("Uploaded on:")}} {{ created_date }}
+            {% endif %}
+
+            {% if publishing_journal %}
+              {{ _("Published in:") }} {{ publishing_journal }}
+            {% endif %}
+          </small>
+
+          {# Versions info desktop/tablet #}
+          {% if record.versions.index > 1 %}
+            {% set num_versions = record.versions.index %}
+            {% set text_content = _("more versions exist for this record") %}
+            {% if num_versions == 2 %}
+              {% set text_content = _("more version exist for this record") %}
+            {% endif %}
+
+            <small class="computer tablet only">
+              <p>{{ record.versions.index - 1 }} {{ text_content }}</p>
+            </small>
+          {% endif %}
+
+          {# Statistics #}
+          {% set unique_downloads = record.stats.all_versions.unique_downloads %}
+          {% set unique_views = record.stats.all_versions.unique_views %}
+
+          <small>
+            {% if unique_views is defined %}
+              <div id="uniqueViews" class="ui transparent label stats-popup">
+                <i class="ui eye icon" aria-label="{{ _('Unique views') }}"></i>
+                {{ unique_views }}
+                <div class="ui tiny popup">
+                  {{ _("Unique views") }}
+                </div>
+              </div>
+            {% endif %}
+
+            {% if unique_downloads is defined %}
+              <div id="uniqueDownloads" class="ui transparent label stats-popup">
+                <i class="ui download icon" aria-label="{{ _('Unique downloads') }}"></i>
+                {{ unique_downloads}}
+                <div class="ui tiny popup">
+                  {{ _("Unique downloads") }}
+                </div>
+              </div>
+            {% endif %}
+          </small>
+        </div>
+
+        {# Versions info mobile #}
+        {% if record.versions.index > 1 %}
+          <small class="mobile only">
+            <p>{{ record.versions.index - 1 }} {{ text_content }}</p>
+          </small>
+      {% endif %}
+      </div>
+    </div>
+  </li>
+{% endmacro %}

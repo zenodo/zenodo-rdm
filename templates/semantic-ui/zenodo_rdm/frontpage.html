@@ -22,7 +22,7 @@
   # as an Intergovernmental Organization or submit itself to any jurisdiction.
   -#}
 
-{% from "invenio_app_rdm/macros/records_list.html" import records_list %}
+{% from "zenodo_rdm/macros/recent_uploads_list.html" import recent_uploads_list %}
 {%- extends "invenio_app_rdm/frontpage.html" %}
 
 {%- block page_header %}
@@ -30,7 +30,9 @@
 {%- endblock page_header %}
 
 {% block main_column_content %}
-  {{ records_list(fetch_url=config.ZENODO_FRONTPAGE_RECENT_UPLOADS_QUERY) }}
+  {% if recent_uploads %}
+    {{ recent_uploads_list(records=recent_uploads) }}
+  {% endif %}
 {% endblock main_column_content %}
 
 {% block side_column_content %}

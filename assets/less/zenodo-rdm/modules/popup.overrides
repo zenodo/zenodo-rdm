@@ -1,0 +1,44 @@
+
+.ui.label.stats-popup {
+  position: relative;
+
+  .ui.popup {
+    display: none;
+    position: absolute;
+    top: -200%;
+    width: max-content;
+
+    &:before {
+      top: 95%;
+    }
+
+  }
+
+  &#uniqueViews {
+    .ui.popup {
+      left: 0;
+
+      &:before {
+        top: 87%;
+        left: 24%;
+      }
+    }
+  }
+
+  &#uniqueDownloads {
+    .ui.popup {
+      right: 0;
+
+      &:before {
+        top: 87%;
+        right: 16%;
+      }
+    }
+  }
+
+  &:hover {
+    .ui.popup {
+      display: block !important;
+    }
+  }
+}
