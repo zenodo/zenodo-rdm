@@ -3,6 +3,8 @@ tmp_dir: /path/to/tmp
 state_dir: /path/to/cache
 log_dir: /path/to/log
 db_uri: postgresql://zenodo:zenodo@localhost:5432/zenodo
+old_secret_key: CHANGE_ME
+new_secret_key: CHANGE_ME
 users:
   extract:
     filepath: /path/to/users.jsonl
