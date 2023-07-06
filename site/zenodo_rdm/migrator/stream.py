@@ -7,10 +7,10 @@
 """Migrator stream definitions."""
 
 from invenio_rdm_migrator.streams import StreamDefinition
-from invenio_rdm_migrator.streams.awards import ZenodoAwardsLoad
+from invenio_rdm_migrator.streams.awards import ExistingAwardsLoad
 from invenio_rdm_migrator.streams.communities import CommunityCopyLoad
-from invenio_rdm_migrator.streams.files import ZenodoFilesLoad
-from invenio_rdm_migrator.streams.funders import ZenodoFundersLoad
+from invenio_rdm_migrator.streams.files import ExistingFilesLoad
+from invenio_rdm_migrator.streams.funders import ExistingFundersLoad
 from invenio_rdm_migrator.streams.oauth import (
     OAuthClientCopyLoad,
     OAuthRemoteTokenTransform,
@@ -77,7 +77,7 @@ FilesStreamDefinition = StreamDefinition(
     name="files",
     extract_cls=None,  # will use IdentityExtract
     transform_cls=None,  # will use IdentityTransform
-    load_cls=ZenodoFilesLoad,
+    load_cls=ExistingFilesLoad,
 )
 """ETL stream for Zenodo to import files."""
 
@@ -85,7 +85,7 @@ FundersStreamDefinition = StreamDefinition(
     name="funders",
     extract_cls=None,  # will use IdentityExtract
     transform_cls=None,  # will use IdentityTransform
-    load_cls=ZenodoFundersLoad,
+    load_cls=ExistingFundersLoad,
 )
 """ETL stream for Zenodo to import funders."""
 
@@ -93,7 +93,7 @@ AwardsStreamDefinition = StreamDefinition(
     name="awards",
     extract_cls=None,  # will use IdentityExtract
     transform_cls=None,  # will use IdentityTransform
-    load_cls=ZenodoAwardsLoad,
+    load_cls=ExistingAwardsLoad,
 )
 """ETL stream for Zenodo to import awards."""
 
