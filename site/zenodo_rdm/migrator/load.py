@@ -17,7 +17,7 @@ from invenio_rdm_migrator.streams.files.models import (
     FilesObjectVersion,
 )
 
-from .models import Awards, Funders
+from invenio_rdm_migrator.streams.models import Awards, Funders
 
 
 class ZenodoFilesLoad(PostgreSQLCopyLoad):
