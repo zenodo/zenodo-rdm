@@ -11,7 +11,6 @@ from invenio_rdm_migrator.load.transactions import PostgreSQLExecute
 from invenio_rdm_migrator.load.postgresql.transactions.generators import (
     TransactionGroupGenerator,
 )
-
 from invenio_rdm_migrator.streams.transactions import (
     FilesBucketTableGenerator,
 )

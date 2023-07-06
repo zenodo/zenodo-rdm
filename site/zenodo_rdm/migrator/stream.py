@@ -7,7 +7,10 @@
 """Migrator stream definitions."""
 
 from invenio_rdm_migrator.streams import StreamDefinition
+from invenio_rdm_migrator.streams.awards import ZenodoAwardsLoad
 from invenio_rdm_migrator.streams.communities import CommunityCopyLoad
+from invenio_rdm_migrator.streams.files import ZenodoFilesLoad
+from invenio_rdm_migrator.streams.funders import ZenodoFundersLoad
 from invenio_rdm_migrator.streams.oauth import (
     OAuthClientCopyLoad,
     OAuthRemoteTokenTransform,
@@ -18,13 +21,10 @@ from invenio_rdm_migrator.streams.records import RDMRecordCopyLoad
 from invenio_rdm_migrator.streams.requests import RequestCopyLoad
 from invenio_rdm_migrator.streams.users import UserCopyLoad
 
+
 from .extract import JSONLExtract
-from .load import (
-    ZenodoAwardsLoad,
-    ZenodoFilesLoad,
-    ZenodoFundersLoad,
-    ZenodoTransactionLoad,
-)
+
+from .load import ZenodoTransactionLoad
 from .transform import (
     ZenodoCommunityTransform,
     ZenodoRecordTransform,
