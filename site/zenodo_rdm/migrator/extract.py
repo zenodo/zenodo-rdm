@@ -8,7 +8,6 @@
 
 import json
 
-import psycopg
 from invenio_rdm_migrator.extract import Extract
 
 
@@ -24,22 +23,6 @@ class JSONLExtract(Extract):
         with open(self.filepath, "r") as reader:
             for line in reader:
                 yield json.loads(line)
-
-
-class PostgreSQLExtract(Extract):
-    """Data extraction from a PostgreSQL database."""
-
-    def __init__(self, db_uri, query):
-        """Constructor."""
-        self.db_uri = db_uri
-        self.query = query
-
-    def run(self):
-        """Yield one element at a time."""
-        with psycopg.connect(self.db_uri) as conn, conn.cursor() as cur:
-            with cur.copy(self.query) as copy:
-                copy.set_types(["json"])
-                yield from copy.rows()
 
 
 EXTRACT_USERS_SQL = """
