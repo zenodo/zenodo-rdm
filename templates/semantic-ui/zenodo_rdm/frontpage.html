@@ -43,27 +43,29 @@
 {% endblock main_column_content %}
 
 {% block side_column_content %}
-  <section class="ui segment rdm-sidebar">
-    <h2 class="ui small header">{{ _("Need help?") }} </h2>
-    <a href="/support" class="ui button fluid rel-mb-1">Contact us</a>
-    <p>
-      Zenodo prioritizes all requested related to the COVID-19 outbreak.
+  <section class="sidebar-container">
+    <h2 class="ui medium top attached header mt-0">{{ _("Need help?") }} </h2>
+    <div class="ui segment bottom attached rdm-sidebar">
+      <a href="/support" class="ui button fluid rel-mb-1">Contact us</a>
+      <p>
+        Zenodo prioritizes all requested related to the COVID-19 outbreak.
 
-      We can help with:
+        We can help with:
 
-        <ul>
-          <li>Uploading your research data, software, preprints, etc.</li>
-          <li>One-on-one with Zenodo supporters.</li>
-          <li>Quota increases beyond our default policy.</li>
-          <li>Scripts for automated uploading of larger datasets.</li>
-        </ul>
-    </p>
+          <ul class="mb-0">
+            <li>Uploading your research data, software, preprints, etc.</li>
+            <li>One-on-one with Zenodo supporters.</li>
+            <li>Quota increases beyond our default policy.</li>
+            <li>Scripts for automated uploading of larger datasets.</li>
+          </ul>
+      </p>
+    </div>
   </section>
 
-  <section class="ui segment rdm-sidebar">
-    <h2 class="ui small header">{{ _("Why use Zenodo?") }} </h2>
-    <p>
-      <ul>
+  <section class="sidebar-container">
+    <h2 class="ui medium top attached header mt-0">{{ _("Why use Zenodo?") }} </h2>
+    <div class="ui segment bottom attached rdm-sidebar">
+      <ul class="m-0">
         <li>
           <strong>Safe</strong> — your research is stored safely for the future in CERN’s Data Centre for as long as CERN exists.
         </li>
@@ -89,6 +91,6 @@
           <strong>Usage statistics</strong> — All uploads display standards compliant usage statistics
         </li>
       </ul>
-    </p>
+    </div>
   </section>
 {% endblock side_column_content %}

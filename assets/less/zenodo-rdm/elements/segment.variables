@@ -7,3 +7,5 @@
 
 @rdmSidebarSegmentColor: #f5f5f5;
 @rdmSidebarSegmentBorderColor: #e3e3e3;
+@sidebarVerticalPadding: 1.75rem;
+@sidebarHorizontalPadding: 1.5rem;
