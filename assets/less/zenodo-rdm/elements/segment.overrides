@@ -5,35 +5,94 @@
  * under the terms of the MIT License; see LICENSE file for more details.
  */
 
-.ui.segment.rdm-sidebar {
+ #record-manage-menu {
+  background-color: transparent;
+  border: 0;
+
+  #recordManagement {
+    padding: 0;
+
+    .ui.grid.record-management .column {
+      &:not(:last-child) {
+        padding-bottom: .1rem !important;
+      }
+
+      &:only-child {
+        padding-bottom: 1rem !important;
+      }
+    }
+  }
+}
+
+.sidebar-container, 
+.ui.segment.sidebar-container {
   background-color: @rdmSidebarSegmentColor;
   border: 1px solid @rdmSidebarSegmentBorderColor;
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
-  padding: @defaultPadding 0.75 * @defaultPadding;
+  border-radius: @borderRadius;
+}
 
-  h2.ui.small.header {
-    font-size: @big;
-    border-bottom: 0;
-    font-weight: 500;
+.sidebar-container {
+  &:not(:last-child) {
+    margin-bottom: 1rem;
   }
+  
+  &#metrics {
+    padding: @sidebarVerticalPadding @sidebarHorizontalPadding;
 
-  &#record-manage-menu {
-    padding: 0;
-    margin: 0;
-    border: none;
-    box-shadow: none;
-    background-color: transparent;
-
-    #recordManagement {
-      padding: 0;
+    .ui.container {
+      @media screen and (max-width: @largestMobileScreen) {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+      }
+    }
+    .ui.tiny.two.statistics.rel-mt-1 {
+      margin-top: .5rem !important;
+    }
+    
+    .ui.definition.table thead:not(.full-width) th:first-child {
+      box-shadow: -1px -1px 0px 1px @rdmSidebarSegmentColor;
+      background-color: @rdmSidebarSegmentColor;
     }
   }
 
-  .ui.placeholder {
-    &,
-    & .line,
-    & > :before {
-      background-color: @rdmSidebarSegmentColor;
+  .ui.top.attached.header {
+    background-color: transparent;
+    font-size: @big;
+    border: none;
+    font-weight: 500;
+    padding: @sidebarVerticalPadding @sidebarHorizontalPadding (.75 * @sidebarHorizontalPadding);
+  }
+
+  .ui.bottom.attached.segment.rdm-sidebar {
+    background-color: transparent;
+    border: none;
+    padding: 0 @sidebarHorizontalPadding @sidebarVerticalPadding;
+    margin-bottom: 0 !important;
+
+    &#record-manage-menu {
+      padding: 0;
+      margin: 0;
+      border: none;
+      box-shadow: none;
+      background-color: transparent;
+
+      #recordManagement {
+        padding: 0;
+      }
+    }
+
+    .versions {
+      .ui.divided.list .item {
+        padding: (.5 * @sidebarHorizontalPadding) @sidebarHorizontalPadding;
+      }
+    }    
+
+    .ui.placeholder {
+      &,
+      & .line,
+      & > :before {
+        background-color: @rdmSidebarSegmentColor;
+      }
     }
   }
 }

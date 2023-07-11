@@ -2,13 +2,6 @@
          Zenodo RDM Item Overrides
 ***********************************************/
 
-#record-details {
-    h2, dt {
-        font-weight: @bold;
-    }
-}
-
-
 .ui.items {
 
     &.link > .item:hover .content .header {

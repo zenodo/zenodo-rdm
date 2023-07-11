@@ -109,3 +109,9 @@ a.inverted {
 .uppercase {
   text-transform: uppercase !important;
 }
+
+.details-list {
+  dt.ui.tiny.header {
+    font-weight: @bold;
+  }
+}
