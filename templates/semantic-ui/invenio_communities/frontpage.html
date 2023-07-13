@@ -16,10 +16,10 @@
 {%- endblock %}
 
 {%- block page_body %}
-  <div class="ui container fluid page-subheader-outer ml-0-mobile mr-0-mobile">
+  <div class="ui container fluid page-subheader-outer mb-0 ml-0-mobile mr-0-mobile">
     <div class="ui container centered grid page-subheader rel-pt-1">
       <div class="one column row">
-        <div class="eight wide center aligned column mt-auto mb-auto">
+        <div class="sixteen wide center aligned column mt-auto mb-auto">
           <h1 class="ui header mr-10">{{ _('Communities') }}</h1>
           <p class="text-muted">Created and curated by Zenodo users. 
             {% if not current_user.is_authenticated %}
@@ -50,20 +50,19 @@
 
   {{ communities_carousel() }}
   
-  <div class="ui container communities-frontpage rel-mt-3 rel-mb-2">
-    <div class="flex align-items-center">
+  <div class="ui container communities-frontpage rel-pt-3 rel-pb-2">
+    <div class="flex align-items-center rel-mb-2">
       <h2 class="ui header mb-0">{{ _('New communities') }}</h2>
       <a class="rel-ml-1" href="{{url_for('invenio_communities.communities_search')}}">
         {{ _('See all')}}
       </a>
     </div>
-    <div class="ui divider hidden"></div>
     <div id="featured-communities" class="communities-list"></div>
   </div>
 
   <div class="ui divider"></div>
   <div class="ui fluid container bg-gray">
-    <div class="ui container rel-pt-3">
+    <div class="ui container rel-pt-2">
       <div class="ui stackable grid" id="community-info">
         <!-- TODO: Add information about communities here -->
         <!-- <div class="eight wide column">
@@ -74,7 +73,7 @@
             Etiam eu lectus purus. Mauris sed diam ullamcorper, hendrerit est nec, finibus leo. Pellentesque bibendum elit sed nunc efficitur congue. Nullam ipsum lacus, aliquam quis tempus et, hendrerit eget ligula. Nam ipsum urna, luctus dapibus velit at, vestibulum auctor lacus.
           </p>
         </div> -->
-        <div class="eight wide column">
+        <div class="eight wide computer sixteen wide tablet column">
           <h2 class="ui medium header text-muted">Want your own community?</h2>
           <p class="text-muted">
             It's easy. Just click the button to get started.

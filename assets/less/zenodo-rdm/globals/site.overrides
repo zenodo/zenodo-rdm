@@ -115,3 +115,9 @@ a.inverted {
     font-weight: @bold;
   }
 }
+
+.community-header {
+  .ui.medium.header {
+    font-size: 1.45rem;
+  }
+}
