@@ -1,0 +1,3 @@
+.ui.container.page-subheader-outer + #communities-carousel {
+    margin-top: 0;
+}
