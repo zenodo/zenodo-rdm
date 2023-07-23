@@ -511,7 +511,7 @@ class LegacySchema(Schema):
 
     def dump_owner(self, obj):
         """Dump owner."""
-        return obj["parent"]["access"]["owned_by"][0]["user"]
+        return obj["parent"]["access"]["owned_by"]["user"]
 
     def dump_files(self, obj):
         """Dump files."""

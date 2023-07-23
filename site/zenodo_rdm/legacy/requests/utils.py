@@ -63,7 +63,7 @@ def submit_record_upgrade_request(record, uow, comment=None):
 
     type_ = current_request_type_registry.lookup(LegacyRecordUpgrade.type_id)
     receiver = ResolverRegistry.resolve_entity_proxy(
-        {"user": record.parent.access.owned_by[0].owner_id}
+        {"user": record.parent.access.owned_by.owner_id}
     ).resolve()
     expires_at = datetime.utcnow() + timedelta(days=365)
 

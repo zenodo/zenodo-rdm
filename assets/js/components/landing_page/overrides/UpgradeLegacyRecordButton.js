@@ -22,7 +22,7 @@ export class UpgradeLegacyRecordButton extends Component {
 
   componentDidMount() {
     const { record, currentUserId } = this.props;
-    if (record.parent.access.owned_by[0].user == currentUserId) {
+    if (record.parent.access.owned_by.user == currentUserId) {
       this.fetchRequests();
     }
   }
