@@ -11,6 +11,7 @@
 FROM registry.cern.ch/inveniosoftware/almalinux:1
 
 COPY site ./site
+COPY legacy ./legacy
 COPY Pipfile Pipfile.lock ./
 RUN pipenv install --deploy --system --pre
 
