@@ -13,7 +13,6 @@ from invenio_records_resources.proxies import current_service_registry
 from invenio_vocabularies.proxies import current_service as vocabulary_service
 from marshmallow import Schema, fields, missing, post_dump, pre_dump, validate
 from marshmallow_utils.fields import EDTFDateString, SanitizedHTML, SanitizedUnicode
-
 from zenodo_legacy.funders import FUNDER_ROR_TO_DOI
 from zenodo_legacy.licenses import rdm_to_legacy
 

@@ -23,7 +23,6 @@ from marshmallow_utils.fields import SanitizedUnicode
 from marshmallow_utils.schemas import IdentifierSchema
 from nameparser import HumanName
 from werkzeug.local import LocalProxy
-
 from zenodo_legacy.funders import FUNDER_DOI_TO_ROR
 from zenodo_legacy.licenses import LEGACY_LICENSES, legacy_to_rdm
 
