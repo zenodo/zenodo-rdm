@@ -31,37 +31,34 @@ invenio communities custom-fields init
 
 # Script base path
 script_path=$( cd -- "$(dirname "$0")" && pwd )
-migrator_path=$script_path/site/zenodo_rdm/migrator
-migrator_scripts_folder_path=$migrator_path/scripts
 
 # Backup FK/PK/unique constraints
 DB_URI="postgresql://zenodo:zenodo@localhost/zenodo"
 
-psql $DB_URI --tuples-only --quiet -f $migrator_scripts_folder_path/gen_create_constraints.sql > $migrator_scripts_folder_path/create_constraints.sql
-psql $DB_URI --tuples-only --quiet -f $migrator_scripts_folder_path/gen_delete_constraints.sql > $migrator_scripts_folder_path/delete_constraints.sql
+psql $DB_URI --tuples-only --quiet -f scripts/gen_create_constraints.sql > scripts/create_constraints.sql
+psql $DB_URI --tuples-only --quiet -f scripts/gen_delete_constraints.sql > scripts/delete_constraints.sql
 
 # Drop constraints
-psql $DB_URI -f $migrator_scripts_folder_path/delete_constraints.sql
+psql $DB_URI -f scripts/delete_constraints.sql
 
 # Backup indices
-psql $DB_URI -f $migrator_scripts_folder_path/backup_indices.sql
-psql $DB_URI -f $migrator_scripts_folder_path/drop_indices.sql
+psql $DB_URI -f scripts/backup_indices.sql
+psql $DB_URI -f scripts/drop_indices.sql
 
 
 # Run migration
-# python -m zenodo_rdm.migrator site/zenodo_rdm/migrator/streams.yaml
-python -m zenodo_rdm.migrator $migrator_path/streams.yaml
+python -m zenodo_rdm_migrator "streams.yaml"
 
 # TODO: These should be fixed in the legacy/source
 # Apply various consistency fixes
 
 
 # Restore FK/PK/unique constraints and indices
-psql $DB_URI -f $migrator_scripts_folder_path/create_constraints.sql
-psql $DB_URI -f $migrator_scripts_folder_path/restore_indices.sql
+psql $DB_URI -f scripts/create_constraints.sql
+psql $DB_URI -f scripts/restore_indices.sql
 
 # Update ID sequences in DB
-psql $DB_URI -f $migrator_scripts_folder_path/update_sequences.sql
+psql $DB_URI -f scripts/update_sequences.sql
 
 # Fixtures
 invenio rdm-records fixtures
@@ -96,4 +93,4 @@ current_users_service.indexer.refresh()
 com
 
 # Add admin users (Pablo, Alex, Zach, Manuel)
-sh $migrator_scripts_folder_path/add_admins.sh
+sh scripts/add_admins.sh

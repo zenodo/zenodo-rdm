@@ -9,7 +9,7 @@
 import dictdiffer
 import pytest
 
-from zenodo_rdm.migrator.transform.communities import (
+from zenodo_rdm_migrator.transform.communities import (
     ZenodoCommunityEntry,
     ZenodoCommunityMemberEntry,
 )

@@ -9,7 +9,7 @@
 import importlib.resources as pkg_resources
 import json
 
-from zenodo_rdm.legacy.vocabularies import data
+from . import data
 
 
 def _load_json(filename):

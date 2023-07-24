@@ -1,16 +1,16 @@
 # ZenodoRDM migrator
 
-How to execute a migration (Zenodo legacy to RDM)
+How to execute a migration (Zenodo legacy to InvenioRDM)
 
 ## Pre-requisites
 
 ### Configuration
 
 Have a ZenodoRDM instance up and running, for example in OpenShift. However,
-  note that some services such as RabbitMQ and Redis will crash with default
-  resources due to OOM errors. For that you can deploy locally ZenodoRDM,
-  connecting to a remote DB and OpenSearch cluster. You will need to set the
-  following configuration in your `invenio.cfg` file:
+note that some services such as RabbitMQ and Redis will crash with default
+resources due to OOM errors. For that you can deploy locally ZenodoRDM,
+connecting to a remote DB and OpenSearch cluster. You will need to set the
+following configuration in your `invenio.cfg` file:
 
 ```cfg
 # This means that you will run locally the web and worker nodes, and connect
@@ -130,7 +130,7 @@ TODO
 2. Run the dataset to DB migration:
 
 ```shell
-python -m zenodo_rdm.migrator /path/to/streams.yaml
+python -m zenodo_rdm_migrator /path/to/streams.yaml
 ```
 3. Create constraints and indices
 4. Once it has finished, run the re-indexing. Note that this step will strain your CPU rendering your laptop almost useless. In a `invenio-cli pyshell` run:

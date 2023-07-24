@@ -8,7 +8,7 @@
 
 import pytest
 
-from zenodo_rdm.legacy.vocabularies.licenses import legacy_to_rdm, rdm_to_legacy
+from zenodo_legacy.licenses import legacy_to_rdm, rdm_to_legacy
 
 
 @pytest.fixture

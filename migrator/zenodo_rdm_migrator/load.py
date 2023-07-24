@@ -7,19 +7,14 @@
 
 """Zenodo migrator transactions loader."""
 
-
-from invenio_rdm_migrator.load.postgresql.transactions import PostgreSQLExecute
-from invenio_rdm_migrator.load.postgresql.transactions.generators import (
-    TransactionGroupGenerator,
-)
+from invenio_rdm_migrator.load.postgresql.transactions import PostgreSQLTx
+from invenio_rdm_migrator.load.postgresql.transactions.generators import TxGenerator
 from invenio_rdm_migrator.streams.transactions import FilesBucketRowGenerator
+from invenio_rdm_migrator.streams.transactions.drafts import RDMDraftTxGenerator
 from invenio_rdm_migrator.streams.transactions.pids import PIDRowGenerator
-from invenio_rdm_migrator.streams.transactions.drafts import (
-    RDMDraftTransactionGenerator,
-)
 
 
-class ZenodoTransactionLoad(PostgreSQLExecute):
+class ZenodoTransactionLoad(PostgreSQLTx):
     """ZenodoRDM migrator transaction loading."""
 
     def __init__(self, db_uri, state, **kwargs):
@@ -32,7 +27,7 @@ class ZenodoTransactionLoad(PostgreSQLExecute):
             "pidstore_pid": PIDRowGenerator(pids_state),
             "files_bucket": FilesBucketRowGenerator(),
             "records_metadata": [
-                RDMDraftTransactionGenerator(
+                RDMDraftTxGenerator(
                     parents_state, records_state, communities_state, pids_state
                 ),  # missing records
             ],
@@ -40,6 +35,6 @@ class ZenodoTransactionLoad(PostgreSQLExecute):
 
         super().__init__(
             db_uri=db_uri,
-            transaction_group_generator=TransactionGroupGenerator(table_tg_map),
+            txg=TxGenerator(table_tg_map),
             **kwargs,
         )

@@ -9,9 +9,9 @@
 
 from functools import partial
 
-from invenio_rdm_migrator.transform import IdentityTransform, TransactionGroup
-from .records import ZenodoActionRecordTransform
+from invenio_rdm_migrator.transform import IdentityTransform, Tx
 
+from .records import ZenodoActionRecordTransform
 
 table_transform_map = {
     "pidstore_pid": IdentityTransform(),
@@ -19,4 +19,4 @@ table_transform_map = {
     "records_metadata": ZenodoActionRecordTransform(),
 }
 
-ZenodoTransactionGroupTransform = partial(TransactionGroup, table_transform_map)
+ZenodoTransactionGroupTransform = partial(Tx, table_transform_map)

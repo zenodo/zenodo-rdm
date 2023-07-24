@@ -8,6 +8,7 @@
 """Zenodo migrator records transformers."""
 
 import json
+
 from invenio_rdm_migrator.streams.records import RDMRecordTransform
 
 from ..errors import NoConceptRecidForDraft

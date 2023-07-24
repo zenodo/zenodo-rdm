@@ -13,11 +13,11 @@ from unittest.mock import patch
 import dictdiffer
 import pytest
 
-from zenodo_rdm.migrator.errors import InvalidIdentifier
-from zenodo_rdm.migrator.transform.entries.records.metadata import (
+from zenodo_rdm_migrator.errors import InvalidIdentifier
+from zenodo_rdm_migrator.transform.entries.records.metadata import (
     ZenodoRecordMetadataEntry,
 )
-from zenodo_rdm.migrator.transform.records import (
+from zenodo_rdm_migrator.transform.records import (
     ZenodoDraftEntry,
     ZenodoRecordEntry,
     ZenodoRecordTransform,
@@ -950,7 +950,7 @@ def expected_rdm_draft_entry():
 
 
 @patch(
-    "zenodo_rdm.migrator.transform.entries.records.records.datetime",
+    "zenodo_rdm_migrator.transform.entries.records.records.datetime",
     MockDateTime(),
 )
 def test_draft_entry(zenodo_draft_data, expected_rdm_draft_entry):
@@ -960,7 +960,7 @@ def test_draft_entry(zenodo_draft_data, expected_rdm_draft_entry):
 
 
 @patch(
-    "zenodo_rdm.migrator.transform.entries.records.records.datetime",
+    "zenodo_rdm_migrator.transform.entries.records.records.datetime",
     MockDateTime(),
 )
 def test_legacy_draft_entry(zenodo_draft_data, expected_rdm_draft_entry):

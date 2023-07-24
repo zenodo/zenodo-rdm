@@ -24,8 +24,8 @@ from marshmallow_utils.schemas import IdentifierSchema
 from nameparser import HumanName
 from werkzeug.local import LocalProxy
 
-from ..vocabularies.funders import FUNDER_DOI_TO_ROR
-from ..vocabularies.licenses import LEGACY_LICENSES, legacy_to_rdm
+from zenodo_legacy.funders import FUNDER_DOI_TO_ROR
+from zenodo_legacy.licenses import LEGACY_LICENSES, legacy_to_rdm
 
 record_identifiers_schemes = LocalProxy(
     lambda: current_app.config["RDM_RECORDS_IDENTIFIERS_SCHEMES"]

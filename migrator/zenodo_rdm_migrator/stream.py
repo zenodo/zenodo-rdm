@@ -6,10 +6,10 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 """Migrator stream definitions."""
 
+from invenio_rdm_migrator.extract import JSONLExtract
 from invenio_rdm_migrator.streams import StreamDefinition
 from invenio_rdm_migrator.streams.awards import ExistingAwardsLoad
 from invenio_rdm_migrator.streams.communities import CommunityCopyLoad
-from invenio_rdm_migrator.extract import JSONLExtract
 from invenio_rdm_migrator.streams.files import ExistingFilesLoad
 from invenio_rdm_migrator.streams.funders import ExistingFundersLoad
 from invenio_rdm_migrator.streams.oauth import (
@@ -21,7 +21,6 @@ from invenio_rdm_migrator.streams.oauth import (
 from invenio_rdm_migrator.streams.records import RDMRecordCopyLoad
 from invenio_rdm_migrator.streams.requests import RequestCopyLoad
 from invenio_rdm_migrator.streams.users import UserCopyLoad
-
 
 from .load import ZenodoTransactionLoad
 from .transform import (

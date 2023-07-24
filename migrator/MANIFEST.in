@@ -1,0 +1,7 @@
+include *.sh
+include *.yaml
+recursive-include scripts *.py
+recursive-include scripts *.sh
+recursive-include scripts *.sql
+recursive-include tests *.py
+recursive-include zenodo_rdm_migrator *.py

@@ -12,9 +12,8 @@ from urllib.parse import urlparse
 from idutils import detect_identifier_schemes
 from invenio_rdm_migrator.transform import Entry, drop_nones
 from nameparser import HumanName
-
-from zenodo_rdm.legacy.vocabularies.funders import FUNDER_DOI_TO_ROR
-from zenodo_rdm.legacy.vocabularies.licenses import LEGACY_LICENSES, legacy_to_rdm
+from zenodo_legacy.funders import FUNDER_DOI_TO_ROR
+from zenodo_legacy.licenses import LEGACY_LICENSES, legacy_to_rdm
 
 from ....errors import InvalidIdentifier
 

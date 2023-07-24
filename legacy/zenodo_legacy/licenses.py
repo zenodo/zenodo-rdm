@@ -6,7 +6,7 @@
 # it under the terms of the MIT License; see LICENSE file for more details.
 """Licenses vocabularies for legacy compatibility."""
 
-from zenodo_rdm.legacy.vocabularies.utils import _load_json
+from .utils import _load_json
 
 LEGACY_LICENSES = {l["id"]: l for l in _load_json("legacy_licenses.json")}
 

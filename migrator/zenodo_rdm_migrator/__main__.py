@@ -25,6 +25,10 @@ from .stream import (
 )
 
 if __name__ == "__main__":
+    if len(sys.argv) == 1 or sys.argv[1].lower() in ("--help", "-h"):
+        print(f"Usage: {sys.argv[0]} CONFIG_FILE")
+        exit(0)
+
     runner = Runner(
         stream_definitions=[
             ActionStreamDefinition,
