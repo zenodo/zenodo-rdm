@@ -19,5 +19,3 @@ python -m check_manifest
 python -m pytest "$@"
 tests_exit_code=$?
 exit "$tests_exit_code"
-
-ls
