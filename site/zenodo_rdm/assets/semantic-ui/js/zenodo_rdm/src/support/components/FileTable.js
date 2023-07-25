@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import React from "react";
 import { Icon, Table } from "semantic-ui-react";
-import { humanReadableBytes } from "@js/invenio_rdm_records";
+import { humanReadableBytes } from "react-invenio-forms";
 
 const FileTable = ({ filesList, handleDelete, decimalSizeDisplay, negative }) => {
   return (
