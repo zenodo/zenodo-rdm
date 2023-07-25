@@ -31,7 +31,7 @@ else
   # NOTE: db init is not needed since DB keeps being created
   #       Just need to create all tables from it.
   invenio db create
-  invenio files location create --default 'default-location'  $(pipenv run invenio shell --no-term-title -c "print(app.instance_path)")'/data'
+  invenio files location create --default 'default-location'  $(invenio shell --no-term-title -c "print(app.instance_path)")'/data'
   invenio roles create admin
   invenio access allow superuser-access role admin
   invenio index init --force
