@@ -4,7 +4,8 @@
 #
 # ZenodoRDM is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
-"""Migrator extraction classes for multiple sources (PGSQL, JSONL files)."""
+
+"""Migrator SQL extraction."""
 
 
 EXTRACT_USERS_SQL = """

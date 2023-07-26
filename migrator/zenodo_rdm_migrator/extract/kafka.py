@@ -4,7 +4,8 @@
 #
 # ZenodoRDM is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
-"""Migrator extraction classes for multiple sources (PGSQL, JSONL files)."""
+
+"""Kafka extraction classes."""
 
 from invenio_rdm_migrator.extract import Extract
 from kafka import KafkaConsumer
