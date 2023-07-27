@@ -16,6 +16,8 @@ set -o errexit
 set -o nounset
 
 python -m check_manifest
+eval "$(docker-services-cli up --db ${DB:-postgresql} --env)"
 python -m pytest "$@"
 tests_exit_code=$?
+eval "$(docker-services-cli down --env)"
 exit "$tests_exit_code"
