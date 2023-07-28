@@ -308,3 +308,18 @@ EXPORT_REDIRECTS = {
 }
 
 REDIRECTOR_RULES.update(EXPORT_REDIRECTS)
+
+
+def lock_edit_record_published_files(record):
+    """Custom conditions for file bucket lock."""
+    if record:
+        is_external_doi = (
+            record.get("pids", {}).get("doi", {}).get("provider") == "external"
+        )
+        if is_external_doi:
+            return False
+    return True
+
+
+RDM_LOCK_EDIT_PUBLISHED_FILES = lock_edit_record_published_files
+"""Lock editing already published files (enforce record versioning)."""

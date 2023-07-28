@@ -6,8 +6,6 @@
 
 import React, { Component } from "react";
 import { Button, Grid, Message, Icon } from "semantic-ui-react";
-import { i18next } from "@translations/invenio_app_rdm/i18next";
-import { NewVersionButton } from "@js/invenio_rdm_records/";
 import PropTypes from "prop-types";
 import { http, withCancel } from "react-invenio-forms";
 
@@ -22,7 +20,7 @@ export class UpgradeLegacyRecordButton extends Component {
 
   componentDidMount() {
     const { record, currentUserId } = this.props;
-    if (record.parent.access.owned_by.user == currentUserId) {
+    if (record.parent.access.owned_by.user === currentUserId) {
       this.fetchRequests();
     }
   }
@@ -31,14 +29,11 @@ export class UpgradeLegacyRecordButton extends Component {
     const { record } = this.props;
     try {
       const cancellableFetch = withCancel(
-        http.get(
-          `${record.links.requests}?q=type:legacy-record-upgrade&is_open=true`,
-          {
-            headers: {
-              Accept: "application/json",
-            },
-          }
-        )
+        http.get(`${record.links.requests}?q=type:legacy-record-upgrade&is_open=true`, {
+          headers: {
+            Accept: "application/json",
+          },
+        })
       );
 
       const response = await cancellableFetch.promise;
@@ -68,14 +63,12 @@ export class UpgradeLegacyRecordButton extends Component {
               fluid
               color="white"
               size="medium"
-              onClick={() =>
-                (window.location = `/me/requests/${legacyRequestId}`)
-              }
+              onClick={() => (window.location = `/me/requests/${legacyRequestId}`)}
               icon
               labelPosition="left"
             >
               <Icon name="settings" />
-              {i18next.t("Upgrade legacy record")}
+              Upgrade legacy record
             </Button>
           </Grid.Column>
         )}
