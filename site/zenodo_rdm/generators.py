@@ -7,8 +7,16 @@
 
 """Zenodo legacy permissions generators."""
 
+from invenio_access import action_factory
+from invenio_access.permissions import Permission
 from invenio_rdm_records.services.generators import IfRestricted
 from invenio_records.dictutils import dict_lookup
+from invenio_records_permissions.generators import Generator
+
+# these are defined here as there is a circular dependency otherwise with the
+# permissions.py file
+media_files_management_action = action_factory("manage-media-files")
+media_files_permission = Permission(media_files_management_action)
 
 
 class IfFilesRestrictedForCommunity(IfRestricted):
@@ -32,3 +40,15 @@ class IfFilesRestrictedForCommunity(IfRestricted):
             return not can_community_read_files
         else:
             return False
+
+
+class MediaFilesManager(Generator):
+    """Allows media files management."""
+
+    def __init__(self):
+        """Constructor."""
+        super(MediaFilesManager, self).__init__()
+
+    def needs(self, **kwargs):
+        """Enabling Needs."""
+        return [media_files_management_action]

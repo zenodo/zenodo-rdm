@@ -16,7 +16,7 @@ from invenio_rdm_records.services.generators import (
 from invenio_rdm_records.services.permissions import RDMRecordPermissionPolicy
 from invenio_records_permissions.generators import SystemProcess
 
-from .generators import IfFilesRestrictedForCommunity
+from .generators import IfFilesRestrictedForCommunity, MediaFilesManager
 
 
 class ZenodoRDMRecordPermissionPolicy(RDMRecordPermissionPolicy):
@@ -43,3 +43,21 @@ class ZenodoRDMRecordPermissionPolicy(RDMRecordPermissionPolicy):
         # it was simpler and less coupling to implement this as permission check
         IfFileIsLocal(then_=can_read_files, else_=[SystemProcess()])
     ]
+
+    # media files
+    can_draft_media_create_files = [MediaFilesManager(), SystemProcess()]
+    can_draft_media_read_files = [can_read_files_owner]
+    can_draft_media_set_content_files = [
+        IfFileIsLocal(then_=can_draft_media_create_files, else_=[SystemProcess()])
+    ]
+    can_draft_media_get_content_files = [
+        # preview is same as read_files
+        IfFileIsLocal(then_=can_draft_media_create_files, else_=[SystemProcess()])
+    ]
+    can_draft_media_commit_files = [
+        # review is the same as create_files
+        IfFileIsLocal(then_=can_draft_media_create_files, else_=[SystemProcess()])
+    ]
+    can_draft_media_update_files = can_draft_media_create_files
+    # from the core
+    can_draft_media_delete_files = can_draft_media_create_files
