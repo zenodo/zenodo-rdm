@@ -21,9 +21,8 @@ from invenio_rdm_migrator.streams.models.records import (
     RDMParentMetadata,
     RDMVersionState,
 )
-from invenio_rdm_migrator.transform import BaseTxTransform
 
-from zenodo_rdm_migrator.actions import ZenodoDraftCreateAction
+from zenodo_rdm_migrator.transform.transactions import ZenodoTxTransform
 
 
 @pytest.fixture()
@@ -38,18 +37,6 @@ def test_extract_cls(create_draft_tx):
             )
 
     return TestExtractor
-
-
-@pytest.fixture()
-def test_transform_cls(create_draft_tx):
-    class TestTxTransform(BaseTxTransform):
-        """Test transform class."""
-
-        actions = [
-            ZenodoDraftCreateAction,
-        ]
-
-    return TestTxTransform
 
 
 DB_URI = "postgresql://invenio:invenio@localhost:5432/invenio"
@@ -77,16 +64,14 @@ def db_engine():
         model.__table__.drop(eng)
 
 
-def test_draft_create_action_stream(
-    state, test_extract_cls, test_transform_cls, db_engine
-):
+def test_draft_create_action_stream(state, test_extract_cls, db_engine):
     """Creates a DB on disk and initializes all the migrator related tables on it."""
     # test
 
     stream = Stream(
         name="action",
         extract=test_extract_cls(),
-        transform=test_transform_cls(),
+        transform=ZenodoTxTransform(),
         load=PostgreSQLTx(DB_URI),
     )
     stream.run()

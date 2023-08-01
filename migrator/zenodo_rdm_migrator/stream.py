@@ -22,13 +22,13 @@ from invenio_rdm_migrator.streams.oauth import (
 from invenio_rdm_migrator.streams.records import RDMRecordCopyLoad
 from invenio_rdm_migrator.streams.requests import RequestCopyLoad
 from invenio_rdm_migrator.streams.users import UserCopyLoad
-from invenio_rdm_migrator.transform import Tx
 
 from .extract import KafkaExtract
 from .transform import (
     ZenodoCommunityTransform,
     ZenodoRecordTransform,
     ZenodoRequestTransform,
+    ZenodoTxTransform,
     ZenodoUserTransform,
 )
 
@@ -119,7 +119,7 @@ OAuthServerStreamDefinition = StreamDefinition(
 ActionStreamDefinition = StreamDefinition(
     name="action",
     extract_cls=KafkaExtract,
-    transform_cls=Tx,
+    transform_cls=ZenodoTxTransform,
     load_cls=PostgreSQLTx,
 )
 """ETL stream for Zenodo to import awards."""
