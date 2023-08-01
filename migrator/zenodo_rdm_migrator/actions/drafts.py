@@ -20,28 +20,10 @@ class ZenodoDraftCreateAction(TransformAction):
     """Zenodo to RDM draft creation action."""
 
     name = "create-zenodo-draft"
-    mapped_cls = RDMDraftCreateAction
+    load_cls = RDMDraftCreateAction
 
-    def __init__(
-        self,
-        tx_id,
-        data,
-        parents_state,
-        records_state,
-        communities_state,
-        pids_state,
-    ):
-        """Constructor."""
-        super().__init__(tx_id=tx_id, data=data)
-        # state related
-        # FIXME: it is not needed, but there is no easy way to drill them to the
-        # RDM action without having a app ctx proxy
-        self.parents_state = parents_state
-        self.records_state = records_state
-        self.communities_state = communities_state
-        self.pids_state = pids_state
-
-    def fingerprint(self):  # pragma: no cover
+    @classmethod
+    def matches(self, tx):  # pragma: no cover
         """Checks if the data corresponds with that required by the action."""
         rules = {
             "pidstore_pid": OperationType.INSERT,  # should we check recid + depid
@@ -49,7 +31,7 @@ class ZenodoDraftCreateAction(TransformAction):
             "records_metadata": OperationType.INSERT,
         }
 
-        for operation in self.data:
+        for operation in tx.operations:
             table_name = operation["source"]["table"]
 
             rule = rules.pop(table_name, None)
@@ -62,7 +44,7 @@ class ZenodoDraftCreateAction(TransformAction):
         """Transforms the data and returns an instance of the mapped_cls."""
         # draft files should be a separate transaction
 
-        for operation in self.data:
+        for operation in self.tx.operations:
             table_name = operation["source"]["table"]
 
             if table_name == "pidstore_pid":
@@ -75,14 +57,10 @@ class ZenodoDraftCreateAction(TransformAction):
                     operation["after"]
                 )
 
-        return {
-            "pid": pid,
-            "bucket": bucket,
-            "draft": draft_and_parent["draft"],
-            "parent": draft_and_parent["parent"],
-            # not ideal but the state needs to be passed
-            "parents_state": self.parents_state,
-            "records_state": self.records_state,
-            "communities_state": self.communities_state,
-            "pids_state": self.pids_state,
-        }
+        return self.data_cls(
+            tx_id=self.tx.id,
+            pid=pid,
+            bucket=bucket,
+            draft=draft_and_parent["draft"],
+            parent=draft_and_parent["parent"],
+        )

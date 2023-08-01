@@ -8,34 +8,42 @@
 """Test draft actions for RDM migration."""
 
 
+from invenio_rdm_migrator.extract import Tx
 from invenio_rdm_migrator.load.postgresql.transactions.operations import OperationType
 from invenio_rdm_migrator.streams.actions import RDMDraftCreateAction
 
 from zenodo_rdm_migrator.actions import ZenodoDraftCreateAction
 
 
-def test_fingerprint_with_valid_data():
-    data = [
-        {"op": OperationType.INSERT, "source": {"table": "pidstore_pid"}, "after": {}},
-        {"op": OperationType.INSERT, "source": {"table": "files_bucket"}, "after": {}},
-        {
-            "op": OperationType.INSERT,
-            "source": {"table": "records_metadata"},
-            "after": {},
-        },
-    ]
-    action = ZenodoDraftCreateAction(
-        tx_id=1,
-        data=data,
-        parents_state={},
-        records_state={},
-        communities_state={},
-        pids_state={},
+def test_matches_with_valid_data():
+    assert (
+        ZenodoDraftCreateAction.matches(
+            Tx(
+                id=1,
+                operations=[
+                    {
+                        "op": OperationType.INSERT,
+                        "source": {"table": "pidstore_pid"},
+                        "after": {},
+                    },
+                    {
+                        "op": OperationType.INSERT,
+                        "source": {"table": "files_bucket"},
+                        "after": {},
+                    },
+                    {
+                        "op": OperationType.INSERT,
+                        "source": {"table": "records_metadata"},
+                        "after": {},
+                    },
+                ],
+            )
+        )
+        is True
     )
-    assert action.fingerprint() is True
 
 
-def test_fingerprint_with_invalid_data():
+def test_matches_with_invalid_data():
     missing_pid = [
         {"op": OperationType.INSERT, "source": {"table": "files_bucket"}, "after": {}},
         {
@@ -58,26 +66,15 @@ def test_fingerprint_with_invalid_data():
         {"op": OperationType.INSERT, "source": {"table": "files_bucket"}, "after": {}},
     ]
 
-    for invalid in [missing_pid, missing_bucket, missing_draft]:
-        action = ZenodoDraftCreateAction(
-            tx_id=1,
-            data=invalid,
-            parents_state={},
-            records_state={},
-            communities_state={},
-            pids_state={},
+    for invalid_ops in [missing_pid, missing_bucket, missing_draft]:
+        assert (
+            ZenodoDraftCreateAction.matches(Tx(id=1, operations=invalid_ops))
+            is False
         )
-        assert action.fingerprint() is False
 
 
 def test_transform_with_valid_data(create_draft_tx):
     action = ZenodoDraftCreateAction(
-        tx_id=create_draft_tx["tx_id"],
-        data=create_draft_tx["operations"],
-        parents_state={},
-        records_state={},
-        communities_state={},
-        pids_state={},
+        Tx(id=create_draft_tx["tx_id"], operations=create_draft_tx["operations"])
     )
-
     assert isinstance(action.transform(), RDMDraftCreateAction)
