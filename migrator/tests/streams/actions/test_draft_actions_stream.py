@@ -11,7 +11,7 @@ from uuid import UUID
 
 import pytest
 import sqlalchemy as sa
-from invenio_rdm_migrator.extract import Extract
+from invenio_rdm_migrator.extract import Extract, Tx
 from invenio_rdm_migrator.load.postgresql.transactions import PostgreSQLTx
 from invenio_rdm_migrator.streams import Stream
 from invenio_rdm_migrator.streams.models.files import FilesBucket
@@ -21,38 +21,35 @@ from invenio_rdm_migrator.streams.models.records import (
     RDMParentMetadata,
     RDMVersionState,
 )
-from invenio_rdm_migrator.transform import Tx
+from invenio_rdm_migrator.transform import BaseTxTransform
 
 from zenodo_rdm_migrator.actions import ZenodoDraftCreateAction
 
 
 @pytest.fixture()
-def test_extract_cls(
-    create_draft_tx,
-    parents_state,
-    records_state,
-    communities_state,
-    pids_state,
-    global_state,  # required for PID values management
-):
+def test_extract_cls(create_draft_tx):
     class TestExtractor(Extract):
-        """Test extractor.
-
-        Skips the transaction grouping and fingerprinting steps.
-        """
+        """Test extractor."""
 
         def run(self):
             """Yield one element at a time."""
-            yield ZenodoDraftCreateAction(
-                tx_id=create_draft_tx["tx_id"],
-                data=create_draft_tx["operations"],
-                parents_state=parents_state,
-                records_state=records_state,
-                communities_state=communities_state,
-                pids_state=pids_state,
+            yield Tx(
+                id=create_draft_tx["tx_id"], operations=create_draft_tx["operations"]
             )
 
     return TestExtractor
+
+
+@pytest.fixture()
+def test_transform_cls(create_draft_tx):
+    class TestTxTransform(BaseTxTransform):
+        """Test transform class."""
+
+        actions = [
+            ZenodoDraftCreateAction,
+        ]
+
+    return TestTxTransform
 
 
 DB_URI = "postgresql://invenio:invenio@localhost:5432/invenio"
@@ -80,14 +77,14 @@ def db_engine():
         model.__table__.drop(eng)
 
 
-def test_draft_create_action_stream(test_extract_cls, db_engine):
+def test_draft_create_action_stream(test_extract_cls, test_transform_cls, db_engine):
     """Creates a DB on disk and initializes all the migrator related tables on it."""
     # test
 
     stream = Stream(
         name="action",
         extract=test_extract_cls(),
-        transform=Tx(),
+        transform=test_transform_cls(),
         load=PostgreSQLTx(DB_URI),
     )
     stream.run()
