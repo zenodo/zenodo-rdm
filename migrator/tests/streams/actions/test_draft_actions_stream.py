@@ -39,7 +39,7 @@ def test_extract_cls(create_draft_tx):
     return TestExtractor
 
 
-DB_URI = "postgresql://invenio:invenio@localhost:5432/invenio"
+DB_URI = "postgresql+psycopg://invenio:invenio@localhost:5432/invenio"
 
 
 @pytest.fixture(scope="function")
