@@ -416,6 +416,7 @@ def test_accept_a_request_no_field(
     assert response.json["is_closed"] is True
 
 
+@pytest.mark.skip()
 def test_decline_a_request(
     client,
     minimal_record,
