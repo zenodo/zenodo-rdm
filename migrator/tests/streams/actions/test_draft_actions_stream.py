@@ -77,7 +77,9 @@ def db_engine():
         model.__table__.drop(eng)
 
 
-def test_draft_create_action_stream(test_extract_cls, test_transform_cls, db_engine):
+def test_draft_create_action_stream(
+    state, test_extract_cls, test_transform_cls, db_engine
+):
     """Creates a DB on disk and initializes all the migrator related tables on it."""
     # test
 
