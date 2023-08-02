@@ -15,7 +15,7 @@ from invenio_rdm_migrator.streams.actions import DraftCreateAction
 from zenodo_rdm_migrator.actions import ZenodoDraftCreateAction
 
 
-def test_matches_with_valid_data():
+def test_matches_with_valid_data(secret_keys_state):
     assert (
         ZenodoDraftCreateAction.matches_action(
             Tx(
@@ -43,7 +43,7 @@ def test_matches_with_valid_data():
     )
 
 
-def test_matches_with_invalid_data():
+def test_matches_with_invalid_data(secret_keys_state):
     missing_pid = [
         {"op": OperationType.INSERT, "source": {"table": "files_bucket"}, "after": {}},
         {
@@ -73,7 +73,7 @@ def test_matches_with_invalid_data():
         )
 
 
-def test_transform_with_valid_data(create_draft_tx):
+def test_transform_with_valid_data(secret_keys_state, create_draft_tx):
     action = ZenodoDraftCreateAction(
         Tx(id=create_draft_tx["tx_id"], operations=create_draft_tx["operations"])
     )

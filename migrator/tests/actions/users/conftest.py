@@ -47,7 +47,7 @@ def register_user_tx():
                 "after": {
                     "id": 123456,
                     "email": "someaddr@domain.org",
-                    "password": "$pbkdf2-sha512$Th1sW0ulDB34P4sSw0rd",
+                    "password": "zmkNzdnG1PXP5C3dmZqlJw==",
                     "active": True,
                     "confirmed_at": None,
                     "last_login_at": None,
@@ -90,7 +90,7 @@ def login_user_tx():
                 "after": {
                     "id": 123456,
                     "email": "someaddr@domain.org",
-                    "password": "$pbkdf2-sha512$Th1sW0ulDB34P4sSw0rd",
+                    "password": "zmkNzdnG1PXP5C3dmZqlJw==",
                     "active": True,
                     "confirmed_at": None,
                     "last_login_at": 1690906447550349,
@@ -139,7 +139,7 @@ def confirm_user_tx():
                 "after": {
                     "id": 123456,
                     "email": "someaddr@domain.org",
-                    "password": "$pbkdf2-sha512$Th1sW0ulDB34P4sSw0rd",
+                    "password": "zmkNzdnG1PXP5C3dmZqlJw==",
                     "active": True,
                     "confirmed_at": None,
                     "last_login_at": 1690906447550349,
@@ -174,7 +174,7 @@ def confirm_user_tx():
                 "after": {
                     "id": 123456,
                     "email": "someaddr@domain.org",
-                    "password": "$pbkdf2-sha512$Th1sW0ulDB34P4sSw0rd",
+                    "password": "zmkNzdnG1PXP5C3dmZqlJw==",
                     "active": True,
                     "confirmed_at": 1690906459612306,
                     "last_login_at": 1690906447550349,

@@ -41,9 +41,6 @@ class ZenodoUserRegistrationAction(TransformAction):
 
     def _transform_data(self):  # pragma: no cover
         """Transforms the data and returns an instance of the mapped_cls."""
-        # draft files should be a separate transaction
-
-        # FIXME: there wont be created/updated needs to come from operations.source.tm_ms
         payload = {}
         for operation in self.tx.operations:
             payload = {**payload, **operation["after"]}

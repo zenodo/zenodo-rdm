@@ -35,7 +35,7 @@ def db_engine():
 
 
 def test_user_register_action_stream(
-    state, test_extract_cls, register_user_tx, db_engine
+    secret_keys_state, test_extract_cls, register_user_tx, db_engine
 ):
     test_extract_cls.tx = register_user_tx
 
