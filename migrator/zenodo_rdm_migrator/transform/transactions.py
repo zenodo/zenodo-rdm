@@ -10,10 +10,13 @@
 
 from invenio_rdm_migrator.transform import BaseTxTransform
 
-from ..actions import ZenodoDraftCreateAction
+from ..actions import ZenodoDraftCreateAction, ZenodoUserRegistrationAction
 
 
 class ZenodoTxTransform(BaseTxTransform):
     """Zenodo transaction transform."""
 
-    actions = [ZenodoDraftCreateAction]
+    actions = [
+        ZenodoDraftCreateAction,
+        ZenodoUserRegistrationAction,
+    ]

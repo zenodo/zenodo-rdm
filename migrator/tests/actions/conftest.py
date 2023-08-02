@@ -8,7 +8,8 @@
 """Migrator tests configuration."""
 
 import pytest
-from invenio_rdm_migrator.state import STATE, StateDB, StateEntity
+from invenio_rdm_migrator.extract import Extract, Tx
+from invenio_rdm_migrator.state import STATE, StateDB
 from invenio_rdm_migrator.streams.records.state import ParentModelValidator
 
 
@@ -26,3 +27,20 @@ def state(tmp_dir):
     STATE.initialized_state(state_db)
 
     return STATE
+
+
+@pytest.fixture(scope="function")
+def test_extract_cls():
+    """Extract class with customizable tx."""
+
+    class TestExtractor(Extract):
+        """Test extractor."""
+
+        tx = None
+        """Must be set before usage.qwa"""
+
+        def run(self):
+            """Yield one element at a time."""
+            yield Tx(id=self.tx["tx_id"], operations=self.tx["operations"])
+
+    return TestExtractor

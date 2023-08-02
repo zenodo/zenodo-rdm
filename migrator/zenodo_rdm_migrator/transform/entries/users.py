@@ -77,5 +77,5 @@ class ZenodoUserEntry(UserEntry):
             "current_login_at": entry.get("current_login_at"),
             "last_login_ip": entry.get("last_login_ip"),
             "current_login_ip": entry.get("current_login_ip"),
-            "login_count": entry.get("login_count"),
+            "login_count": entry.get("login_count") or 0,
         }

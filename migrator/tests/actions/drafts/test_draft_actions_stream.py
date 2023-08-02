@@ -24,21 +24,6 @@ from invenio_rdm_migrator.streams.models.records import (
 
 from zenodo_rdm_migrator.transform.transactions import ZenodoTxTransform
 
-
-@pytest.fixture()
-def test_extract_cls(create_draft_tx):
-    class TestExtractor(Extract):
-        """Test extractor."""
-
-        def run(self):
-            """Yield one element at a time."""
-            yield Tx(
-                id=create_draft_tx["tx_id"], operations=create_draft_tx["operations"]
-            )
-
-    return TestExtractor
-
-
 DB_URI = "postgresql+psycopg://invenio:invenio@localhost:5432/invenio"
 
 
@@ -64,9 +49,13 @@ def db_engine():
         model.__table__.drop(eng)
 
 
-def test_draft_create_action_stream(state, test_extract_cls, db_engine):
+def test_draft_create_action_stream(
+    state, test_extract_cls, create_draft_tx, db_engine
+):
     """Creates a DB on disk and initializes all the migrator related tables on it."""
     # test
+
+    test_extract_cls.tx = create_draft_tx
 
     stream = Stream(
         name="action",
