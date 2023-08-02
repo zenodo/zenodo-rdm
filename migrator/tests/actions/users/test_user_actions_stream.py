@@ -34,9 +34,9 @@ def db_engine():
         model.__table__.drop(eng)
 
 
-def test_user_register_action_stream(
-    secret_keys_state, test_extract_cls, register_user_tx, db_engine
-):
+# db_engine will create tables needed for existing_user
+@pytest.fixture(scope="function")
+def existing_user(db_engine, secret_keys_state, test_extract_cls, register_user_tx):
     test_extract_cls.tx = register_user_tx
 
     stream = Stream(
@@ -47,6 +47,8 @@ def test_user_register_action_stream(
     )
     stream.run()
 
+
+def test_user_register_action_stream(existing_user, db_engine):
     with db_engine.connect() as conn:
         # User
         users = list(conn.execute(sa.select(User)))
@@ -57,3 +59,46 @@ def test_user_register_action_stream(
         loginfo = list(conn.execute(sa.select(LoginInformation)))
         assert len(loginfo) == 1
         assert list(loginfo)[0]._mapping["user_id"] == 123456
+
+
+def test_user_login_action_stream(
+    existing_user, test_extract_cls, login_user_tx, db_engine
+):
+    test_extract_cls.tx = login_user_tx
+
+    stream = Stream(
+        name="action",
+        extract=test_extract_cls(),
+        transform=ZenodoTxTransform(),
+        load=PostgreSQLTx(DB_URI),
+    )
+    stream.run()
+
+    with db_engine.connect() as conn:
+        # Login information
+        loginfo = list(conn.execute(sa.select(LoginInformation)))
+        assert len(loginfo) == 1
+        loginfo = list(loginfo)[0]._mapping
+        assert loginfo["last_login_at"] == "1690906447550349"
+        assert loginfo["current_login_at"] == "1690906447550349"
+        assert loginfo["last_login_ip"] == None
+        assert loginfo["current_login_ip"] == "192.0.238.78"
+        assert loginfo["login_count"] == 1
+
+
+def test_confirm_user_action_stream(
+    existing_user, test_extract_cls, confirm_user_tx, db_engine
+):
+    test_extract_cls.tx = confirm_user_tx
+    stream = Stream(
+        name="action",
+        extract=test_extract_cls(),
+        transform=ZenodoTxTransform(),
+        load=PostgreSQLTx(DB_URI),
+    )
+    stream.run()
+
+    with db_engine.connect() as conn:
+        users = list(conn.execute(sa.select(User)))
+        assert len(users) == 1
+        assert list(users)[0]._mapping["confirmed_at"] == "1690906459612306"

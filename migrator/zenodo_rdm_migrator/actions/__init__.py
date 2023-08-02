@@ -8,9 +8,10 @@
 """Actions module."""
 
 from .drafts import ZenodoDraftCreateAction
-from .users import ZenodoUserRegistrationAction
+from .users import ZenodoUserEditAction, ZenodoUserRegistrationAction
 
 __all__ = (
     "ZenodoDraftCreateAction",
+    "ZenodoUserEditAction",
     "ZenodoUserRegistrationAction",
 )

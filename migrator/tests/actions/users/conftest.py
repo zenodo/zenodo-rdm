@@ -113,7 +113,7 @@ def login_user_tx():
                     "lsn": 1444875783960,
                     "xmin": None,
                 },
-                "op": "u",
+                "op": OperationType.UPDATE,
                 "ts_ms": 1690906447715,
                 "transaction": {
                     "id": "559140493:1444875783960",
@@ -162,7 +162,7 @@ def confirm_user_tx():
                     "lsn": 1444875976096,
                     "xmin": None,
                 },
-                "op": "u",
+                "op": OperationType.UPDATE,
                 "ts_ms": 1690906459854,
                 "transaction": {
                     "id": "559140515:1444875976096",
@@ -197,7 +197,7 @@ def confirm_user_tx():
                     "lsn": 1444875976392,
                     "xmin": None,
                 },
-                "op": "u",
+                "op": OperationType.UPDATE,
                 "ts_ms": 1690906459854,
                 "transaction": {
                     "id": "559140515:1444875976392",
