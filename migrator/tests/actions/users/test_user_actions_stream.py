@@ -102,3 +102,42 @@ def test_confirm_user_action_stream(
         users = list(conn.execute(sa.select(User)))
         assert len(users) == 1
         assert list(users)[0]._mapping["confirmed_at"] == "1690906459612306"
+
+
+def test_change_user_profile_stream(
+    existing_user, test_extract_cls, change_user_profile_tx, db_engine
+):
+    test_extract_cls.tx = change_user_profile_tx
+    stream = Stream(
+        name="action",
+        extract=test_extract_cls(),
+        transform=ZenodoTxTransform(),
+        load=PostgreSQLTx(DB_URI),
+    )
+    stream.run()
+
+    with db_engine.connect() as conn:
+        users = list(conn.execute(sa.select(User)))
+        assert len(users) == 1
+        user = list(users)[0]._mapping
+        assert user["username"] == "another_mig_username"
+        assert user["displayname"] == "another_mig_username"
+        assert user["full_name"] == "Some new full name"
+
+
+def test_confirm_user_action_stream(
+    existing_user, test_extract_cls, change_user_email_tx, db_engine
+):
+    test_extract_cls.tx = change_user_email_tx
+    stream = Stream(
+        name="action",
+        extract=test_extract_cls(),
+        transform=ZenodoTxTransform(),
+        load=PostgreSQLTx(DB_URI),
+    )
+    stream.run()
+
+    with db_engine.connect() as conn:
+        users = list(conn.execute(sa.select(User)))
+        assert len(users) == 1
+        assert list(users)[0]._mapping["email"] == "somenewaddr@domain.org"
