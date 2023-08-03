@@ -130,7 +130,6 @@ class ZenodoUserDeactivationAction(TransformAction):
     # TODO
     def _transform_data(self):  # pragma: no cover
         """Transforms the data and returns an instance of the mapped_cls."""
-
         user = None
         sessions = []
         ts = self.tx.operations[0]["source"]["ts_ms"]

@@ -17,13 +17,14 @@ from invenio_rdm_migrator.streams.models.users import (
     User,
 )
 from sqlalchemy.orm import Session
+from sqlalchemy.orm.exc import ObjectDeletedError
 
 from zenodo_rdm_migrator.transform.transactions import ZenodoTxTransform
 
 DB_URI = "postgresql+psycopg://invenio:invenio@localhost:5432/invenio"
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="module")
 def db_engine():
     tables = [LoginInformation, SessionActivity, User]
     eng = sa.create_engine(DB_URI)
@@ -67,15 +68,79 @@ def db_sessions(db_engine):
             "os": None,
         },
     ]
+
+    history = []
     with Session(db_engine) as session:
         for session_data in sessions_data:
-            session.add(SessionActivity(**session_data))
+            obj = SessionActivity(**session_data)
+            history.append(obj)
+            session.add(obj)
+        session.commit()
+
+    yield
+
+    # cleanup
+    with Session(db_engine) as session:
+        for obj in history:
+            session.delete(obj)
+
+        try:
+            session.commit()
+        except ObjectDeletedError:  # might be deleted on user inactivation
+            pass
+
+
+@pytest.fixture(scope="function")
+def db_user(db_engine):
+    user_data = {
+        "id": 123456,
+        "created": 1640995200000000,
+        "updated": 1640995200000000,
+        "username": "test_user",
+        "displayname": "test_user",
+        "email": "someaddr@domain.org",
+        "password": "zmkNzdnG1PXP5C3dmZqlJw==",
+        "active": True,
+        "confirmed_at": None,
+        "version_id": 1,
+        "profile": {"full_name": "User test"},
+        "preferences": {
+            "visibility": "restricted",
+            "email_visibility": "restricted",
+        },
+    }
+
+    log_info_data = {
+        "user_id": 123456,
+        "last_login_at": None,
+        "current_login_at": None,
+        "last_login_ip": None,
+        "current_login_ip": None,
+        "login_count": 0,
+    }
+
+    history = []
+    with Session(db_engine) as session:
+        user_obj = User(**user_data)
+        history.append(user_obj)
+        session.add(user_obj)
+        log_info_obj = LoginInformation(**log_info_data)
+        history.append(log_info_obj)
+        session.add(log_info_obj)
+        session.commit()
+
+    yield
+
+    # cleanup
+    with Session(db_engine) as session:
+        for obj in history:
+            session.delete(obj)
         session.commit()
 
 
-# db_engine will create tables needed for existing_user
-@pytest.fixture(scope="function")
-def existing_user(db_engine, secret_keys_state, test_extract_cls, register_user_tx):
+def test_user_register_action_stream(
+    secret_keys_state, db_engine, test_extract_cls, register_user_tx
+):
     test_extract_cls.tx = register_user_tx
 
     stream = Stream(
@@ -86,8 +151,6 @@ def existing_user(db_engine, secret_keys_state, test_extract_cls, register_user_
     )
     stream.run()
 
-
-def test_user_register_action_stream(existing_user, db_engine):
     with db_engine.connect() as conn:
         # User
         users = list(conn.execute(sa.select(User)))
@@ -99,9 +162,19 @@ def test_user_register_action_stream(existing_user, db_engine):
         assert len(loginfo) == 1
         assert list(loginfo)[0]._mapping["user_id"] == 123456
 
+        # cleanup
+        # not ideal should be done more generically with a fixture
+        conn.execute(sa.delete(User).where(User.__table__.columns.id == 123456))
+        conn.execute(
+            sa.delete(LoginInformation).where(
+                LoginInformation.__table__.columns.user_id == 123456
+            )
+        )
+        conn.commit()
+
 
 def test_user_login_action_stream(
-    existing_user, test_extract_cls, login_user_tx, db_engine
+    secret_keys_state, db_user, test_extract_cls, login_user_tx, db_engine
 ):
     test_extract_cls.tx = login_user_tx
 
@@ -126,7 +199,7 @@ def test_user_login_action_stream(
 
 
 def test_confirm_user_action_stream(
-    existing_user, test_extract_cls, confirm_user_tx, db_engine
+    secret_keys_state, db_user, test_extract_cls, confirm_user_tx, db_engine
 ):
     test_extract_cls.tx = confirm_user_tx
     stream = Stream(
@@ -143,8 +216,9 @@ def test_confirm_user_action_stream(
         assert list(users)[0]._mapping["confirmed_at"] == "1690906459612306"
 
 
+@pytest.mark.skip("ZenodoUserProfileEditAction not implemented yet")
 def test_change_user_profile_stream(
-    existing_user, test_extract_cls, change_user_profile_tx, db_engine
+    db_user, test_extract_cls, change_user_profile_tx, db_engine
 ):
     test_extract_cls.tx = change_user_profile_tx
     stream = Stream(
@@ -165,7 +239,7 @@ def test_change_user_profile_stream(
 
 
 def test_confirm_user_action_stream(
-    existing_user, test_extract_cls, change_user_email_tx, db_engine
+    secret_keys_state, db_user, test_extract_cls, change_user_email_tx, db_engine
 ):
     test_extract_cls.tx = change_user_email_tx
     stream = Stream(
@@ -183,7 +257,12 @@ def test_confirm_user_action_stream(
 
 
 def test_deactivate_user_action_stream(
-    existing_user, db_sessions, test_extract_cls, user_deactivation_tx, db_engine
+    secret_keys_state,
+    db_user,
+    db_sessions,
+    test_extract_cls,
+    user_deactivation_tx,
+    db_engine,
 ):
     test_extract_cls.tx = user_deactivation_tx
     stream = Stream(

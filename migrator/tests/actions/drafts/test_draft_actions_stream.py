@@ -27,7 +27,7 @@ from zenodo_rdm_migrator.transform.transactions import ZenodoTxTransform
 DB_URI = "postgresql+psycopg://invenio:invenio@localhost:5432/invenio"
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="module")
 def db_engine():
     tables = [
         PersistentIdentifier,
