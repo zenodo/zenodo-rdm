@@ -10,7 +10,12 @@
 
 from invenio_rdm_migrator.actions import TransformAction
 from invenio_rdm_migrator.load.postgresql.transactions.operations import OperationType
-from invenio_rdm_migrator.streams.actions import UserEditAction, UserRegistrationAction
+from invenio_rdm_migrator.streams.actions import (
+    UserDeactivationAction,
+    UserEditAction,
+    UserRegistrationAction,
+)
+from invenio_rdm_migrator.transform import IdentityTransform
 
 from ..transform.entries.users import ZenodoUserEntry
 
@@ -90,3 +95,59 @@ class ZenodoUserEditAction(TransformAction):
         login_info = user.pop("login_information")
 
         return dict(tx_id=self.tx.id, user=user, login_information=login_info)
+
+
+class ZenodoUserDeactivationAction(TransformAction):
+    """Zenodo to RDM user deactivation action."""
+
+    name = "deactivate-user"
+    load_cls = UserDeactivationAction
+
+    @classmethod
+    def matches_action(cls, tx):  # pragma: no cover
+        """Checks if the data corresponds with that required by the action."""
+        # one update on the account_user and multiple session deletes
+        account_seen = False
+        for operation in tx.operations:
+            if "accounts_user" == operation["source"]["table"]:
+                update_not_active = (
+                    operation["after"]["active"]
+                    or not operation["op"] == OperationType.UPDATE
+                )
+                if update_not_active or account_seen:
+                    return False
+
+                account_seen = True
+
+            elif "accounts_user_session_activity" == operation["source"]["table"]:
+                if not operation["op"] == OperationType.DELETE:
+                    return False
+            else:
+                return False
+
+        return True
+
+    # TODO
+    def _transform_data(self):  # pragma: no cover
+        """Transforms the data and returns an instance of the mapped_cls."""
+
+        user = None
+        sessions = []
+        ts = self.tx.operations[0]["source"]["ts_ms"]
+        for operation in self.tx.operations:
+            if "accounts_user" == operation["source"]["table"]:
+                operation["after"]["created"] = ts
+                operation["after"]["updated"] = ts
+                user = ZenodoUserEntry().transform(operation["after"])
+            else:  # can only be a session as per match function
+                # important: the data comes in "before"
+                sessions.append(IdentityTransform()._transform(operation["before"]))
+
+        # cannot guarantee user will be the first of the previous loop
+        for session in sessions:
+            session["user_id"] = user["id"]
+
+        login_info = user.pop("login_information")
+        return dict(
+            tx_id=self.tx.id, user=user, login_information=login_info, sessions=sessions
+        )

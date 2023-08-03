@@ -11,7 +11,12 @@ import pytest
 import sqlalchemy as sa
 from invenio_rdm_migrator.load.postgresql.transactions import PostgreSQLTx
 from invenio_rdm_migrator.streams import Stream
-from invenio_rdm_migrator.streams.models.users import LoginInformation, User
+from invenio_rdm_migrator.streams.models.users import (
+    LoginInformation,
+    SessionActivity,
+    User,
+)
+from sqlalchemy.orm import Session
 
 from zenodo_rdm_migrator.transform.transactions import ZenodoTxTransform
 
@@ -20,7 +25,7 @@ DB_URI = "postgresql+psycopg://invenio:invenio@localhost:5432/invenio"
 
 @pytest.fixture(scope="function")
 def db_engine():
-    tables = [LoginInformation, User]
+    tables = [LoginInformation, SessionActivity, User]
     eng = sa.create_engine(DB_URI)
 
     # create tables
@@ -32,6 +37,40 @@ def db_engine():
     # remove tables
     for model in tables:
         model.__table__.drop(eng)
+
+
+@pytest.fixture(scope="function")
+def db_sessions(db_engine):
+    sessions_data = [
+        {
+            "created": 1691051452717105,
+            "updated": 1691051452717105,
+            "sid_s": "754493997337aa0a_64cb65bc",
+            "user_id": 123456,
+            "browser": None,
+            "browser_version": None,
+            "country": None,
+            "device": None,
+            "ip": None,
+            "os": None,
+        },
+        {
+            "created": 1691051452717105,
+            "updated": 1691051452717105,
+            "sid_s": "bc51d8ea3ccc285c_64cb64fa",
+            "user_id": 123456,
+            "browser": None,
+            "browser_version": None,
+            "country": None,
+            "device": None,
+            "ip": None,
+            "os": None,
+        },
+    ]
+    with Session(db_engine) as session:
+        for session_data in sessions_data:
+            session.add(SessionActivity(**session_data))
+        session.commit()
 
 
 # db_engine will create tables needed for existing_user
@@ -141,3 +180,24 @@ def test_confirm_user_action_stream(
         users = list(conn.execute(sa.select(User)))
         assert len(users) == 1
         assert list(users)[0]._mapping["email"] == "somenewaddr@domain.org"
+
+
+def test_deactivate_user_action_stream(
+    existing_user, db_sessions, test_extract_cls, user_deactivation_tx, db_engine
+):
+    test_extract_cls.tx = user_deactivation_tx
+    stream = Stream(
+        name="action",
+        extract=test_extract_cls(),
+        transform=ZenodoTxTransform(),
+        load=PostgreSQLTx(DB_URI),
+    )
+    stream.run()
+
+    with db_engine.connect() as conn:
+        users = list(conn.execute(sa.select(User)))
+        assert len(users) == 1
+        assert list(users)[0]._mapping["active"] == False
+
+        sessions = list(conn.execute(sa.select(SessionActivity)))
+        assert len(sessions) == 0

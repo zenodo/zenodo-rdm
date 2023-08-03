@@ -10,9 +10,14 @@
 
 from invenio_rdm_migrator.extract import Tx
 from invenio_rdm_migrator.load.postgresql.transactions.operations import OperationType
-from invenio_rdm_migrator.streams.actions import UserEditAction, UserRegistrationAction
+from invenio_rdm_migrator.streams.actions import (
+    UserDeactivationAction,
+    UserEditAction,
+    UserRegistrationAction,
+)
 
 from zenodo_rdm_migrator.actions import (
+    ZenodoUserDeactivationAction,
     ZenodoUserEditAction,
     ZenodoUserRegistrationAction,
 )
@@ -149,3 +154,168 @@ def test_user_edit_transform_with_valid_data(
     for tx in [login_user_tx, confirm_user_tx]:
         action = ZenodoUserEditAction(Tx(id=tx["tx_id"], operations=tx["operations"]))
         assert isinstance(action.transform(), UserEditAction)
+
+
+###
+# USER DEACTIVATION
+###
+def test_user_deactivation_matches_with_one_user():
+    assert (
+        ZenodoUserDeactivationAction.matches_action(
+            Tx(
+                id=1,
+                operations=[
+                    {
+                        "op": OperationType.UPDATE,
+                        "source": {"table": "accounts_user"},
+                        "after": {"active": False},
+                    },
+                ],
+            )
+        )
+        is True
+    )
+
+
+def test_user_deactivation_matches_with_one_session():
+    assert (
+        ZenodoUserDeactivationAction.matches_action(
+            Tx(
+                id=1,
+                operations=[
+                    {
+                        "op": OperationType.UPDATE,
+                        "source": {"table": "accounts_user"},
+                        "after": {"active": False},
+                    },
+                    {
+                        "op": OperationType.DELETE,
+                        "source": {"table": "accounts_user_session_activity"},
+                        "after": {},
+                    },
+                ],
+            )
+        )
+        is True
+    )
+
+
+def test_user_deactivation_matches_with_multiple_session():
+    assert (
+        ZenodoUserDeactivationAction.matches_action(
+            Tx(
+                id=1,
+                operations=[
+                    {
+                        "op": OperationType.UPDATE,
+                        "source": {"table": "accounts_user"},
+                        "after": {"active": False},
+                    },
+                    {
+                        "op": OperationType.DELETE,
+                        "source": {"table": "accounts_user_session_activity"},
+                        "after": {},
+                    },
+                    {
+                        "op": OperationType.DELETE,
+                        "source": {"table": "accounts_user_session_activity"},
+                        "after": {},
+                    },
+                ],
+            )
+        )
+        is True
+    )
+
+
+def test_user_deactivation_matches_with_invalid_data():
+    not_update = [
+        {
+            "op": OperationType.INSERT,
+            "source": {"table": "accounts_user"},
+            "after": {"active": False},
+        },
+    ]
+
+    still_active = [
+        {
+            "op": OperationType.INSERT,
+            "source": {"table": "accounts_user"},
+            "after": {"active": True},
+        },
+    ]
+
+    not_account = [
+        {"op": OperationType.UPDATE, "source": {"table": "another"}, "after": {}},
+    ]
+
+    account_no_session = [
+        {
+            "op": OperationType.UPDATE,
+            "source": {"table": "accounts_user"},
+            "after": {"active": False},
+        },
+        {"op": OperationType.DELETE, "source": {"table": "another"}, "after": {}},
+    ]
+
+    session_no_account = [
+        {
+            "op": OperationType.DELETE,
+            "source": {"table": "accounts_user_session_activity"},
+            "after": {},
+        },
+        {"op": OperationType.UPDATE, "source": {"table": "another"}, "after": {}},
+    ]
+
+    session_not_update = [
+        {
+            "op": OperationType.UPDATE,
+            "source": {"table": "accounts_user"},
+            "after": {"active": False},
+        },
+        {
+            "op": OperationType.UPDATE,
+            "source": {"table": "accounts_user_session_activity"},
+            "after": {},
+        },
+    ]
+
+    extra_table = [
+        {
+            "op": OperationType.UPDATE,
+            "source": {"table": "accounts_user"},
+            "after": {"active": False},
+        },
+        {
+            "op": OperationType.DELETE,
+            "source": {"table": "accounts_user_session_activity"},
+            "after": {},
+        },
+        {"op": OperationType.UPDATE, "source": {"table": "another"}, "after": {}},
+    ]
+
+    for invalid_ops in [
+        not_update,
+        still_active,
+        not_account,
+        account_no_session,
+        session_no_account,
+        session_not_update,
+        extra_table,
+    ]:
+        assert (
+            ZenodoUserDeactivationAction.matches_action(
+                Tx(id=1, operations=invalid_ops)
+            )
+            is False
+        )
+
+
+def test_user_edit_transform_with_valid_data(secret_keys_state, user_deactivation_tx):
+    action = ZenodoUserDeactivationAction(
+        Tx(
+            id=user_deactivation_tx["tx_id"],
+            operations=user_deactivation_tx["operations"],
+        )
+    )
+    assert isinstance(action.transform(), UserDeactivationAction)

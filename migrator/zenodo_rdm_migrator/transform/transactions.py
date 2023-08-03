@@ -12,6 +12,7 @@ from invenio_rdm_migrator.transform import BaseTxTransform
 
 from ..actions import (
     ZenodoDraftCreateAction,
+    ZenodoUserDeactivationAction,
     ZenodoUserEditAction,
     ZenodoUserRegistrationAction,
 )
@@ -22,6 +23,7 @@ class ZenodoTxTransform(BaseTxTransform):
 
     actions = [
         ZenodoDraftCreateAction,
+        ZenodoUserDeactivationAction,
         ZenodoUserEditAction,
         ZenodoUserRegistrationAction,
     ]
