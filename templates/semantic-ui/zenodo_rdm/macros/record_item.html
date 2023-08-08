@@ -103,20 +103,20 @@
           <small>
             {% if unique_views is defined %}
               <div id="uniqueViews" class="ui transparent label stats-popup">
-                <i class="ui eye icon" aria-label="{{ _('Unique views') }}"></i>
+                <i class="ui eye icon" aria-label="{{ _('Total views') }}"></i>
                 {{ unique_views }}
                 <div class="ui tiny popup">
-                  {{ _("Unique views") }}
+                  {{ _("Total views") }}
                 </div>
               </div>
             {% endif %}
 
             {% if unique_downloads is defined %}
               <div id="uniqueDownloads" class="ui transparent label stats-popup">
-                <i class="ui download icon" aria-label="{{ _('Unique downloads') }}"></i>
+                <i class="ui download icon" aria-label="{{ _('Total downloads') }}"></i>
                 {{ unique_downloads}}
                 <div class="ui tiny popup">
-                  {{ _("Unique downloads") }}
+                  {{ _("Total downloads") }}
                 </div>
               </div>
             {% endif %}
