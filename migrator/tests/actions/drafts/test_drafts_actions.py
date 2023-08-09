@@ -90,7 +90,7 @@ class TestDraftCreateAction:
                 is False
             )
 
-    def test_transform_with_valid_data(self, create_draft_tx):
+    def test_transform_with_valid_data(self, state, create_draft_tx):
         action = DraftCreateAction(
             Tx(id=create_draft_tx["tx_id"], operations=create_draft_tx["operations"])
         )

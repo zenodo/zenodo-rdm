@@ -10,9 +10,14 @@
 import pytest
 from invenio_rdm_migrator.extract import Extract, Tx
 from invenio_rdm_migrator.state import STATE, StateDB
-from invenio_rdm_migrator.streams.models.files import FilesBucket
+from invenio_rdm_migrator.streams.models.files import (
+    FilesBucket,
+    FilesInstance,
+    FilesObjectVersion,
+)
 from invenio_rdm_migrator.streams.models.pids import PersistentIdentifier
 from invenio_rdm_migrator.streams.models.records import (
+    RDMDraftFile,
     RDMDraftMetadata,
     RDMParentMetadata,
     RDMVersionState,
@@ -57,6 +62,16 @@ def secret_keys_state(state):
 
 
 @pytest.fixture(scope="function")
+def buckets_state(state):
+    """Adds a bucket to draft map to the state."""
+    state.BUCKETS.add(
+        "0e12b4b6-9cc7-46df-9a04-c11c478de211",
+        {"draft_id": "d94f793c-47d2-48e2-9867-ca597b4ebb41"},
+    )
+    return state
+
+
+@pytest.fixture(scope="function")
 def test_extract_cls():
     """Extract class with customizable tx."""
 
@@ -91,9 +106,12 @@ def db_engine(db_uri):
     """
     tables = [
         FilesBucket,
+        FilesInstance,
+        FilesObjectVersion,
         LoginInformation,
         PersistentIdentifier,
         RDMDraftMetadata,
+        RDMDraftFile,
         RDMParentMetadata,
         RDMVersionState,
         SessionActivity,
