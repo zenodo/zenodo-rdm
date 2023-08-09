@@ -8,11 +8,13 @@
 """Transform actions module."""
 
 from .drafts import DraftCreateAction, DraftEditAction
+from .files import DraftFileUploadAction
 from .users import UserDeactivationAction, UserEditAction, UserRegistrationAction
 
 __all__ = (
     "DraftCreateAction",
     "DraftEditAction",
+    "DraftFileUploadAction",
     "UserDeactivationAction",
     "UserEditAction",
     "UserRegistrationAction",
