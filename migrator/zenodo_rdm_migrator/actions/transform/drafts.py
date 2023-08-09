@@ -24,7 +24,7 @@ class DraftCreateAction(TransformAction, JSONTransformMixin):
     load_cls = load.DraftCreateAction
 
     @classmethod
-    def matches_action(cls, tx):  # pragma: no cover
+    def matches_action(cls, tx):
         """Checks if the data corresponds with that required by the action."""
         rules = {
             "pidstore_pid": OperationType.INSERT,
@@ -44,7 +44,7 @@ class DraftCreateAction(TransformAction, JSONTransformMixin):
 
         return len(rules) == 0
 
-    def _transform_data(self):  # pragma: no cover
+    def _transform_data(self):
         """Transforms the data and returns an instance of the mapped_cls."""
         # draft files should be a separate transaction
         for operation in self.tx.operations:
