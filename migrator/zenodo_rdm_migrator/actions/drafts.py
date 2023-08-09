@@ -11,12 +11,12 @@
 from invenio_rdm_migrator.actions import TransformAction
 from invenio_rdm_migrator.load.postgresql.transactions.operations import OperationType
 from invenio_rdm_migrator.streams.actions import DraftCreateAction
-from invenio_rdm_migrator.transform import IdentityTransform
+from invenio_rdm_migrator.transform import IdentityTransform, JSONTransformMixin
 
 from ..transform.records import ZenodoRecordTransform
 
 
-class ZenodoDraftCreateAction(TransformAction):
+class ZenodoDraftCreateAction(TransformAction, JSONTransformMixin):
     """Zenodo to RDM draft creation action."""
 
     name = "create-zenodo-draft"
@@ -46,7 +46,6 @@ class ZenodoDraftCreateAction(TransformAction):
     def _transform_data(self):  # pragma: no cover
         """Transforms the data and returns an instance of the mapped_cls."""
         # draft files should be a separate transaction
-
         for operation in self.tx.operations:
             table_name = operation["source"]["table"]
 
@@ -56,6 +55,9 @@ class ZenodoDraftCreateAction(TransformAction):
             elif table_name == "files_bucket":
                 bucket = IdentityTransform()._transform(operation["after"])
             elif table_name == "records_metadata":
+                # need to json load the draft json
+                # the parent json is calculated on transform
+                self._load_json_fields(data=operation["after"], fields=["json"])
                 draft_and_parent = ZenodoRecordTransform()._transform(
                     operation["after"]
                 )
