@@ -10,14 +10,16 @@
 
 from invenio_rdm_migrator.extract import Tx
 from invenio_rdm_migrator.load.postgresql.transactions.operations import OperationType
-from invenio_rdm_migrator.streams.actions import DraftCreateAction
+from invenio_rdm_migrator.streams.actions import (
+    DraftCreateAction as LoadDraftCreateAction,
+)
 
-from zenodo_rdm_migrator.actions import ZenodoDraftCreateAction
+from zenodo_rdm_migrator.actions import DraftCreateAction
 
 
 def test_matches_with_valid_data(secret_keys_state):
     assert (
-        ZenodoDraftCreateAction.matches_action(
+        DraftCreateAction.matches_action(
             Tx(
                 id=1,
                 operations=[
@@ -68,13 +70,12 @@ def test_matches_with_invalid_data(secret_keys_state):
 
     for invalid_ops in [missing_pid, missing_bucket, missing_draft]:
         assert (
-            ZenodoDraftCreateAction.matches_action(Tx(id=1, operations=invalid_ops))
-            is False
+            DraftCreateAction.matches_action(Tx(id=1, operations=invalid_ops)) is False
         )
 
 
 def test_transform_with_valid_data(secret_keys_state, create_draft_tx):
-    action = ZenodoDraftCreateAction(
+    action = DraftCreateAction(
         Tx(id=create_draft_tx["tx_id"], operations=create_draft_tx["operations"])
     )
-    assert isinstance(action.transform(), DraftCreateAction)
+    assert isinstance(action.transform(), LoadDraftCreateAction)

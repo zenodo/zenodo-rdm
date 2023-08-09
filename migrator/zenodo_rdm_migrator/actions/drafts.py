@@ -10,17 +10,19 @@
 
 from invenio_rdm_migrator.actions import TransformAction
 from invenio_rdm_migrator.load.postgresql.transactions.operations import OperationType
-from invenio_rdm_migrator.streams.actions import DraftCreateAction
+from invenio_rdm_migrator.streams.actions import (
+    DraftCreateAction as LoadDraftCreateAction,
+)
 from invenio_rdm_migrator.transform import IdentityTransform, JSONTransformMixin
 
 from ..transform.records import ZenodoRecordTransform
 
 
-class ZenodoDraftCreateAction(TransformAction, JSONTransformMixin):
+class DraftCreateAction(TransformAction, JSONTransformMixin):
     """Zenodo to RDM draft creation action."""
 
     name = "create-zenodo-draft"
-    load_cls = DraftCreateAction
+    load_cls = LoadDraftCreateAction
 
     @classmethod
     def matches_action(cls, tx):  # pragma: no cover

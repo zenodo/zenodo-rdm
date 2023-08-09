@@ -216,7 +216,7 @@ def test_confirm_user_action_stream(
         assert list(users)[0]._mapping["confirmed_at"] == "1690906459612306"
 
 
-@pytest.mark.skip("ZenodoUserProfileEditAction not implemented yet")
+@pytest.mark.skip("UserProfileEditAction not implemented yet")
 def test_change_user_profile_stream(
     db_user, test_extract_cls, change_user_profile_tx, db_engine
 ):

@@ -7,16 +7,12 @@
 
 """Actions module."""
 
-from .drafts import ZenodoDraftCreateAction
-from .users import (
-    ZenodoUserDeactivationAction,
-    ZenodoUserEditAction,
-    ZenodoUserRegistrationAction,
-)
+from .drafts import DraftCreateAction
+from .users import UserDeactivationAction, UserEditAction, UserRegistrationAction
 
 __all__ = (
-    "ZenodoDraftCreateAction",
-    "ZenodoUserDeactivationAction",
-    "ZenodoUserEditAction",
-    "ZenodoUserRegistrationAction",
+    "DraftCreateAction",
+    "UserDeactivationAction",
+    "UserEditAction",
+    "UserRegistrationAction",
 )

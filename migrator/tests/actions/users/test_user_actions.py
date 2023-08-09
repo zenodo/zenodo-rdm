@@ -11,15 +11,17 @@
 from invenio_rdm_migrator.extract import Tx
 from invenio_rdm_migrator.load.postgresql.transactions.operations import OperationType
 from invenio_rdm_migrator.streams.actions import (
-    UserDeactivationAction,
-    UserEditAction,
-    UserRegistrationAction,
+    UserDeactivationAction as LoadUserDeactivationAction,
+)
+from invenio_rdm_migrator.streams.actions import UserEditAction as LoadUserEditAction
+from invenio_rdm_migrator.streams.actions import (
+    UserRegistrationAction as LoadUserRegistrationAction,
 )
 
 from zenodo_rdm_migrator.actions import (
-    ZenodoUserDeactivationAction,
-    ZenodoUserEditAction,
-    ZenodoUserRegistrationAction,
+    UserDeactivationAction,
+    UserEditAction,
+    UserRegistrationAction,
 )
 
 ###
@@ -29,7 +31,7 @@ from zenodo_rdm_migrator.actions import (
 
 def test_user_registration_matches_with_valid_data():
     assert (
-        ZenodoUserRegistrationAction.matches_action(
+        UserRegistrationAction.matches_action(
             Tx(
                 id=1,
                 operations=[
@@ -65,9 +67,7 @@ def test_user_registration_matches_with_invalid_data():
 
     for invalid_ops in [missing_profile, missing_account]:
         assert (
-            ZenodoUserRegistrationAction.matches_action(
-                Tx(id=1, operations=invalid_ops)
-            )
+            UserRegistrationAction.matches_action(Tx(id=1, operations=invalid_ops))
             is False
         )
 
@@ -75,10 +75,10 @@ def test_user_registration_matches_with_invalid_data():
 def test_user_registration_transform_with_valid_data(
     secret_keys_state, register_user_tx
 ):
-    action = ZenodoUserRegistrationAction(
+    action = UserRegistrationAction(
         Tx(id=register_user_tx["tx_id"], operations=register_user_tx["operations"])
     )
-    assert isinstance(action.transform(), UserRegistrationAction)
+    assert isinstance(action.transform(), LoadUserRegistrationAction)
 
 
 ###
@@ -88,7 +88,7 @@ def test_user_registration_transform_with_valid_data(
 
 def test_user_edit_matches_with_one_op():
     assert (
-        ZenodoUserEditAction.matches_action(
+        UserEditAction.matches_action(
             Tx(
                 id=1,
                 operations=[
@@ -106,7 +106,7 @@ def test_user_edit_matches_with_one_op():
 
 def test_user_edit_matches_with_multiple_ops():
     assert (
-        ZenodoUserEditAction.matches_action(
+        UserEditAction.matches_action(
             Tx(
                 id=1,
                 operations=[
@@ -142,18 +142,15 @@ def test_user_edit_matches_with_invalid_data():
     ]
 
     for invalid_ops in [not_update, not_account, one_not_account]:
-        assert (
-            ZenodoUserEditAction.matches_action(Tx(id=1, operations=invalid_ops))
-            is False
-        )
+        assert UserEditAction.matches_action(Tx(id=1, operations=invalid_ops)) is False
 
 
 def test_user_edit_transform_with_valid_data(
     secret_keys_state, login_user_tx, confirm_user_tx
 ):
     for tx in [login_user_tx, confirm_user_tx]:
-        action = ZenodoUserEditAction(Tx(id=tx["tx_id"], operations=tx["operations"]))
-        assert isinstance(action.transform(), UserEditAction)
+        action = UserEditAction(Tx(id=tx["tx_id"], operations=tx["operations"]))
+        assert isinstance(action.transform(), LoadUserEditAction)
 
 
 ###
@@ -161,7 +158,7 @@ def test_user_edit_transform_with_valid_data(
 ###
 def test_user_deactivation_matches_with_one_user():
     assert (
-        ZenodoUserDeactivationAction.matches_action(
+        UserDeactivationAction.matches_action(
             Tx(
                 id=1,
                 operations=[
@@ -179,7 +176,7 @@ def test_user_deactivation_matches_with_one_user():
 
 def test_user_deactivation_matches_with_one_session():
     assert (
-        ZenodoUserDeactivationAction.matches_action(
+        UserDeactivationAction.matches_action(
             Tx(
                 id=1,
                 operations=[
@@ -202,7 +199,7 @@ def test_user_deactivation_matches_with_one_session():
 
 def test_user_deactivation_matches_with_multiple_session():
     assert (
-        ZenodoUserDeactivationAction.matches_action(
+        UserDeactivationAction.matches_action(
             Tx(
                 id=1,
                 operations=[
@@ -304,18 +301,16 @@ def test_user_deactivation_matches_with_invalid_data():
         extra_table,
     ]:
         assert (
-            ZenodoUserDeactivationAction.matches_action(
-                Tx(id=1, operations=invalid_ops)
-            )
+            UserDeactivationAction.matches_action(Tx(id=1, operations=invalid_ops))
             is False
         )
 
 
 def test_user_edit_transform_with_valid_data(secret_keys_state, user_deactivation_tx):
-    action = ZenodoUserDeactivationAction(
+    action = UserDeactivationAction(
         Tx(
             id=user_deactivation_tx["tx_id"],
             operations=user_deactivation_tx["operations"],
         )
     )
-    assert isinstance(action.transform(), UserDeactivationAction)
+    assert isinstance(action.transform(), LoadUserDeactivationAction)

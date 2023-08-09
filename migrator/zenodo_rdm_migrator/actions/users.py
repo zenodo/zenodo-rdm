@@ -11,20 +11,22 @@
 from invenio_rdm_migrator.actions import TransformAction
 from invenio_rdm_migrator.load.postgresql.transactions.operations import OperationType
 from invenio_rdm_migrator.streams.actions import (
-    UserDeactivationAction,
-    UserEditAction,
-    UserRegistrationAction,
+    UserDeactivationAction as LoadUserDeactivationAction,
+)
+from invenio_rdm_migrator.streams.actions import UserEditAction as LoadUserEditAction
+from invenio_rdm_migrator.streams.actions import (
+    UserRegistrationAction as LoadUserRegistrationAction,
 )
 from invenio_rdm_migrator.transform import IdentityTransform
 
 from ..transform.entries.users import ZenodoUserEntry
 
 
-class ZenodoUserRegistrationAction(TransformAction):
+class UserRegistrationAction(TransformAction):
     """Zenodo to RDM user registration action."""
 
     name = "register-user"
-    load_cls = UserRegistrationAction
+    load_cls = LoadUserRegistrationAction
 
     @classmethod
     def matches_action(cls, tx):  # pragma: no cover
@@ -61,11 +63,11 @@ class ZenodoUserRegistrationAction(TransformAction):
         return dict(tx_id=self.tx.id, user=user, login_information=login_info)
 
 
-class ZenodoUserEditAction(TransformAction):
+class UserEditAction(TransformAction):
     """Zenodo to RDM user edit action."""
 
     name = "edit-user"
-    load_cls = UserEditAction
+    load_cls = LoadUserEditAction
 
     @classmethod
     def matches_action(cls, tx):  # pragma: no cover
@@ -97,11 +99,11 @@ class ZenodoUserEditAction(TransformAction):
         return dict(tx_id=self.tx.id, user=user, login_information=login_info)
 
 
-class ZenodoUserDeactivationAction(TransformAction):
+class UserDeactivationAction(TransformAction):
     """Zenodo to RDM user deactivation action."""
 
     name = "deactivate-user"
-    load_cls = UserDeactivationAction
+    load_cls = LoadUserDeactivationAction
 
     @classmethod
     def matches_action(cls, tx):  # pragma: no cover
