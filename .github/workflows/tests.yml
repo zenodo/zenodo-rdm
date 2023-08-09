@@ -38,6 +38,8 @@ jobs:
           include:
           - package-dir: "migrator"
             ignore-failure: true
+            python-version: 3.9
+            db-service: postgresql13
     env:
       DB: ${{ matrix.db-service }}
       SEARCH: ${{ matrix.search-service }}
