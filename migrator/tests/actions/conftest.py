@@ -10,7 +10,20 @@
 import pytest
 from invenio_rdm_migrator.extract import Extract, Tx
 from invenio_rdm_migrator.state import STATE, StateDB
+from invenio_rdm_migrator.streams.models.files import FilesBucket
+from invenio_rdm_migrator.streams.models.pids import PersistentIdentifier
+from invenio_rdm_migrator.streams.models.records import (
+    RDMDraftMetadata,
+    RDMParentMetadata,
+    RDMVersionState,
+)
+from invenio_rdm_migrator.streams.models.users import (
+    LoginInformation,
+    SessionActivity,
+    User,
+)
 from invenio_rdm_migrator.streams.records.state import ParentModelValidator
+from sqlalchemy import create_engine
 
 
 # FIXME: deduplicate code allowing invenio-rdm-migrator to define re-usable fixtures
@@ -58,3 +71,42 @@ def test_extract_cls():
             yield Tx(id=self.tx["tx_id"], operations=self.tx["operations"])
 
     return TestExtractor
+
+
+@pytest.fixture(scope="session")
+def db_uri():
+    """Database connection string."""
+    return "postgresql+psycopg://invenio:invenio@localhost:5432/invenio"
+
+
+@pytest.fixture(scope="module")
+def db_engine(db_uri):
+    """Setup database.
+
+    Scope: module
+
+    Normally, tests should use the function-scoped :py:data:`db` fixture
+    instead. This fixture takes care of creating the database/tables and
+    removing the tables once tests are done.
+    """
+    tables = [
+        FilesBucket,
+        LoginInformation,
+        PersistentIdentifier,
+        RDMDraftMetadata,
+        RDMParentMetadata,
+        RDMVersionState,
+        SessionActivity,
+        User,
+    ]
+    eng = create_engine(db_uri)
+
+    # create tables
+    for model in tables:
+        model.__table__.create(bind=eng, checkfirst=True)
+
+    yield eng
+
+    # remove tables
+    for model in tables:
+        model.__table__.drop(eng)

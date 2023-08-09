@@ -9,9 +9,7 @@
 
 from uuid import UUID
 
-import pytest
 import sqlalchemy as sa
-from invenio_rdm_migrator.extract import Extract, Tx
 from invenio_rdm_migrator.load.postgresql.transactions import PostgreSQLTx
 from invenio_rdm_migrator.streams import Stream
 from invenio_rdm_migrator.streams.models.files import FilesBucket
@@ -24,33 +22,9 @@ from invenio_rdm_migrator.streams.models.records import (
 
 from zenodo_rdm_migrator.transform.transactions import ZenodoTxTransform
 
-DB_URI = "postgresql+psycopg://invenio:invenio@localhost:5432/invenio"
-
-
-@pytest.fixture(scope="module")
-def db_engine():
-    tables = [
-        PersistentIdentifier,
-        FilesBucket,
-        RDMDraftMetadata,
-        RDMParentMetadata,
-        RDMVersionState,
-    ]
-    eng = sa.create_engine(DB_URI)
-
-    # create tables
-    for model in tables:
-        model.__table__.create(bind=eng, checkfirst=True)
-
-    yield eng
-
-    # remove tables
-    for model in tables:
-        model.__table__.drop(eng)
-
 
 def test_draft_create_action_stream(
-    state, test_extract_cls, create_draft_tx, db_engine
+    state, test_extract_cls, create_draft_tx, db_uri, db_engine
 ):
     """Creates a DB on disk and initializes all the migrator related tables on it."""
     # test
@@ -61,7 +35,7 @@ def test_draft_create_action_stream(
         name="action",
         extract=test_extract_cls(),
         transform=ZenodoTxTransform(),
-        load=PostgreSQLTx(DB_URI),
+        load=PostgreSQLTx(db_uri),
     )
     stream.run()
 

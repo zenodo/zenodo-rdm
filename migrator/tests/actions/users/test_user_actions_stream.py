@@ -21,24 +21,6 @@ from sqlalchemy.orm.exc import ObjectDeletedError
 
 from zenodo_rdm_migrator.transform.transactions import ZenodoTxTransform
 
-DB_URI = "postgresql+psycopg://invenio:invenio@localhost:5432/invenio"
-
-
-@pytest.fixture(scope="module")
-def db_engine():
-    tables = [LoginInformation, SessionActivity, User]
-    eng = sa.create_engine(DB_URI)
-
-    # create tables
-    for model in tables:
-        model.__table__.create(bind=eng, checkfirst=True)
-
-    yield eng
-
-    # remove tables
-    for model in tables:
-        model.__table__.drop(eng)
-
 
 @pytest.fixture(scope="function")
 def db_sessions(db_engine):
@@ -139,7 +121,7 @@ def db_user(db_engine):
 
 
 def test_user_register_action_stream(
-    secret_keys_state, db_engine, test_extract_cls, register_user_tx
+    secret_keys_state, db_uri, db_engine, test_extract_cls, register_user_tx
 ):
     test_extract_cls.tx = register_user_tx
 
@@ -147,7 +129,7 @@ def test_user_register_action_stream(
         name="action",
         extract=test_extract_cls(),
         transform=ZenodoTxTransform(),
-        load=PostgreSQLTx(DB_URI),
+        load=PostgreSQLTx(db_uri),
     )
     stream.run()
 
@@ -174,7 +156,7 @@ def test_user_register_action_stream(
 
 
 def test_user_login_action_stream(
-    secret_keys_state, db_user, test_extract_cls, login_user_tx, db_engine
+    secret_keys_state, db_user, db_uri, db_engine, test_extract_cls, login_user_tx
 ):
     test_extract_cls.tx = login_user_tx
 
@@ -182,7 +164,7 @@ def test_user_login_action_stream(
         name="action",
         extract=test_extract_cls(),
         transform=ZenodoTxTransform(),
-        load=PostgreSQLTx(DB_URI),
+        load=PostgreSQLTx(db_uri),
     )
     stream.run()
 
@@ -199,14 +181,14 @@ def test_user_login_action_stream(
 
 
 def test_confirm_user_action_stream(
-    secret_keys_state, db_user, test_extract_cls, confirm_user_tx, db_engine
+    secret_keys_state, db_user, db_uri, db_engine, test_extract_cls, confirm_user_tx
 ):
     test_extract_cls.tx = confirm_user_tx
     stream = Stream(
         name="action",
         extract=test_extract_cls(),
         transform=ZenodoTxTransform(),
-        load=PostgreSQLTx(DB_URI),
+        load=PostgreSQLTx(db_uri),
     )
     stream.run()
 
@@ -218,14 +200,14 @@ def test_confirm_user_action_stream(
 
 @pytest.mark.skip("UserProfileEditAction not implemented yet")
 def test_change_user_profile_stream(
-    db_user, test_extract_cls, change_user_profile_tx, db_engine
+    db_user, db_uri, db_engine, test_extract_cls, change_user_profile_tx
 ):
     test_extract_cls.tx = change_user_profile_tx
     stream = Stream(
         name="action",
         extract=test_extract_cls(),
         transform=ZenodoTxTransform(),
-        load=PostgreSQLTx(DB_URI),
+        load=PostgreSQLTx(db_uri),
     )
     stream.run()
 
@@ -239,14 +221,19 @@ def test_change_user_profile_stream(
 
 
 def test_confirm_user_action_stream(
-    secret_keys_state, db_user, test_extract_cls, change_user_email_tx, db_engine
+    secret_keys_state,
+    db_user,
+    db_uri,
+    db_engine,
+    test_extract_cls,
+    change_user_email_tx,
 ):
     test_extract_cls.tx = change_user_email_tx
     stream = Stream(
         name="action",
         extract=test_extract_cls(),
         transform=ZenodoTxTransform(),
-        load=PostgreSQLTx(DB_URI),
+        load=PostgreSQLTx(db_uri),
     )
     stream.run()
 
@@ -260,16 +247,17 @@ def test_deactivate_user_action_stream(
     secret_keys_state,
     db_user,
     db_sessions,
+    db_uri,
+    db_engine,
     test_extract_cls,
     user_deactivation_tx,
-    db_engine,
 ):
     test_extract_cls.tx = user_deactivation_tx
     stream = Stream(
         name="action",
         extract=test_extract_cls(),
         transform=ZenodoTxTransform(),
-        load=PostgreSQLTx(DB_URI),
+        load=PostgreSQLTx(db_uri),
     )
     stream.run()
 
