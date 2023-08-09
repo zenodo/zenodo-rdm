@@ -22,7 +22,7 @@ class UserRegistrationAction(TransformAction):
     load_cls = load.UserRegistrationAction
 
     @classmethod
-    def matches_action(cls, tx):  # pragma: no cover
+    def matches_action(cls, tx):
         """Checks if the data corresponds with that required by the action."""
         rules = {
             "userprofiles_userprofile": OperationType.INSERT,
@@ -39,7 +39,7 @@ class UserRegistrationAction(TransformAction):
 
         return len(rules) == 0
 
-    def _transform_data(self):  # pragma: no cover
+    def _transform_data(self):
         """Transforms the data and returns an instance of the mapped_cls."""
         payload = {}
         for operation in self.tx.operations:
@@ -69,7 +69,7 @@ class UserEditAction(TransformAction):
     load_cls = load.UserEditAction
 
     @classmethod
-    def matches_action(cls, tx):  # pragma: no cover
+    def matches_action(cls, tx):
         """Checks if the data corresponds with that required by the action."""
         # all operations are updates on the user table
         # in some cases (e.g. user confirmation there are two due to the login information)
@@ -82,7 +82,7 @@ class UserEditAction(TransformAction):
 
         return len(tx.operations) >= 1  # there was at least one matching op
 
-    def _transform_data(self):  # pragma: no cover
+    def _transform_data(self):
         """Transforms the data and returns an instance of the mapped_cls."""
         # use only the latest updated information
         payload = {**self.tx.operations[-1]["after"]}
@@ -110,7 +110,7 @@ class UserDeactivationAction(TransformAction):
     load_cls = load.UserDeactivationAction
 
     @classmethod
-    def matches_action(cls, tx):  # pragma: no cover
+    def matches_action(cls, tx):
         """Checks if the data corresponds with that required by the action."""
         # one update on the account_user and multiple session deletes
         account_seen = False
@@ -133,8 +133,7 @@ class UserDeactivationAction(TransformAction):
 
         return True
 
-    # TODO
-    def _transform_data(self):  # pragma: no cover
+    def _transform_data(self):
         """Transforms the data and returns an instance of the mapped_cls."""
         user = None
         sessions = []
