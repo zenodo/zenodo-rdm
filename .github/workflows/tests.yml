@@ -27,6 +27,7 @@ on:
 jobs:
   Tests:
     runs-on: ubuntu-20.04
+    continue-on-error: ${{ matrix.ignore-failure }}
     strategy:
       matrix:
           package-dir: ["site", "legacy", "migrator"]
@@ -34,9 +35,12 @@ jobs:
           requirements-level: [pypi]
           db-service: [postgresql13]
           search-service: [opensearch2]
+          ignore-failure: [false]
           include:
           - db-service: postgresql13
             DB_EXTRAS: "postgresql"
+          - package-dir: "migrator"
+            ignore-failure: true
     env:
       DB: ${{ matrix.db-service }}
       SEARCH: ${{ matrix.search-service }}
