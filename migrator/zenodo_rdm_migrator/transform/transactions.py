@@ -10,7 +10,7 @@
 
 from invenio_rdm_migrator.transform import BaseTxTransform
 
-from ..actions import (
+from ..actions.transform import (
     DraftCreateAction,
     UserDeactivationAction,
     UserEditAction,

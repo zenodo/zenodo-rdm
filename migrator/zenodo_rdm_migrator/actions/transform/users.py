@@ -10,23 +10,16 @@
 
 from invenio_rdm_migrator.actions import TransformAction
 from invenio_rdm_migrator.load.postgresql.transactions.operations import OperationType
-from invenio_rdm_migrator.streams.actions import (
-    UserDeactivationAction as LoadUserDeactivationAction,
-)
-from invenio_rdm_migrator.streams.actions import UserEditAction as LoadUserEditAction
-from invenio_rdm_migrator.streams.actions import (
-    UserRegistrationAction as LoadUserRegistrationAction,
-)
-from invenio_rdm_migrator.transform import IdentityTransform
+from invenio_rdm_migrator.streams.actions import load
 
-from ..transform.entries.users import ZenodoUserEntry
+from ...transform.entries.users import ZenodoUserEntry
 
 
 class UserRegistrationAction(TransformAction):
     """Zenodo to RDM user registration action."""
 
     name = "register-user"
-    load_cls = LoadUserRegistrationAction
+    load_cls = load.UserRegistrationAction
 
     @classmethod
     def matches_action(cls, tx):  # pragma: no cover
@@ -73,7 +66,7 @@ class UserEditAction(TransformAction):
     """Zenodo to RDM user edit action."""
 
     name = "edit-user"
-    load_cls = LoadUserEditAction
+    load_cls = load.UserEditAction
 
     @classmethod
     def matches_action(cls, tx):  # pragma: no cover
@@ -114,7 +107,7 @@ class UserDeactivationAction(TransformAction):
     """Zenodo to RDM user deactivation action."""
 
     name = "deactivate-user"
-    load_cls = LoadUserDeactivationAction
+    load_cls = load.UserDeactivationAction
 
     @classmethod
     def matches_action(cls, tx):  # pragma: no cover

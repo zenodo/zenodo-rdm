@@ -10,15 +10,9 @@
 
 from invenio_rdm_migrator.extract import Tx
 from invenio_rdm_migrator.load.postgresql.transactions.operations import OperationType
-from invenio_rdm_migrator.streams.actions import (
-    UserDeactivationAction as LoadUserDeactivationAction,
-)
-from invenio_rdm_migrator.streams.actions import UserEditAction as LoadUserEditAction
-from invenio_rdm_migrator.streams.actions import (
-    UserRegistrationAction as LoadUserRegistrationAction,
-)
+from invenio_rdm_migrator.streams.actions import load
 
-from zenodo_rdm_migrator.actions import (
+from zenodo_rdm_migrator.actions.transform import (
     UserDeactivationAction,
     UserEditAction,
     UserRegistrationAction,
@@ -78,7 +72,7 @@ def test_user_registration_transform_with_valid_data(
     action = UserRegistrationAction(
         Tx(id=register_user_tx["tx_id"], operations=register_user_tx["operations"])
     )
-    assert isinstance(action.transform(), LoadUserRegistrationAction)
+    assert isinstance(action.transform(), load.UserRegistrationAction)
 
 
 ###
@@ -150,7 +144,7 @@ def test_user_edit_transform_with_valid_data(
 ):
     for tx in [login_user_tx, confirm_user_tx]:
         action = UserEditAction(Tx(id=tx["tx_id"], operations=tx["operations"]))
-        assert isinstance(action.transform(), LoadUserEditAction)
+        assert isinstance(action.transform(), load.UserEditAction)
 
 
 ###
@@ -313,4 +307,4 @@ def test_user_edit_transform_with_valid_data(secret_keys_state, user_deactivatio
             operations=user_deactivation_tx["operations"],
         )
     )
-    assert isinstance(action.transform(), LoadUserDeactivationAction)
+    assert isinstance(action.transform(), load.UserDeactivationAction)

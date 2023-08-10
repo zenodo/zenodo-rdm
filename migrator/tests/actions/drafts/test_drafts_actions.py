@@ -10,11 +10,9 @@
 
 from invenio_rdm_migrator.extract import Tx
 from invenio_rdm_migrator.load.postgresql.transactions.operations import OperationType
-from invenio_rdm_migrator.streams.actions import (
-    DraftCreateAction as LoadDraftCreateAction,
-)
+from invenio_rdm_migrator.streams.actions import load
 
-from zenodo_rdm_migrator.actions import DraftCreateAction
+from zenodo_rdm_migrator.actions.transform import DraftCreateAction
 
 
 def test_matches_with_valid_data(secret_keys_state):
@@ -78,4 +76,4 @@ def test_transform_with_valid_data(secret_keys_state, create_draft_tx):
     action = DraftCreateAction(
         Tx(id=create_draft_tx["tx_id"], operations=create_draft_tx["operations"])
     )
-    assert isinstance(action.transform(), LoadDraftCreateAction)
+    assert isinstance(action.transform(), load.DraftCreateAction)
