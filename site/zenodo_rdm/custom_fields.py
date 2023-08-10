@@ -486,8 +486,6 @@ ZENODO_CUSTOM_FIELDS_UI = {
 # hide meeting section from Additional details in landing page
 MEETING_CUSTOM_FIELDS_UI["hide_from_landing_page"] = True
 
-CODEMETA_CUSTOM_FIELDS_UI["hide_from_upload_form"] = True
-
 # Custom fields UI components
 CUSTOM_FIELDS_UI = [
     # zenodo custom fields
