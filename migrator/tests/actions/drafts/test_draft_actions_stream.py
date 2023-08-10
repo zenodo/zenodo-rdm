@@ -58,14 +58,20 @@ def test_draft_create_action_stream(
         drafts = list(conn.execute(sa.select(RDMDraftMetadata)))
         assert len(drafts) == 1
 
+        draft = drafts[0]._mapping
+        assert draft["created"] == "2023-06-29T13:38:48.842023"
+        assert draft["updated"] == "2023-06-29T13:38:48.842023"
+
         parents = list(conn.execute(sa.select(RDMParentMetadata)))
         assert len(parents) == 1
+
+        parent = parents[0]._mapping
+        assert parent["created"] == "2023-06-29T13:38:48.842023"
+        assert parent["updated"] == "2023-06-29T13:38:48.842023"
 
         versioning = list(conn.execute(sa.select(RDMVersionState)))
         assert len(versioning) == 1
 
-        parent = parents[0]._mapping
-        draft = drafts[0]._mapping
         versioning = versioning[0]._mapping
 
         assert parent["id"] == draft["parent_id"] == versioning["parent_id"]
