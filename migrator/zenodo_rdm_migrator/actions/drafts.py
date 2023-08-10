@@ -64,10 +64,19 @@ class DraftCreateAction(TransformAction, JSONTransformMixin):
                     operation["after"]
                 )
 
+                draft = draft_and_parent["draft"]
+                self._microseconds_to_isodate(
+                    # expires_at will be ignored since the transformer returns a datetime
+                    data=draft,
+                    fields=["created", "updated", "expires_at"],
+                )
+
+                parent = draft_and_parent["parent"]
+                self._microseconds_to_isodate(
+                    data=parent,
+                    fields=["created", "updated"],
+                )
+
         return dict(
-            tx_id=self.tx.id,
-            pid=pid,
-            bucket=bucket,
-            draft=draft_and_parent["draft"],
-            parent=draft_and_parent["parent"],
+            tx_id=self.tx.id, pid=pid, bucket=bucket, draft=draft, parent=parent
         )

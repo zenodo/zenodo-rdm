@@ -26,8 +26,8 @@ from zenodo_rdm_migrator.transform.transactions import ZenodoTxTransform
 def db_sessions(db_engine):
     sessions_data = [
         {
-            "created": 1691051452717105,
-            "updated": 1691051452717105,
+            "created": "2023-08-03T08:30:52.717105",
+            "updated": "2023-08-03T08:30:52.717105",
             "sid_s": "754493997337aa0a_64cb65bc",
             "user_id": 123456,
             "browser": None,
@@ -38,8 +38,8 @@ def db_sessions(db_engine):
             "os": None,
         },
         {
-            "created": 1691051452717105,
-            "updated": 1691051452717105,
+            "created": "2023-08-03T08:30:52.717105",
+            "updated": "2023-08-03T08:30:52.717105",
             "sid_s": "bc51d8ea3ccc285c_64cb64fa",
             "user_id": 123456,
             "browser": None,
@@ -76,8 +76,8 @@ def db_sessions(db_engine):
 def db_user(db_engine):
     user_data = {
         "id": 123456,
-        "created": 1640995200000000,
-        "updated": 1640995200000000,
+        "created": "2023-08-01T16:14:06.964000",
+        "updated": "2023-08-01T16:14:06.964000",
         "username": "test_user",
         "displayname": "test_user",
         "email": "someaddr@domain.org",
@@ -137,12 +137,18 @@ def test_user_register_action_stream(
         # User
         users = list(conn.execute(sa.select(User)))
         assert len(users) == 1
-        assert list(users)[0]._mapping["id"] == 123456
+        user = users[0]._mapping
+        assert user["id"] == 123456
+        assert user["created"] == "2023-08-01T16:14:06.964000"
+        assert user["updated"] == "2023-08-01T16:14:06.964000"
 
         # Login information
         loginfo = list(conn.execute(sa.select(LoginInformation)))
         assert len(loginfo) == 1
-        assert list(loginfo)[0]._mapping["user_id"] == 123456
+        loginfo = loginfo[0]._mapping
+        assert loginfo["user_id"] == 123456
+        assert loginfo["last_login_at"] == None
+        assert loginfo["current_login_at"] == None
 
         # cleanup
         # not ideal should be done more generically with a fixture
@@ -173,8 +179,8 @@ def test_user_login_action_stream(
         loginfo = list(conn.execute(sa.select(LoginInformation)))
         assert len(loginfo) == 1
         loginfo = list(loginfo)[0]._mapping
-        assert loginfo["last_login_at"] == "1690906447550349"
-        assert loginfo["current_login_at"] == "1690906447550349"
+        assert loginfo["last_login_at"] == "2023-08-01T16:14:07.550349"
+        assert loginfo["current_login_at"] == "2023-08-01T16:14:07.550349"
         assert loginfo["last_login_ip"] == None
         assert loginfo["current_login_ip"] == "192.0.238.78"
         assert loginfo["login_count"] == 1
@@ -195,7 +201,7 @@ def test_confirm_user_action_stream(
     with db_engine.connect() as conn:
         users = list(conn.execute(sa.select(User)))
         assert len(users) == 1
-        assert list(users)[0]._mapping["confirmed_at"] == "1690906459612306"
+        assert list(users)[0]._mapping["confirmed_at"] == "2023-08-01T16:14:19.612306"
 
 
 @pytest.mark.skip("UserProfileEditAction not implemented yet")
@@ -220,7 +226,7 @@ def test_change_user_profile_stream(
         assert user["full_name"] == "Some new full name"
 
 
-def test_confirm_user_action_stream(
+def test_edit_user_action_stream(
     secret_keys_state,
     db_user,
     db_uri,

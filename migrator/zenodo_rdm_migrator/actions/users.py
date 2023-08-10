@@ -52,13 +52,19 @@ class UserRegistrationAction(TransformAction):
         for operation in self.tx.operations:
             payload = {**payload, **operation["after"]}
 
-        # should be already in microseconds
+        # it comes in milliseonds
         ts = self.tx.operations[0]["source"]["ts_ms"]
         payload["created"] = ts
         payload["updated"] = ts
 
         user = ZenodoUserEntry().transform(payload)
+        self._microseconds_to_isodate(data=user, fields=["confirmed_at"])
+        self._milliseconds_to_isodate(data=user, fields=["created", "updated"])
+
         login_info = user.pop("login_information")
+        self._microseconds_to_isodate(
+            data=login_info, fields=["last_login_at", "current_login_at"]
+        )
 
         return dict(tx_id=self.tx.id, user=user, login_information=login_info)
 
@@ -94,8 +100,13 @@ class UserEditAction(TransformAction):
         payload["updated"] = ts
 
         user = ZenodoUserEntry().transform(payload)
-        login_info = user.pop("login_information")
+        self._microseconds_to_isodate(data=user, fields=["confirmed_at"])
+        self._milliseconds_to_isodate(data=user, fields=["created", "updated"])
 
+        login_info = user.pop("login_information")
+        self._microseconds_to_isodate(
+            data=login_info, fields=["last_login_at", "current_login_at"]
+        )
         return dict(tx_id=self.tx.id, user=user, login_information=login_info)
 
 
@@ -140,15 +151,25 @@ class UserDeactivationAction(TransformAction):
                 operation["after"]["created"] = ts
                 operation["after"]["updated"] = ts
                 user = ZenodoUserEntry().transform(operation["after"])
+
+                self._microseconds_to_isodate(data=user, fields=["confirmed_at"])
+                self._milliseconds_to_isodate(data=user, fields=["created", "updated"])
             else:  # can only be a session as per match function
                 # important: the data comes in "before"
-                sessions.append(IdentityTransform()._transform(operation["before"]))
+                session_data = operation["before"]
+                self._microseconds_to_isodate(
+                    data=session_data, fields=["created", "updated"]
+                )
+                sessions.append(session_data)
 
         # cannot guarantee user will be the first of the previous loop
         for session in sessions:
             session["user_id"] = user["id"]
 
         login_info = user.pop("login_information")
+        self._microseconds_to_isodate(
+            data=login_info, fields=["last_login_at", "current_login_at"]
+        )
         return dict(
             tx_id=self.tx.id, user=user, login_information=login_info, sessions=sessions
         )
