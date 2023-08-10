@@ -22,8 +22,8 @@ def create_draft_tx():
         "operations": [
             {
                 "after": {
-                    "created": "2023-06-29T13:00:00",
-                    "updated": "2023-06-29T13:00:00",
+                    "created": 1688045928842023,
+                    "updated": 1688045928842023,
                     "id": 12132090,
                     "pid_type": "recid",
                     "pid_value": "1217215",
@@ -52,8 +52,8 @@ def create_draft_tx():
             },
             {
                 "after": {
-                    "created": "2023-06-29T13:00:00",
-                    "updated": "2023-06-29T13:00:00",
+                    "created": 1688045928842023,
+                    "updated": 1688045928842023,
                     "id": 12132091,
                     "pid_type": "depid",
                     "pid_value": "1217215",
@@ -82,8 +82,8 @@ def create_draft_tx():
             },
             {
                 "after": {
-                    "created": "2023-06-29T13:00:00",
-                    "updated": "2023-06-29T13:00:00",
+                    "created": 1688045928842023,
+                    "updated": 1688045928842023,
                     "id": "0e12b4b6-9cc7-46df-9a04-c11c478de211",
                     "default_location": 1,
                     "default_storage_class": "S",
@@ -113,8 +113,8 @@ def create_draft_tx():
             },
             {
                 "after": {
-                    "created": "2023-06-29T13:00:00",
-                    "updated": "2023-06-29T13:00:00",
+                    "created": 1688045928842023,
+                    "updated": 1688045928842023,
                     "id": "b7547ab1-47d2-48e2-9867-ca597b4ebb41",
                     "json": '{"recid": 1217215,"$schema": "https://zenodo.org/schemas/deposits/records/record-v1.0.0.json","_buckets": {"deposit": "0e12b4b6-9cc7-46df-9a04-c11c478de211"},"_deposit": {"id": "1217215","owners": [86261],"status": "draft","created_by": 86261},"conceptrecid": "1217214"}',
                     "version_id": 1,
@@ -177,8 +177,8 @@ def update_draft_tx():
             },
             {
                 "after": {
-                    "created": "2023-06-29T13:00:00",
-                    "updated": "2023-06-29T13:00:00",
+                    "created": 1688045928842023,
+                    "updated": 1688045928842023,
                     "id": "b7547ab1-47d2-48e2-9867-ca597b4ebb41",
                     "json": '{"doi": "","recid": 1217215,"title": "test","$schema": "https://zenodo.org/schemas/deposits/records/record-v1.0.0.json","license": {"$ref": "https://dx.zenodo.org/licenses/CC-BY-4.0"},"_buckets": {"deposit": "0e12b4b6-9cc7-46df-9a04-c11c478de211"},"_deposit": {,"owners": [86261],"status": "draft","created_by": 86261},"creators": [{"name": "me"}],"description": "<p>testing</p>","access_right": "open","conceptrecid": "1217214","resource_type": {"type": "publication", "subtype": "article"},"publication_date": "2023-06-29"}',
                     "version_id": 2,
@@ -203,8 +203,8 @@ def update_draft_tx():
             },
             {
                 "after": {
-                    "created": "2023-06-29T13:00:00",
-                    "updated": "2023-06-29T13:00:00",
+                    "created": 1688045928842023,
+                    "updated": 1688045928842023,
                     "id": "b7547ab1-47d2-48e2-9867-ca597b4ebb41",
                     "json": '{"doi": "","_buckets": {"deposit": "0e12b4b6-9cc7-46df-9a04-c11c478de211"},"description": "<p>testing</p>","license": {"$ref": "https://dx.zenodo.org/licenses/CC-BY-4.0"},"title": "test","conceptrecid": "1217214","recid": 1217215,"_deposit": {"status": "draft","owners": [86261],"id": "1217215","created_by": 86261},"publication_date": "2023-06-29","$schema": "https://zenodo.org/schemas/deposits/records/record-v1.0.0.json","creators": [{"name": "me"}],"access_right": "open","resource_type": {"subtype": "article", "type": "publication"}}',
                     "version_id": 2,
@@ -232,8 +232,8 @@ def update_draft_tx():
             },
             {
                 "after": {
-                    "created": "2023-06-29T13:00:00",
-                    "updated": "2023-06-29T13:00:00",
+                    "created": 1688045928842023,
+                    "updated": 1688045928842023,
                     "id": "b7547ab1-47d2-48e2-9867-ca597b4ebb41",
                     "json": '{"conceptrecid": "1217214","$schema": "https://zenodo.org/schemas/deposits/records/record-v1.0.0.json","_deposit": {"status": "draft","owners": [86261],"id": "1217215","created_by": 86261},"recid": 1217215,"_buckets": {"deposit": "0e12b4b6-9cc7-46df-9a04-c11c478de211"}}',
                     "version_id": 1,
@@ -274,8 +274,8 @@ def draft_file_upload_tx():
         "operations": [
             {
                 "after": {
-                    "created": "2023-06-29T13:00:00",
-                    "updated": "2023-06-29T13:00:00",
+                    "created": 1688045928842023,
+                    "updated": 1688045928842023,
                     "id": "0e12b4b6-9cc7-46df-9a04-c11c478de211",
                     "default_location": 1,
                     "default_storage_class": "S",
@@ -305,8 +305,8 @@ def draft_file_upload_tx():
             },
             {
                 "after": {
-                    "created": "2023-06-29T13:00:00",
-                    "updated": "2023-06-29T13:00:00",
+                    "created": 1688045928842023,
+                    "updated": 1688045928842023,
                     "bucket_id": "0e12b4b6-9cc7-46df-9a04-c11c478de211",
                     "key": "IMG_3535.jpg",
                     "version_id": "f8200dc7-55b6-4785-abd0-f3d13b143c98",
@@ -334,8 +334,8 @@ def draft_file_upload_tx():
             },
             {
                 "after": {
-                    "created": "2023-06-29T13:00:00",
-                    "updated": "2023-06-29T13:00:00",
+                    "created": 1688045928842023,
+                    "updated": 1688045928842023,
                     "id": "e94b243e-9c0c-44df-bd1f-6decc374cf78",
                     "uri": None,
                     "storage_class": None,
@@ -366,8 +366,8 @@ def draft_file_upload_tx():
             },
             {
                 "after": {
-                    "created": "2023-06-29T13:00:00",
-                    "updated": "2023-06-29T13:00:00",
+                    "created": 1688045928842023,
+                    "updated": 1688045928842023,
                     "bucket_id": "0e12b4b6-9cc7-46df-9a04-c11c478de211",
                     "key": "IMG_3535.jpg",
                     "version_id": "f8200dc7-55b6-4785-abd0-f3d13b143c98",
@@ -395,8 +395,8 @@ def draft_file_upload_tx():
             },
             {
                 "after": {
-                    "created": "2023-06-29T13:00:00",
-                    "updated": "2023-06-29T13:00:00",
+                    "created": 1688045928842023,
+                    "updated": 1688045928842023,
                     "id": "e94b243e-9c0c-44df-bd1f-6decc374cf78",
                     "uri": "root://eosmedia.cern.ch//eos/media/zenodo/test/data/e9/4b/243e-9c0c-44df-bd1f-6decc374cf78/data",
                     "storage_class": "S",
@@ -427,8 +427,8 @@ def draft_file_upload_tx():
             },
             {
                 "after": {
-                    "created": "2023-06-29T13:00:00",
-                    "updated": "2023-06-29T13:00:00",
+                    "created": 1688045928842023,
+                    "updated": 1688045928842023,
                     "id": "0e12b4b6-9cc7-46df-9a04-c11c478de211",
                     "default_location": 1,
                     "default_storage_class": "S",
@@ -471,8 +471,8 @@ def draft_publish_tx():
         "operations": [
             {
                 "after": {
-                    "created": "2023-06-29T13:00:00",
-                    "updated": "2023-06-29T13:00:00",
+                    "created": 1688045928842023,
+                    "updated": 1688045928842023,
                     "id": 12132090,
                     "pid_type": "recid",
                     "pid_value": "1217215",
@@ -501,8 +501,8 @@ def draft_publish_tx():
             },
             {
                 "after": {
-                    "created": "2023-06-29T13:00:00",
-                    "updated": "2023-06-29T13:00:00",
+                    "created": 1688045928842023,
+                    "updated": 1688045928842023,
                     "id": 12132090,
                     "pid_type": "recid",
                     "pid_value": "1217215",
@@ -531,8 +531,8 @@ def draft_publish_tx():
             },
             {
                 "after": {
-                    "created": "2023-06-29T13:00:00",
-                    "updated": "2023-06-29T13:00:00",
+                    "created": 1688045928842023,
+                    "updated": 1688045928842023,
                     "id": 12132092,
                     "pid_type": "doi",
                     "pid_value": "10.5072/zenodo.1217215",
@@ -561,8 +561,8 @@ def draft_publish_tx():
             },
             {
                 "after": {
-                    "created": "2023-06-29T13:00:00",
-                    "updated": "2023-06-29T13:00:00",
+                    "created": 1688045928842023,
+                    "updated": 1688045928842023,
                     "id": 12132093,
                     "pid_type": "oai",
                     "pid_value": "oai:zenodo.org:1217215",
@@ -591,8 +591,8 @@ def draft_publish_tx():
             },
             {
                 "after": {
-                    "created": "2023-06-29T13:00:00",
-                    "updated": "2023-06-29T13:00:00",
+                    "created": 1688045928842023,
+                    "updated": 1688045928842023,
                     "id": 12132094,
                     "pid_type": "doi",
                     "pid_value": "10.5072/zenodo.1217214",
@@ -621,8 +621,8 @@ def draft_publish_tx():
             },
             {
                 "after": {
-                    "created": "2023-06-29T13:00:00",
-                    "updated": "2023-06-29T13:00:00",
+                    "created": 1688045928842023,
+                    "updated": 1688045928842023,
                     "id": "e94b243e-9c0c-44df-bd1f-6decc374cf78",
                     "uri": "root://eosmedia.cern.ch//eos/media/zenodo/test/data/e9/4b/243e-9c0c-44df-bd1f-6decc374cf78/data",
                     "storage_class": "S",
@@ -653,8 +653,8 @@ def draft_publish_tx():
             },
             {
                 "after": {
-                    "created": "2023-06-29T13:00:00",
-                    "updated": "2023-06-29T13:00:00",
+                    "created": 1688045928842023,
+                    "updated": 1688045928842023,
                     "id": "0e12b4b6-9cc7-46df-9a04-c11c478de211",
                     "default_location": 1,
                     "default_storage_class": "S",
@@ -684,8 +684,8 @@ def draft_publish_tx():
             },
             {
                 "after": {
-                    "created": "2023-06-29T13:00:00",
-                    "updated": "2023-06-29T13:00:00",
+                    "created": 1688045928842023,
+                    "updated": 1688045928842023,
                     "id": "930d05e3-7088-4f58-ba60-cd85fb3138c1",
                     "default_location": 1,
                     "default_storage_class": "S",
@@ -715,8 +715,8 @@ def draft_publish_tx():
             },
             {
                 "after": {
-                    "created": "2023-06-29T13:00:00",
-                    "updated": "2023-06-29T13:00:00",
+                    "created": 1688045928842023,
+                    "updated": 1688045928842023,
                     "id": "930d05e3-7088-4f58-ba60-cd85fb3138c1",
                     "default_location": 1,
                     "default_storage_class": "S",
@@ -746,8 +746,8 @@ def draft_publish_tx():
             },
             {
                 "after": {
-                    "created": "2023-06-29T13:00:00",
-                    "updated": "2023-06-29T13:00:00",
+                    "created": 1688045928842023,
+                    "updated": 1688045928842023,
                     "bucket_id": "930d05e3-7088-4f58-ba60-cd85fb3138c1",
                     "key": "IMG_3535.jpg",
                     "version_id": "5f17d253-70bd-42d7-9920-3b69258c44ba",
@@ -775,8 +775,8 @@ def draft_publish_tx():
             },
             {
                 "after": {
-                    "created": "2023-06-29T13:00:00",
-                    "updated": "2023-06-29T13:00:00",
+                    "created": 1688045928842023,
+                    "updated": 1688045928842023,
                     "id": "930d05e3-7088-4f58-ba60-cd85fb3138c1",
                     "default_location": 1,
                     "default_storage_class": "S",
@@ -806,8 +806,8 @@ def draft_publish_tx():
             },
             {
                 "after": {
-                    "created": "2023-06-29T13:00:00",
-                    "updated": "2023-06-29T13:00:00",
+                    "created": 1688045928842023,
+                    "updated": 1688045928842023,
                     "id": "e94b243e-9c0c-44df-bd1f-6decc374cf78",
                     "uri": "root://eosmedia.cern.ch//eos/media/zenodo/test/data/e9/4b/243e-9c0c-44df-bd1f-6decc374cf78/data",
                     "storage_class": "S",
@@ -838,8 +838,8 @@ def draft_publish_tx():
             },
             {
                 "after": {
-                    "created": "2023-06-29T13:00:00",
-                    "updated": "2023-06-29T13:00:00",
+                    "created": 1688045928842023,
+                    "updated": 1688045928842023,
                     "bucket_id": "930d05e3-7088-4f58-ba60-cd85fb3138c1",
                     "key": "IMG_3535.jpg",
                     "version_id": "5f17d253-70bd-42d7-9920-3b69258c44ba",
@@ -892,8 +892,8 @@ def draft_publish_tx():
             },
             {
                 "after": {
-                    "created": "2023-06-29T13:00:00",
-                    "updated": "2023-06-29T13:00:00",
+                    "created": 1688045928842023,
+                    "updated": 1688045928842023,
                     "id": "1d34b5c0-70b3-474b-999f-82f537f035cd",
                     "json": '{"doi": "10.5072/zenodo.1217215","_oai": {"id": "oai:zenodo.org:1217215"},"recid": 1217215,"title": "test","_files": [{"key": "IMG_3535.jpg","size": 1562554,"type": "jpg","bucket": "930d05e3-7088-4f58-ba60-cd85fb3138c1","file_id": "e94b243e-9c0c-44df-bd1f-6decc374cf78","checksum": "md5:3cc016be06f2be46d3a438db23c40bf3","version_id": "5f17d253-70bd-42d7-9920-3b69258c44ba"}],"owners": [86261],"$schema": "https://zenodo.org/schemas/records/record-v1.0.0.json","license": {"$ref": "https://dx.zenodo.org/licenses/CC-BY-4.0"},"_buckets": {"record": "930d05e3-7088-4f58-ba60-cd85fb3138c1","deposit": "0e12b4b6-9cc7-46df-9a04-c11c478de211"},"_deposit": {"id": "1217215","pid": {"type": "recid","value": "1217215","revision_id": 0},"owners": [86261],"status": "published","created_by": 86261},"creators": [{"name": "me"}],"conceptdoi": "10.5072/zenodo.1217214","description": "<p>testing</p>","access_right": "open","conceptrecid": "1217214","resource_type": {"type": "publication", "subtype": "article"},"publication_date": "2023-06-29"}',
                     "version_id": 1,
@@ -1082,8 +1082,8 @@ def draft_publish_tx():
             },
             {
                 "after": {
-                    "created": "2023-06-29T13:00:00",
-                    "updated": "2023-06-29T13:00:00",
+                    "created": 1688045928842023,
+                    "updated": 1688045928842023,
                     "id": "1d34b5c0-70b3-474b-999f-82f537f035cd",
                     "json": '{"description": "<p>testing</p>","_oai": {"id": "oai:zenodo.org:1217215"},"conceptrecid": "1217214","publication_date": "2023-06-29","$schema": "https://zenodo.org/schemas/records/record-v1.0.0.json","owners": [86261],"doi": "10.5072/zenodo.1217215","_buckets": {"record": "930d05e3-7088-4f58-ba60-cd85fb3138c1","deposit": "0e12b4b6-9cc7-46df-9a04-c11c478de211"},"license": {"$ref": "https://dx.zenodo.org/licenses/CC-BY-4.0"},"conceptdoi": "10.5072/zenodo.1217214","title": "test","_files": [{"file_id": "e94b243e-9c0c-44df-bd1f-6decc374cf78","key": "IMG_3535.jpg","type": "jpg","checksum": "md5:3cc016be06f2be46d3a438db23c40bf3","bucket": "930d05e3-7088-4f58-ba60-cd85fb3138c1","version_id": "5f17d253-70bd-42d7-9920-3b69258c44ba","size": 1562554}],"recid": 1217215,"_deposit": {"status": "published","owners": [86261],"pid": {"revision_id": 0,"type": "recid","value": "1217215"},"id": "1217215","created_by": 86261},"creators": [{"name": "me"}],"access_right": "open","resource_type": {"subtype": "article", "type": "publication"}}',
                     "version_id": 1,
@@ -1134,8 +1134,8 @@ def draft_publish_tx():
             },
             {
                 "after": {
-                    "created": "2023-06-29T13:00:00",
-                    "updated": "2023-06-29T13:00:00",
+                    "created": 1688045928842023,
+                    "updated": 1688045928842023,
                     "id_community": "zenodo",
                     "id_record": "1d34b5c0-70b3-474b-999f-82f537f035cd",
                     "id_user": None,
@@ -1161,8 +1161,8 @@ def draft_publish_tx():
             },
             {
                 "after": {
-                    "created": "2023-06-29T13:00:00",
-                    "updated": "2023-06-29T13:00:00",
+                    "created": 1688045928842023,
+                    "updated": 1688045928842023,
                     "id": "1d34b5c0-70b3-474b-999f-82f537f035cd",
                     "json": '{"doi": "10.5072/zenodo.1217215","_oai": {"id": "oai:zenodo.org:1217215"},"recid": 1217215,"title": "test","_files": [{"key": "IMG_3535.jpg","size": 1562554,"type": "jpg","bucket": "930d05e3-7088-4f58-ba60-cd85fb3138c1","file_id": "e94b243e-9c0c-44df-bd1f-6decc374cf78","checksum": "md5:3cc016be06f2be46d3a438db23c40bf3","version_id": "5f17d253-70bd-42d7-9920-3b69258c44ba"}],"owners": [86261],"$schema": "https://zenodo.org/schemas/records/record-v1.0.0.json","license": {"$ref": "https://dx.zenodo.org/licenses/CC-BY-4.0"},"_buckets": {"record": "930d05e3-7088-4f58-ba60-cd85fb3138c1","deposit": "0e12b4b6-9cc7-46df-9a04-c11c478de211"},"_deposit": {"id": "1217215","pid": {"type": "recid","value": "1217215","revision_id": 0},"owners": [86261],"status": "published","created_by": 86261},"creators": [{"name": "me"}],"conceptdoi": "10.5072/zenodo.1217214","description": "<p>testing</p>","access_right": "open","conceptrecid": "1217214","resource_type": {"type": "publication", "subtype": "article"},"publication_date": "2023-06-29"}',
                     "version_id": 2,
@@ -1187,8 +1187,8 @@ def draft_publish_tx():
             },
             {
                 "after": {
-                    "created": "2023-06-29T13:00:00",
-                    "updated": "2023-06-29T13:00:00",
+                    "created": 1688045928842023,
+                    "updated": 1688045928842023,
                     "id": "1d34b5c0-70b3-474b-999f-82f537f035cd",
                     "json": '{"description": "<p>testing</p>","_oai": {"id": "oai:zenodo.org:1217215"},"conceptrecid": "1217214","publication_date": "2023-06-29","$schema": "https://zenodo.org/schemas/records/record-v1.0.0.json","owners": [86261],"doi": "10.5072/zenodo.1217215","_buckets": {"record": "930d05e3-7088-4f58-ba60-cd85fb3138c1","deposit": "0e12b4b6-9cc7-46df-9a04-c11c478de211"},"license": {"$ref": "https://dx.zenodo.org/licenses/CC-BY-4.0"},"conceptdoi": "10.5072/zenodo.1217214","title": "test","_files": [{"file_id": "e94b243e-9c0c-44df-bd1f-6decc374cf78","key": "IMG_3535.jpg","type": "jpg","checksum": "md5:3cc016be06f2be46d3a438db23c40bf3","bucket": "930d05e3-7088-4f58-ba60-cd85fb3138c1","version_id": "5f17d253-70bd-42d7-9920-3b69258c44ba","size": 1562554}],"recid": 1217215,"_deposit": {"status": "published","owners": [86261],"pid": {"revision_id": 0,"type": "recid","value": "1217215"},"id": "1217215","created_by": 86261},"creators": [{"name": "me"}],"access_right": "open","resource_type": {"subtype": "article", "type": "publication"}}',
                     "version_id": 2,
@@ -1216,8 +1216,8 @@ def draft_publish_tx():
             },
             {
                 "after": {
-                    "created": "2023-06-29T13:00:00",
-                    "updated": "2023-06-29T13:00:00",
+                    "created": 1688045928842023,
+                    "updated": 1688045928842023,
                     "id": 12132089,
                     "pid_type": "recid",
                     "pid_value": "1217214",
@@ -1246,8 +1246,8 @@ def draft_publish_tx():
             },
             {
                 "after": {
-                    "created": "2023-06-29T13:00:00",
-                    "updated": "2023-06-29T13:00:00",
+                    "created": 1688045928842023,
+                    "updated": 1688045928842023,
                     "id": 12132090,
                     "pid_type": "recid",
                     "pid_value": "1217215",
@@ -1276,8 +1276,8 @@ def draft_publish_tx():
             },
             {
                 "after": {
-                    "created": "2023-06-29T13:00:00",
-                    "updated": "2023-06-29T13:00:00",
+                    "created": 1688045928842023,
+                    "updated": 1688045928842023,
                     "id": "6519f1ac-1b3c-4691-bb1e-a507280102a4",
                     "pid_id": 12132090,
                 },
@@ -1301,8 +1301,8 @@ def draft_publish_tx():
             },
             {
                 "after": {
-                    "created": "2023-06-29T13:00:00",
-                    "updated": "2023-06-29T13:00:00",
+                    "created": 1688045928842023,
+                    "updated": 1688045928842023,
                     "id": 12132089,
                     "pid_type": "recid",
                     "pid_value": "1217214",
@@ -1359,8 +1359,8 @@ def draft_publish_tx():
             },
             {
                 "after": {
-                    "created": "2023-06-29T13:00:00",
-                    "updated": "2023-06-29T13:00:00",
+                    "created": 1688045928842023,
+                    "updated": 1688045928842023,
                     "id": "b7547ab1-47d2-48e2-9867-ca597b4ebb41",
                     "json": '{"doi": "10.5072/zenodo.1217215","_oai": {"id": "oai:zenodo.org:1217215"},"recid": 1217215,"title": "test","owners": [86261],"$schema": "https://zenodo.org/schemas/deposits/records/record-v1.0.0.json","license": {"$ref": "https://dx.zenodo.org/licenses/CC-BY-4.0"},"_buckets": {"deposit": "0e12b4b6-9cc7-46df-9a04-c11c478de211"},"_deposit": {"id": "1217215","pid": {"type": "recid","value": "1217215","revision_id": 0},"owners": [86261],"status": "published","created_by": 86261},"creators": [{"name": "me"}],"conceptdoi": "10.5072/zenodo.1217214","communities": ["zenodo"],"description": "<p>testing</p>","access_right": "open","conceptrecid": "1217214","resource_type": {"type": "publication", "subtype": "article"},"publication_date": "2023-06-29"}',
                     "version_id": 3,
@@ -1385,8 +1385,8 @@ def draft_publish_tx():
             },
             {
                 "after": {
-                    "created": "2023-06-29T13:00:00",
-                    "updated": "2023-06-29T13:00:00",
+                    "created": 1688045928842023,
+                    "updated": 1688045928842023,
                     "id": "b7547ab1-47d2-48e2-9867-ca597b4ebb41",
                     "json": '{"description": "<p>testing</p>","_oai": {"id": "oai:zenodo.org:1217215"},"conceptrecid": "1217214","communities": ["zenodo"],"publication_date": "2023-06-29","$schema": "https://zenodo.org/schemas/deposits/records/record-v1.0.0.json","owners": [86261],"doi": "10.5072/zenodo.1217215","_buckets": {"deposit": "0e12b4b6-9cc7-46df-9a04-c11c478de211"},"conceptdoi": "10.5072/zenodo.1217214","license": {"$ref": "https://dx.zenodo.org/licenses/CC-BY-4.0"},"title": "test","recid": 1217215,"_deposit": {"status": "published","owners": [86261],"pid": {"revision_id": 0,"type": "recid","value": "1217215"},"id": "1217215","created_by": 86261},"creators": [{"name": "me"}],"access_right": "open","resource_type": {"subtype": "article", "type": "publication"}}',
                     "version_id": 3,
@@ -1414,8 +1414,8 @@ def draft_publish_tx():
             },
             {
                 "after": {
-                    "created": "2023-06-29T13:00:00",
-                    "updated": "2023-06-29T13:00:00",
+                    "created": 1688045928842023,
+                    "updated": 1688045928842023,
                     "id": "b7547ab1-47d2-48e2-9867-ca597b4ebb41",
                     "json": '{"doi": "","_buckets": {"deposit": "0e12b4b6-9cc7-46df-9a04-c11c478de211"},"description": "<p>testing</p>","license": {"$ref": "https://dx.zenodo.org/licenses/CC-BY-4.0"},"title": "test","conceptrecid": "1217214","recid": 1217215,"_deposit": {"status": "draft","owners": [86261],"id": "1217215","created_by": 86261},"publication_date": "2023-06-29","$schema": "https://zenodo.org/schemas/deposits/records/record-v1.0.0.json","creators": [{"name": "me"}],"access_right": "open","resource_type": {"subtype": "article", "type": "publication"}}',
                     "version_id": 2,
@@ -1443,8 +1443,8 @@ def draft_publish_tx():
             },
             {
                 "after": {
-                    "created": "2023-06-29T13:00:00",
-                    "updated": "2023-06-29T13:00:00",
+                    "created": 1688045928842023,
+                    "updated": 1688045928842023,
                     "id": "3db002c8-3c17-4746-9806-8e6585e913bd",
                     "user_id": 86261,
                     "agent": {
@@ -1475,8 +1475,8 @@ def draft_publish_tx():
             },
             {
                 "after": {
-                    "created": "2023-06-29T13:00:00",
-                    "updated": "2023-06-29T13:00:00",
+                    "created": 1688045928842023,
+                    "updated": 1688045928842023,
                     "sip_id": "3db002c8-3c17-4746-9806-8e6585e913bd",
                     "filepath": "IMG_3535.jpg",
                     "file_id": "e94b243e-9c0c-44df-bd1f-6decc374cf78",
@@ -1501,8 +1501,8 @@ def draft_publish_tx():
             },
             {
                 "after": {
-                    "created": "2023-06-29T13:00:00",
-                    "updated": "2023-06-29T13:00:00",
+                    "created": 1688045928842023,
+                    "updated": 1688045928842023,
                     "sip_id": "3db002c8-3c17-4746-9806-8e6585e913bd",
                     "type_id": 1,
                     "content": {
@@ -1568,8 +1568,8 @@ def draft_publish_tx():
             },
             {
                 "after": {
-                    "created": "2023-06-29T13:00:00",
-                    "updated": "2023-06-29T13:00:00",
+                    "created": 1688045928842023,
+                    "updated": 1688045928842023,
                     "sip_id": "3db002c8-3c17-4746-9806-8e6585e913bd",
                     "pid_id": 12132090,
                 },
@@ -1593,8 +1593,8 @@ def draft_publish_tx():
             },
             {
                 "after": {
-                    "created": "2023-06-29T13:00:00",
-                    "updated": "2023-06-29T13:00:00",
+                    "created": 1688045928842023,
+                    "updated": 1688045928842023,
                     "sip_id": "3db002c8-3c17-4746-9806-8e6585e913bd",
                     "type_id": 3,
                     "content": {
