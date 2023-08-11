@@ -102,3 +102,47 @@ class DraftCreateAction(TransformAction, JSONTransformMixin):
             parent_pid=parent_pid,
             parent=parent,
         )
+
+
+class DraftEditAction(TransformAction, JSONTransformMixin):
+    """Zenodo to RDM draft creation action."""
+
+    name = "edit-zenodo-draft"
+    load_cls = load.DraftEditAction
+
+    @classmethod
+    def matches_action(cls, tx):  # pragma: no cover
+        """Checks if the data corresponds with that required by the action."""
+        if len(tx.operations) != 1:
+            return False
+
+        op = tx.operations[0]
+        table_name = op["source"]["table"]
+        op_type = op["op"]
+
+        # no need to differentiate from record update since we wont do that in support
+        # and user edits (e.g. web ui) pass by a draft (create + [edit] + publish actions)
+        return table_name == "records_metadata" and op_type == OperationType.UPDATE
+
+    def _transform_data(self):  # pragma: no cover
+        """Transforms the data and returns an instance of the mapped_cls."""
+        operation = self.tx.operations[0]
+        # need to json load the draft json
+        # the parent json is calculated on transform
+        self._load_json_fields(data=operation["after"], fields=["json"])
+        draft_and_parent = ZenodoRecordTransform()._transform(operation["after"])
+
+        draft = draft_and_parent["draft"]
+        self._microseconds_to_isodate(
+            # expires_at will be ignored since the transformer returns a datetime
+            data=draft,
+            fields=["created", "updated", "expires_at"],
+        )
+
+        parent = draft_and_parent["parent"]
+        self._microseconds_to_isodate(
+            data=parent,
+            fields=["created", "updated"],
+        )
+
+        return dict(tx_id=self.tx.id, draft=draft, parent=parent)

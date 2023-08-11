@@ -152,10 +152,10 @@ def update_draft_tx():
         "operations": [
             {
                 "after": {
-                    "created": "2023-06-29T13:00:00",
+                    "created": "2021-05-01T00:00:00",
                     "updated": "2023-06-29T13:00:00",
                     "id": "b7547ab1-47d2-48e2-9867-ca597b4ebb41",
-                    "json": '{"doi": "","recid": 1217215,"title": "test","$schema": "https://zenodo.org/schemas/deposits/records/record-v1.0.0.json","license": {"$ref": "https://dx.zenodo.org/licenses/CC-BY-4.0"},"_buckets": {"deposit": "0e12b4b6-9cc7-46df-9a04-c11c478de211"},"_deposit": {,"owners": [86261],"status": "draft","created_by": 86261},"creators": [{"name": "me"}],"description": "<p>testing</p>","access_right": "open","conceptrecid": "1217214","resource_type": {"type": "publication", "subtype": "article"},"publication_date": "2023-06-29"}',
+                    "json": '{"doi": "","recid": 1217215,"title": "update test","$schema": "https://zenodo.org/schemas/deposits/records/record-v1.0.0.json","license": {"$ref": "https://dx.zenodo.org/licenses/CC-BY-4.0"},"_buckets": {"deposit": "0e12b4b6-9cc7-46df-9a04-c11c478de211"},"_deposit": {"owners": [86261],"status": "draft","created_by": 86261},"creators": [{"name": "me"}],"description": "<p>testing</p>","access_right": "open","conceptrecid": "1217214","resource_type": {"type": "publication", "subtype": "article"},"publication_date": "2023-06-29"}',
                     "version_id": 2,
                 },
                 "source": {
