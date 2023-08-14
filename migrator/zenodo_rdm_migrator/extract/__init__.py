@@ -7,6 +7,9 @@
 
 """Zenodo migrator extract."""
 
-from .kafka import KafkaExtract
+from .kafka import KafkaExtract, KafkaExtractEnd
 
-__all__ = ("KafkaExtract",)
+__all__ = (
+    "KafkaExtract",
+    "KafkaExtractEnd",
+)
