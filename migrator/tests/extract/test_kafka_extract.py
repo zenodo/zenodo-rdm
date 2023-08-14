@@ -7,9 +7,11 @@
 
 """Migrator tests configuration."""
 
+import copy
 import itertools
 import random
 from collections import Counter
+from types import SimpleNamespace
 from unittest.mock import PropertyMock
 
 from invenio_rdm_migrator.extract import Tx
@@ -137,8 +139,6 @@ def test_simple_extract(mocker, kafka_data):
         tx_topic="test_topic",
         # first transaction ID in the file, will be skipped
         last_tx=563388795,
-        config=None,
-        from_ts=None,
     )
     result = list(extract.run())
     _assert_result(
@@ -169,8 +169,6 @@ def test_randomized_extract(mocker, kafka_data):
         ops_topic="test_topic",
         tx_topic="test_topic",
         last_tx=563388795,
-        config=None,
-        from_ts=None,
     )
     result = list(extract.run())
     _assert_result(
@@ -211,8 +209,6 @@ def test_random_sized_batches_extract(mocker, kafka_data):
         tx_topic="test_topic",
         # first transaction ID in the file, will be skipped
         last_tx=563388795,
-        config=None,
-        from_ts=None,
     )
     result = list(extract.run())
     _assert_result(
@@ -243,8 +239,6 @@ def test_later_last_tx(mocker, kafka_data):
         tx_topic="test_topic",
         # a later transaction in the file
         last_tx=563389290,
-        config=None,
-        from_ts=None,
     )
     result = list(extract.run())
     _assert_result(
@@ -258,3 +252,93 @@ def test_later_last_tx(mocker, kafka_data):
         ),
         tx_op_counts=dict([MIDDLE_TX_OP_COUNTS, LAST_TX_OP_COUNTS]),
     )
+
+
+def test_unchanged_fields(mocker):
+    """Test the unchanged fields filtering for UPDATEs."""
+    tx_info = {
+        "key": {"id": "563388795:1461026653952"},
+        "value": {
+            "status": "END",
+            "id": "563388795:1461026653952",
+            "event_count": 1,
+            "data_collections": [
+                {"data_collection": "public.files_bucket", "event_count": 1},
+            ],
+            "ts_ms": 1691761684209,
+        },
+    }
+    op = {
+        "key": {
+            "id": "2c5e1797-e030-40e2-b32f-99335730a39d",
+        },
+        "value": {
+            "before": {
+                "created": 1691761300019002,
+                "updated": 1691761300044346,
+                "id": "2c5e1797-e030-40e2-b32f-99335730a39d",
+                "default_location": 1,
+                "default_storage_class": "S",
+                "size": 10_000,
+                "quota_size": 50_000_000_000,
+                "max_file_size": None,
+                "locked": False,
+                "deleted": False,
+            },
+            "after": {
+                "created": 1691761300019002,
+                "updated": 1691761683566267,
+                "id": "2c5e1797-e030-40e2-b32f-99335730a39d",
+                "default_location": 1,
+                "default_storage_class": "S",
+                "size": 50_000,
+                "quota_size": 50_000_000_000,
+                "max_file_size": None,
+                "locked": False,
+                "deleted": False,
+            },
+            "source": {
+                "ts_ms": 1691761684209,
+                "schema": "public",
+                "table": "files_bucket",
+                "txId": 563388795,
+                "lsn": 1461026601320,
+            },
+            "op": "u",
+            "ts_ms": 1691761684705,
+        },
+    }
+
+    _patch_consumers(
+        mocker,
+        [MockConsumer([SimpleNamespace(**copy.deepcopy(tx_info))])],
+        [MockConsumer([SimpleNamespace(**copy.deepcopy(op))])],
+    )
+
+    extract = KafkaExtract(
+        ops_topic="test_topic",
+        tx_topic="test_topic",
+        last_tx=0,
+        remove_unchanged_fields=False,
+    )
+    result = list(extract.run())
+    assert len(result) == 1
+    before = result[0].operations[0]["before"]
+    after = result[0].operations[0]["after"]
+    original_keys = op["value"]["after"].keys()
+    # No keys have been changed
+    assert before.keys() == after.keys() == original_keys
+
+    # Patch again for a re-run
+    _patch_consumers(
+        mocker,
+        [MockConsumer([SimpleNamespace(**copy.deepcopy(tx_info))])],
+        [MockConsumer([SimpleNamespace(**copy.deepcopy(op))])],
+    )
+    extract.remove_unchanged_fields = True
+    result = list(extract.run())
+    assert len(result) == 1
+    before = result[0].operations[0]["before"]
+    after = result[0].operations[0]["after"]
+    # Only "size" and "updated" changed. "id" is the PK, so it also stays
+    assert before.keys() == after.keys() == {"id", "updated", "size"}
