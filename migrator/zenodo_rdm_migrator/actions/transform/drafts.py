@@ -145,3 +145,92 @@ class DraftEditAction(TransformAction, DraftTransformMixin):
         operation = self.tx.operations[0]
         draft, parent = self._draft_and_parent_from_op(operation["after"])
         return dict(tx_id=self.tx.id, draft=draft, parent=parent)
+
+
+class DraftPublishAction(TransformAction, JSONTransformMixin):
+    """Zenodo to RDM draft publishing action."""
+
+    name = "publish-zenodo-draft"
+    load_cls = load.DraftPublishAction
+
+    @classmethod
+    def matches_action(cls, tx):  # pragma: no cover
+        """Checks if the data corresponds with that required by the action."""
+        insert_pid_redirect = False
+        delete_pid_relation = False
+
+        recid_ops = {}
+        for operation in tx.operations:
+            table_name = operation["source"]["table"]
+            if (
+                table_name == "pidstore_pid"
+                and operation["after"]["pid_type"] == "recid"
+            ):
+                is_update = operation["op"] == OperationType.UPDATE
+                if not is_update:
+                    return False
+
+                pid_id = operation["after"]["id"]
+                cur_cnt = recid_ops.get(pid_id, {}).get("count", 0)
+                recid_ops[pid_id] = {
+                    "count": cur_cnt + 1,
+                    "status": operation["after"]["status"],
+                }
+            elif table_name == "pidstore_redirect":
+                insert_pid_redirect = operation["op"] == OperationType.INSERT
+            elif table_name == "pidrelations_pidrelation":
+                delete_pid_relation = operation["op"] == OperationType.DELETE
+
+        if not insert_pid_redirect or not delete_pid_relation:
+            return False
+
+        # recid
+        # draft 3 UPDATES, final state R
+        # parent 2 UPDATES, final state M
+        if len(recid_ops) != 2:
+            return False
+        # order of lsn is respected therefore they come in order
+        # and the first operations are done on the draft pid
+        recid_ops = list(recid_ops.values())
+        draft = recid_ops[0]
+        parent = recid_ops[1]
+        recid_rules = (
+            draft["count"] == 3
+            and draft["status"] == "R"
+            and parent["count"] == 2
+            and parent["status"] == "M"
+        )
+        # the next ones are optional (not checked)
+        # doi
+        # parent 1 INSERT, final state K
+        # draft 1 INSERT, final state K
+        # oai
+        # draft 1 INSERT, final state R
+
+        # at the moment we only check operations over pids
+        # should be enough to differentiate between different types of publishing
+        # the operations over files/buckets can vary depending on the number of files
+        # the same happens with records and number of communities, etc.
+        return recid_rules
+
+    def _transform_data(self):  # pragma: no cover
+        """Transforms the data and returns an instance of the mapped_cls."""
+        return dict(
+            tx_id=self.tx.id,
+            # pids
+            # versioning and pid related ops will be taken care by the load action
+            parent_pid={},  # to update
+            draft_pid={},  # to delete
+            record_pid={},  # to register
+            parent_doi={},  # to reserve
+            record_doi={},  # to reserve
+            record_oai={},  # to register
+            # bucket
+            # would it be smart to just reference the record? to avoid passing/recreating
+            # all files objects? (similart to what we do in RDM?)
+            draft_bucket={},  # to delete
+            record_bucket={},  # to create
+            # metadata would be made into a record by the load action
+            parent={},
+            draft={},
+        )
