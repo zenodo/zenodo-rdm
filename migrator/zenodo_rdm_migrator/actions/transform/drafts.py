@@ -202,10 +202,10 @@ class DraftPublishAction(TransformAction, JSONTransformMixin):
         )
         # the next ones are optional (not checked)
         # doi
-        # parent 1 INSERT, final state K
-        # draft 1 INSERT, final state K
+        #   parent 1 INSERT, final state K
+        #   draft 1 INSERT, final state K
         # oai
-        # draft 1 INSERT, final state R
+        #   draft 1 INSERT, final state R
 
         # at the moment we only check operations over pids
         # should be enough to differentiate between different types of publishing
@@ -220,16 +220,12 @@ class DraftPublishAction(TransformAction, JSONTransformMixin):
             # pids
             # versioning and pid related ops will be taken care by the load action
             parent_pid={},  # to update
-            draft_pid={},  # to delete
-            record_pid={},  # to register
             parent_doi={},  # to reserve
-            record_doi={},  # to reserve
-            record_oai={},  # to register
+            draft_pid={},  # to register
+            draft_doi={},  # to reserve
+            draft_oai={},  # to register
             # bucket
-            # would it be smart to just reference the record? to avoid passing/recreating
-            # all files objects? (similart to what we do in RDM?)
-            draft_bucket={},  # to delete
-            record_bucket={},  # to create
+            bucket={},  # to update (from draft to record)
             # metadata would be made into a record by the load action
             parent={},
             draft={},
