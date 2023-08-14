@@ -12,6 +12,7 @@ from collections import Counter
 from datetime import datetime
 from pathlib import Path
 
+import dictdiffer
 from invenio_rdm_migrator.extract import Extract, Tx
 from invenio_rdm_migrator.logging import Logger
 from kafka import KafkaConsumer, TopicPartition
@@ -102,6 +103,7 @@ class KafkaExtract(Extract):
         values trade memory for safety.
     :param from_ts: Offset timestamp from which to start consuming messages from. If
         not passed we start consuming from the earliest possible offset.
+    :param remove_unchanged_fields: If ``True``, removes unchanged fields for UPDATEs.
     :param _dump_dir: Path to dump consumed message to (useful for tests).
     """
 
@@ -121,10 +123,11 @@ class KafkaExtract(Extract):
         *,
         ops_topic,
         tx_topic,
-        config,
         last_tx,
         tx_buffer=10,
+        config=None,
         from_ts=None,
+        remove_unchanged_fields=True,
         _dump_dir=None,
     ):
         """Constructor."""
@@ -138,6 +141,7 @@ class KafkaExtract(Extract):
         self.config = config or {}
         self.tx_registry = SortedDict({})
         self.tx_buffer = tx_buffer
+        self.remove_unchanged_fields = remove_unchanged_fields
         self._last_yielded_tx = None
         self._topic_states = {}
         # TODO: This class probably needs a dedicated logger namespace
@@ -228,6 +232,18 @@ class KafkaExtract(Extract):
                 consumer.commit()
                 yield (tx_id, tx_msg.value)
 
+    @staticmethod
+    def _filter_unchanged_values(msg):
+        # We don't have deeply nested dict values, since they are still raw JSON strings
+        before = msg.value["before"]
+        after = msg.value["after"]
+        pk_keys = set(msg.key.keys())
+        diff = dictdiffer.diff(before, after, ignore=pk_keys)
+        changed_keys = {key for diff_op, key, _ in diff if diff_op == "change"}
+        for key in (before.keys() | after.keys()) - (changed_keys | pk_keys):
+            before.pop(key)
+            after.pop(key)
+
     def iter_ops(self):
         """Yields operations/statements."""
         consumer = self._ops_consumer
@@ -243,6 +259,10 @@ class KafkaExtract(Extract):
                 consumer.commit()
                 continue
             consumer.commit()
+
+            if self.remove_unchanged_fields and op_msg.value["op"] == "u":
+                self._filter_unchanged_values(op_msg)
+
             yield (tx_id, dict(key=op_msg.key, **op_msg.value))
 
     def _yield_completed_tx(self, min_batch=None):
