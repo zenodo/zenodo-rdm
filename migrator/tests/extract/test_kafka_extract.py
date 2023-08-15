@@ -106,6 +106,7 @@ def _assert_result(
     assert all(isinstance(t, Tx) for t in result)
     tx_dict = {t.id: t for t in result}
     tx_ids = list(tx_dict.keys())
+    assert tx_ids == sorted(tx_ids)
     assert tx_ids[0] == first_tx_id
     assert tx_ids[-1] == last_tx_id
     assert set(extra_tx_ids or []) <= set(tx_ids)

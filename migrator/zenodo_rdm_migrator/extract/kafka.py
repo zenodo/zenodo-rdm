@@ -7,6 +7,7 @@
 
 """Kafka extraction classes."""
 
+import itertools
 import json
 from collections import Counter
 from datetime import datetime
@@ -19,8 +20,8 @@ from kafka import KafkaConsumer, TopicPartition
 from sortedcontainers import SortedDict, SortedList
 
 
-class TxState:
-    """Transaction state."""
+class _TxState:
+    """Transaction state, internally used in the Kafka extract only."""
 
     def __init__(self, id, info=None):
         """Constructor."""
@@ -77,6 +78,9 @@ class KafkaExtractEnd(Exception):
 class KafkaExtract(Extract):
     """Extract Debezium change data capture stream via Kafka.
 
+    Yields ``invenio_rdm_migrator.extract.Tx`` objects that represent completed
+    transactions in chronological order.
+
     .. code-block:: python
 
         # Example initialization
@@ -101,6 +105,10 @@ class KafkaExtract(Extract):
     :param last_tx: Last transaction ID after which to start yielding.
     :param tx_buffer: How many transactions to buffer before starting to return. Larger
         values trade memory for safety.
+    :param max_tx_info_fetch: Max number of transaction info messages to fetch from the
+        consumer in one iteration.
+    :param max_ops_fetch: Max number of operation messages to fetch from the consumer
+        in one iteration.
     :param from_ts: Offset timestamp from which to start consuming messages from. If
         not passed we start consuming from the earliest possible offset.
     :param remove_unchanged_fields: If ``True``, removes unchanged fields for UPDATEs.
@@ -125,6 +133,8 @@ class KafkaExtract(Extract):
         tx_topic,
         last_tx,
         tx_buffer=10,
+        max_tx_info_fetch=200,
+        max_ops_fetch=2000,
         config=None,
         from_ts=None,
         remove_unchanged_fields=True,
@@ -141,6 +151,8 @@ class KafkaExtract(Extract):
         self.config = config or {}
         self.tx_registry = SortedDict({})
         self.tx_buffer = tx_buffer
+        self.max_tx_info_fetch = max_tx_info_fetch
+        self.max_ops_fetch = max_ops_fetch
         self.remove_unchanged_fields = remove_unchanged_fields
         self._last_yielded_tx = None
         self._topic_states = {}
@@ -162,10 +174,12 @@ class KafkaExtract(Extract):
             TopicPartition(topic, p): None for p in consumer.partitions_for_topic(topic)
         }
         consumer.assign(partitions)
+        # If we have a target timestamp to start from, use it...
         if ts:
             offsets = consumer.offsets_for_times({p: ts for p in partitions})
             partitions.update({p: o for p, (o, _) in offsets.items()})
         else:
+            # ...else start from the very beginning of the topic partitions
             partitions = consumer.beginning_offsets(partitions)
 
         for partition, offset in partitions.items():
@@ -220,7 +234,7 @@ class KafkaExtract(Extract):
                 continue
 
             tx_id, lsn = map(int, tx_msg.value["id"].split(":"))
-            # We don't yield anything before the configured last transaction ID
+            # We drop anything before the configured last transaction ID
             if tx_id <= self.last_tx:
                 consumer.commit()
                 continue
@@ -255,6 +269,7 @@ class KafkaExtract(Extract):
                 consumer.commit()
                 continue
             tx_id = op_msg.value["source"]["txId"]
+            # We drop anything before the configured last transaction ID
             if tx_id <= self.last_tx:
                 consumer.commit()
                 continue
@@ -266,7 +281,17 @@ class KafkaExtract(Extract):
             yield (tx_id, dict(key=op_msg.key, **op_msg.value))
 
     def _yield_completed_tx(self, min_batch=None):
-        """Yields completed transactions."""
+        """Yields completed transactions.
+
+        Important: we only yield the "earliest" transactions that have been completed in
+        order. For example:
+
+        1. We have Tx1, Tx2, and Tx3 in ``self.tx_registry``.
+        2. Tx2 and Tx3 are complete, but Tx1 is still has missing operations (that will
+           come in a later iteration of the operations consumer).
+        3. In this case we don't yield Tx2 and Tx3, since we're still waiting for Tx1
+           to complete, so that we can return all the completed transactions in order.
+        """
         completed_tx_batch = []
         for tx_state in self.tx_registry.values():
             if not tx_state.complete:
@@ -294,24 +319,36 @@ class KafkaExtract(Extract):
         # their correct order.
         try:
             while True:
-                # First we consume all the available transactions information
-                for tx_id, tx_info in self.iter_tx_info():
+                # First we populate the transaction registry from the transactions
+                # information stream.
+                tx_info_stream = self.iter_tx_info()
+                if self.max_tx_info_fetch:
+                    tx_info_stream = itertools.islice(
+                        tx_info_stream, self.max_tx_info_fetch
+                    )
+                for tx_id, tx_info in tx_info_stream:
                     if tx_id in self.tx_registry:
                         self.tx_registry[tx_id].info = tx_info
                     else:
-                        self.tx_registry[tx_id] = TxState(tx_id, tx_info)
+                        self.tx_registry[tx_id] = _TxState(tx_id, tx_info)
 
-                # We now consume operations and build on a (pending) transaction state.
-                for tx_id, op in self.iter_ops():
-                    tx_state = self.tx_registry.setdefault(tx_id, TxState(tx_id))
+                # We then consume operations and build up the (pending) transactions in
+                # the registry.
+                ops_stream = self.iter_ops()
+                if self.max_ops_fetch:
+                    ops_stream = itertools.islice(ops_stream, self.max_ops_fetch)
+                for tx_id, op in ops_stream:
+                    tx_state = self.tx_registry.setdefault(tx_id, _TxState(tx_id))
                     tx_state.append(op)
                     if tx_state.complete:
                         self.logger.info(f"Completed transaction {tx_state.id}")
 
+                yield from self._yield_completed_tx(min_batch=self.tx_buffer)
+
                 # If no new transactions, we don't need to sleep since consumers
                 # have a timeout/sleep already via "consumer_timeout_ms".
-                yield from self._yield_completed_tx(min_batch=self.tx_buffer)
-        # Normally this extract would run forever, so we need some mechanism to stop
+
+        # Normally this extract would run forever, so we need some mechanism to stop.
         except KafkaExtractEnd:
             # Yield any remaining completed transactions
             yield from self._yield_completed_tx()
