@@ -9,6 +9,7 @@
 
 
 from invenio_rdm_migrator.actions import TransformAction
+from invenio_rdm_migrator.load.ids import generate_recid
 from invenio_rdm_migrator.load.postgresql.transactions.operations import OperationType
 from invenio_rdm_migrator.streams.actions import load
 from invenio_rdm_migrator.transform import IdentityTransform, JSONTransformMixin
@@ -51,7 +52,7 @@ class DraftCreateAction(TransformAction, JSONTransformMixin):
 
             if table_name == "pidstore_pid":
                 if operation["after"]["pid_type"] == "recid":
-                    pid = IdentityTransform()._transform(operation["after"])
+                    draft_pid = IdentityTransform()._transform(operation["after"])
             elif table_name == "files_bucket":
                 bucket = IdentityTransform()._transform(operation["after"])
             elif table_name == "records_metadata":
@@ -75,6 +76,29 @@ class DraftCreateAction(TransformAction, JSONTransformMixin):
                     fields=["created", "updated"],
                 )
 
+        # calculate pids
+        parent["json"]["pid"] = generate_recid(data=None, status="K")
+        draft["json"]["pid"] = {
+            "pk": draft_pid["id"],
+            "obj_type": "rec",
+            "pid_type": "recid",
+            "status": "K",
+        }
+
+        parent_pid = {
+            "id": parent["json"]["pid"]["pk"],
+            "pid_type": "recid",
+            "pid_value": parent["json"]["id"],
+            "status": "K",
+            "object_type": "rec",
+            # object_uuid is assigned by the pks generation of the load action
+        }
+        # assign json.pid to both parent and draft
         return dict(
-            tx_id=self.tx.id, pid=pid, bucket=bucket, draft=draft, parent=parent
+            tx_id=self.tx.id,
+            draft_pid=draft_pid,
+            draft_bucket=bucket,
+            draft=draft,
+            parent_pid=parent_pid,
+            parent=parent,
         )
