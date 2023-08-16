@@ -15,6 +15,7 @@ from pathlib import Path
 
 import dictdiffer
 from invenio_rdm_migrator.extract import Extract, Tx
+from invenio_rdm_migrator.load.postgresql.transactions.operations import OperationType
 from invenio_rdm_migrator.logging import Logger
 from kafka import KafkaConsumer, TopicPartition
 from sortedcontainers import SortedDict, SortedList
@@ -53,6 +54,8 @@ class _TxState:
 
     def append(self, op):
         """Add a single table row operation to the transaction state."""
+        # Convert the "op" key to an enum
+        op["op"] = OperationType(op["op"].upper())
         self.ops.add(op)
 
         # Update table row counts with the operations so far

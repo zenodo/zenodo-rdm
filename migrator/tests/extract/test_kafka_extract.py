@@ -15,6 +15,7 @@ from types import SimpleNamespace
 from unittest.mock import PropertyMock
 
 from invenio_rdm_migrator.extract import Tx
+from invenio_rdm_migrator.load.postgresql.transactions.operations import OperationType
 
 from zenodo_rdm_migrator.extract import KafkaExtract, KafkaExtractEnd
 
@@ -104,6 +105,9 @@ def _assert_result(
 ):
     assert len(result) == count
     assert all(isinstance(t, Tx) for t in result)
+    assert all(
+        all(isinstance(o["op"], OperationType) for o in t.operations) for t in result
+    )
     tx_dict = {t.id: t for t in result}
     tx_ids = list(tx_dict.keys())
     assert tx_ids == sorted(tx_ids)
