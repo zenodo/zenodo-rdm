@@ -100,8 +100,6 @@ def test_draft_create_action_stream(
     state, test_extract_cls, create_draft_tx, db_uri, db_engine
 ):
     """Creates a DB on disk and initializes all the migrator related tables on it."""
-    # test
-
     test_extract_cls.tx = create_draft_tx
 
     stream = Stream(
@@ -155,8 +153,6 @@ def test_draft_edit_action_stream(
     parent_state, db_draft, test_extract_cls, update_draft_tx, db_uri, db_engine
 ):
     """Creates a DB on disk and initializes all the migrator related tables on it."""
-    # test
-
     test_extract_cls.tx = update_draft_tx
 
     stream = Stream(
@@ -183,3 +179,45 @@ def test_draft_edit_action_stream(
         parent = parents[0]._mapping
         assert parent["created"] == "2021-05-01T00:00:00"
         assert parent["updated"] == "2023-06-29T13:00:00"
+
+
+def test_draft_partial_edit_action_stream(
+    parent_state, db_draft, test_extract_cls, update_draft_tx, db_uri, db_engine
+):
+    """Creates a DB on disk and initializes all the migrator related tables on it."""
+    # make it a partial update
+    update_draft_tx["operations"][0]["after"] = {
+        "updated": "2023-07-01T13:00:00",
+        "id": "b7547ab1-47d2-48e2-9867-ca597b4ebb41",
+        "json": '{"doi": "","recid": 1217215,"title": "update partial test","$schema": "https://zenodo.org/schemas/deposits/records/record-v1.0.0.json","license": {"$ref": "https://dx.zenodo.org/licenses/CC-BY-4.0"},"_buckets": {"deposit": "0e12b4b6-9cc7-46df-9a04-c11c478de211"},"_deposit": {"owners": [86261],"status": "draft","created_by": 86261},"creators": [{"name": "me"}],"description": "<p>testing</p>","access_right": "open","conceptrecid": "1217214","resource_type": {"type": "publication", "subtype": "article"},"publication_date": "2023-06-29"}',
+    }
+    test_extract_cls.tx = update_draft_tx
+
+    stream = Stream(
+        name="action",
+        extract=test_extract_cls(),
+        transform=ZenodoTxTransform(),
+        load=PostgreSQLTx(db_uri),
+    )
+    stream.run()
+
+    with db_engine.connect() as conn:
+        # Draft parent and versioning
+        drafts = list(conn.execute(sa.select(RDMDraftMetadata)))
+        assert len(drafts) == 1
+
+        draft = drafts[0]._mapping
+        assert draft["created"] == "2021-05-01T00:00:00"
+        assert draft["updated"] == "2023-07-01T13:00:00"
+        assert draft["json"]["metadata"]["title"] == "update partial test"
+
+        parents = list(conn.execute(sa.select(RDMParentMetadata)))
+        assert len(parents) == 1
+
+        parent = parents[0]._mapping
+        assert parent["created"] == "2021-05-01T00:00:00"
+        # this is not a 100% true since the parent might not be updated
+        # to fix it, we could store this in the state, on the other hand
+        # it does not affect the workflows of the system and it makes the code
+        # easier/more readable
+        assert parent["updated"] == "2023-07-01T13:00:00"

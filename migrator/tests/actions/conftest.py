@@ -79,7 +79,7 @@ def db_uri():
     return "postgresql+psycopg://invenio:invenio@localhost:5432/invenio"
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="function")
 def db_engine(db_uri):
     """Setup database.
 
