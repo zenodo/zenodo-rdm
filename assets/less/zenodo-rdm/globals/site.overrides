@@ -49,8 +49,12 @@ a.inverted {
 }
 
 #rdm-footer-element {
-  a {
-    color: @footerTextDarkColor;
+  a, a:hover {
+    color: @footerTextDarkColor !important;
+  }
+
+  .ui.inverted.list .item a:not(.ui):hover {
+    color: @footerTextDarkColor !important;
   }
 }
 

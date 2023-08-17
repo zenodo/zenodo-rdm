@@ -27,58 +27,111 @@
 {%- block footer_top_left %}
 <div class="ui equal width stackable grid">
   <div class="column">
-    <h4 class="ui inverted header">{{_('About')}}</h4>
-    <div class="ui inverted link list">
-      <a class="item" href="https://about.zenodo.org">{{_('About')}}</a>
-      <a class="item" href="https://about.zenodo.org/policies">{{_('Policies')}}</a>
-      <a class="item" href="https://about.zenodo.org/infrastructure">{{_('Infrastructure')}}</a>
-      <a class="item" href="https://about.zenodo.org/principles">{{_('Principles')}}</a>
-      <a class="item" href="https://about.zenodo.org/contact">{{_('Contact')}}</a>
-    </div>
+    <h2 class="ui inverted small header">{{_('About')}}</h2>
+    <ul class="ui inverted link list">
+      <li class="item">
+        <a href="https://about.zenodo.org">{{_('About')}}</a>
+      </li>
+      <li class="item">
+        <a href="https://about.zenodo.org/policies">{{_('Policies')}}</a>
+      </li>
+      <li class="item">
+        <a href="https://about.zenodo.org/infrastructure">{{_('Infrastructure')}}</a>
+      </li>
+      <li class="item">
+        <a href="https://about.zenodo.org/principles">{{_('Principles')}}</a>
+      </li>
+      <li class="item">
+        <a href="https://about.zenodo.org/projects/">{{_('Projects')}}</a>
+      </li>
+      <li class="item">
+        <a href="https://about.zenodo.org/contact">{{_('Contact')}}</a>
+      </li>
+    </ul>
   </div>
   <div class="column">
-    <h4 class="ui inverted header">{{_('Blog')}}</h4>
-    <div class="ui inverted link list">
-      <a class="item" href="https://blog.zenodo.org">{{_('Blog')}}</a>
-    </div>
+    <h2 class="ui inverted small header">{{_('Blog')}}</h2>
+    <ul class="ui inverted link list">
+      <li class="item">
+        <a href="https://blog.zenodo.org">{{_('Blog')}}</a>
+      </li>
+    </ul>
   </div>
   <div class="column">
-    <h4 class="ui inverted header">{{_('Help')}}</h4>
-    <div class="ui inverted link list ">
-      <a class="item" href="https://help.zenodo.org">{{_('FAQ')}}</a>
-      <a class="item" href="https://help.zenodo.org/features">{{_('Features')}}</a>
-      <a class="item" href="https://help.zenodo.org/whatsnew">{{_("What's New")}}</a>
-    </div>
+    <h2 class="ui inverted small header">{{_('Help')}}</h2>
+    <ul class="ui inverted link list">
+      <li class="item">
+        <a href="https://help.zenodo.org">{{_('FAQ')}}</a>
+      </li>
+      <li class="item">
+        <a href="https://help.zenodo.org/features">{{_('Features')}}</a>
+      </li>
+      <li class="item">
+        <a href="https://help.zenodo.org/whatsnew">{{_("What's New")}}</a>
+      </li>
+      <li class="item">
+        <a href="https://about.zenodo.org/roadmap/">{{ _('Roadmap') }}</a>
+      </li>
+      <li class="item">
+        <a href="https://help.zenodo.org/guides/">{{ _('Guides') }}</a>
+      </li>
+      <li class="item">
+        <a href="https://help.zenodo.org/docs/">{{ _('Docs') }}</a>
+      </li>
+      <li class="item">
+        <a href="https://www.zenodo.org/support/">{{ _('Support') }}</a>
+      </li>
+    </ul>
   </div>
   <div class="column">
-    <h4 class="ui inverted header">{{_('Developers')}}</h4>
-    <div class="ui inverted link list ">
-      <a class="item" href="https://developers.zenodo.org">{{_('REST API')}}</a>
-      <a class="item" href="https://developers.zenodo.org#oai-pmh">{{_('OAI-PMH')}}</a>
-    </div>
+    <h2 class="ui inverted small header">{{_('Developers')}}</h2>
+    <ul class="ui inverted link list">
+      <li class="item">
+        <a href="https://developers.zenodo.org">{{_('REST API')}}</a>
+      </li>
+      <li class="item">
+        <a href="https://developers.zenodo.org#oai-pmh">{{_('OAI-PMH')}}</a>
+      </li>
+    </ul>
   </div>
   <div class="column">
-    <h4 class="ui inverted header">{{_('Contribute')}}</h4>
-    <div class="ui inverted link list ">
-      <a class="item" href="https://github.com/zenodo/zenodo"><i class="fa fa-external-link"></i> {{_('GitHub')}}</a>
-      <a class="item" href="/donate"><i class="fa fa-external-link"></i> {{_('Donate')}}</a>
-    </div>
+    <h2 class="ui inverted small header">{{_('Contribute')}}</h2>
+    <ul class="ui inverted link list">
+      <li class="item">
+        <a href="https://github.com/zenodo/zenodo">
+          <i class="icon external" aria-hidden="true"></i>
+          {{_('GitHub')}}
+        </a>
+      </li>
+      <li class="item">
+        <a href="/donate">
+          <i class="icon external" aria-hidden="true"></i>
+          {{_('Donate')}}
+        </a>
+      </li>
+    </ul>
   </div>
 {%- endblock footer_top_left %}
 
 {%- block footer_top_right %}
-  <h4 class="ui inverted header">{{_('Funded by')}}</h4>
-  <div class="ui horizontal link list">
-    <a class="item" href="https://home.cern">
-      <img src="{{ url_for('static', filename='images/cern.png') }}" width="60" height="60" />
-    </a>
-    <a class="item" href="https://www.openaire.eu">
-      <img src="{{ url_for('static', filename='images/openaire.png') }}" width="60" height="60" />
-    </a>
-    <a class="item" href="https://ec.europa.eu/programmes/horizon2020/">
-      <img src="{{ url_for('static', filename='images/eu.png') }}" width="88" height="60" />
-    </a>
-  </div>
+  <h2 class="ui inverted small header">{{_('Funded by')}}</h2>
+  <ul class="ui horizontal link list">
+    <li class="item">
+      <a href="https://home.cern" aria-label="CERN">
+        <img src="{{ url_for('static', filename='images/cern.png') }}" width="60" height="60" alt="" />
+      </a>
+    </li>
+    <li class="item">
+      <a href="https://www.openaire.eu" aria-label="OpenAIRE">
+        <img src="{{ url_for('static', filename='images/openaire.png') }}" width="60" height="60" alt="" />
+      </a>
+    </li>
+    <li class="item">
+      <a href="https://ec.europa.eu/programmes/horizon2020/" aria-label="European Commission">
+        <img src="{{ url_for('static', filename='images/eu.png') }}" width="88" height="60" alt="" />
+      </a>
+    </li>
+  </ul>
   {%- endblock footer_top_right %}
 </div>
 
@@ -87,16 +140,26 @@
   <div class="ui inverted container">
     <div class="ui grid">
       <div class="eight wide column left middle aligned">
-        Powered by 
-        <a href="http://information-technology.web.cern.ch/about/computer-centre">CERN Data Centre</a> & <a href="https://inveniordm.docs.cern.ch/">InvenioRDM</a>
+        <p class="m-0">
+          Powered by 
+          <a href="http://information-technology.web.cern.ch/about/computer-centre">CERN Data Centre</a> & <a href="https://inveniordm.docs.cern.ch/">InvenioRDM</a>
+        </p>
       </div>
       <div class="eight wide column right aligned">
-        <div class="ui inverted horizontal link list">
-          <a class="item" href="hhttps://stats.uptimerobot.com/vlYOVuWgM/">{{_('Status')}}</a>
-          <a class="item" href="https://about.zenodo.org/privacy-policy">{{_('Privacy policy')}}</a>
-          <a class="item" href="https://about.zenodo.org/terms">{{_('Terms of Use')}}</a>
-          <a class="item" href="/support">{{_('Support')}}</a>
-        </div>
+        <ul class="ui inverted horizontal link list">
+          <li class="item">
+            <a href="hhttps://stats.uptimerobot.com/vlYOVuWgM/">{{_('Status')}}</a>
+          </li>
+          <li class="item">
+            <a href="https://about.zenodo.org/privacy-policy">{{_('Privacy policy')}}</a>
+          </li>
+          <li class="item">
+            <a href="https://about.zenodo.org/terms">{{_('Terms of Use')}}</a>
+          </li>
+          <li class="item">
+            <a href="/support">{{_('Support')}}</a>
+          </li>
+        </ul>
       </div>
     </div>
   </div>
