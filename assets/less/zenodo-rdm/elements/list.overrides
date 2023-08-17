@@ -7,3 +7,18 @@
     }
   }
 }
+
+
+footer  {
+  ul.ui.link.list {
+    margin: 0;
+
+    li.item {
+      padding-left: 0 !important;
+
+      &:before {
+        content:"";
+      }
+    }
+  }
+}
