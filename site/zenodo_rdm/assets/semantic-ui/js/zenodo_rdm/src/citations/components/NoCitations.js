@@ -21,10 +21,9 @@
 // as an Intergovernmental Organization or submit itself to any jurisdiction.
 
 import React from "react";
-import { Message } from "semantic-ui-react";
 
 export const NoCitations = () => (
-  <Message info as="p" className="rel-ml-1 rel-mr-1">
-    No citations found
-  </Message>
+  <p className="rel-pl-1 rel-pr-1">
+    <i>No citations found</i>
+  </p>
 );
