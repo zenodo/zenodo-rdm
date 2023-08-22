@@ -34,6 +34,10 @@
         <i class="icon"><img id="signup-orcid-logo" src="{{ url_for('static', filename='images/orcid.svg')}}"></i>
         {{_('Sign up with ORCID')}}
       </a>
+      <a href="{{url_for('invenio_oauthclient.login', remote_app='openaire_aai')}}" class="ui button fluid">
+        <i class="icon"><img id="signup-openaire-logo" src="{{ url_for('static', filename='images/openaire.svg')}}"></i>
+        {{_('Sign up with OpenAIRE')}}
+      </a>
       <h3 class="ui header" id="testheader">— OR —</h3>
     </div>
     {%- with form = register_user_form %}
