@@ -11,7 +11,6 @@ from uuid import UUID
 
 import pytest
 import sqlalchemy as sa
-from invenio_rdm_migrator.load.postgresql.transactions import PostgreSQLTx
 from invenio_rdm_migrator.streams import Stream
 from invenio_rdm_migrator.streams.models.files import FilesBucket
 from invenio_rdm_migrator.streams.models.pids import PersistentIdentifier
@@ -20,16 +19,14 @@ from invenio_rdm_migrator.streams.models.records import (
     RDMParentMetadata,
     RDMVersionState,
 )
-from sqlalchemy.orm import Session
-from sqlalchemy.orm.exc import ObjectDeletedError
 
 from zenodo_rdm_migrator.transform.transactions import ZenodoTxTransform
 
 
 @pytest.fixture()
-def db_draft(db_engine):
+def db_draft(database, session):
     # since there are not FKs in the test database there is no need for PID, Buckets, etc.
-    history = [
+    records = [
         RDMParentMetadata(
             id="9493793c-47d2-48e2-9867-ca597b4ebb41",
             json={
@@ -67,22 +64,9 @@ def db_draft(db_engine):
         ),
     ]
 
-    with Session(db_engine) as session:
-        for obj in history:
-            session.add(obj)
-        session.commit()
-
-    yield
-
-    # cleanup
-    with Session(db_engine) as session:
-        for obj in history:
-            session.delete(obj)
-
-        try:
-            session.commit()
-        except ObjectDeletedError:  # might be deleted on user inactivation
-            pass
+    for obj in records:
+        session.add(obj)
+    session.commit()
 
 
 @pytest.fixture()
@@ -97,127 +81,107 @@ def parent_state(state):
 
 
 def test_draft_create_action_stream(
-    state, test_extract_cls, create_draft_tx, db_uri, db_engine
+    state,
+    database,
+    session,
+    test_extract_cls,
+    create_draft_tx,
+    pg_tx_load,
 ):
-    """Creates a DB on disk and initializes all the migrator related tables on it."""
-    test_extract_cls.tx = create_draft_tx
-
+    """Test draft create action."""
     stream = Stream(
         name="action",
-        extract=test_extract_cls(),
+        extract=test_extract_cls(create_draft_tx),
         transform=ZenodoTxTransform(),
-        load=PostgreSQLTx(db_uri),
+        load=pg_tx_load,
     )
     stream.run()
 
-    with db_engine.connect() as conn:
-        # PIDs
-        pids = list(conn.execute(sa.select(PersistentIdentifier)))
-        assert len(pids) == 2
+    # PIDs
+    pids = session.scalars(sa.select(PersistentIdentifier)).all()
+    assert len(pids) == 2
+    assert {p.pid_value for p in pids} == {"1217214", "1217215"}
 
-        pid_values = {"1217214", "1217215"}
-        db_pid_values = set(map(lambda row: row._mapping["pid_value"], pids))
-        assert db_pid_values == pid_values
+    # Bucket
+    bucket = session.scalars(sa.select(FilesBucket)).one()
+    assert bucket.id == UUID("0e12b4b6-9cc7-46df-9a04-c11c478de211")
 
-        # Bucket
-        buckets = list(conn.execute(sa.select(FilesBucket)))
-        assert len(buckets) == 1
+    # Draft parent and versioning
+    draft = session.scalars(sa.select(RDMDraftMetadata)).one()
 
-        assert buckets[0]._mapping["id"] == UUID("0e12b4b6-9cc7-46df-9a04-c11c478de211")
+    assert draft.created == "2023-06-29T13:38:48.842023"
+    assert draft.updated == "2023-06-29T13:38:48.842023"
 
-        # Draft parent and versioning
-        drafts = list(conn.execute(sa.select(RDMDraftMetadata)))
-        assert len(drafts) == 1
+    parent = session.scalars(sa.select(RDMParentMetadata)).one()
+    assert parent.created == "2023-06-29T13:38:48.842023"
+    assert parent.updated == "2023-06-29T13:38:48.842023"
 
-        draft = drafts[0]._mapping
-        assert draft["created"] == "2023-06-29T13:38:48.842023"
-        assert draft["updated"] == "2023-06-29T13:38:48.842023"
-
-        parents = list(conn.execute(sa.select(RDMParentMetadata)))
-        assert len(parents) == 1
-
-        parent = parents[0]._mapping
-        assert parent["created"] == "2023-06-29T13:38:48.842023"
-        assert parent["updated"] == "2023-06-29T13:38:48.842023"
-
-        versioning = list(conn.execute(sa.select(RDMVersionState)))
-        assert len(versioning) == 1
-
-        versioning = versioning[0]._mapping
-
-        assert parent["id"] == draft["parent_id"] == versioning["parent_id"]
-        assert draft["id"] == versioning["next_draft_id"]
+    versioning = session.scalars(sa.select(RDMVersionState)).one()
+    assert parent.id == draft.parent_id == versioning.parent_id
+    assert draft.id == versioning.next_draft_id
 
 
 def test_draft_edit_action_stream(
-    parent_state, db_draft, test_extract_cls, update_draft_tx, db_uri, db_engine
+    parent_state,
+    session,
+    db_draft,
+    test_extract_cls,
+    update_draft_tx,
+    pg_tx_load,
 ):
-    """Creates a DB on disk and initializes all the migrator related tables on it."""
-    test_extract_cls.tx = update_draft_tx
-
+    """Test draft edit action."""
     stream = Stream(
         name="action",
-        extract=test_extract_cls(),
+        extract=test_extract_cls(update_draft_tx),
         transform=ZenodoTxTransform(),
-        load=PostgreSQLTx(db_uri),
+        load=pg_tx_load,
     )
     stream.run()
 
-    with db_engine.connect() as conn:
-        # Draft parent and versioning
-        drafts = list(conn.execute(sa.select(RDMDraftMetadata)))
-        assert len(drafts) == 1
+    # Draft parent and versioning
+    draft = session.scalars(sa.select(RDMDraftMetadata)).one()
+    assert draft.created == "2021-05-01T00:00:00"
+    assert draft.updated == "2023-06-29T13:00:00"
+    assert draft.json["metadata"]["title"] == "update test"
 
-        draft = drafts[0]._mapping
-        assert draft["created"] == "2021-05-01T00:00:00"
-        assert draft["updated"] == "2023-06-29T13:00:00"
-        assert draft["json"]["metadata"]["title"] == "update test"
-
-        parents = list(conn.execute(sa.select(RDMParentMetadata)))
-        assert len(parents) == 1
-
-        parent = parents[0]._mapping
-        assert parent["created"] == "2021-05-01T00:00:00"
-        assert parent["updated"] == "2023-06-29T13:00:00"
+    parent = session.scalars(sa.select(RDMParentMetadata)).one()
+    assert parent.created == "2021-05-01T00:00:00"
+    assert parent.updated == "2023-06-29T13:00:00"
 
 
 def test_draft_partial_edit_action_stream(
-    parent_state, db_draft, test_extract_cls, update_draft_tx, db_uri, db_engine
+    parent_state,
+    session,
+    db_draft,
+    test_extract_cls,
+    update_draft_tx,
+    pg_tx_load,
 ):
-    """Creates a DB on disk and initializes all the migrator related tables on it."""
+    """Test draft partial edit action."""
     # make it a partial update
     update_draft_tx["operations"][0]["after"] = {
         "updated": "2023-07-01T13:00:00",
         "id": "b7547ab1-47d2-48e2-9867-ca597b4ebb41",
         "json": '{"doi": "","recid": 1217215,"title": "update partial test","$schema": "https://zenodo.org/schemas/deposits/records/record-v1.0.0.json","license": {"$ref": "https://dx.zenodo.org/licenses/CC-BY-4.0"},"_buckets": {"deposit": "0e12b4b6-9cc7-46df-9a04-c11c478de211"},"_deposit": {"owners": [86261],"status": "draft","created_by": 86261},"creators": [{"name": "me"}],"description": "<p>testing</p>","access_right": "open","conceptrecid": "1217214","resource_type": {"type": "publication", "subtype": "article"},"publication_date": "2023-06-29"}',
     }
-    test_extract_cls.tx = update_draft_tx
-
     stream = Stream(
         name="action",
-        extract=test_extract_cls(),
+        extract=test_extract_cls(update_draft_tx),
         transform=ZenodoTxTransform(),
-        load=PostgreSQLTx(db_uri),
+        load=pg_tx_load,
     )
     stream.run()
 
-    with db_engine.connect() as conn:
-        # Draft parent and versioning
-        drafts = list(conn.execute(sa.select(RDMDraftMetadata)))
-        assert len(drafts) == 1
+    # Draft parent and versioning
+    draft = session.scalars(sa.select(RDMDraftMetadata)).one()
+    assert draft.created == "2021-05-01T00:00:00"
+    assert draft.updated == "2023-07-01T13:00:00"
+    assert draft.json["metadata"]["title"] == "update partial test"
 
-        draft = drafts[0]._mapping
-        assert draft["created"] == "2021-05-01T00:00:00"
-        assert draft["updated"] == "2023-07-01T13:00:00"
-        assert draft["json"]["metadata"]["title"] == "update partial test"
-
-        parents = list(conn.execute(sa.select(RDMParentMetadata)))
-        assert len(parents) == 1
-
-        parent = parents[0]._mapping
-        assert parent["created"] == "2021-05-01T00:00:00"
-        # this is not a 100% true since the parent might not be updated
-        # to fix it, we could store this in the state, on the other hand
-        # it does not affect the workflows of the system and it makes the code
-        # easier/more readable
-        assert parent["updated"] == "2023-07-01T13:00:00"
+    parent = session.scalars(sa.select(RDMParentMetadata)).one()
+    assert parent.created == "2021-05-01T00:00:00"
+    # this is not a 100% true since the parent might not be updated
+    # to fix it, we could store this in the state, on the other hand
+    # it does not affect the workflows of the system and it makes the code
+    # easier/more readable
+    assert parent.updated == "2023-07-01T13:00:00"

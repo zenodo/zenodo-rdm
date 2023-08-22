@@ -11,6 +11,8 @@ import tempfile
 
 import pytest
 
+pytest_plugins = ("invenio_rdm_migrator.testutils",)
+
 
 @pytest.fixture(scope="function")
 def tmp_dir():

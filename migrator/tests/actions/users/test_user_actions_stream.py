@@ -9,21 +9,18 @@
 
 import pytest
 import sqlalchemy as sa
-from invenio_rdm_migrator.load.postgresql.transactions import PostgreSQLTx
 from invenio_rdm_migrator.streams import Stream
 from invenio_rdm_migrator.streams.models.users import (
     LoginInformation,
     SessionActivity,
     User,
 )
-from sqlalchemy.orm import Session
-from sqlalchemy.orm.exc import ObjectDeletedError
 
 from zenodo_rdm_migrator.transform.transactions import ZenodoTxTransform
 
 
 @pytest.fixture(scope="function")
-def db_sessions(db_engine):
+def db_sessions(database, session):
     sessions_data = [
         {
             "created": "2023-08-03T08:30:52.717105",
@@ -51,29 +48,14 @@ def db_sessions(db_engine):
         },
     ]
 
-    history = []
-    with Session(db_engine) as session:
-        for session_data in sessions_data:
-            obj = SessionActivity(**session_data)
-            history.append(obj)
-            session.add(obj)
-        session.commit()
-
-    yield
-
-    # cleanup
-    with Session(db_engine) as session:
-        for obj in history:
-            session.delete(obj)
-
-        try:
-            session.commit()
-        except ObjectDeletedError:  # might be deleted on user inactivation
-            pass
+    for session_data in sessions_data:
+        obj = SessionActivity(**session_data)
+        session.add(obj)
+    session.commit()
 
 
 @pytest.fixture(scope="function")
-def db_user(db_engine):
+def db_user(database, session):
     user_data = {
         "id": 123456,
         "created": "2023-08-01T16:14:06.964000",
@@ -101,176 +83,135 @@ def db_user(db_engine):
         "login_count": 0,
     }
 
-    history = []
-    with Session(db_engine) as session:
-        user_obj = User(**user_data)
-        history.append(user_obj)
-        session.add(user_obj)
-        log_info_obj = LoginInformation(**log_info_data)
-        history.append(log_info_obj)
-        session.add(log_info_obj)
-        session.commit()
-
-    yield
-
-    # cleanup
-    with Session(db_engine) as session:
-        for obj in history:
-            session.delete(obj)
-        session.commit()
+    user_obj = User(**user_data)
+    session.add(user_obj)
+    log_info_obj = LoginInformation(**log_info_data)
+    session.add(log_info_obj)
+    session.commit()
 
 
 def test_user_register_action_stream(
-    secret_keys_state, db_uri, db_engine, test_extract_cls, register_user_tx
+    secret_keys_state, pg_tx_load, database, session, test_extract_cls, register_user_tx
 ):
-    test_extract_cls.tx = register_user_tx
-
     stream = Stream(
         name="action",
-        extract=test_extract_cls(),
+        extract=test_extract_cls(register_user_tx),
         transform=ZenodoTxTransform(),
-        load=PostgreSQLTx(db_uri),
+        load=pg_tx_load,
     )
     stream.run()
 
-    with db_engine.connect() as conn:
-        # User
-        users = list(conn.execute(sa.select(User)))
-        assert len(users) == 1
-        user = users[0]._mapping
-        assert user["id"] == 123456
-        assert user["created"] == "2023-08-01T16:14:06.964000"
-        assert user["updated"] == "2023-08-01T16:14:06.964000"
+    # User
+    user = session.scalars(sa.select(User)).one()
+    assert user.id == 123456
+    assert user.created == "2023-08-01T16:14:06.964000"
+    assert user.updated == "2023-08-01T16:14:06.964000"
 
-        # Login information
-        loginfo = list(conn.execute(sa.select(LoginInformation)))
-        assert len(loginfo) == 1
-        loginfo = loginfo[0]._mapping
-        assert loginfo["user_id"] == 123456
-        assert loginfo["last_login_at"] == None
-        assert loginfo["current_login_at"] == None
-
-        # cleanup
-        # not ideal should be done more generically with a fixture
-        conn.execute(sa.delete(User).where(User.__table__.columns.id == 123456))
-        conn.execute(
-            sa.delete(LoginInformation).where(
-                LoginInformation.__table__.columns.user_id == 123456
-            )
-        )
-        conn.commit()
+    # Login information
+    loginfo = session.scalars(sa.select(LoginInformation)).one()
+    assert loginfo.user_id == 123456
+    assert loginfo.last_login_at is None
+    assert loginfo.current_login_at is None
 
 
 def test_user_login_action_stream(
-    secret_keys_state, db_user, db_uri, db_engine, test_extract_cls, login_user_tx
+    secret_keys_state,
+    db_user,
+    pg_tx_load,
+    database,
+    session,
+    test_extract_cls,
+    login_user_tx,
 ):
-    test_extract_cls.tx = login_user_tx
-
     stream = Stream(
         name="action",
-        extract=test_extract_cls(),
+        extract=test_extract_cls(login_user_tx),
         transform=ZenodoTxTransform(),
-        load=PostgreSQLTx(db_uri),
+        load=pg_tx_load,
     )
     stream.run()
 
-    with db_engine.connect() as conn:
-        # Login information
-        loginfo = list(conn.execute(sa.select(LoginInformation)))
-        assert len(loginfo) == 1
-        loginfo = list(loginfo)[0]._mapping
-        assert loginfo["last_login_at"] == "2023-08-01T16:14:07.550349"
-        assert loginfo["current_login_at"] == "2023-08-01T16:14:07.550349"
-        assert loginfo["last_login_ip"] == None
-        assert loginfo["current_login_ip"] == "192.0.238.78"
-        assert loginfo["login_count"] == 1
+    # Login information
+    loginfo = session.scalars(sa.select(LoginInformation)).one()
+    assert loginfo.last_login_at == "2023-08-01T16:14:07.550349"
+    assert loginfo.current_login_at == "2023-08-01T16:14:07.550349"
+    assert loginfo.last_login_ip is None
+    assert loginfo.current_login_ip == "192.0.238.78"
+    assert loginfo.login_count == 1
 
 
 def test_confirm_user_action_stream(
-    secret_keys_state, db_user, db_uri, db_engine, test_extract_cls, confirm_user_tx
+    secret_keys_state, db_user, pg_tx_load, session, test_extract_cls, confirm_user_tx
 ):
-    test_extract_cls.tx = confirm_user_tx
     stream = Stream(
         name="action",
-        extract=test_extract_cls(),
+        extract=test_extract_cls(confirm_user_tx),
         transform=ZenodoTxTransform(),
-        load=PostgreSQLTx(db_uri),
+        load=pg_tx_load,
     )
     stream.run()
 
-    with db_engine.connect() as conn:
-        users = list(conn.execute(sa.select(User)))
-        assert len(users) == 1
-        assert list(users)[0]._mapping["confirmed_at"] == "2023-08-01T16:14:19.612306"
+    user = session.scalars(sa.select(User)).one()
+    assert user.confirmed_at == "2023-08-01T16:14:19.612306"
 
 
 @pytest.mark.skip("UserProfileEditAction not implemented yet")
 def test_change_user_profile_stream(
-    db_user, db_uri, db_engine, test_extract_cls, change_user_profile_tx
+    db_user, pg_tx_load, session, test_extract_cls, change_user_profile_tx
 ):
-    test_extract_cls.tx = change_user_profile_tx
     stream = Stream(
         name="action",
-        extract=test_extract_cls(),
+        extract=test_extract_cls(change_user_profile_tx),
         transform=ZenodoTxTransform(),
-        load=PostgreSQLTx(db_uri),
+        load=pg_tx_load,
     )
     stream.run()
 
-    with db_engine.connect() as conn:
-        users = list(conn.execute(sa.select(User)))
-        assert len(users) == 1
-        user = list(users)[0]._mapping
-        assert user["username"] == "another_mig_username"
-        assert user["displayname"] == "another_mig_username"
-        assert user["full_name"] == "Some new full name"
+    user = session.scalars(sa.select(User)).one()
+    assert user.username == "another_mig_username"
+    assert user.displayname == "another_mig_username"
+    assert user.full_name == "Some new full name"
 
 
 def test_edit_user_action_stream(
     secret_keys_state,
     db_user,
-    db_uri,
-    db_engine,
+    pg_tx_load,
+    session,
     test_extract_cls,
     change_user_email_tx,
 ):
-    test_extract_cls.tx = change_user_email_tx
     stream = Stream(
         name="action",
-        extract=test_extract_cls(),
+        extract=test_extract_cls(change_user_email_tx),
         transform=ZenodoTxTransform(),
-        load=PostgreSQLTx(db_uri),
+        load=pg_tx_load,
     )
     stream.run()
 
-    with db_engine.connect() as conn:
-        users = list(conn.execute(sa.select(User)))
-        assert len(users) == 1
-        assert list(users)[0]._mapping["email"] == "somenewaddr@domain.org"
+    user = session.scalars(sa.select(User)).one()
+    assert user.email == "somenewaddr@domain.org"
 
 
 def test_deactivate_user_action_stream(
     secret_keys_state,
     db_user,
     db_sessions,
-    db_uri,
-    db_engine,
+    pg_tx_load,
+    session,
     test_extract_cls,
     user_deactivation_tx,
 ):
-    test_extract_cls.tx = user_deactivation_tx
     stream = Stream(
         name="action",
-        extract=test_extract_cls(),
+        extract=test_extract_cls(user_deactivation_tx),
         transform=ZenodoTxTransform(),
-        load=PostgreSQLTx(db_uri),
+        load=pg_tx_load,
     )
     stream.run()
 
-    with db_engine.connect() as conn:
-        users = list(conn.execute(sa.select(User)))
-        assert len(users) == 1
-        assert list(users)[0]._mapping["active"] == False
+    user = session.scalars(sa.select(User)).one()
+    assert user.active is False
 
-        sessions = list(conn.execute(sa.select(SessionActivity)))
-        assert len(sessions) == 0
+    sessions = session.scalars(sa.select(SessionActivity)).all()
+    assert len(sessions) == 0

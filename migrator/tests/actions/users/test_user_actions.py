@@ -300,7 +300,7 @@ def test_user_deactivation_matches_with_invalid_data():
         )
 
 
-def test_user_edit_transform_with_valid_data(secret_keys_state, user_deactivation_tx):
+def test_user_deactivation(secret_keys_state, user_deactivation_tx):
     action = UserDeactivationAction(
         Tx(
             id=user_deactivation_tx["tx_id"],

@@ -7,14 +7,21 @@
 
 """Migrator tests configuration."""
 
+from pathlib import Path
+
+import dictdiffer
+import jsonlines
 import pytest
 from invenio_rdm_migrator.extract import Extract, Tx
+from invenio_rdm_migrator.load.postgresql.transactions import PostgreSQLTx
+from invenio_rdm_migrator.load.postgresql.transactions.operations import OperationType
 from invenio_rdm_migrator.state import STATE, StateDB
 from invenio_rdm_migrator.streams.models.files import (
     FilesBucket,
     FilesInstance,
     FilesObjectVersion,
 )
+from invenio_rdm_migrator.streams.models.oai import OAISet
 from invenio_rdm_migrator.streams.models.pids import PersistentIdentifier
 from invenio_rdm_migrator.streams.models.records import (
     RDMDraftFile,
@@ -28,7 +35,6 @@ from invenio_rdm_migrator.streams.models.users import (
     User,
 )
 from invenio_rdm_migrator.streams.records.state import ParentModelValidator
-from sqlalchemy import create_engine
 
 
 # FIXME: deduplicate code allowing invenio-rdm-migrator to define re-usable fixtures
@@ -75,27 +81,50 @@ def buckets_state(state):
 def test_extract_cls():
     """Extract class with customizable tx."""
 
-    class TestExtractor(Extract):
+    class TestExtract(Extract):
         """Test extractor."""
 
-        tx = None
-        """Must be set before usage.qwa"""
+        def __init__(self, tx, filter_unchanged=True):
+            self.tx = tx
+            self.filter_unchanged = filter_unchanged
+
+        # NOTE: Copied from KafkaExtract
+        def _filter_unchanged_values(self, op):
+            before = op.get("before")
+            if self.filter_unchanged and op["op"] == OperationType.UPDATE and before:
+                after = op["after"]
+                pk_keys = set(op["key"].keys())
+                diff = dictdiffer.diff(before, after, ignore=pk_keys)
+                changed_keys = {key for diff_op, key, _ in diff if diff_op == "change"}
+                for key in (before.keys() | after.keys()) - (changed_keys | pk_keys):
+                    before.pop(key)
+                    after.pop(key)
+            return op
 
         def run(self):
             """Yield one element at a time."""
-            yield Tx(id=self.tx["tx_id"], operations=self.tx["operations"])
+            if isinstance(self.tx, dict):
+                tx = self.tx
+            if isinstance(self.tx, str):
+                tx_path = Path(self.tx)
+                assert tx_path.exists()
+                with jsonlines.open(tx_path) as tx_ops:
+                    tx = {"operations": [op["value"] for op in tx_ops]}
+                    # convert "op" to OperationType enum
+                    for op in tx["operations"]:
+                        op["op"] = OperationType(op["op"].upper())
+                    # extract the tx_id
+                    tx["tx_id"] = tx["operations"]["source"]["txId"]
+            yield Tx(
+                id=tx["tx_id"],
+                operations=list(map(self._filter_unchanged_values, tx["operations"])),
+            )
 
-    return TestExtractor
+    return TestExtract
 
 
 @pytest.fixture(scope="session")
-def db_uri():
-    """Database connection string."""
-    return "postgresql+psycopg://invenio:invenio@localhost:5432/invenio"
-
-
-@pytest.fixture(scope="function")
-def db_engine(db_uri):
+def database(engine):
     """Setup database.
 
     Scope: module
@@ -109,6 +138,7 @@ def db_engine(db_uri):
         FilesInstance,
         FilesObjectVersion,
         LoginInformation,
+        OAISet,
         PersistentIdentifier,
         RDMDraftMetadata,
         RDMDraftFile,
@@ -117,14 +147,19 @@ def db_engine(db_uri):
         SessionActivity,
         User,
     ]
-    eng = create_engine(db_uri)
 
     # create tables
     for model in tables:
-        model.__table__.create(bind=eng, checkfirst=True)
+        model.__table__.create(bind=engine, checkfirst=True)
 
-    yield eng
+    yield
 
     # remove tables
     for model in tables:
-        model.__table__.drop(eng)
+        model.__table__.drop(engine)
+
+
+@pytest.fixture(scope="function")
+def pg_tx_load(db_uri, session):
+    """Load instance configured with the DB session fixture."""
+    return PostgreSQLTx(db_uri, _session=session)
