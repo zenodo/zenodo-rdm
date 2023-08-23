@@ -520,8 +520,8 @@ class TestDraftPublishAction:
                 is False
             )
 
-    def test_transform_with_valid_data(self, create_draft_tx):
+    def test_transform_with_valid_data(self, draft_publish_tx):
         action = DraftPublishAction(
-            Tx(id=create_draft_tx["tx_id"], operations=create_draft_tx["operations"])
+            Tx(id=draft_publish_tx["tx_id"], operations=draft_publish_tx["operations"])
         )
         assert isinstance(action.transform(), load.DraftPublishAction)

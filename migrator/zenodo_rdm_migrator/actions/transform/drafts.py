@@ -148,7 +148,7 @@ class DraftEditAction(TransformAction, DraftTransformMixin):
         return dict(tx_id=self.tx.id, draft=draft, parent=parent)
 
 
-class DraftPublishAction(TransformAction, JSONTransformMixin):
+class DraftPublishAction(TransformAction, DraftTransformMixin):
     """Zenodo to RDM draft publishing action."""
 
     name = "publish-zenodo-draft"
@@ -216,21 +216,22 @@ class DraftPublishAction(TransformAction, JSONTransformMixin):
 
     def _transform_data(self):  # pragma: no cover
         """Transforms the data and returns an instance of the mapped_cls."""
-        recids = set()
-        dois = set()
+        recids = {}
+        dois = {}
         for operation in self.tx.operations:
             table_name = operation["source"]["table"]
             if table_name == "pidstore_pid":
                 # TODO:
-                # how do we distinguis which op is parent_pid, which is draft_pid, etc.
+                # how do we distinguish which op is parent_pid, which is draft_pid, etc.
                 # idea: first loop and store pids in set then calculate draft and parent
                 # after match the draft and parent recid to the pids and assign accordingly
                 # oai there's only one so there is no doubt on that one
                 pid_type = operation["after"]["pid_type"]
+                pid_value = operation["after"]["pid_value"]
                 if pid_type == "recid":
-                    recids.add(operation["after"])
+                    recids[pid_value] = operation["after"]
                 elif pid_type == "doi":
-                    dois.add(operation["after"])
+                    dois[pid_value] = operation["after"]
                 elif pid_type == "oai":
                     oai_pid = operation["after"]
             elif table_name == "files_bucket":
@@ -243,32 +244,32 @@ class DraftPublishAction(TransformAction, JSONTransformMixin):
 
         # FIXME: make into a function which receives a generic set and returns p/d pids?
         # RECIDs
-        _pid_1 = recids.pop()
-        _pid_2 = recids.pop()
+        _, _pid_1 = recids.popitem()
+        _, _pid_2 = recids.popitem()
 
         if _pid_1["pid_value"] == draft["json"]["id"]:
             draft_pid = _pid_1
             parent_pid = _pid_2
-            assert _pid_2["pid_value"] == parent["json"]["id"]
+            assert parent_pid["pid_value"] == parent["json"]["id"]
         else:
             parent_pid = _pid_1
             draft_pid = _pid_2
-            assert _pid_2["pid_value"] == draft["json"]["id"]
-            assert _pid_1["pid_value"] == parent["json"]["id"]
+            assert draft_pid["pid_value"] == str(draft["json"]["id"])
+            assert parent_pid["pid_value"] == parent["json"]["id"]
 
         # DOIs
-        _doi_1 = recids.pop()
-        _doi_2 = recids.pop()
+        _, _doi_1 = dois.popitem()
+        _, _doi_2 = dois.popitem()
 
-        if draft["json"]["id"] in _doi_1["pid_value"]:
+        if str(draft["json"]["id"]) in _doi_1["pid_value"]:
             draft_doi = _doi_1
             parent_doi = _doi_2
-            assert parent["json"]["id"] in _doi_2["pid_value"]
+            assert parent["json"]["id"] in parent_doi["pid_value"]
         else:
             parent_doi = _doi_1
             draft_doi = _doi_2
-            assert _doi_1["pid_value"] == parent["json"]["id"]
-            assert _doi_2["pid_value"] == draft["json"]["id"]
+            assert parent["json"]["id"] in parent_doi["pid_value"]
+            assert draft["json"]["id"] in draft_doi["pid_value"]
 
         return dict(
             tx_id=self.tx.id,
