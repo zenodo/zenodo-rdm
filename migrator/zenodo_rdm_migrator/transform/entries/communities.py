@@ -141,7 +141,7 @@ class ZenodoCommunityFileEntry(CommunityFileEntry):
 
     def _id(self, entry):
         """Returns the file id."""
-        return entry["logo_file_id"]
+        return entry.get("logo_file_id")
 
 
 class ZenodoCommunityFilesBucketEntry(FilesBucketEntry):

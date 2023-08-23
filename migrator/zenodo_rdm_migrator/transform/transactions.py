@@ -11,6 +11,9 @@
 from invenio_rdm_migrator.transform import BaseTxTransform
 
 from ..actions.transform import (
+    CommunityCreateAction,
+    CommunityDeleteAction,
+    CommunityUpdateAction,
     DraftCreateAction,
     DraftEditAction,
     DraftFileUploadAction,
@@ -24,6 +27,9 @@ class ZenodoTxTransform(BaseTxTransform):
     """Zenodo transaction transform."""
 
     actions = [
+        CommunityCreateAction,
+        CommunityDeleteAction,
+        CommunityUpdateAction,
         DraftCreateAction,
         DraftEditAction,
         DraftFileUploadAction,

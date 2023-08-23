@@ -7,11 +7,19 @@
 
 """Transform actions module."""
 
+from .communities import (
+    CommunityCreateAction,
+    CommunityDeleteAction,
+    CommunityUpdateAction,
+)
 from .drafts import DraftCreateAction, DraftEditAction, DraftPublishAction
 from .files import DraftFileUploadAction
 from .users import UserDeactivationAction, UserEditAction, UserRegistrationAction
 
 __all__ = (
+    "CommunityCreateAction",
+    "CommunityDeleteAction",
+    "CommunityUpdateAction",
     "DraftCreateAction",
     "DraftEditAction",
     "DraftFileUploadAction",
