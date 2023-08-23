@@ -1,0 +1,115 @@
+{%- extends config.BASE_TEMPLATE %}
+
+{% block title %}Profiler{% endblock title %}
+
+{% block page_body %}
+<div class="ui container">
+  <div class="ui grid">
+    <div class="two column row">
+      <div class="five wide column">
+        <h2>Profiler</h2>
+        {% if active_session %}
+        <dl>
+          <dt class="ui header">Session ID</dt>
+          <dd>{{ active_session.id }}</dd>
+          <dt class="ui header">Expires at</dt>
+          <dd>{{ active_session.expires_at }}</dd>
+        </dl>
+        <form class="ui form" action="stop" method="post">
+          <button class="ui negative button" type="submit">
+            <i class="pause icon"></i>
+            Stop
+          </button>
+        </form>
+
+        {% else %}
+        <form class="ui form" action="start" method="post">
+          <div class="field">
+            <label for="id">Session ID</label>
+            <input type="text" value="{{ active_session.id }}" name="id" placeholder="test-upload" required>
+          </div>
+          <div class="field">
+            <div class="ui checkbox">
+              <input type="checkbox" name="base" {{ 'checked' if active_session.base }}>
+              <label for="base">Base profiler</label>
+            </div>
+          </div>
+          <div class="field">
+            <div class="ui checkbox">
+              <input type="checkbox" name="sql" {{ 'checked' if active_session.sql }}>
+              <label for="sql">SQL profiler</label>
+            </div>
+          </div>
+          <button class="ui positive button" type="submit">
+            <i class="play icon"></i>
+            Start
+          </button>
+        </form>
+        {% endif %}
+      </div>
+
+      {# Sessions list #}
+      <div class="nine wide column">
+        <h2>Sessions</h2>
+        {% if profiler_sessions %}
+        <form class="ui form" action="delete" method="post">
+          <button class="ui button" type="submit">
+            <i class="trash icon"></i>
+            Clear sessions
+          </button>
+        </form>
+        {% endif %}
+        <div class="ui accordion">
+          {% for session_id, reports in profiler_sessions.items() %}
+          <div class="title {{ 'active' if active_session.id == session_id }}">
+            <i class="dropdown icon"></i>{{ session_id }}
+          </div>
+          <div class="content {{ 'active' if active_session.id == session_id }}">
+            <div class="ui relaxed divided list">
+              {% for report in reports %}
+              {% set base_link %}
+                {%- if report.has_base_report -%}
+                <a target="_blank"
+                  href="{{ url_for('profiler.report_view', session_id=session_id, request_id=report.id, report_type='base') }}"
+                  class="header">Base</a>
+                {%- endif -%}
+              {% endset %}
+              {% set sql_link %}
+                {%- if report.has_sql_report -%}
+                <a target="_blank"
+                  href="{{ url_for('profiler.report_view', session_id=session_id, request_id=report.id, report_type='sql') }}"
+                  class="header">SQL</a>
+                {%- endif -%}
+              {% endset %}
+              <div class="item">
+                <i class="large file middle aligned icon"></i>
+                <div class="content">
+                  <div class="header">{{ report.context.method }} {{ report.context.url }}
+                    (<code>{{ report.context.endpoint }}</code>)</div>
+                  <div class="description">
+                    Referer: {{ report.context.referrer }}
+                    {{ base_link }} {{ sql_link }}
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          {% else %}
+            <p>No recorded profiling sessions in storage yet.</p>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock page_body %}
+
+{% block javascript %}
+{{ super() }}
+<script type="text/javascript">
+  $('.ui.accordion').accordion();
+  $('.ui.checkbox').checkbox();
+</script>
+{% endblock javascript %}
