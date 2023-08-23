@@ -137,7 +137,7 @@ class ZenodoDraftEntry(ZenodoRecordEntry):
         # some legacy records have different pid value in deposit than record
         # however _deposit.pid.value would contain the correct one
         # if it is not legacy we get it from the current field (json.id)
-        legacy_recid = entry.get("_deposit", {}).get("pid", {}).get("value")
+        legacy_recid = entry["json"].get("_deposit", {}).get("pid", {}).get("value")
         return legacy_recid or entry["json"]["recid"]
 
     def _pids(self, entry):

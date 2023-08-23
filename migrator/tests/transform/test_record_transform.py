@@ -965,7 +965,7 @@ def test_draft_entry(zenodo_draft_data, expected_rdm_draft_entry):
 )
 def test_legacy_draft_entry(zenodo_draft_data, expected_rdm_draft_entry):
     """Test the transformation of a full Zenodo record."""
-    zenodo_draft_data["_deposit"] = {
+    zenodo_draft_data["json"]["_deposit"] = {
         "id": "7695",
         "pid": {"type": "recid", "value": "111111"},
         "owners": [1234],
