@@ -16,6 +16,13 @@ from invenio_rdm_migrator.extract import Extract, Tx
 from invenio_rdm_migrator.load.postgresql.transactions import PostgreSQLTx
 from invenio_rdm_migrator.load.postgresql.transactions.operations import OperationType
 from invenio_rdm_migrator.state import STATE, StateDB
+from invenio_rdm_migrator.streams.models.communities import (
+    Community,
+    CommunityFile,
+    CommunityMember,
+    FeaturedCommunity,
+    RDMParentCommunityMetadata,
+)
 from invenio_rdm_migrator.streams.models.files import (
     FilesBucket,
     FilesInstance,
@@ -105,16 +112,20 @@ def test_extract_cls():
             """Yield one element at a time."""
             if isinstance(self.tx, dict):
                 tx = self.tx
-            if isinstance(self.tx, str):
+            if isinstance(self.tx, (str, Path)):
                 tx_path = Path(self.tx)
                 assert tx_path.exists()
                 with jsonlines.open(tx_path) as tx_ops:
-                    tx = {"operations": [op["value"] for op in tx_ops]}
+                    tx = {
+                        "operations": [
+                            {"key": op["key"], **op["value"]} for op in tx_ops
+                        ]
+                    }
                     # convert "op" to OperationType enum
                     for op in tx["operations"]:
                         op["op"] = OperationType(op["op"].upper())
                     # extract the tx_id
-                    tx["tx_id"] = tx["operations"]["source"]["txId"]
+                    tx["tx_id"] = tx["operations"][0]["source"]["txId"]
             yield Tx(
                 id=tx["tx_id"],
                 operations=list(map(self._filter_unchanged_values, tx["operations"])),
@@ -134,6 +145,10 @@ def database(engine):
     removing the tables once tests are done.
     """
     tables = [
+        Community,
+        CommunityFile,
+        CommunityMember,
+        FeaturedCommunity,
         FilesBucket,
         FilesInstance,
         FilesObjectVersion,
@@ -144,6 +159,7 @@ def database(engine):
         RDMDraftFile,
         RDMParentMetadata,
         RDMVersionState,
+        RDMParentCommunityMetadata,
         SessionActivity,
         User,
     ]
