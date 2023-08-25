@@ -948,11 +948,11 @@
                 "opensearch2"
             ],
             "hashes": [
-                "sha256:a366d8753d2c44577f23bbfc6be7a4e2104dfde4e984b506456b473e80238ae9",
-                "sha256:cf52cf30db6e86ad729288295fec05f106180dcbb764f42b9ee2e47b378db407"
+                "sha256:31ae5f057c859e16c8f0a5427324b958c4071fbbec96ebc623db70b7b81bd9a7",
+                "sha256:3422c3c2a69c7bfe661bb839d3e760f2b51bd4cda087860af58e1473275f8409"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==12.0.0b2.dev19"
+            "version": "==12.0.0b2.dev20"
         },
         "invenio-assets": {
             "hashes": [

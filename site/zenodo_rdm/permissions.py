@@ -52,7 +52,7 @@ class ZenodoRDMRecordPermissionPolicy(RDMRecordPermissionPolicy):
     ]
     can_draft_media_get_content_files = [
         # preview is same as read_files
-        IfFileIsLocal(then_=can_draft_media_create_files, else_=[SystemProcess()])
+        IfFileIsLocal(then_=can_get_content_files, else_=[SystemProcess()])
     ]
     can_draft_media_commit_files = [
         # review is the same as create_files

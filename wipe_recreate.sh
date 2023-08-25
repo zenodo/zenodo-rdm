@@ -47,3 +47,4 @@ else
 
   # Enable admin user
   # invenio users activate admin@inveniosoftware.org
+fi
