@@ -65,14 +65,11 @@ def test_quickstart_workflow(
     deposit_links = data["links"]
 
     # Upload a file
-    files = {
-        "file": (BytesIO(b"1, 2, 3"), "myfirstfile.csv"),
-        "name": "myfirstfile.csv",
-    }
     res = client.post(
         deposit_links["files"],
         headers=headers,
-        data=files,
+        data={"name": "myfirstfile.csv"},
+        files={"file": (BytesIO(b"1, 2, 3"), "myfirstfile.csv")},
         content_type="multipart/form-data",
     )
     assert res.status_code == 201
@@ -87,10 +84,6 @@ def test_quickstart_workflow(
     # assert data["id"]
 
     # Upload a file with /api/files
-    files = {
-        "file": (BytesIO(b"1, 2, 3"), "myfirstfile.csv"),
-        "name": "myfirstfile.csv",
-    }
     bucket_url = deposit_links["bucket"]
     res = client.put(
         f"{bucket_url}/mysecondfile.csv",
