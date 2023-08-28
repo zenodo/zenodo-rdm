@@ -19,6 +19,7 @@ from .redirector import (
     redirect_deposit_new_view,
     redirect_deposit_own_view,
     redirect_record_file_preview_view,
+    redirect_record_thumbnail_view,
     search_view_function,
 )
 
@@ -294,6 +295,10 @@ REDIRECTOR_RULES = {
     "redirect_record_file_preview": {
         "source": "/record/<pid_value>/preview/<filename>",
         "target": redirect_record_file_preview_view,
+    },
+    "redirect_record_thumbnail": {
+        "source": "/record/<pid_value>/thumb<size>",
+        "target": redirect_record_thumbnail_view,
     },
 }
 

@@ -241,3 +241,12 @@ def redirect_deposit_new_view():
         values = {"community": community_slug}
     target = url_for("invenio_app_rdm_records.deposit_create", **values)
     return target
+
+
+def redirect_record_thumbnail_view():
+    """Redirect legacy record thumbnail URL.
+
+    The following routes are redirected as follows:
+        - /record/<pid_value>/thumb<size> -> /records/<pid_value>/thumb<size>
+    """
+    return url_for("invenio_app_rdm_records.record_thumbnail", **request.view_args)

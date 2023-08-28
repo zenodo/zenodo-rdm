@@ -7,7 +7,14 @@
 
 """Zenodo legacy services."""
 
-from invenio_drafts_resources.services.records.config import is_draft, is_record
+from copy import deepcopy
+from os.path import splitext
+
+from flask import current_app
+from invenio_app_rdm.records_ui.previewer.iiif_simple import (
+    previewable_extensions as image_extensions,
+)
+from invenio_drafts_resources.services.records.config import is_record
 from invenio_rdm_records.proxies import current_record_communities_service
 from invenio_rdm_records.services import (
     RDMFileDraftServiceConfig,
@@ -16,6 +23,7 @@ from invenio_rdm_records.services import (
 )
 from invenio_rdm_records.services.config import has_doi, is_record_and_has_parent_doi
 from invenio_records_resources.services import ConditionalLink
+from invenio_records_resources.services.base.links import preprocess_vars
 from invenio_records_resources.services.files import FileLink, FileService
 from invenio_records_resources.services.records.links import RecordLink
 from invenio_records_resources.services.uow import (
@@ -26,13 +34,19 @@ from invenio_records_resources.services.uow import (
 from sqlalchemy.exc import NoResultFound
 from werkzeug.local import LocalProxy
 
+record_thumbnail_sizes = LocalProxy(
+    lambda: current_app.config["APP_RDM_RECORD_THUMBNAIL_SIZES"]
+)
+"""Proxy for the config variable for the available record thumbnail sizes."""
+
+
 def is_published(record, ctx):
     """True if the record/draft is published."""
     return record.is_published
 
 
 class LegacyRecordLink(RecordLink):
-    """Short cut for writing record links."""
+    """Legacy record links with bucket information."""
 
     @staticmethod
     def vars(record, vars):
@@ -45,6 +59,32 @@ class LegacyRecordLink(RecordLink):
         )
 
 
+class LegacyThumbsLink(RecordLink):
+    """Legacy thumbnail links dictionary."""
+
+    def __init__(self, *args, sizes=None, **kwargs):
+        """Constructor."""
+        self._sizes = sizes
+        super().__init__(*args, **kwargs)
+
+    def expand(self, obj, context):
+        """Expand the thumbs size dictionary of URIs."""
+        vars = {}
+        vars.update(deepcopy(context))
+        self.vars(obj, vars)
+        if self._vars_func:
+            self._vars_func(obj, vars)
+        vars = preprocess_vars(vars)
+        return {str(s): self._uritemplate.expand(size=s, **vars) for s in self._sizes}
+
+
+def is_iiif_compatible(record, ctx):
+    """Check if a record is IIIF compatible, i.e. if it has compatible image files."""
+    for f in record.files.entries:
+        f_ext = splitext(f)[1].replace(".", "").lower()
+        if f_ext in image_extensions:
+            return True
+    return False
 
 
 class RecordPIDLink(RecordLink):
@@ -105,6 +145,15 @@ class LegacyRecordServiceConfig(RDMRecordServiceConfig):
             else_=RecordLink("{+api}/deposit/depositions/{id}/files"),
         ),
         "bucket": LegacyRecordLink("{+api}/files/{bucket_id}"),
+        #
+        # Thumbnails
+        #
+        "thumb250": RecordLink("{+ui}/record/{id}/thumb250", when=is_iiif_compatible),
+        "thumbs": LegacyThumbsLink(
+            "{+ui}/record/{id}/thumb{size}",
+            when=is_iiif_compatible,
+            sizes=record_thumbnail_sizes,
+        ),
         # Versioning
         "latest_draft": RecordLink("{+api}/deposit/depositions/{id}"),
         "latest_draft_html": RecordLink("{+ui}/deposit/{id}"),
@@ -132,14 +181,6 @@ class LegacyRecordServiceConfig(RDMRecordServiceConfig):
 
 class LegacyRecordService(RDMRecordService):
     """Legacy record service."""
-
-    @unit_of_work()
-    def create(self, identity, data, uow=None, expand=False):
-        """Create a draft and prereserve the DOI."""
-        res = super().create(identity, data, uow=uow, expand=False)
-
-
-        return res
 
     def read_draft(self, identity, id_, expand=False):
         """Retrieve a draft."""
@@ -176,7 +217,6 @@ class LegacyRecordService(RDMRecordService):
 
         community_ops = []
         # TODO: Check if we need to actually remove communities
-        # TODO: Check if user is owner/curator of all the communities (i.e. auto-accept)
         for community_id in communities:
             try:
                 community_ops.append(
