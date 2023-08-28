@@ -259,7 +259,8 @@ class MetadataSchema(Schema):
                 "identifier": identifier["identifier"],
             }
             related_identifiers.append(related_identifier)
-        data["related_identifiers"] = related_identifiers
+        if related_identifiers:
+            data["related_identifiers"] = related_identifiers
         return data
 
     @post_dump(pass_original=True)
@@ -532,8 +533,22 @@ class LegacySchema(Schema):
 
     def dump_files(self, obj):
         """Dump files."""
-        # TODO: pass files via service
-        return []
+        bucket_url = obj["links"]["bucket"]
+        files_url = obj["links"]["files"]
+        files = [
+            {
+                "id": f["id"],
+                "filename": f["key"],
+                "filesize": f["size"],
+                "checksum": f["checksum"].split(":", 1)[1],  # skip the algorithm prefix
+                "links": {
+                    "download": f"{bucket_url}/{f['key']}",
+                    "self": f"{files_url}/{f['id']}",
+                },
+            }
+            for f in obj["files"]["entries"].values()
+        ]
+        return files or missing
 
     @pre_dump
     def hook_metadata(self, data, **kwargs):
