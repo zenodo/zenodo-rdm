@@ -169,6 +169,7 @@ class MetadataSchema(Schema):
     """Metadata schema."""
 
     title = SanitizedUnicode()
+    doi = SanitizedUnicode(attribute="pids.doi.identifier", dump_only=True)
     publication_date = SanitizedUnicode()
     description = SanitizedHTML()
     creators = fields.List(fields.Nested(CreatorSchema), dump_only=True)
@@ -502,9 +503,17 @@ class LegacySchema(Schema):
     created = SanitizedUnicode()
     modified = SanitizedUnicode(attribute="updated")
 
-    id = SanitizedUnicode(dump_only=True)
-    record_id = SanitizedUnicode(attribute="id", dump_only=True)
+    id = fields.Integer(dump_only=True)
+    record_id = fields.Integer(attribute="id", dump_only=True)
     conceptrecid = SanitizedUnicode(attribute="parent.id", dump_only=True)
+
+    doi = SanitizedUnicode(attribute="pids.doi.identifier", dump_only=True)
+    conceptdoi = SanitizedUnicode(
+        attribute="parent.pids.doi.identifier",
+        dump_only=True,
+    )
+
+    doi_url = SanitizedUnicode(attribute="links.doi", dump_only=True)
 
     metadata = fields.Nested(MetadataSchema, dump_only=True)
     title = SanitizedUnicode(
@@ -517,12 +526,6 @@ class LegacySchema(Schema):
 
     files = fields.Method("dump_files", dump_only=True)
 
-    # record_url = fields.Method(dump_only=True)
-
-    # doi_url = fields.Method(dump_only=True)
-
-    # doi = fields.Method("dump_doi", dump_only=True)
-
     def dump_owner(self, obj):
         """Dump owner."""
         return obj["parent"]["access"]["owned_by"]["user"]
@@ -534,9 +537,11 @@ class LegacySchema(Schema):
 
     @pre_dump
     def hook_metadata(self, data, **kwargs):
-        """Hooks 'custom_fields' and 'access' to 'metadata'."""
+        """Hooks up top-level fields under metadata."""
+        data.setdefault("metadata", {})
         data["metadata"]["custom_fields"] = data.get("custom_fields")
         data["metadata"]["access"] = data["access"]
+        data["metadata"]["pids"] = data.get("pids")
         data["metadata"]["parent"] = data.get("parent")
         return data
 
@@ -549,27 +554,15 @@ class LegacySchema(Schema):
             result["state"] = "done"
             if original["is_draft"]:
                 result["state"] = "inprogress"
-
         result["submitted"] = original["is_published"]
         return result
 
     @post_dump(pass_original=True)
     def dump_prereserve_doi(self, result, original, **kwargs):
         """Dump prereserved DOI information."""
-        provider = original.get("pids", {}).get("doi", {}).get("provider")
-
-        # New versions don't have pids provider out of the box
-        if not provider:
-            return result
-
         recid = original["id"]
-        # For external DOIs, the prereserve_doi is injected in the response.
-        if provider == "external":
-            doi = f"10.5281/zenodo.{recid}"
-        else:
-            doi = original["pids"]["doi"]["identifier"]
         result["metadata"]["prereserve_doi"] = {
-            "doi": doi,
-            "recid": recid,
+            "doi": f"10.5281/zenodo.{recid}",
+            "recid": int(recid),
         }
         return result

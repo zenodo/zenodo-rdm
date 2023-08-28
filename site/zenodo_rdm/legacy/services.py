@@ -14,14 +14,21 @@ from invenio_rdm_records.services import (
     RDMRecordService,
     RDMRecordServiceConfig,
 )
+from invenio_rdm_records.services.config import has_doi, is_record_and_has_parent_doi
 from invenio_records_resources.services import ConditionalLink
 from invenio_records_resources.services.files import FileLink, FileService
-from invenio_records_resources.services.records.links import Link, RecordLink
+from invenio_records_resources.services.records.links import RecordLink
 from invenio_records_resources.services.uow import (
     IndexRefreshOp,
     RecordCommitOp,
     unit_of_work,
 )
+from sqlalchemy.exc import NoResultFound
+from werkzeug.local import LocalProxy
+
+def is_published(record, ctx):
+    """True if the record/draft is published."""
+    return record.is_published
 
 
 class LegacyRecordLink(RecordLink):
@@ -38,9 +45,31 @@ class LegacyRecordLink(RecordLink):
         )
 
 
-def is_latest_draft(record, ctx):
-    """Shortcut for links to determine if record is the latest draft."""
-    return record.is_draft and record.versions.is_latest_draft
+
+
+class RecordPIDLink(RecordLink):
+    """Record PID links."""
+
+    @staticmethod
+    def vars(record, vars):
+        """Variables for the URI template."""
+        vars.update(
+            {f"pid_{scheme}": pid["identifier"] for scheme, pid in record.pids.items()}
+        )
+
+
+class RecordParentPIDLink(RecordLink):
+    """Record parent PID links."""
+
+    @staticmethod
+    def vars(record, vars):
+        """Variables for the URI template."""
+        vars.update(
+            {
+                f"pid_{scheme}": pid["identifier"]
+                for scheme, pid in record.parent.pids.items()
+            }
+        )
 
 
 class LegacyRecordServiceConfig(RDMRecordServiceConfig):
@@ -57,6 +86,16 @@ class LegacyRecordServiceConfig(RDMRecordServiceConfig):
             if_=RecordLink("{+ui}/records/{id}"),
             else_=RecordLink("{+ui}/deposit/{id}"),
         ),
+        "doi": RecordPIDLink("https://doi.org/{+pid_doi}", when=has_doi),
+        "parent_doi": RecordParentPIDLink(
+            "{+ui}/doi/{+pid_doi}",
+            when=is_record_and_has_parent_doi,
+        ),
+        "badge": RecordPIDLink("{+ui}/badge/doi/{pid_doi}.svg"),
+        "conceptbadge": RecordParentPIDLink(
+            "{+ui}/badge/doi/{pid_doi}.svg",
+            when=is_record_and_has_parent_doi,
+        ),
         #
         # Files
         #
@@ -67,34 +106,27 @@ class LegacyRecordServiceConfig(RDMRecordServiceConfig):
         ),
         "bucket": LegacyRecordLink("{+api}/files/{bucket_id}"),
         # Versioning
-        "versions": RecordLink("{+api}/records/{id}/versions", when=is_record),
-        "latest_draft": RecordLink(
-            "{+api}/deposit/depositions/{id}", when=is_latest_draft
-        ),
-        # "latest_draft_html": RecordLink("{+ui}/deposit/{id}", when=is_draft),
+        "latest_draft": RecordLink("{+api}/deposit/depositions/{id}"),
+        "latest_draft_html": RecordLink("{+ui}/deposit/{id}"),
         #
         # Actions
         #
-        "publish": RecordLink(
-            "{+api}/deposit/depositions/{id}/actions/publish", when=is_draft
+        "publish": RecordLink("{+api}/deposit/depositions/{id}/actions/publish"),
+        "edit": RecordLink("{+api}/deposit/depositions/{id}/actions/edit"),
+        "discard": RecordLink("{+api}/deposit/depositions/{id}/actions/discard"),
+        "newversion": RecordLink("{+api}/deposit/depositions/{id}/actions/newversion"),
+        "registerconceptdoi": RecordLink(
+            "{+api}/deposit/depositions/{id}/actions/registerconceptdoi"
         ),
-        "edit": RecordLink(
-            "{+api}/deposit/depositions/{id}/actions/edit", when=is_draft
+        #
+        # Published draft
+        #
+        "record": RecordLink("{+api}/records/{id}", when=is_published),
+        "record_html": RecordLink("{+ui}/record/{id}", when=is_published),
+        "latest": RecordLink("{+api}/records/{id}/versions/latest", when=is_published),
+        "latest_html": RecordLink(
+            "{+ui}/record/{id}/versions/latest", when=is_published
         ),
-        "discard": RecordLink(
-            "{+api}/deposit/depositions/{id}/actions/discard", when=is_draft
-        ),
-        "doi_url": Link(
-            "https://doi.org/{+pid_doi}",
-            when=is_record,
-            vars=lambda record, vars: vars.update(
-                {
-                    f"pid_{scheme}": pid["identifier"]
-                    for (scheme, pid) in record.pids.items()
-                }
-            ),
-        ),
-        "record_url": RecordLink("{+ui}/records/{id}", when=is_record),
     }
 
 
@@ -105,19 +137,33 @@ class LegacyRecordService(RDMRecordService):
     def create(self, identity, data, uow=None, expand=False):
         """Create a draft and prereserve the DOI."""
         res = super().create(identity, data, uow=uow, expand=False)
-        pids = data.get("pids", {})
 
-        # If pids is provided, it is created automatically.
-        if not pids:
-            res = self.pids.create(
-                identity=identity,
-                id_=res.id,
-                scheme="doi",
-                expand=True,
-                uow=uow,
-            )
 
         return res
+
+    def read_draft(self, identity, id_, expand=False):
+        """Retrieve a draft."""
+        try:
+            # Try first the draft
+            draft = self.draft_cls.pid.resolve(id_, registered_only=False)
+        except NoResultFound:
+            # If it's published try the record
+            draft = self.record_cls.pid.resolve(id_, registered_only=True)
+        self.require_permission(identity, "read_draft", record=draft)
+
+        # Run components
+        for component in self.components:
+            if hasattr(component, "read_draft"):
+                component.read_draft(identity, draft=draft)
+
+        return self.result_item(
+            self,
+            identity,
+            draft,
+            links_tpl=self.links_item_tpl,
+            expandable_fields=self.expandable_fields,
+            expand=expand,
+        )
 
     @unit_of_work()
     def publish(self, identity, id_, uow=None, expand=False):
