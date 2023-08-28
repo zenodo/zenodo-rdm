@@ -8,7 +8,7 @@
 """Zenodo legacy deserializer schemas."""
 
 from invenio_records.dictutils import clear_none
-from marshmallow import RAISE, Schema, ValidationError, fields, post_load
+from marshmallow import RAISE, Schema, ValidationError, fields, post_load, pre_load
 
 from .metadata import MetadataSchema
 
@@ -25,9 +25,25 @@ class LegacySchema(Schema):
     files = fields.Constant({"enabled": True})
 
     # Fields are added on post load:
-    # custom_fields
-    # access
-    # pids
+    # - custom_fields
+    # - access
+    # - pids
+    # - communities
+
+    @pre_load()
+    def load_default_license(self, data, **kwargs):
+        metadata = data.get("metadata", {})
+        if metadata and "license" not in metadata:
+            metadata = data.setdefault("metadata", {})
+            access_right = metadata.get("access_right", "open")
+            if access_right in ["open", "embargoed"]:
+                # Datasets get CC0-1.0 license by default
+                if metadata.get("upload_type") == "dataset":
+                    metadata["license"] = "CC0-1.0"
+                else:
+                    # otherwise we default to CC-BY-4.0
+                    metadata["license"] = "CC-BY-4.0"
+        return data
 
     @post_load(pass_original=True)
     def load_custom_fields(self, result, original, **kwargs):
