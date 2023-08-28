@@ -8,9 +8,9 @@
 """Zenodo legacy serializer schemas."""
 
 from invenio_access.permissions import system_identity
+from invenio_communities.proxies import current_communities
 from invenio_pidstore.errors import PIDDeletedError, PIDDoesNotExistError
 from invenio_records_resources.proxies import current_service_registry
-from invenio_vocabularies.proxies import current_service as vocabulary_service
 from marshmallow import Schema, fields, missing, post_dump, pre_dump, validate
 from marshmallow_utils.fields import EDTFDateString, SanitizedHTML, SanitizedUnicode
 from zenodo_legacy.funders import FUNDER_ROR_TO_DOI
@@ -227,10 +227,25 @@ class MetadataSchema(Schema):
 
     def dump_communities(self, obj):
         """Dump communities."""
-        communities = obj.get("custom_fields", {}).get("legacy:communities", [])
-        if communities:
-            return [{"identifier": c} for c in communities]
-        return missing
+        community_slugs = set()
+
+        # Check draft communities
+        draft_communities = obj.get("custom_fields", {}).get("legacy:communities", [])
+        if draft_communities:
+            community_slugs |= set(draft_communities)
+        # Check parent communities
+        parent_communities = obj.get("parent", {}).get("communities", {}).get("ids", [])
+        community_cls = current_communities.service.record_cls
+        for community_id in parent_communities:
+            # NOTE: This is bery bad, we're performing DB queries for every community ID
+            #       in order to resolve the slug required by the legacy API.
+            try:
+                community = community_cls.pid.resolve(community_id)
+                community_slugs.add(community.slug)
+            except Exception:
+                pass
+
+        return [{"identifier": c} for c in community_slugs] or missing
 
     @pre_dump
     def hook_alternate_identifiers(self, data, **kwargs):
@@ -522,6 +537,7 @@ class LegacySchema(Schema):
         """Hooks 'custom_fields' and 'access' to 'metadata'."""
         data["metadata"]["custom_fields"] = data.get("custom_fields")
         data["metadata"]["access"] = data["access"]
+        data["metadata"]["parent"] = data.get("parent")
         return data
 
     @post_dump(pass_original=True)
