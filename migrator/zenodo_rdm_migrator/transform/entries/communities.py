@@ -6,6 +6,8 @@
 # it under the terms of the MIT License; see LICENSE file for more details.
 """Zenodo migrator communities transformer entries."""
 
+import bleach
+
 from invenio_rdm_migrator.streams.communities import (
     CommunityEntry,
     CommunityFileEntry,
@@ -68,11 +70,28 @@ class ZenodoCommunityEntry(CommunityEntry):
 
     def _metadata(self, entry):
         """Returns community metadata."""
+        # Clean-up description
+        description = entry["description"]
+        page = entry["page"]
+        if description:
+            no_style = bleach.clean(description, tags=["p"], strip=True).strip()
+            clean = bleach.clean(description, strip=True).strip()
+            has_same_content = description.replace("\r", "").strip() == no_style
+            # If a description does not contain any styling or special markup (i.e.
+            # bold, italics, links, bullet-lists) and fits in 250 chars and, we strip
+            # HTML tags and populate the description field.
+            if has_same_content and len(clean) <= 250:
+                description = clean
+            else:
+                # If it doesn't, we join it with the page field to avoid data loss.
+                page = "\r\n".join(filter(None, [description, page])).strip()
+                description = None
+
         return {
-            "page": entry["page"],
+            "page": page,
             "title": entry["title"],
             "curation_policy": entry["curation_policy"],
-            "description": entry["description"],
+            "description": description,
         }
 
 
