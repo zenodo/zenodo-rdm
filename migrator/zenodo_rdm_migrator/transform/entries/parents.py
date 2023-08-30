@@ -12,6 +12,8 @@ from invenio_rdm_migrator.transform import Entry
 
 from ...errors import NoConceptRecidForDraft
 
+ZENODO_DATACITE_PREFIX = "10.5281/"
+
 
 class ParentRecordEntry(Entry):
     """Parent record transform entry class."""
@@ -29,6 +31,21 @@ class ParentRecordEntry(Entry):
             slugs = [slug for slug in communities]
             return {"ids": slugs, "default": slugs[0]}
         return {}
+
+    def _pids(self, entry):
+        pids = {}
+        doi = entry["json"].get("doi")
+        conceptdoi = entry["json"].get("conceptdoi")
+        if doi and doi.startswitch(ZENODO_DATACITE_PREFIX):
+            if conceptdoi:
+                pids["doi"] = {
+                    "client": "datacite",
+                    "provider": "datacite",
+                    "identifier": conceptdoi,
+                }
+            else:  # old Zenodo DOI record without concept DOI
+                pids["doi"] = {"provider": "legacy", "identifier": ""}
+        return pids
 
     def transform(self, entry):
         """Transform a parent."""
@@ -55,6 +72,7 @@ class ParentRecordEntry(Entry):
                 # loader is responsible for creating/updating if the PID exists.
                 "id": parent_pid,
                 "communities": self._communities(entry),
+                "pids": self._pids(entry),
             }
             owner = next(iter(entry["json"].get("owners", [])), None)
             if owner is not None:

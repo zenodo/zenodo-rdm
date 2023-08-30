@@ -7,7 +7,6 @@
 """Zenodo migrator communities transformer entries."""
 
 import bleach
-
 from invenio_rdm_migrator.streams.communities import (
     CommunityEntry,
     CommunityFileEntry,

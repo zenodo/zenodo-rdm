@@ -14,7 +14,7 @@ from invenio_rdm_migrator.streams.records import RDMRecordEntry
 from .custom_fields import ZenodoCustomFieldsEntry
 from .metadata import ZenodoDraftMetadataEntry, ZenodoRecordMetadataEntry
 
-ZENODO_DATACITE_PREFIX = "10.5281"
+ZENODO_DATACITE_PREFIX = "10.5281/"
 
 
 class ZenodoRecordEntry(RDMRecordEntry):
