@@ -54,11 +54,11 @@ class ParentRecordEntry(Entry):
             transformed["json"] = {
                 # loader is responsible for creating/updating if the PID exists.
                 "id": parent_pid,
-                "access": {
-                    "owned_by": [{"user": o} for o in entry["json"].get("owners", [])]
-                },
                 "communities": self._communities(entry),
             }
+            owner = next(iter(entry["json"].get("owners", [])), None)
+            if owner is not None:
+                transformed["json"]["access"] = {"owned_by": {"user": owner}}
         elif not self.partial:
             raise KeyError("json")
         # else, pass

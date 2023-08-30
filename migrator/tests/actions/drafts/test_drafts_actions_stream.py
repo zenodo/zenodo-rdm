@@ -32,7 +32,7 @@ def db_draft(database, session):
             json={
                 "id": "1217214",
                 "pid": {"pk": 2, "pid_type": "recid", "status": "R", "obj_type": "rec"},
-                "access": {"owned_by": [{"user": 1234}]},
+                "access": {"owned_by": {"user": 1234}},
                 "communities": {"ids": ["zenodo"], "default": "zenodo"},
             },
             version_id=1,
