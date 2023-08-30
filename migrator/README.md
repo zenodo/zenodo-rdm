@@ -12,7 +12,7 @@ resources due to OOM errors. For that you can deploy locally ZenodoRDM,
 connecting to a remote DB and OpenSearch cluster. You will need to set the
 following configuration in your `invenio.cfg` file:
 
-```cfg
+```python
 # This means that you will run locally the web and worker nodes, and connect
 # to remote instances of DB, OpenSearch and Sentry.
 # logging
@@ -44,7 +44,7 @@ create an empty `users.yaml` file in the instance `app_data` folder. Note that u
 created automatically by the fixtures engine and it needs to be removed manually from the
 database.
 
-```console
+```shell
 # If on OpenShift
 # bash -l
 invenio shell --no-term-title -c "import redis; redis.StrictRedis.from_url(app.config['CACHE_REDIS_URL']).flushall(); print('Cache cleared')"
@@ -204,9 +204,7 @@ psql $DB_URI -f scripts/records_dump.sql | sed 's/\\\\/\\/g' | gzip -c > "dumps/
 # Deposits/drafts, ~30min
 psql $DB_URI -f scripts/deposits_dump.sql | sed 's/\\\\/\\/g' | gzip -c > "dumps/deposits-$(date -I).jsonl.gz"
 
-
 # For dumping files we use a different style, since we're not filtering anything:
-
 # File instances, ~10min
 psql $DB_URI -f scripts/files_files_dump.sql | gzip -c > "dumps/files_files-$(date -I).jsonl.gz"
 # Buckets, ~1min
