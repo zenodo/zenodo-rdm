@@ -13,6 +13,7 @@ from invenio_rdm_migrator.streams.communities import (
     CommunityFileEntry,
     CommunityMemberEntry,
     FeaturedCommunityEntry,
+    OAISetEntry,
 )
 from invenio_rdm_migrator.streams.files import FilesBucketEntry, FilesObjectVersionEntry
 
@@ -241,3 +242,39 @@ class ZenodoCommunityFilesObjectVersionEntry(FilesObjectVersionEntry):
     def _file_id(self, entry):
         """The file id is added afterwards."""
         return None
+
+
+class ZenodoOAISetEntry(OAISetEntry):
+    def _id(self, entry):
+        """Return the id."""
+        pass
+
+    def _spec(self, entry):
+        """Return the spec."""
+        community_slug = entry["id"]
+        return f"user-{community_slug}"
+
+    def _name(self, entry):
+        """Return the name."""
+        return entry["title"]
+
+    def _description(self, entry):
+        """Return the description."""
+        return entry["description"]
+
+    def _search_pattern(self, entry):
+        """Return the search pattern."""
+        pass
+
+    def _system_created(self, entry):
+        """Return if set is created by the system."""
+        # All community OAI sets are created by the system
+        return True
+
+    def _created(self, entry):
+        """Return the creation date."""
+        return entry["created"]
+
+    def _updated(self, entry):
+        """Return the update date."""
+        return entry["updated"]

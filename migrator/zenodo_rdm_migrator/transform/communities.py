@@ -16,6 +16,7 @@ from .entries.communities import (
     ZenodoCommunityFilesObjectVersionEntry,
     ZenodoCommunityMemberEntry,
     ZenodoFeaturedCommunityEntry,
+    ZenodoOAISetEntry,
 )
 
 
@@ -46,3 +47,7 @@ class ZenodoCommunityTransform(CommunityTransform):
             "bucket": ZenodoCommunityFilesBucketEntry().transform(entry),
             "file_object": ZenodoCommunityFilesObjectVersionEntry().transform(entry),
         }
+
+    def _oai_set(self, entry):
+        """Transform the community OAI Set."""
+        return ZenodoOAISetEntry().transform(entry)
