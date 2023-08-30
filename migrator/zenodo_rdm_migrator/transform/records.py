@@ -49,12 +49,16 @@ class ZenodoRecordTransform(RDMRecordTransform):
         is_draft = "deposits" in entry["json"]["$schema"]
 
         if is_draft:
-            # FIXME: draft communities could be review or addition
-            # we might need to differentiate those
+            draft = self._draft(entry)
             parent = self._parent(entry)
+
+            # Draft communities are handled in a special way for legacy drafts
+            community_slugs = parent["json"].get("communities", {}).get("ids")
             parent["json"]["communities"] = {}
+            if community_slugs:
+                draft["json"]["custom_fields"]["legacy:communities"] = community_slugs
             return {
-                "draft": self._draft(entry),
+                "draft": draft,
                 "parent": parent,
                 "draft_files": self._draft_files(entry),
             }

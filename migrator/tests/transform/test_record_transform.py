@@ -262,8 +262,6 @@ def zenodo_record_data():
                 # dc
                 "dc:creator": ["foo", "bar"],
                 "dc:rightsHolder": ["foo", "bar"],
-                # openbiodiv
-                "openbiodiv:TaxonomicConceptLabel": ["foo", "bar"],
                 # obo
                 "obo:RO_0002453": [
                     {"subject": ["foo", "bar"], "object": ["foo", "bar"]},
@@ -504,8 +502,6 @@ def expected_rdm_record_entry():
                 # dc
                 "dc:creator": ["foo", "bar"],
                 "dc:rightsHolder": ["foo", "bar"],
-                # openbiodiv
-                "openbiodiv:TaxonomicConceptLabel": ["foo", "bar"],
                 # obo
                 "obo:RO_0002453": [
                     {"subject": ["foo", "bar"], "object": ["foo", "bar"]},
@@ -603,7 +599,7 @@ def zenodo_draft_data():
             "publication_date": "2023-01-01",
             "title": "Migration test photo",
             "owners": [1234],
-            "$schema": "https://zenodo.org/schemas/records/record-v1.0.0.json",
+            "$schema": "https://zenodo.org/schemas/deposits/records/record-v1.0.0.json",
             "license": {"$ref": "http://dx.zenodo.org/licenses/cc-zero"},
             "creators": [
                 {
@@ -739,8 +735,6 @@ def zenodo_draft_data():
                 # dc
                 "dc:creator": ["foo", "bar"],
                 "dc:rightsHolder": ["foo", "bar"],
-                # openbiodiv
-                "openbiodiv:TaxonomicConceptLabel": ["foo", "bar"],
                 # obo
                 "obo:RO_0002453": [
                     {"subject": ["foo", "bar"], "object": ["foo", "bar"]},
@@ -934,8 +928,6 @@ def expected_rdm_draft_entry():
                 # dc
                 "dc:creator": ["foo", "bar"],
                 "dc:rightsHolder": ["foo", "bar"],
-                # openbiodiv
-                "openbiodiv:TaxonomicConceptLabel": ["foo", "bar"],
                 # obo
                 "obo:RO_0002453": [
                     {"subject": ["foo", "bar"], "object": ["foo", "bar"]},
@@ -949,14 +941,41 @@ def expected_rdm_draft_entry():
     }
 
 
+@pytest.fixture(scope="function")
+def expected_rdm_draft_parent():
+    """Full Zenodo RDM parent record as a dictionary.
+
+    Should contain the expected parent record data of processing `zenodo_record_data`.
+    """
+    return {
+        "created": "2023-01-01 12:00:00.00000",
+        "updated": "2023-01-31 12:00:00.00000",
+        "version_id": 1,
+        "json": {
+            "id": "10122",
+            "access": {"owned_by": {"user": 1234}},
+            "communities": {},
+        },
+    }
+
+
 @patch(
     "zenodo_rdm_migrator.transform.entries.records.records.datetime",
     MockDateTime(),
 )
-def test_draft_entry(zenodo_draft_data, expected_rdm_draft_entry):
+def test_draft_entry(
+    zenodo_draft_data,
+    expected_rdm_draft_entry,
+    expected_rdm_draft_parent,
+):
     """Test the transformation of a full Zenodo record."""
-    result = ZenodoDraftEntry().transform(zenodo_draft_data)
-    assert not list(dictdiffer.diff(result, expected_rdm_draft_entry))
+    expected_rdm_draft_entry["json"]["custom_fields"]["legacy:communities"] = [
+        "zenodo",
+        "migration",
+    ]
+    result = ZenodoRecordTransform()._transform(zenodo_draft_data)
+    assert not list(dictdiffer.diff(result["parent"], expected_rdm_draft_parent))
+    assert not list(dictdiffer.diff(result["draft"], expected_rdm_draft_entry))
 
 
 @patch(
