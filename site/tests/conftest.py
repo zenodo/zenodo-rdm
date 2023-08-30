@@ -27,8 +27,10 @@ from invenio_vocabularies.contrib.funders.api import Funder
 from invenio_vocabularies.proxies import current_service as vocabulary_service
 from invenio_vocabularies.records.api import Vocabulary
 
+from zenodo_rdm.api import ZenodoRDMDraft, ZenodoRDMRecord
 from zenodo_rdm.custom_fields import CUSTOM_FIELDS, CUSTOM_FIELDS_UI, NAMESPACES
 from zenodo_rdm.legacy.requests.record_upgrade import LegacyRecordUpgrade
+from zenodo_rdm.legacy.resources import record_serializers
 from zenodo_rdm.permissions import ZenodoRDMRecordPermissionPolicy
 
 from .fake_datacite_client import FakeDataCiteClient
@@ -65,9 +67,15 @@ def app_config(app_config):
     app_config["RDM_CUSTOM_FIELDS"] = CUSTOM_FIELDS
     app_config["RDM_CUSTOM_FIELDS_UI"] = CUSTOM_FIELDS_UI  #  UI components
     app_config["RDM_PERMISSION_POLICY"] = ZenodoRDMRecordPermissionPolicy
+    app_config["RDM_RECORD_CLS"] = ZenodoRDMRecord
+    app_config["RDM_DRAFT_CLS"] = ZenodoRDMDraft
+    app_config["RDM_RECORDS_SERIALIZERS"] = record_serializers
     app_config["REQUESTS_REGISTERED_TYPES"] = [LegacyRecordUpgrade()]
     # TODO this is a temporary fix for https://github.com/zenodo/zenodo-rdm/issues/380
     app_config["ACCOUNTS_USERINFO_HEADERS"] = False
+    app_config["BLUEPRINTS_URL_PREFIXES"] = {
+        "invenio_files_rest": "/legacy-files",
+    }
     return app_config
 
 
@@ -413,7 +421,7 @@ def licenses(app):
 @pytest.fixture(scope="module")
 def licenses_v(app, licenses):
     """Licenses vocabulary record."""
-    vocab = vocabulary_service.create(
+    cc_zero = vocabulary_service.create(
         system_identity,
         {
             "id": "cc0-1.0",
@@ -421,7 +429,11 @@ def licenses_v(app, licenses):
                 "en": "Creative Commons Zero v1.0 Universal",
             },
             "description": {
-                "en": "CC0 waives copyright interest in a work you've created and dedicates it to the world-wide public domain. Use CC0 to opt out of copyright entirely and ensure your work has the widest reach.",
+                "en": (
+                    "CC0 waives copyright interest in a work you've created and "
+                    "dedicates it to the world-wide public domain. Use CC0 to opt out "
+                    "of copyright entirely and ensure your work has the widest reach."
+                ),
             },
             "icon": "cc-cc0-icon",
             "tags": ["recommended", "all", "data", "software"],
@@ -433,10 +445,34 @@ def licenses_v(app, licenses):
             "type": "licenses",
         },
     )
+    cc_by = vocabulary_service.create(
+        system_identity,
+        {
+            "id": "cc-by-4.0",
+            "title": {
+                "en": "Creative Commons Attribution 4.0 International",
+            },
+            "description": {
+                "en": (
+                    "The Creative Commons Attribution license allows re-distribution "
+                    "and re-use of a licensed work on the condition that the creator "
+                    "is appropriately credited."
+                ),
+            },
+            "icon": "cc-by-icon",
+            "tags": ["recommended", "all", "data"],
+            "props": {
+                "url": "https://creativecommons.org/licenses/by/4.0/legalcode",
+                "scheme": "spdx",
+                "osi_approved": "",
+            },
+            "type": "licenses",
+        },
+    )
 
     Vocabulary.index.refresh()
 
-    return vocab
+    return [cc_zero, cc_by]
 
 
 @pytest.fixture(scope="module")

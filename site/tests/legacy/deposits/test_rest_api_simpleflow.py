@@ -61,6 +61,7 @@ def test_simple_rest_flow(test_app, client, deposit_url, headers, uploader):
         file = generate_file(file_name)
         response = client.post(links["files"], data={"file": file, "name": name})
         assert response.status_code == 201
+        file_url = response.json["links"]["self"]
 
     # Publish deposition
     response = client.post(links["publish"])
@@ -117,7 +118,6 @@ def test_simple_rest_flow(test_app, client, deposit_url, headers, uploader):
     assert response.status_code == 404, response.json
 
     # Not allowed to delete file
-    file_url = "{0}/{1}".format(links["files"], files_list[0]["id"])
     response = client.delete(file_url, headers=headers)
     # TODO: Should be: 403
     assert response.status_code == 404, response.json
@@ -150,7 +150,7 @@ def test_simple_delete(test_app, client_with_login, deposit_url, headers, test_d
 
     response = client.get(deposit_url, headers=headers)
     assert response.status_code == 200, response.json
-    assert response.json["hits"]["total"] == 1
+    assert len(response.json) == 1
 
     # Delete
     response = client.delete(links["self"])
@@ -159,7 +159,7 @@ def test_simple_delete(test_app, client_with_login, deposit_url, headers, test_d
     # Check list
     response = client.get(deposit_url, headers=headers)
     assert response.status_code == 200, response.json
-    assert response.json["hits"]["total"] == 0
+    assert len(response.json) == 0
 
     # Delete again
     response = client.delete(links["self"])
@@ -486,10 +486,8 @@ def test_versioning_rest_flow(
     assert response.status_code == 202, response.json
 
     # New version possible for published deposit
-    response = client.post(response.json["links"]["versions"], headers=headers)
+    response = client.post(response.json["links"]["newversion"], headers=headers)
     assert response.status_code == 201, response.json
-
-    # TODO in Legacy, we tested another POST and it should fail. In RDM, it does not fail.
 
     # Get the new version deposit
     new_draft_id = response.json["id"]
@@ -504,6 +502,10 @@ def test_versioning_rest_flow(
     publish_endpoint = links["publish"]
     files_endpoint = links["files"]
 
+    # Check that the file was copied over
+    assert len(data["files"]) == 1
+    assert data["files"][0]["filename"] == "test-1.txt"
+
     # Adding files allowed for new version
     file_name = "test-2.txt"
     response = client.post(
@@ -515,8 +517,8 @@ def test_versioning_rest_flow(
     )
     assert response.status_code == 201, response.json
 
-    # Take one file and delete it
-    file_url = f"{files_endpoint}/{file_name}"
+    # Delete the old file
+    file_url = response.json["links"]["self"]
     response = client.delete(file_url, headers=headers)
     assert response.status_code == 204, response.json
 
@@ -526,10 +528,8 @@ def test_versioning_rest_flow(
     assert response.status_code == 200, response.json
 
     # Publish new version
-    # TODO it raises a SQL Alchemy ( Instance <Transaction> is not bound to a Session; attribute refresh operation cannot proceed)
-    # TODO probably related to https://github.com/zenodo/zenodo-rdm/issues/380
-    # response = client.post(publish_endpoint, headers=headers)
-    # assert response.status_code == 202, response.json
+    response = client.post(publish_endpoint, headers=headers)
+    assert response.status_code == 202, response.json
 
 
 def test_versioning_unpublished_fail(

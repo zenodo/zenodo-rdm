@@ -7,6 +7,7 @@
 
 """Zenodo legacy resources."""
 
+import copy
 from functools import wraps
 
 import marshmallow as ma
@@ -19,10 +20,12 @@ from flask_resources import (
     response_handler,
     route,
 )
-from invenio_i18n import gettext as _
 from invenio_rdm_records.resources.config import (
     RDMDraftFilesResourceConfig,
     RDMRecordResourceConfig,
+)
+from invenio_rdm_records.resources.config import (
+    record_serializers as default_record_serializers,
 )
 from invenio_rdm_records.resources.resources import RDMRecordResource
 from invenio_records_resources.resources.files.resource import (
@@ -32,9 +35,27 @@ from invenio_records_resources.resources.files.resource import (
 )
 from invenio_records_resources.services.errors import FileKeyNotFoundError
 from invenio_records_resources.services.uow import UnitOfWork
+from werkzeug.utils import secure_filename
 
 from .deserializers import LegacyJSONDeserializer
-from .serializers import LegacyJSONSerializer
+from .serializers import (
+    LegacyDraftFileJSONSerializer,
+    LegacyFilesRESTJSONSerializer,
+    LegacyJSONSerializer,
+    ZenodoJSONSerializer,
+)
+
+record_serializers = copy.deepcopy(default_record_serializers)
+record_serializers.update(
+    {
+        "application/json": ResponseHandler(LegacyJSONSerializer()),
+        "application/vnd.zenodo.v1+json": ResponseHandler(ZenodoJSONSerializer()),
+        # Alias for the DataCite XML serializer
+        "application/x-datacite+xml": record_serializers[
+            "application/vnd.datacite.datacite+xml"
+        ],
+    }
+)
 
 
 class LegacyRecordResourceConfig(RDMRecordResourceConfig):
@@ -57,6 +78,7 @@ class LegacyRecordResourceConfig(RDMRecordResourceConfig):
         "item-publish": "/<pid_value>/actions/publish",
         "item-edit": "/<pid_value>/actions/edit",
         "item-discard": "/<pid_value>/actions/discard",
+        "item-newversion": "/<pid_value>/actions/newversion",
     }
 
 
@@ -80,22 +102,49 @@ class LegacyRecordResource(RDMRecordResource):
             route("POST", p(routes["item-publish"]), self.publish),
             route("POST", p(routes["item-edit"]), self.edit),
             # TODO: check differences from plain DELETE
-            # route("POST", p(routes["item-discard"]), self.delete_draft),
+            route(
+                "POST",
+                p(routes["item-discard"]),
+                self.delete_draft,
+                endpoint="discard_draft",
+            ),
+            # We override, since we want to automatically import the files
+            route("POST", p(routes["item-newversion"]), self.new_version),
         ]
         return url_rules
+
+    @request_view_args
+    @response_handler()
+    def new_version(self):
+        """Create a new version and import files."""
+        with UnitOfWork() as uow:
+            new_version_item = self.service.new_version(
+                g.identity,
+                resource_requestctx.view_args["pid_value"],
+                uow=uow,
+            )
+            self.service.import_files(g.identity, new_version_item.id, uow=uow)
+            uow.commit()
+
+        # Fetch the latest version and return it
+        # TODO: We could maybe just return `new_version_item`?
+        item = self.service.read_draft(g.identity, new_version_item.id)
+        return item.to_dict(), 201
 
 
 class LegacyDraftFilesResourceConfig(RDMDraftFilesResourceConfig):
     """Legacy draft files resource config."""
 
     blueprint_name = "legacy_draft_files"
-    url_prefix = ""
+    url_prefix = "/deposit/depositions"
+
+    response_handlers = {
+        "application/json": ResponseHandler(LegacyDraftFileJSONSerializer()),
+    }
 
     routes = {
-        "list": "/deposit/depositions/<pid_value>/files",
-        "item": "/deposit/depositions/<pid_value>/files/<key>",
-        "files-list": "/files/<bucket_id>",
-        "files-item": "/files/<bucket_id>/<key>",
+        "list": "/<pid_value>/files",
+        "item": "/<pid_value>/files/<file_id>",
     }
 
 
@@ -113,8 +162,8 @@ def request_files_body(f):
     return inner
 
 
-request_files_view_args = request_parser(
-    {"bucket_id": ma.fields.Str(required=True), "key": ma.fields.Str()},
+request_draft_files_view_args = request_parser(
+    {"pid_value": ma.fields.Str(required=True), "file_id": ma.fields.Str()},
     location="view_args",
 )
 
@@ -131,17 +180,6 @@ class LegacyDraftFilesResource(FileResource):
             route("POST", routes["list"], self.create),
             route("GET", routes["item"], self.read),
             route("DELETE", routes["item"], self.delete),
-            # TODO: Review usage
-            # TODO: Used to rename a file
-            # route("PUT", routes["item"], self.rename),
-            # TODO: Used to sort the list of files
-            # route("PUT", routes["list"], self.sort),
-            # New-style API
-            # TODO: Used to list files
-            # route("GET", routes["files-list"], self.list_objects),
-            route("GET", routes["files-item"], self.get_object),
-            route("PUT", routes["files-item"], self.set_object),
-            route("DELETE", routes["files-item"], self.delete_object),
         ]
 
         return url_rules
@@ -152,10 +190,11 @@ class LegacyDraftFilesResource(FileResource):
     def create(self):
         """Upload a file using multipart/form-data."""
         pid_value = resource_requestctx.view_args["pid_value"]
-        key = resource_requestctx.data["request_data"]["name"]
         file = resource_requestctx.data["request_files"]["file"]
+        key = secure_filename(
+            resource_requestctx.data["request_data"].get("name", file.filename)
+        )
 
-        # TODO: Maybe move this to the service?
         with UnitOfWork() as uow:
             self.service.init_files(g.identity, pid_value, [{"key": key}], uow=uow)
             self.service.set_file_content(g.identity, pid_value, key, file, uow=uow)
@@ -163,6 +202,72 @@ class LegacyDraftFilesResource(FileResource):
             uow.commit()
 
         return item.to_dict(), 201
+
+    @request_draft_files_view_args
+    @response_handler()
+    def read(self):
+        """Read a single file."""
+        pid_value = resource_requestctx.view_args["pid_value"]
+        file_id = resource_requestctx.view_args["file_id"]
+        key = self.service.get_file_key_by_id(pid_value, file_id)
+        item = self.service.read_file_metadata(g.identity, pid_value, key)
+        return item.to_dict(), 200
+
+    @request_draft_files_view_args
+    def delete(self):
+        """Delete a file."""
+        pid_value = resource_requestctx.view_args["pid_value"]
+        file_id = resource_requestctx.view_args["file_id"]
+        key = self.service.get_file_key_by_id(pid_value, file_id)
+        self.service.delete_file(g.identity, pid_value, key)
+        return "", 204
+
+
+request_files_view_args = request_parser(
+    {"bucket_id": ma.fields.Str(required=True), "key": ma.fields.Str()},
+    location="view_args",
+)
+
+
+class LegacyFilesRESTResourceConfig(RDMDraftFilesResourceConfig):
+    """Legacy Files-REST resource config."""
+
+    blueprint_name = "legacy_files_rest"
+    url_prefix = "/files"
+
+    response_handlers = {
+        "application/json": ResponseHandler(LegacyFilesRESTJSONSerializer()),
+    }
+
+    routes = {
+        "files-list": "/<bucket_id>",
+        "files-item": "/<bucket_id>/<key>",
+    }
+
+
+class LegacyFilesRESTResource(FileResource):
+    """Legacy Files-REST resource."""
+
+    def create_url_rules(self):
+        """Create the URL rules for the draft files resource."""
+        routes = self.config.routes
+        url_rules = [
+            route("GET", routes["files-list"], self.search),
+            route("GET", routes["files-item"], self.get_object),
+            route("PUT", routes["files-item"], self.set_object),
+            route("DELETE", routes["files-item"], self.delete_object),
+        ]
+
+        return url_rules
+
+    @request_files_view_args
+    @response_handler(many=True)
+    def search(self):
+        """List files."""
+        bucket_id = resource_requestctx.view_args["bucket_id"]
+        record = self.service.get_record_by_bucket_id(bucket_id)
+        files = self.service.list_files(g.identity, record["id"])
+        return files.to_dict(), 200
 
     @request_files_view_args
     @response_handler()

@@ -8,8 +8,21 @@
 """Zenodo legacy serializers."""
 
 from flask_resources import BaseListSchema, JSONSerializer, MarshmallowSerializer
+from marshmallow import post_dump
 
-from .schemas import LegacySchema
+from .schemas import LegacyFileSchema, LegacyFilesRESTSchema, LegacySchema, ZenodoSchema
+
+
+class LegacyListSchema(BaseListSchema):
+    """Legacy top-level array/list schema."""
+
+    class Meta:
+        exclude = ("aggregations",)
+
+    @post_dump()
+    def unwrap_hits(self, data, many, **kwargs):
+        """Unwrap hits into a top-level array result."""
+        return data.get("hits", {}).get("hits", [])
 
 
 class LegacyJSONSerializer(MarshmallowSerializer):
@@ -20,5 +33,41 @@ class LegacyJSONSerializer(MarshmallowSerializer):
         super().__init__(
             format_serializer_cls=JSONSerializer,
             object_schema_cls=LegacySchema,
+            list_schema_cls=LegacyListSchema,
+        )
+
+
+class ZenodoJSONSerializer(MarshmallowSerializer):
+    """Legacy metadata serializer."""
+
+    def __init__(self):
+        """Initialise Serializer."""
+        super().__init__(
+            format_serializer_cls=JSONSerializer,
+            object_schema_cls=ZenodoSchema,
+            list_schema_cls=BaseListSchema,
+        )
+
+
+class LegacyDraftFileJSONSerializer(MarshmallowSerializer):
+    """Legacy draft file serializer."""
+
+    def __init__(self):
+        """Initialise Serializer."""
+        super().__init__(
+            format_serializer_cls=JSONSerializer,
+            object_schema_cls=LegacyFileSchema,
+            list_schema_cls=LegacyListSchema,
+        )
+
+
+class LegacyFilesRESTJSONSerializer(MarshmallowSerializer):
+    """Legacy Files-REST serializer."""
+
+    def __init__(self):
+        """Initialise Serializer."""
+        super().__init__(
+            format_serializer_cls=JSONSerializer,
+            object_schema_cls=LegacyFilesRESTSchema,
             list_schema_cls=BaseListSchema,
         )

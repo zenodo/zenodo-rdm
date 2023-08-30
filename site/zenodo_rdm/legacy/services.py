@@ -14,7 +14,10 @@ from flask import current_app
 from invenio_app_rdm.records_ui.previewer.iiif_simple import (
     previewable_extensions as image_extensions,
 )
+from invenio_db import db
 from invenio_drafts_resources.services.records.config import is_record
+from invenio_files_rest.models import FileInstance, ObjectVersion
+from invenio_pidstore.models import PersistentIdentifier
 from invenio_rdm_records.proxies import current_record_communities_service
 from invenio_rdm_records.services import (
     RDMFileDraftServiceConfig,
@@ -250,6 +253,7 @@ class LegacyFileLink(FileLink):
                 "key": file_record.key,
                 "bucket_id": file_record.record.bucket_id,
                 "version_id": file_record.object_version_id,
+                "file_id": file_record.file.id,
             }
         )
 
@@ -264,7 +268,17 @@ class LegacyFileDraftServiceConfig(RDMFileDraftServiceConfig):
     }
 
     file_links_item = {
-        "self": LegacyFileLink("{+api}/deposit/depositions/{id}/files/{key}"),
+        "draft_files.self": LegacyFileLink(
+            "{+api}/deposit/depositions/{id}/files/{file_id}"
+        ),
+        "draft_files.download": LegacyFileLink("{+api}/files/{bucket_id}/files/{key}"),
+        "files_rest.self": LegacyFileLink("{+api}/files/{bucket_id}/files/{key}"),
+        "files_rest.version": LegacyFileLink(
+            "{+api}/files/{bucket_id}/files/{key}?versionId={version_id}"
+        ),
+        "files_rest.uploads": LegacyFileLink(
+            "{+api}/files/{bucket_id}/files/{key}?uploads"
+        ),
     }
 
 
@@ -276,3 +290,21 @@ class LegacyFileService(FileService):
         model_cls = self.record_cls.model_cls
         obj = model_cls.query.filter(model_cls.bucket_id == bucket_id).one()
         return self.record_cls(obj.data, model=obj)
+
+    def get_file_key_by_id(self, pid_value, file_id):
+        """Get the associated record file key by its ID."""
+        RDMDraft = self.record_cls.model_cls
+        key = (
+            db.session.query(ObjectVersion.key)
+            .join(FileInstance, ObjectVersion.file_id == FileInstance.id)
+            .join(RDMDraft, ObjectVersion.bucket_id == RDMDraft.bucket_id)
+            .join(PersistentIdentifier, PersistentIdentifier.object_uuid == RDMDraft.id)
+            .filter(
+                FileInstance.id == file_id,
+                PersistentIdentifier.pid_type == "recid",
+                PersistentIdentifier.pid_value == pid_value,
+                PersistentIdentifier.object_type == "rec",
+            )
+            .scalar()
+        )
+        return key

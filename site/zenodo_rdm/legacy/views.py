@@ -9,7 +9,7 @@
 
 from functools import wraps
 
-from flask import Blueprint, Flask, abort, jsonify, request
+from flask import Blueprint, abort, jsonify, request
 from flask.views import MethodView
 
 blueprint = Blueprint("zenodo_rdm_legacy", __name__)
@@ -37,6 +37,12 @@ def create_draft_files_bp(app):
     """Create legacy draft files blueprint."""
     ext = app.extensions["zenodo-rdm-legacy"]
     return ext.legacy_draft_files_resource.as_blueprint()
+
+
+def create_files_rest_bp(app):
+    """Create legacy Files-REST blueprint."""
+    ext = app.extensions["zenodo-rdm-legacy"]
+    return ext.legacy_files_rest_resource.as_blueprint()
 
 
 #

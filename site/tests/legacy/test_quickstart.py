@@ -30,17 +30,7 @@ def test_quickstart_workflow(
     client = test_user.api_login(client)
     res = client.get(deposit_url, headers=headers)
     assert res.status_code == 200
-    # TODO: Should be:
-    # assert res.json == []
-    assert res.json == {
-        "aggregations": {
-            "access_status": {"buckets": [], "label": "Access status"},
-            "file_type": {"buckets": [], "label": "File type"},
-            "is_published": {"buckets": [], "label": "Status"},
-            "resource_type": {"buckets": [], "label": "Resource types"},
-        },
-        "hits": {"hits": [], "total": 0},
-    }
+    assert res.json == []
 
     # Create a new deposit
     res = client.post(
@@ -50,14 +40,18 @@ def test_quickstart_workflow(
     )
     assert res.status_code == 201
     data = res.json
-    assert data["files"] == []
     assert data["title"] == ""
     assert "created" in data
     assert "modified" in data
-    assert "id" in data
+    assert isinstance(data["id"], int)
+    assert isinstance(data["record_id"], int)
+    assert data["conceptrecid"]
     assert "metadata" in data
-    # TODO: We should skpi this probably
-    # assert "doi" not in data
+    assert "doi" not in data
+    assert data["metadata"]["prereserve_doi"] == {
+        "doi": f"10.5281/zenodo.{data['id']}",
+        "recid": data["id"],
+    }
     assert data["state"] == "unsubmitted"
     assert data["owner"] == int(test_user.id)
 
@@ -68,34 +62,68 @@ def test_quickstart_workflow(
     res = client.post(
         deposit_links["files"],
         headers=headers,
-        data={"name": "myfirstfile.csv"},
-        files={"file": (BytesIO(b"1, 2, 3"), "myfirstfile.csv")},
+        data={
+            "name": "my_first_file.csv",
+            "file": (BytesIO(b"1, 2, 3"), "my_first_file.csv"),
+        },
         content_type="multipart/form-data",
     )
     assert res.status_code == 201
     data = res.json
-    # TODO: Should be:
-    # assert data["checksum"] == "66ce05ea43c73b8e33c74c12d0371bc9"
-    assert data["checksum"] == "md5:66ce05ea43c73b8e33c74c12d0371bc9"
-    # assert data["filename"] == "myfirstfile.csv"
-    assert data["key"] == "myfirstfile.csv"
-    # assert data["filesize"] == 7
-    assert data["size"] == 7
-    # assert data["id"]
+
+    assert data["id"]  # file ID
+    assert data["checksum"] == "66ce05ea43c73b8e33c74c12d0371bc9"
+    assert data["filename"] == "my_first_file.csv"
+    assert data["filesize"] == 7
+    assert {"self", "download"} <= data["links"].keys()
+
+    # Get and verify the file info
+    res = client.get(data["links"]["self"])
+    data = res.json
+    assert res.status_code == 200
+    assert data["id"]  # file ID
+    assert data["checksum"] == "66ce05ea43c73b8e33c74c12d0371bc9"
+    assert data["filename"] == "my_first_file.csv"
+    assert data["filesize"] == 7
+    assert {"self", "download"} <= data["links"].keys()
+
+    # Upload another file, without the "name" paramter
+    res = client.post(
+        deposit_links["files"],
+        headers=headers,
+        data={
+            # "name": "my_second_file.csv",
+            "file": (BytesIO(b"1, 2, 3"), "my_second_file.csv"),
+        },
+        content_type="multipart/form-data",
+    )
+    assert res.status_code == 201
+    data = res.json
+
+    assert data["id"]  # file ID
+    assert data["checksum"] == "66ce05ea43c73b8e33c74c12d0371bc9"
+    assert data["filename"] == "my_second_file.csv"
+    assert data["filesize"] == 7
+    assert {"self", "download"} <= data["links"].keys()
 
     # Upload a file with /api/files
     bucket_url = deposit_links["bucket"]
     res = client.put(
-        f"{bucket_url}/mysecondfile.csv",
+        f"{bucket_url}/my_third_file.csv",
         headers=files_headers,
         data=BytesIO(b"4, 5, 6"),
     )
     assert res.status_code == 201
     data = res.json
+    assert {"created", "updated"} <= data.keys()
+    assert data["version_id"]
     assert data["mimetype"] == "text/csv"
     assert data["checksum"] == "md5:c2d626f8beba73ad0cf4e66214f7d949"
-    assert data["key"] == "mysecondfile.csv"
+    assert data["key"] == "my_third_file.csv"
     assert data["size"] == 7
+    assert data["is_head"] is True
+    assert data["delete_marker"] is False
+    assert {"self", "uploads", "version"} <= data["links"].keys()
 
     # modify deposit
     deposit = {
@@ -129,6 +157,6 @@ def test_quickstart_workflow(
     data = res.json
 
     # Assert that a DOI has been assigned.
-    # TODO: Should be:
-    # assert data["doi"] == f"10.5281/zenodo.{record_id}"
-    assert data["pids"]["doi"]["identifier"] == f"10.5281/zenodo.{record_id}"
+    # TODO: Shoule be:
+    assert data["doi"] == f"10.5281/zenodo.{record_id}"
+    # assert data["pids"]["doi"]["identifier"] == f"10.5281/zenodo.{record_id}"

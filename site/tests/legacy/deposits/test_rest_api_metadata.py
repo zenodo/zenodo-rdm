@@ -29,7 +29,7 @@ def test_invalid_create(test_app, client_with_login, deposit_url, headers):
 
     # No deposits were created
     res = client.get(deposit_url, headers=headers)
-    assert res.json["hits"]["total"] == 0
+    assert len(res.json) == 0
 
 
 def test_input_output(

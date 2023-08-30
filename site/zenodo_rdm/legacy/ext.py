@@ -13,6 +13,8 @@ from invenio_rdm_records.services.review.service import ReviewService
 from .resources import (
     LegacyDraftFilesResource,
     LegacyDraftFilesResourceConfig,
+    LegacyFilesRESTResource,
+    LegacyFilesRESTResourceConfig,
     LegacyRecordResource,
     LegacyRecordResourceConfig,
 )
@@ -73,4 +75,10 @@ class ZenodoLegacy:
         self.legacy_draft_files_resource = LegacyDraftFilesResource(
             service=self.legacy_records_service.draft_files,
             config=LegacyDraftFilesResourceConfig,
+        )
+
+        # Files-REST resource
+        self.legacy_files_rest_resource = LegacyFilesRESTResource(
+            service=self.legacy_records_service.draft_files,
+            config=LegacyFilesRESTResourceConfig,
         )
