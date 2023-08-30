@@ -47,6 +47,16 @@ class ZenodoUserEntry(UserEntry):
         """Returns the confirmation date."""
         return entry.get("confirmed_at")
 
+    def _blocked_at(self, entry):
+        """Returns the blocking/inactivation date."""
+        if not entry["active"]:
+            return datetime.utcnow().isoformat()
+
+    def _verified_at(self, entry):
+        """Returns the verification date."""
+        if entry["active"]:
+            return entry.get("safelisted_at")
+
     def _username(self, entry):
         """Returns the username."""
         return entry.get("username")

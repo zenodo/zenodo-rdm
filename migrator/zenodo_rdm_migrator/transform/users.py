@@ -7,8 +7,6 @@
 
 """Zenodo migrator users transformers."""
 
-from datetime import datetime
-
 from invenio_rdm_migrator.streams.users import UserTransform
 
 from .entries.users import ZenodoUserEntry
