@@ -36,7 +36,7 @@ class ParentRecordEntry(Entry):
         pids = {}
         doi = entry["json"].get("doi")
         conceptdoi = entry["json"].get("conceptdoi")
-        if doi and doi.startswitch(ZENODO_DATACITE_PREFIX):
+        if doi and doi.startswith(ZENODO_DATACITE_PREFIX):
             if conceptdoi:
                 pids["doi"] = {
                     "client": "datacite",
