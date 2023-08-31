@@ -24,7 +24,7 @@ invenio index queue init purge
 # NOTE: db init is not needed since DB keeps being created
 #       Just need to create all tables from it.
 invenio db create
-invenio files location create --default 'default-location'  $(pipenv run invenio shell --no-term-title -c "print(app.instance_path)")'/data'
+invenio files location create --default 'default-location' $(invenio shell --no-term-title -c "print(app.instance_path)")'/data'
 invenio index init --force
 invenio rdm-records custom-fields init
 invenio communities custom-fields init
@@ -59,6 +59,9 @@ psql $DB_URI -f scripts/restore_indices.sql
 
 # Update ID sequences in DB
 psql $DB_URI -f scripts/update_sequences.sql
+
+# Create missing DB indices to speed up records indexing
+psql $DB_URI -f scripts/create_missing_indices.sql
 
 # Fixtures
 invenio rdm-records fixtures

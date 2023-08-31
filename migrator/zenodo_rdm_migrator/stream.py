@@ -10,6 +10,12 @@ from invenio_rdm_migrator.extract import JSONLExtract
 from invenio_rdm_migrator.load.postgresql.transactions import PostgreSQLTx
 from invenio_rdm_migrator.streams import StreamDefinition
 from invenio_rdm_migrator.streams.awards import ExistingAwardsLoad
+from invenio_rdm_migrator.streams.github import (
+    ExistingGitHubRepositoriesCopyLoad,
+    ExistingWebhookEventsCopyLoad,
+    GitHubReleasesCopyLoad,
+    GitHubReleaseTransform,
+)
 from invenio_rdm_migrator.streams.communities import CommunityCopyLoad
 from invenio_rdm_migrator.streams.files import ExistingFilesLoad
 from invenio_rdm_migrator.streams.funders import ExistingFundersLoad
@@ -115,6 +121,31 @@ OAuthServerStreamDefinition = StreamDefinition(
     load_cls=OAuthServerCopyLoad,
 )
 """ETL stream for Zenodo to import OAutch clients related information."""
+
+WebhookEventsStreamDefinition = StreamDefinition(
+    name="webhook_events",
+    extract_cls=None,
+    transform_cls=None,
+    load_cls=ExistingWebhookEventsCopyLoad,
+)
+"""ETL stream for Zenodo to import webhook events."""
+
+GitHubRepositoriesStreamDefinition = StreamDefinition(
+    name="github_repositories",
+    extract_cls=None,
+    transform_cls=None,
+    load_cls=ExistingGitHubRepositoriesCopyLoad,
+)
+"""ETL stream for Zenodo to import GitHub repositories."""
+
+GitHubRepositoriesStreamDefinition = StreamDefinition(
+    name="github_releases",
+    extract_cls=JSONLExtract,
+    transform_cls=GitHubReleaseTransform,
+    load_cls=GitHubReleasesCopyLoad,
+)
+"""ETL stream for Zenodo to import GitHub releases."""
+
 
 ActionStreamDefinition = StreamDefinition(
     name="action",

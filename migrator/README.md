@@ -206,9 +206,16 @@ psql $DB_URI -f scripts/deposits_dump.sql | sed 's/\\\\/\\/g' | gzip -c > "dumps
 
 # For dumping files we use a different style, since we're not filtering anything:
 # File instances, ~10min
-psql $DB_URI -f scripts/files_files_dump.sql | gzip -c > "dumps/files_files-$(date -I).jsonl.gz"
+psql $DB_URI -f scripts/files_files_dump.sql | gzip -c > "dumps/files_files-$(date -I).csv.gz"
 # Buckets, ~1min
-psql $DB_URI -f scripts/files_bucket_dump.sql | gzip -c > "dumps/files_bucket-$(date -I).dump.gz"
+psql $DB_URI -f scripts/files_bucket_dump.sql | gzip -c > "dumps/files_bucket-$(date -I).csv.gz"
 # File object versions, ~3min
-psql $DB_URI -f scripts/files_object_dump.sql | gzip -c > "dumps/files_object-$(date -I).dump.gz"
+psql $DB_URI -f scripts/files_object_dump.sql | gzip -c > "dumps/files_object-$(date -I).csv.gz"
+
+# Webhook Events
+psql $DB_URI -f scripts/webhook_events_dump.sql | gzip -c > "dumps/webhook_events-$(date -I).csv.gz"
+# GitHub repositories
+psql $DB_URI -f scripts/github_repositories_dump.sql | gzip -c > "dumps/github_repositories-$(date -I).csv.gz"
+# GitHub releases
+psql $DB_URI -f scripts/github_releases_dump.sql | gzip -c > "dumps/github_releases-$(date -I).jsonl.gz"
 ```

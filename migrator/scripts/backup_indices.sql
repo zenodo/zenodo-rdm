@@ -19,6 +19,7 @@ WHERE
     'communities_metadata',
     'communities_members',
     'communities_featured',
+    'oaiserver_set',
     -- records
     'rdm_records_metadata',
     'rdm_parents_metadata',
@@ -29,5 +30,9 @@ WHERE
     'rdm_drafts_files',
     'pidstore_pid',
     -- requests
-    'request_metadata'
+    'request_metadata',
+    -- github
+    'webhooks_events',
+    'github_repositories',
+    'github_releases'
   );
