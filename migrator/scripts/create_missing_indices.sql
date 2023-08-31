@@ -1,0 +1,10 @@
+CREATE INDEX idx_accounts_user_displayname ON accounts_user USING btree (displayname);
+CREATE INDEX idx_communities_members_group_id ON communities_members USING btree (group_id);
+CREATE INDEX idx_communities_members_user_id ON communities_members USING btree (user_id);
+CREATE INDEX idx_communities_metadata_bucket_id ON communities_metadata USING btree (bucket_id);
+CREATE INDEX idx_files_files_last_check ON files_files USING btree (last_check);
+CREATE INDEX idx_pidstore_pid_pid_value ON pidstore_pid USING btree (pid_value);
+CREATE INDEX idx_rdm_parents_community_request_id ON rdm_parents_community USING btree (request_id);
+CREATE INDEX idx_rdm_records_files_record_id ON rdm_records_files USING btree (record_id);
+CREATE INDEX idx_rdm_records_metadata_bucket_id ON rdm_records_metadata USING btree (bucket_id);
+CREATE INDEX idx_rdm_versions_state_next_draft_id ON rdm_versions_state USING btree (next_draft_id);
