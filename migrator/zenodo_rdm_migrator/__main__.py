@@ -17,11 +17,14 @@ from .stream import (
     DraftStreamDefinition,
     FilesStreamDefinition,
     FundersStreamDefinition,
+    GitHubReleasesStreamDefinition,
+    GitHubRepositoriesStreamDefinition,
     OAuthClientStreamDefinition,
     OAuthServerStreamDefinition,
     RecordStreamDefinition,
     RequestStreamDefinition,
     UserStreamDefinition,
+    WebhookEventsStreamDefinition,
 )
 
 if __name__ == "__main__":
@@ -42,6 +45,9 @@ if __name__ == "__main__":
             AwardsStreamDefinition,
             OAuthClientStreamDefinition,
             OAuthServerStreamDefinition,
+            WebhookEventsStreamDefinition,
+            GitHubReleasesStreamDefinition,
+            GitHubRepositoriesStreamDefinition,
         ],
         config_filepath=sys.argv[1],
     )

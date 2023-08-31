@@ -45,7 +45,6 @@ psql $DB_URI -f scripts/delete_constraints.sql
 psql $DB_URI -f scripts/backup_indices.sql
 psql $DB_URI -f scripts/drop_indices.sql
 
-
 # Run migration
 python -m zenodo_rdm_migrator "streams.yaml"
 
