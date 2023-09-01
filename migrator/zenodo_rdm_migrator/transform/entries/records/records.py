@@ -74,9 +74,17 @@ class ZenodoRecordEntry(RDMRecordEntry):
         """Transform the bucket of a record."""
         return entry["json"]["_buckets"]["record"]
 
+    def _media_bucket_id(self, entry):
+        """Transform the media bucket of a record."""
+        return entry["json"]["_buckets"].get("extra_formats")
+
     def _files(self, entry):
         """Transform the files of a record."""
         return {"enabled": True}
+
+    def _media_files(self, entry):
+        """Transform the media files of a record."""
+        return {"enabled": self._media_bucket_id(entry) is not None}
 
     def _access(self, entry):
         record = entry["json"]
@@ -159,8 +167,12 @@ class ZenodoDraftEntry(ZenodoRecordEntry):
         return r
 
     def _bucket_id(self, entry):
-        """Transform the bucket of a record."""
+        """Transform the bucket of a draft."""
         return entry["json"]["_buckets"]["deposit"]
+
+    def _media_bucket_id(self, entry):
+        """Transform the media bucket of a draft."""
+        return entry["json"]["_buckets"].get("extra_formats")
 
     def _access(self, entry):
         draft = entry["json"]
@@ -186,6 +198,7 @@ class ZenodoDraftEntry(ZenodoRecordEntry):
             "version_id",
             "index",
             "bucket_id",
+            "media_bucket_id",
             "expires_at",
             "fork_version_id",
         ]
@@ -208,6 +221,7 @@ class ZenodoDraftEntry(ZenodoRecordEntry):
                 "id": self._recid(entry),
                 "pids": self._pids(entry),
                 "files": self._files(entry),
+                "media_files": self._media_files(entry),
                 "metadata": self._metadata(entry),
                 "access": self._access(entry),
                 "custom_fields": self._custom_fields(entry),
