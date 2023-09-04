@@ -50,9 +50,11 @@
         </div>
       </div>
 
+      {% if community.metadata.description %}
       <p class="description">
         {{ community.metadata.description | truncate(length=300, end='...') }}
       </p>
+      {% endif %}
     </div>
   </div>
 {% endmacro %}
