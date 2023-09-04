@@ -33,7 +33,9 @@ else
   invenio db create
   invenio files location create --default 'default-location'  $(invenio shell --no-term-title -c "print(app.instance_path)")'/data'
   invenio roles create admin
+  invenio roles create administration-moderation
   invenio access allow superuser-access role admin
+  invenio access allow administration-moderation role administration-moderation
   invenio index init --force
   invenio rdm-records custom-fields init
   invenio communities custom-fields init
