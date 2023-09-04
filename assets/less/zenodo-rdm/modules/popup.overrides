@@ -14,7 +14,7 @@
 
   }
 
-  &#uniqueViews {
+  &.total-views {
     .ui.popup {
       left: 0;
 
@@ -25,7 +25,7 @@
     }
   }
 
-  &#uniqueDownloads {
+  &.total-downloads {
     .ui.popup {
       right: 0;
 

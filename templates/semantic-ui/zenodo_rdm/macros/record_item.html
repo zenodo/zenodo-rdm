@@ -97,25 +97,24 @@
           {% endif %}
 
           {# Statistics #}
-          {% set unique_downloads = record.stats.all_versions.unique_downloads %}
-          {% set unique_views = record.stats.all_versions.unique_views %}
-
+          {% set downloads = record.stats.all_versions.downloads %}
+          {% set views = record.stats.all_versions.views %}
           <small>
-            {% if unique_views is defined %}
-              <div id="uniqueViews" class="ui transparent label stats-popup">
-                <i class="ui eye icon" aria-label="{{ _('Total views') }}"></i>
-                {{ unique_views }}
-                <div class="ui tiny popup">
+            {% if views is defined %}
+              <div class="ui transparent label stats-popup total-views" aria-label="{{ _('Total views') }}">
+                <i class="ui eye icon" aria-hidden="true"></i>
+                {{ views }}
+                <div class="ui tiny popup" aria-hidden="true">
                   {{ _("Total views") }}
                 </div>
               </div>
             {% endif %}
 
-            {% if unique_downloads is defined %}
-              <div id="uniqueDownloads" class="ui transparent label stats-popup">
-                <i class="ui download icon" aria-label="{{ _('Total downloads') }}"></i>
-                {{ unique_downloads}}
-                <div class="ui tiny popup">
+            {% if downloads is defined %}
+              <div class="ui transparent label stats-popup total-downloads" aria-label="{{ _('Total downloads') }}">
+                <i class="ui download icon" aria-hidden="true"></i>
+                {{ downloads}}
+                <div class="ui tiny popup" aria-hidden="true">
                   {{ _("Total downloads") }}
                 </div>
               </div>
