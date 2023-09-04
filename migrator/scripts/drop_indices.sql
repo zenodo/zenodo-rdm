@@ -4,9 +4,9 @@ $$
 DECLARE
   l_rec record;
 BEGIN
-  for l_rec IN SELECT schemaname, indexname FROM rdm_index_backup
+  for l_rec IN SELECT schemaname, indexname FROM rdm_index_backup where rdm_index_backup.
   LOOP
-    EXECUTE format('drop index %I.%I', l_rec.schemaname, l_rec.indexname);
+    EXECUTE format('drop index if exists %I.%I', l_rec.schemaname, l_rec.indexname);
   END LOOP;
 END;
 $$
