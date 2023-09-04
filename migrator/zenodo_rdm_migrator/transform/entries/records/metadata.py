@@ -386,6 +386,7 @@ class ZenodoDraftMetadataEntry(ZenodoRecordMetadataEntry):
             "dates": cls._dates(entry.get("dates")),
             "locations": cls._locations(entry.get("locations")),
             "funding": cls._funding(entry.get("grants")),
+            "version": entry.get("version"),
         }
 
         resource_type = entry.get("resource_type")
