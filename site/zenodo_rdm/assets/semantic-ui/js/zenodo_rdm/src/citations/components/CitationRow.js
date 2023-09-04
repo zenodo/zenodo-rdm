@@ -74,7 +74,9 @@ export const CitationRow = ({ citation }) => {
           inverted
           size="mini"
           content={citationInfo}
-          trigger={<Icon name="question circle" aria-label={citationInfo} />}
+          trigger={
+            <Icon role="note" name="question circle" aria-label={citationInfo} />
+          }
         />
       </Table.Cell>
     </Table.Row>

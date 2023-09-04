@@ -34,7 +34,7 @@ import {
   Count,
 } from "react-searchkit";
 import { OverridableContext } from "react-overridable";
-import { Grid, Accordion, Icon } from "semantic-ui-react";
+import { Grid, Accordion, Icon, Label } from "semantic-ui-react";
 import _get from "lodash/get";
 import { Results } from "./components/Results";
 import { Filter } from "./components/Filter";
@@ -121,6 +121,7 @@ export class CitationsSearch extends React.Component {
                 target="_blank"
                 className="ml-5 mr-5"
                 rel="noreferrer"
+                aria-label="Citations help page"
               >
                 <Icon name="question circle" className="button" />
               </a>
@@ -136,7 +137,19 @@ export class CitationsSearch extends React.Component {
                   </Grid.Column>
 
                   <Grid.Column width="6">
-                    <SearchBar placeholder="Search for citation ..." />
+                    <Label
+                      as="label"
+                      content="Search citations"
+                      htmlFor="citations-search-bar"
+                      className="hidden"
+                    />
+                    <SearchBar
+                      uiProps={{
+                        name: "citations-search",
+                        id: "citations-search-bar",
+                      }}
+                      placeholder="Search for citation ..."
+                    />
                   </Grid.Column>
                 </Grid.Row>
               </Grid>

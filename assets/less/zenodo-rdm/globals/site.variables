@@ -6,11 +6,15 @@
  */
 
 // Colors
+@secondaryColor: #000;
 @warningColor: #EB9419;
 @positiveColor: #3A833A;
 @negativeColor: #D33B36;
-@primaryColor: #428bca;
+@primaryColor: #2F6FA7;
 
+@invertedTextColor: #FFF;
+@mutedTextColor: #696969;
+@linkColor: @primaryColor;
 
 // Navbar
 @navbarBackgroundImage: linear-gradient(to right,#0047A8 0,#2BBCFF 100%);
@@ -19,7 +23,7 @@
 // Footer colors
 @footerLightColor: #0067c9;
 @footerDarkColor: #0047a8;
-@footerTextDarkColor: #c9e5ff;
+@footerTextDarkColor: #E5F4FF;
 
 
 // Font weights

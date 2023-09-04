@@ -57,12 +57,20 @@ export const Filter = withState(
 
             {missingTypes.map((type) => (
               <List.Item key={type}>
-                <Checkbox label={`${type} (0)`} disabled />
+                <Checkbox
+                  label={`${type} (0)`}
+                  disabled
+                  id={`${type}-facet-checkbox`}
+                />
               </List.Item>
             ))}
 
             <List.Item>
-              <Checkbox label="Citations to this version" onChange={toggleGroupBy} />
+              <Checkbox
+                label="Citations to this version"
+                onChange={toggleGroupBy}
+                id="citations-to-version"
+              />
             </List.Item>
           </List>
         </Grid.Column>
