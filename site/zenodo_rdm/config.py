@@ -190,8 +190,6 @@ ZENODO_RECORDS_UI_CITATIONS_ENDPOINT = (
     "https://zenodo-broker-qa.web.cern.ch/api/relationships"
 )
 
-ZENODO_RECORDS_UI_CITATIONS_ENABLE = False
-
 # Redirection
 # ===========
 
