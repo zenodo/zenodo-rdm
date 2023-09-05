@@ -3,7 +3,9 @@
 
 # create admin role
 invenio roles create admin
-invenio access allow superuser-access role admin
+# TODO: Make sure we don't use "superuser-access" in any permissions
+# invenio access allow superuser-access role admin
+invenio access allow administration-access role admin
 # and then add the role to your user
 invenio roles add ppanero@cern.ch admin  # pablo
 invenio roles add zacharias.zacharodimos@cern.ch admin  # zach
