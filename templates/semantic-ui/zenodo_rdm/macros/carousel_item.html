@@ -36,13 +36,15 @@
         <div class="six wide computer sixteen wide tablet column buttons">
           <a
             class="ui mini button"
-            href={community.links.self_html}
+            href="{{ community.links.self_html }}"
+            aria-label="Browse {{ community.metadata.title }}"
           >
             {{ _("Browse") }}
           </a>
           <a
             class="ui mini icon positive left labeled button"
             href="/uploads/new?community={{community.slug}}"
+            aria-label="Create new upload in {{ community.metadata.title }}"
           >
             <i class="upload icon" aria-hidden="true"></i>
             {{ _("New upload") }}
