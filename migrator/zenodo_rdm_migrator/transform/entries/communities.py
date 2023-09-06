@@ -244,6 +244,8 @@ class ZenodoCommunityFilesObjectVersionEntry(FilesObjectVersionEntry):
 
 
 class ZenodoOAISetEntry(OAISetEntry):
+    """Zenodo community OAI set entry transform."""
+
     def _id(self, entry):
         """Return the id."""
         pass

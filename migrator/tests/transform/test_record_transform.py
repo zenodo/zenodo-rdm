@@ -37,6 +37,7 @@ def zenodo_record_data():
         "id": "2d6970ea-602d-4e8b-a918-063a59823386",
         "json": {
             "doi": "10.5281/zenodo.1234567",
+            "conceptdoi": "10.5281/zenodo.1234567.concept",
             "_oai": {
                 "id": "oai:zenodo.org:10452",
                 "sets": ["openaire_data", "user-zenodo"],
@@ -289,6 +290,7 @@ def expected_rdm_record_entry():
         "version_id": 1,
         "index": 1,
         "bucket_id": "bur3c0rd-1234-abcd-1ab2-1234abcd56ef",
+        "media_bucket_id": None,
         "json": {
             "id": "10123",
             "pids": {
@@ -303,6 +305,7 @@ def expected_rdm_record_entry():
                 },
             },
             "files": {"enabled": True},
+            "media_files": {"enabled": False},
             "metadata": {
                 "title": "Migration test photo",
                 "description": "This is a full Zenodo record that needs to be tested for migration",
@@ -529,6 +532,13 @@ def expected_rdm_record_parent():
             "id": "10122",
             "access": {"owned_by": {"user": 1234}},
             "communities": {"ids": ["zenodo", "migration"], "default": "zenodo"},
+            "pids": {
+                "doi": {
+                    "provider": "datacite",
+                    "client": "datacite",
+                    "identifier": "10.5281/zenodo.1234567.concept",
+                }
+            },
         },
     }
 
@@ -764,10 +774,12 @@ def expected_rdm_draft_entry():
         "version_id": 1,
         "index": 1,
         "bucket_id": "bud3p0s1-1234-abcd-1ab2-1234abcd56ef",
+        "media_bucket_id": None,
         "json": {
             "id": "10123",
             "pids": {},
             "files": {"enabled": True},
+            "media_files": {"enabled": False},
             "metadata": {
                 "title": "Migration test photo",
                 "description": "This is a full Zenodo record that needs to be tested for migration",
@@ -955,6 +967,7 @@ def expected_rdm_draft_parent():
             "id": "10122",
             "access": {"owned_by": {"user": 1234}},
             "communities": {},
+            "pids": {},
         },
     }
 

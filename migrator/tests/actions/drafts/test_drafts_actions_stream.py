@@ -58,6 +58,7 @@ def db_draft(database, session):
             version_id=1,
             index=1,
             bucket_id="0e12b4b6-9cc7-46df-9a04-c11c478de211",
+            media_bucket_id=None,
             parent_id="9493793c-47d2-48e2-9867-ca597b4ebb41",
             expires_at="2024-05-01T00:00:00",
             fork_version_id=None,

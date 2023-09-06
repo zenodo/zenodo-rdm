@@ -34,6 +34,8 @@ class ParentRecordEntry(Entry):
 
     def _pids(self, entry):
         pids = {}
+
+        is_draft = "deposits" in entry["json"]["$schema"]
         doi = entry["json"].get("doi")
         conceptdoi = entry["json"].get("conceptdoi")
         if doi and doi.startswith(ZENODO_DATACITE_PREFIX):
@@ -43,7 +45,7 @@ class ParentRecordEntry(Entry):
                     "provider": "datacite",
                     "identifier": conceptdoi,
                 }
-            else:  # old Zenodo DOI record without concept DOI
+            elif not is_draft:  # old Zenodo DOI record without concept DOI
                 pids["doi"] = {"provider": "legacy", "identifier": ""}
         return pids
 
