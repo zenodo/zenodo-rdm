@@ -35,13 +35,13 @@
         {% endif %}
       {% else %}
         {# record has files BUT user cannot see files #}
-        <div class="pt-0 pb-20">
+        <div class="pt-0">
           <div class="ui accordion panel mb-10 {{ record.ui.access_status.id }}"
                id="preview"
                href="#collapsablePreview">
             <div class="active title trigger panel-heading {{ record.ui.access_status.id }}">
               {{ _("Files") }}
-              <i class="angle down icon"></i>
+              <i class="angle right icon"></i>
             </div>
             <div id="collapsablePreview" class="active content pt-0">
               <div class="ui {{ record.ui.access_status.message_class }} message file-box-message">
