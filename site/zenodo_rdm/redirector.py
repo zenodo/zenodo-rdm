@@ -242,7 +242,6 @@ def redirect_deposit_new_view():
     target = url_for("invenio_app_rdm_records.deposit_create", **values)
     return target
 
-
 def redirect_record_thumbnail_view():
     """Redirect legacy record thumbnail URL.
 
@@ -250,3 +249,19 @@ def redirect_record_thumbnail_view():
         - /record/<pid_value>/thumb<size> -> /records/<pid_value>/thumb<size>
     """
     return url_for("invenio_app_rdm_records.record_thumbnail", **request.view_args)
+
+def redirect_formats_to_media_files_view():
+    """Implements redirector view function for formats retrieval.
+
+    The following routes are redirected as follows:
+        -  /record/<pid_value>?mimetype=<filename> -> GET /records/<pid_value>/media-files/<filename>
+
+    :return: url for the view 'invenio_app_rdm_records.record_media_file_download'
+    :rtype: str
+    """
+    values = request.view_args
+    filename = request.args.get("mimetype", None)
+    values['filename'] = filename
+
+    target = url_for("invenio_app_rdm_records.record_media_file_download", **values)
+    return target
