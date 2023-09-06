@@ -137,6 +137,7 @@ class MetadataSchema(common.MetadataSchema):
         return missing
 
     def dump_alternate_identifiers(self, obj):
+        """Dump alternate identifiers."""
         result = []
         rel_id_schema = common.RelatedIdentifierSchema(exclude=("relation",))
         alternate_identifiers = obj.get("identifiers", [])

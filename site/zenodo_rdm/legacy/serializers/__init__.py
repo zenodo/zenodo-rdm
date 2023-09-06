@@ -17,6 +17,8 @@ class LegacyListSchema(BaseListSchema):
     """Legacy top-level array/list schema."""
 
     class Meta:
+        """Meta class."""
+
         exclude = ("aggregations",)
 
     @post_dump()

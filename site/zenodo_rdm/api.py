@@ -14,6 +14,8 @@ from invenio_records_resources.records.systemfields import PIDField
 
 
 class DraftRecordIdProvider(RecordIdProvider):
+    """Draft numerical auto-incrementing record ID provider."""
+
     default_status_with_obj = PIDStatus.NEW
 
     @classmethod
@@ -33,10 +35,14 @@ class DraftRecordIdProvider(RecordIdProvider):
 
 
 class ZenodoRDMParent(RDMParent):
+    """Zenodo RDMParent API class."""
+
     pid = PIDField("id", provider=DraftRecordIdProvider, delete=True)
 
 
 class ZenodoRDMRecord(RDMRecord):
+    """Zenodo RDMRecord API class."""
+
     pid = PIDField("id", provider=DraftRecordIdProvider, delete=True)
     parent_record_cls = ZenodoRDMParent
 
@@ -46,6 +52,8 @@ class ZenodoRDMRecord(RDMRecord):
 
 
 class ZenodoRDMDraft(RDMDraft):
+    """Zenodo RDMDraft API class."""
+
     pid = PIDField("id", provider=DraftRecordIdProvider, delete=False)
     parent_record_cls = ZenodoRDMParent
 

@@ -32,6 +32,7 @@ class LegacySchema(Schema):
 
     @pre_load()
     def load_default_license(self, data, **kwargs):
+        """Load default license."""
         metadata = data.get("metadata", {})
         if metadata and "license" not in metadata:
             metadata = data.setdefault("metadata", {})
