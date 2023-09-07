@@ -86,7 +86,7 @@ NAMESPACES = {
     "obo": "http://purl.obolibrary.org/obo/",
     "dc": "http://purl.org/dc/terms/",
     "legacy": "",
-    **CODEMETA_NAMESPACE,
+    # **CODEMETA_NAMESPACE, # TODO enable when fixed (see https://github.com/zenodo/rdm-project/issues/217)
     **JOURNAL_NAMESPACE,
     **MEETING_NAMESPACE,
     **IMPRINT_NAMESPACE,
@@ -151,7 +151,7 @@ CUSTOM_FIELDS = [
     # obo
     RelationshipListCF(name="obo:RO_0002453"),
     # codemeta,
-    *CODEMETA_CUSTOM_FIELDS,
+    # *CODEMETA_CUSTOM_FIELDS, # TODO enable when fixed (see https://github.com/zenodo/rdm-project/issues/217)
     # journal
     *JOURNAL_CUSTOM_FIELDS,
     # meeting
@@ -491,7 +491,7 @@ CUSTOM_FIELDS_UI = [
     # zenodo custom fields
     ZENODO_CUSTOM_FIELDS_UI,
     # codemeta
-    CODEMETA_CUSTOM_FIELDS_UI,
+    # CODEMETA_CUSTOM_FIELDS_UI, # TODO enable when fixed (see https://github.com/zenodo/rdm-project/issues/217)
     # publishing information
     {
         "section": _("Publishing information"),
@@ -512,5 +512,5 @@ CUSTOM_FIELDS_UI = [
 # Custom fields facets
 
 CUSTOM_FIELDS_FACETS = {
-    **CODEMETA_FACETS,
+    # **CODEMETA_FACETS, # TODO enable when fixed (see https://github.com/zenodo/rdm-project/issues/217)
 }
