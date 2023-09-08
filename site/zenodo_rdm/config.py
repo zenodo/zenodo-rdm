@@ -18,6 +18,7 @@ from .redirector import (
     record_view_function,
     redirect_deposit_new_view,
     redirect_deposit_own_view,
+    redirect_formats_to_media_files_view,
     redirect_record_file_preview_view,
     redirect_record_thumbnail_view,
     search_view_function,
@@ -299,6 +300,10 @@ REDIRECTOR_RULES = {
     "redirect_record_thumbnail": {
         "source": "/record/<pid_value>/thumb<size>",
         "target": redirect_record_thumbnail_view,
+    },
+    "redirect_formats_to_media_files": {
+        "source": "/record/<pid_value>/formats",
+        "target": redirect_formats_to_media_files_view,
     },
 }
 
