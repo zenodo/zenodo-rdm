@@ -7,53 +7,67 @@
 """Utility functions."""
 
 import re
+import idutils
 from urllib.parse import parse_qs, urlencode, urlsplit, urlunsplit
+from invenio_i18n import _
 
-from flask import url_for
+from flask import current_app, url_for
 from invenio_app_rdm.records_ui.utils import dump_external_resource
 
 
 def github_link_render(record):
     """Entry for GitHub."""
+    ret = []
     related_identifiers = record.get("ui", {}).get("related_identifiers", [])
     for rel_id in related_identifiers:
         is_url = rel_id["scheme"] == "url"
-        is_supplement = rel_id["relation_type"]["id"] == "issupplementedby"
+        is_supplement = rel_id["relation_type"]["id"] == "issupplementto"
         url_parts = urlsplit(rel_id["identifier"])
         is_github = url_parts.hostname == "github.com"
-        release_info = re.match("\/(?P<repo>.+)\/tree\/(?P<tag>.+)", url_parts.path)
-        if is_url and is_supplement and is_github and release_info:
-            return [
+        if is_url and is_supplement and is_github:
+            release_info = re.match("\/(?P<repo>.+)\/tree\/(?P<tag>.+)", url_parts.path)
+            title = "Github"
+            subtitle = None
+            if release_info:
+                title = release_info["repo"]
+                subtitle = f"Release: {release_info['tag']}"
+
+            ret.append(
                 dump_external_resource(
                     rel_id["identifier"],
-                    title=release_info["repo"],
+                    title=title,
                     section="Available in",
-                    subtitle=f"Release: {release_info['tag']}",
+                    subtitle=subtitle,
                     icon=url_for("static", filename="images/github.svg"),
                 )
-            ]
+            )
+    return ret
 
 
 def f1000_link_render(record):
     """Entry for F1000."""
+    ret = []
     related_identifiers = record.get("ui", {}).get("related_identifiers", [])
     for rel_id in related_identifiers:
         is_doi = rel_id["scheme"] == "doi"
         is_cited = rel_id["relation_type"]["id"] == "iscitedby"
         is_f1000_doi = rel_id["identifier"].startswith("10.12688/f1000research")
         if is_doi and is_cited and is_f1000_doi:
-            return [
+            url = idutils.to_url(rel_id["identifier"], rel_id["scheme"], "https")
+            ret.append(
                 dump_external_resource(
-                    rel_id["identifier"],
+                    url,
                     title="F1000 Research",
-                    section="Published in",
+                    section=_("Published in"),
                     icon=url_for("static", filename="images/f1000.jpg"),
                 )
-            ]
+            )
+    return ret
 
 
 def briefideas_link_render(record):
     """Entry for Brief Ideas."""
+    ret = []
     related_identifiers = record.get("ui", {}).get("related_identifiers", [])
     for rel_id in related_identifiers:
         is_url = rel_id["scheme"] == "url"
@@ -61,39 +75,20 @@ def briefideas_link_render(record):
         url_parts = urlsplit(rel_id["identifier"])
         is_briefideas = url_parts.hostname == "beta.briefideas.org"
         if is_url and is_identical and is_briefideas:
-            return [
+            ret.append(
                 dump_external_resource(
                     rel_id["identifier"],
                     title="Journal of Brief Ideas",
-                    section="Published in",
+                    section=_("Published in"),
+                    icon=url_for("static", filename="images/briefideas.png"),
                 )
-            ]
-
-
-def inspire_link_render(record):
-    """Entry for INSPIRE."""
-    related_identifiers = record.get("ui", {}).get("related_identifiers", [])
-    for rel_id in related_identifiers:
-        is_url = rel_id["scheme"] == "url"
-        is_supplement = rel_id["relation_type"]["id"] == "issupplementedby"
-        url_parts = urlsplit(rel_id["identifier"])
-        is_inspire_url = (
-            url_parts.hostname == "inspirehep.net"
-            and url_parts.path.startswith("/record/")
-        )
-        if is_url and is_supplement and is_inspire_url:
-            return [
-                dump_external_resource(
-                    rel_id["identifier"],
-                    title="INSPIRE-HEP",
-                    section="Available in",
-                    icon=url_for("static", filename="images/inspire.svg"),
-                )
-            ]
+            )
+    return ret
 
 
 def reana_link_render(record):
     """Entry for REANA."""
+    ret = []
     related_identifiers = record.get("ui", {}).get("related_identifiers", [])
     for rel_id in related_identifiers:
         url_parts = urlsplit(rel_id["identifier"])
@@ -108,11 +103,33 @@ def reana_link_render(record):
             query = parse_qs(url_parts.query)
             query.setdefault("name", record["metadata"]["title"])
             url_parts = url_parts._replace(query=urlencode(query))
-            return [
+            ret.append(
                 dump_external_resource(
                     urlunsplit(url_parts),
                     title="REANA",
-                    section="Run in",
+                    section=_("Run in"),
                     icon=url_for("static", filename="images/reana.svg"),
                 )
-            ]
+            )
+    return ret
+
+
+def openaire_link_render(record):
+    """Entry for OpenAIRE."""
+    ret = []
+    openaire_types = set(["publication", "dataset", "software", "other"])
+    metadata = record.get("metadata", {})
+    doi = record.get("pids", {}).get("doi", {}).get("identifier")
+    resource_type = metadata.get("resource_type", {}).get("id")
+    if resource_type in openaire_types and doi:
+        openaire_url = current_app.config.get("OPENAIRE_PORTAL_URL", "")
+        url = f"{openaire_url}/search/{resource_type}?pid={doi}"
+        ret.append(
+            dump_external_resource(
+                url,
+                title="OpenAIRE",
+                section=_("Indexed in"),
+                icon=url_for("static", filename="images/openaire.svg"),
+            )
+        )
+    return ret
