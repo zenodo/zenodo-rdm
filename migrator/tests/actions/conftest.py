@@ -29,6 +29,7 @@ from invenio_rdm_migrator.streams.models.files import (
     FilesObjectVersion,
 )
 from invenio_rdm_migrator.streams.models.oai import OAISet
+from invenio_rdm_migrator.streams.models.oauth import ServerClient, ServerToken
 from invenio_rdm_migrator.streams.models.pids import PersistentIdentifier
 from invenio_rdm_migrator.streams.models.records import (
     RDMDraftFile,
@@ -160,6 +161,8 @@ def database(engine):
         RDMParentMetadata,
         RDMVersionState,
         RDMParentCommunityMetadata,
+        ServerClient,
+        ServerToken,
         SessionActivity,
         User,
     ]

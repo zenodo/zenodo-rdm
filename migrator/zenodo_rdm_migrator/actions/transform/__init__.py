@@ -14,6 +14,7 @@ from .communities import (
 )
 from .drafts import DraftCreateAction, DraftEditAction, DraftPublishAction
 from .files import DraftFileUploadAction
+from .oauth import OAuthServerTokenCreateAction
 from .users import UserDeactivationAction, UserEditAction, UserRegistrationAction
 
 __all__ = (
