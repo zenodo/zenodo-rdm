@@ -1,0 +1,42 @@
+- id: abstract
+  props:
+    datacite: Abstract
+  title:
+    en: Abstract
+    de: Abstract
+- id: methods
+  props:
+    datacite: Methods
+  title:
+    en: Methods
+    de: Methoden
+- id: series-information
+  props:
+    datacite: SeriesInformation
+  title:
+    en: Series information
+    de: Informationen zur Reihe
+- id: table-of-contents
+  props:
+    datacite: TableOfContents
+  title:
+    en: Table of contents
+    de: Inhaltsverzeichnis
+- id: technical-info
+  props:
+    datacite: TechnicalInfo
+  title:
+    en: Technical info
+    de: Technische Informationen
+- id: notes
+  props:
+    datacite: Notes
+  title:
+    en: Notes
+    de: Anmerkungen
+- id: other
+  props:
+    datacite: Other
+  title:
+    en: Other
+    de: Sonstige

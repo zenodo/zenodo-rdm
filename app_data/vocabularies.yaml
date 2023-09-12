@@ -1,3 +1,6 @@
 licenses:
   pid-type: lic
   data-file: vocabularies/licenses.csv
+descriptiontypes:
+  pid-type: dty
+  data-file: vocabularies/description_types.yaml

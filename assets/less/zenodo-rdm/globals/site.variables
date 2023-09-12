@@ -6,7 +6,6 @@
  */
 
 // Colors
-@secondaryColor: #000;
 @warningColor: #EB9419;
 @positiveColor: #3A833A;
 @negativeColor: #D33B36;

@@ -72,34 +72,40 @@
           {# Publishing details #}
           {% set created_date = record.ui.created_date_l10n_long %}
           {% set publishing_journal = record.ui.publishing_information.get("journal") if record.ui.publishing_information %}
+          <div>
+            <p>
+              <small>
+                {% if created_date %}
+                  {{ _("Uploaded on")}} {{ created_date }}
+                {% endif %}
+              </small>
+            </p>
+            <p>
+              <small>
+                {% if publishing_journal %}
+                  {{ _("Published in") }} {{ publishing_journal }}
+                {% endif %}
+              </small>
+            </p>
 
-          <small>
-            {% if created_date %}
-              {{ _("Uploaded on:")}} {{ created_date }}
+            {# Versions info desktop/tablet #}
+            {% if record.versions.index > 1 %}
+              {% set num_versions = record.versions.index %}
+              {% set text_content = _("more versions exist for this record") %}
+              {% if num_versions == 2 %}
+                {% set text_content = _("more version exist for this record") %}
+              {% endif %}
+
+              <p>
+                <small>{{ record.versions.index - 1 }} {{ text_content }}</small>
+              </p>
             {% endif %}
-
-            {% if publishing_journal %}
-              {{ _("Published in:") }} {{ publishing_journal }}
-            {% endif %}
-          </small>
-
-          {# Versions info desktop/tablet #}
-          {% if record.versions.index > 1 %}
-            {% set num_versions = record.versions.index %}
-            {% set text_content = _("more versions exist for this record") %}
-            {% if num_versions == 2 %}
-              {% set text_content = _("more version exist for this record") %}
-            {% endif %}
-
-            <small class="computer tablet only">
-              <p>{{ record.versions.index - 1 }} {{ text_content }}</p>
-            </small>
-          {% endif %}
+          </div>
 
           {# Statistics #}
           {% set downloads = record.stats.all_versions.downloads %}
           {% set views = record.stats.all_versions.views %}
-          <small>
+          <small class="flex align-items-center">
             {% if views is defined %}
               <div class="ui transparent label stats-popup total-views" aria-label="{{ _('Total views') }}">
                 <i class="ui eye icon" aria-hidden="true"></i>
@@ -121,13 +127,6 @@
             {% endif %}
           </small>
         </div>
-
-        {# Versions info mobile #}
-        {% if record.versions.index > 1 %}
-          <small class="mobile only">
-            <p>{{ record.versions.index - 1 }} {{ text_content }}</p>
-          </small>
-      {% endif %}
       </div>
     </div>
   </li>
