@@ -13,6 +13,13 @@ body {
   }
 }
 
+h2, .ui.large.header,
+h3, .ui.medium.header,
+h4, .ui.small.header,
+h5, .ui.tiny.header {
+  font-weight: @semibold !important;
+}
+
 #invenio-nav {
   min-height: 96px;
 }

@@ -13,10 +13,12 @@
 {%- block record_files -%}
   {# record has files BUT passed files are empty. This happens when we display are request. #}
   {%- if record.files.enabled -%}
-    <section id="record-files" class="rel-mt-2"
-             aria-label="{{ _('Files') }}">
+    <section 
+      id="record-files" class="rel-mt-2 rel-mb-3"
+      aria-label="{{ _('Files') }}"
+    >
       {%- if permissions.can_read_files -%}
-        {# record has files AND user can see files #}
+        {# record has files AND user has permission to see files #}
         <h2 id="files-heading">{{ _('Files') }}</h2>
         {%- set files = files|order_entries %}
         {%- if record.files.enabled and (files is not defined or files|length == 0) -%}
@@ -34,28 +36,28 @@
           {{ file_list_box(files, record.id, is_preview, record) }}
         {% endif %}
       {% else %}
-        {# record has files BUT user cannot see files #}
-        <div class="pt-0">
-          <div class="ui accordion panel mb-10 {{ record.ui.access_status.id }}"
-               id="preview"
-               href="#collapsablePreview">
-            <div class="active title trigger panel-heading {{ record.ui.access_status.id }}">
+        {# record has files BUT user does not have permission to see files #}
+        <div 
+          class="ui accordion panel mb-10 {{ record.ui.access_status.id }}"
+          href="#collapsablePreview"
+        >
+          <h3 class="active title panel-heading {{ record.ui.access_status.id }} m-0">
+            <div role="button" id="files-preview-accordion-trigger" aria-controls="collapsablePreview" aria-expanded="true" tabindex="0" class="trigger">
               {{ _("Files") }}
-              <i class="angle right icon"></i>
+              <i class="angle right icon" aria-hidden="true"></i>
             </div>
-            <div id="collapsablePreview" class="active content pt-0">
-              <div class="ui {{ record.ui.access_status.message_class }} message file-box-message">
-                <i
-                        class="ui {{ record.ui.access_status.icon }} icon"></i><b>{{ record.ui.access_status.title_l10n }}</b>
-                <p>{{ record.ui.access_status.description_l10n }}</p>
+          </h3>
+          <div role="region" id="collapsablePreview" aria-labelledby="files-preview-accordion-trigger" class="active content pt-0">
+            <div class="ui {{ record.ui.access_status.message_class }} message file-box-message">
+              <i class="ui {{ record.ui.access_status.icon }} icon" aria-hidden="true"></i><b>{{ record.ui.access_status.title_l10n }}</b>
+              <p>{{ record.ui.access_status.description_l10n }}</p>
 
-                {% if record.access.embargo.reason %}
-                  <p>{{ _("Reason") }}: {{ record.access.embargo.reason }}</p>
-                {% endif %}
-                {% block record_files_access_request %}
-                  {{ super() }}
-                {% endblock record_files_access_request %}
-              </div>
+              {% if record.access.embargo.reason %}
+                <p>{{ _("Reason") }}: {{ record.access.embargo.reason }}</p>
+              {% endif %}
+              {% block record_files_access_request %}
+                {{ super() }}
+              {% endblock record_files_access_request %}
             </div>
           </div>
         </div>
