@@ -15,6 +15,7 @@ from invenio_requests import current_request_type_registry, current_requests_ser
 from invenio_requests.resolvers.registry import ResolverRegistry
 from invenio_search.engine import dsl
 
+from .community_manage_record import CommunityManageRecord
 from .record_upgrade import LegacyRecordUpgrade
 
 
@@ -74,6 +75,29 @@ def submit_record_upgrade_request(record, uow, comment=None):
         type_,
         receiver,
         topic=record,
+        expires_at=expires_at,
+        uow=uow,
+    )
+
+    # submit the request
+    return current_requests_service.execute_action(
+        system_identity, request_item._request.id, "submit", data=comment, uow=uow
+    )
+
+
+@unit_of_work()
+def submit_community_manage_record_request(user_id, uow, comment=None):
+    """Create and submit a CommunityManageRecord request."""
+    type_ = current_request_type_registry.lookup(CommunityManageRecord.type_id)
+    receiver = ResolverRegistry.resolve_entity_proxy({"user": user_id}).resolve()
+    expires_at = datetime.utcnow() + timedelta(weeks=20)
+
+    # create a request
+    request_item = current_requests_service.create(
+        system_identity,
+        {},
+        type_,
+        receiver,
         expires_at=expires_at,
         uow=uow,
     )
