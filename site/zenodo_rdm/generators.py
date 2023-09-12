@@ -11,7 +11,7 @@ from invenio_access import action_factory
 from invenio_access.permissions import Permission
 from invenio_rdm_records.services.generators import IfRestricted
 from invenio_records.dictutils import dict_lookup
-from invenio_records_permissions.generators import Generator
+from invenio_records_permissions.generators import ConditionalGenerator, Generator
 
 # these are defined here as there is a circular dependency otherwise with the
 # permissions.py file
@@ -52,3 +52,20 @@ class MediaFilesManager(Generator):
     def needs(self, **kwargs):
         """Enabling Needs."""
         return [media_files_management_action]
+
+
+class IfRecordManagementAllowedForCommunity(ConditionalGenerator):
+    """Conditional generator for community access to record management."""
+
+    def _condition(self, record, **kwargs):
+        """Check if community can manage the migrated record."""
+        if record is None:
+            return False
+        try:
+            can_community_manage_record = dict_lookup(
+                record.parent, "permission_flags.can_community_manage_record"
+            )
+        except KeyError:
+            can_community_manage_record = True
+
+        return can_community_manage_record
