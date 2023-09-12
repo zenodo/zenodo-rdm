@@ -1,0 +1,41 @@
+{# -*- coding: utf-8 -*-
+
+  This file is part of Invenio.
+  Copyright (C) 2023 CERN.
+
+  Invenio is free software; you can redistribute it and/or modify it
+  under the terms of the MIT License; see LICENSE file for more details.
+#}
+
+{#
+  Renders the Community manage record request details page.
+#}
+
+{% extends "invenio_requests/details/index.html" %}
+
+{% set active_dashboard_menu_item = 'requests' %}
+
+{%- block request_header %}
+  {% set back_button_url = url_for("invenio_app_rdm_users.requests") %}
+  {% from "invenio_requests/macros/request_header.html" import inclusion_request_header %}
+  {{ inclusion_request_header(
+      request=invenio_request,
+      accepted=request_is_accepted,
+      back_button_url=back_button_url,
+      back_button_text=_("Back to requests")
+    ) }}
+{%- endblock request_header %}
+
+{% block request_timeline %}
+  <div class="ui container rdm-tab-container fluid rel-pt-2 ml-0-mobile mr-0-mobile">
+    <div
+      class="ui bottom attached tab segment active borderless p-0"
+      data-tab="conversation"
+      role="tabpanel"
+      aria-labelledby="conversation-tab"
+      id="conversation-tab-panel"
+    >
+      {{ super() }}
+    </div>
+  </div>
+{% endblock request_timeline %}
