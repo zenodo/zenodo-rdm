@@ -13,23 +13,23 @@ from invenio_cache import current_cache
 
 
 def get_metrics(metric_id):
-    cached_data = current_cache.get(f"ZENODO_METRICS_CACHE::{metric_id}")
+    cached_data = current_cache.get(f"METRICS_CACHE::{metric_id}")
     if cached_data is not None:
         return cached_data
 
 
 def calculate_metrics(metric_id, cache=True):
     """Calculate a metric's result."""
-    result = deepcopy(current_app.config["ZENODO_METRICS_DATA"][metric_id])
+    result = deepcopy(current_app.config["METRICS_DATA"][metric_id])
 
     for metric in result:
         metric["value"] = metric["value"]()
 
     if cache:
         current_cache.set(
-            f"ZENODO_METRICS_CACHE::{metric_id}",
+            f"METRICS_CACHE::{metric_id}",
             result,
-            timeout=current_app.config["ZENODO_METRICS_CACHE_TIMEOUT"],
+            timeout=current_app.config["METRICS_CACHE_TIMEOUT"],
         )
 
     return result

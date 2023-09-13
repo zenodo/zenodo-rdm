@@ -24,7 +24,7 @@ class ZenodoMetrics(object):
     def init_config(app):
         """Initialize configuration."""
         for k in dir(config):
-            if k.startswith("ZENODO_METRICS"):
+            if k.startswith("METRICS"):
                 app.config.setdefault(k, getattr(config, k))
 
     def init_app(self, app):
@@ -35,4 +35,4 @@ class ZenodoMetrics(object):
     @property
     def metrics_start_date(self):
         """Get get metrics start date from config."""
-        return current_app.config["ZENODO_METRICS_START_DATE"]
+        return current_app.config["METRICS_START_DATE"]

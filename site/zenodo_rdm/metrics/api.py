@@ -86,9 +86,9 @@ class ZenodoMetric(object):
     @staticmethod
     def get_uptime():
         """Get Zenodo uptime."""
-        metrics = current_app.config["ZENODO_METRICS_UPTIME_ROBOT_METRIC_IDS"]
-        url = current_app.config["ZENODO_METRICS_UPTIME_ROBOT_URL"]
-        api_key = current_app.config["ZENODO_METRICS_UPTIME_ROBOT_API_KEY"]
+        metrics = current_app.config["METRICS_UPTIME_ROBOT_METRIC_IDS"]
+        url = current_app.config["METRICS_UPTIME_ROBOT_URL"]
+        api_key = current_app.config["METRICS_UPTIME_ROBOT_API_KEY"]
 
         end = datetime.utcnow().replace(
             day=1, hour=0, minute=0, second=0, microsecond=0
