@@ -35,7 +35,7 @@ class ZenodoMetric(object):
         search = (
             Search(
                 using=current_search_client,
-                index=build_alias_name("events-stats-file-download*"),
+                index=build_alias_name("stats-file-download"),
             )
             .filter(
                 "range",
