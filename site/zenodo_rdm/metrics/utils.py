@@ -13,7 +13,7 @@ from invenio_cache import current_cache
 
 
 def get_metrics(metric_id):
-    cached_data = current_cache.get("ZENODO_METRICS_CACHE::{}".format(metric_id))
+    cached_data = current_cache.get(f"ZENODO_METRICS_CACHE::{metric_id}")
     if cached_data is not None:
         return cached_data
 
@@ -27,7 +27,7 @@ def calculate_metrics(metric_id, cache=True):
 
     if cache:
         current_cache.set(
-            "ZENODO_METRICS_CACHE::{}".format(metric_id),
+            f"ZENODO_METRICS_CACHE::{metric_id}",
             result,
             timeout=current_app.config["ZENODO_METRICS_CACHE_TIMEOUT"],
         )

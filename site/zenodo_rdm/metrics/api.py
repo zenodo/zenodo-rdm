@@ -101,7 +101,7 @@ class ZenodoMetric(object):
             url,
             json={
                 "api_key": api_key,
-                "custom_uptime_ranges": "{}_{}".format(start_ts, end_ts),
+                "custom_uptime_ranges": f"{start_ts}_{end_ts}",
             },
         )
 

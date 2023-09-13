@@ -30,9 +30,7 @@ def metrics(metric_id):
     tasks.calculate_metrics.delay(metric_id)
     retry_after = current_app.config["ZENODO_METRICS_CACHE_UPDATE_INTERVAL"]
     return Response(
-        "Metrics not available. Try again after {}.".format(
-            humanize.naturaldelta(retry_after)
-        ),
+        f"Metrics not available. Try again after {humanize.naturaldelta(retry_after)}.",
         status=503,
         headers={"Retry-After": int(retry_after.total_seconds())},
     )
