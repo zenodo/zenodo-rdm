@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2022 CERN.
+# Copyright (C) 2023 CERN.
 #
-# Zenodo is free software; you can redistribute it and/or modify
+# ZenodoRDM is free software; you can redistribute it and/or modify
 # it under the terms of the MIT License; see LICENSE file for more details.
 
-"""ZenodoMetrics module."""
-
-from __future__ import absolute_import, print_function
+"""ZenodoRDM Metrics module."""
 
 from flask import current_app
 
@@ -26,15 +24,15 @@ class ZenodoMetrics(object):
     def init_config(app):
         """Initialize configuration."""
         for k in dir(config):
-            if k.startswith('ZENODO_METRICS'):
+            if k.startswith("ZENODO_METRICS"):
                 app.config.setdefault(k, getattr(config, k))
 
     def init_app(self, app):
         """Flask application initialization."""
         self.init_config(app)
-        app.extensions['zenodo-metrics'] = self
+        app.extensions["zenodo-metrics"] = self
 
     @property
     def metrics_start_date(self):
         """Get get metrics start date from config."""
-        return current_app.config['ZENODO_METRICS_START_DATE']
+        return current_app.config["ZENODO_METRICS_START_DATE"]
