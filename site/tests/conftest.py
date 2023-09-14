@@ -18,6 +18,7 @@ from invenio_administration.permissions import administration_access_action
 from invenio_app import factory as app_factory
 from invenio_communities import current_communities
 from invenio_communities.communities.records.api import Community
+from invenio_communities.generators import CommunityRoleNeed
 from invenio_pidstore.errors import PIDDoesNotExistError
 from invenio_rdm_records.cli import create_records_custom_field
 from invenio_rdm_records.services.pids import providers
@@ -809,10 +810,10 @@ def community2(running_app, community_type_record, community_owner, minimal_comm
 
 @pytest.fixture()
 def community_with_uploader_owner(
-    running_app, community_type_record, uploader, minimal_community
+    running_app, community_type_record, uploader, minimal_community2
 ):
     """Create a community with an uploader owner."""
-    return _community_get_or_create(minimal_community, uploader.identity)
+    return _community_get_or_create(minimal_community2, uploader.identity)
 
 
 @pytest.fixture(scope="module")
