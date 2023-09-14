@@ -57,3 +57,41 @@ class OAuthServerTokenCreateAction(TransformAction):
         }
 
         return result
+
+
+class OAuthServerTokenUpdateAction(TransformAction):
+    """Zenodo to RDM OAuth server update action."""
+
+    name = "oauth-server-token-update"
+    load_cls = load.OAuthServerTokenUpdateAction
+
+    @classmethod
+    def matches_action(cls, tx):
+        """Checks if the data corresponds with that required by the action."""
+        if len(tx.operations) < 1 or len(tx.operations) > 2:  # must be 1 or 2
+            return False
+
+        rules = {
+            "oauth2server_client": OperationType.UPDATE,
+            "oauth2server_token": OperationType.UPDATE,
+        }
+
+        for op in tx.operations:
+            rule = rules.pop(op["source"]["table"], None)
+            if not rule or rule != op["op"]:
+                return False
+
+        return True
+
+    def _transform_data(self):
+        """Transforms the data and returns dictionary."""
+        result = {"tx_id": self.tx.id}
+
+        for op in self.tx.operations:
+            if op["source"]["table"] == "oauth2server_client":
+                result["client"] = IdentityTransform()._transform(op["after"])
+
+            elif op["source"]["table"] == "oauth2server_token":
+                result["token"] = OAuthServerTokenTransform()._transform(op["after"])
+
+        return result
