@@ -17,6 +17,7 @@ from invenio_rdm_migrator.streams.actions import load
 
 from zenodo_rdm_migrator.actions.transform import (
     OAuthServerTokenCreateAction,
+    OAuthServerTokenDeleteAction,
     OAuthServerTokenUpdateAction,
 )
 
@@ -286,3 +287,92 @@ class TestOAuthServerTokenUpdateAction:
             )
         )
         assert isinstance(action.transform(), load.OAuthServerTokenUpdateAction)
+
+
+@pytest.fixture()
+def delete_oauth_server_token_tx(tx_files):
+    """Transaction data to delete an OAuth server token.
+
+    As it would be after the extraction step.
+    """
+    datafile = Path(__file__).parent / "testdata" / "delete.jsonl"
+    with open(datafile, "rb") as reader:
+        ops = [orjson.loads(line)["value"] for line in reader]
+
+    return {"tx_id": 1, "operations": ops}
+
+
+class TestOAuthServerTokenDeleteAction:
+    """Delete OAuth server token action tests."""
+
+    def test_matches_with_valid_data(self):
+        assert (
+            OAuthServerTokenDeleteAction.matches_action(
+                Tx(
+                    id=1,
+                    operations=[
+                        {
+                            "op": OperationType.DELETE,
+                            "source": {"table": "oauth2server_token"},
+                            "after": {},
+                        }
+                    ],
+                )
+            )
+            is True
+        )
+
+    def test_matches_with_invalid_data(self):
+        empty = []
+
+        w_client = [
+            {
+                "op": OperationType.DELETE,
+                "source": {"table": "oauth2server_client"},
+                "after": {},
+            },
+            {
+                "op": OperationType.DELETE,
+                "source": {"table": "oauth2server_token"},
+                "after": {},
+            },
+        ]
+
+        no_token = [
+            {
+                "op": OperationType.DELETE,
+                "source": {"table": "oauth2server_client"},
+                "after": {},
+            },
+        ]
+
+        extra_op = [
+            {
+                "op": OperationType.DELETE,
+                "source": {"table": "oauth2server_token"},
+                "after": {},
+            },
+            {"op": OperationType.INSERT, "source": {"table": "another"}, "after": {}},
+        ]
+
+        for invalid_ops in [
+            empty,
+            w_client,
+            no_token,
+            extra_op,
+        ]:
+            assert (
+                OAuthServerTokenDeleteAction.matches_action(
+                    Tx(id=1, operations=invalid_ops)
+                )
+                is False
+            )
+
+    def test_transform_with_valid_data(self, delete_oauth_server_token_tx):
+        action = OAuthServerTokenDeleteAction(
+            Tx(
+                id=delete_oauth_server_token_tx["tx_id"],
+                operations=delete_oauth_server_token_tx["operations"],
+            )
+        )
+        assert isinstance(action.transform(), load.OAuthServerTokenDeleteAction)

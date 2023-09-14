@@ -81,3 +81,17 @@ def test_community_create_action_stream(
 
     token = db_client_server.scalars(sa.select(ServerToken)).one()
     assert token._scopes == ""
+
+
+def test_community_create_action_stream(
+    db_client_server, pg_tx_load, test_extract_cls, tx_files
+):
+    stream = Stream(
+        name="action",
+        extract=test_extract_cls(tx_files["delete"]),
+        transform=ZenodoTxTransform(),
+        load=pg_tx_load,
+    )
+    stream.run()
+
+    assert not db_client_server.scalars(sa.select(ServerToken)).one_or_none()

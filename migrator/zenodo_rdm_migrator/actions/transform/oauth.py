@@ -95,3 +95,32 @@ class OAuthServerTokenUpdateAction(TransformAction):
                 result["token"] = OAuthServerTokenTransform()._transform(op["after"])
 
         return result
+
+
+class OAuthServerTokenDeleteAction(TransformAction):
+    """Zenodo to RDM OAuth server delete action."""
+
+    name = "oauth-server-token-delete"
+    load_cls = load.OAuthServerTokenDeleteAction
+
+    @classmethod
+    def matches_action(cls, tx):
+        """Checks if the data corresponds with that required by the action."""
+        if len(tx.operations) != 1:
+            return False
+
+        op = tx.operations[0]
+
+        return (
+            op["source"]["table"] == "oauth2server_token"
+            and op["op"] == OperationType.DELETE
+        )
+
+    def _transform_data(self):
+        """Transforms the data and returns dictionary."""
+        op = self.tx.operations[0]
+
+        return {
+            "tx_id": self.tx.id,
+            "token": OAuthServerTokenTransform()._transform(op["before"]),
+        }
