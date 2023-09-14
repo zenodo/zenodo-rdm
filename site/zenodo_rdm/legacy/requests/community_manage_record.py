@@ -143,7 +143,7 @@ class DeclineAction(actions.DeclineAction):
                 legacy_record["parent"].get("communities", None).get("ids", None)
             )
             if communities is not None:
-                not_my_communities = []
+                my_communities = []
                 for community_id in communities:
                     com_members = current_communities.service.members.search(
                         system_identity,
@@ -151,13 +151,15 @@ class DeclineAction(actions.DeclineAction):
                         extra_filter=dsl.query.Bool(
                             "must",
                             must=[
-                                dsl.Q("term", **{"role": "owner"}),
-                                ~dsl.Q("term", **{"user_id": current_user.id}),
+                                dsl.Q("term", **{"role": "owner"})
+                                | dsl.Q("term", **{"role": "curator"}),
+                                dsl.Q("term", **{"user_id": current_user.id}),
                             ],
                         ),
                     )
                     if com_members.total > 0:
-                        not_my_communities.append(community_id)
+                        my_communities.append(community_id)
+                not_my_communities = list(set(communities) - set(my_communities))
                 _remove_record_from_communities(record, not_my_communities)
             _remove_permission_flag(record, uow)
 
