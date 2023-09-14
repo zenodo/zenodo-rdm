@@ -9,7 +9,7 @@
 
 import arrow
 from flask import current_app, url_for
-from invenio_communities.models import Community
+from invenio_communities.communities.records.models import CommunityMetadata
 from invenio_db import db
 from invenio_pidstore.models import PersistentIdentifier, PIDStatus
 from invenio_records.models import RecordMetadata
@@ -52,7 +52,7 @@ def records_generator():
 
 def communities_generator():
     """Generate the communities links."""
-    q = Community.query.filter(Community.deleted_at.is_(None))
+    q = CommunityMetadata.query.filter(CommunityMetadata.is_deleted.is_(False))
     scheme = current_app.config["ZENODO_SITEMAP_URL_SCHEME"]
     for comm in q.yield_per(1000):
         for endpoint in "detail", "search", "about":
