@@ -2,57 +2,65 @@
   - name: Universitat Bielefeld
   family_name: Schirrwagen
   given_name: Jochen
+  id: 0000-0002-0458-1004
   identifiers:
-  - identifier: https://orcid.org/0000-0002-0458-1004
+  - identifier: 0000-0002-0458-1004
     scheme: orcid
 - affiliations: []
   family_name: Baglioni
   given_name: Miriam
+  id: 0000-0002-2273-9004
   identifiers:
-  - identifier: https://orcid.org/0000-0002-2273-9004
+  - identifier: 0000-0002-2273-9004
     scheme: orcid
 - affiliations:
   - name: Consiglio Nazionale delle Ricerche
   family_name: De Bonis
   given_name: Michele
+  id: 0000-0003-2347-6012
   identifiers:
-  - identifier: https://orcid.org/0000-0003-2347-6012
+  - identifier: 0000-0003-2347-6012
     scheme: orcid
 - affiliations:
   - name: University of Zagreb Faculty of Humanities and Social Sciences
   family_name: "Melin\u0161\u010Dak Zlodi"
   given_name: Iva
+  id: 0000-0001-6477-2016
   identifiers:
-  - identifier: https://orcid.org/0000-0001-6477-2016
+  - identifier: 0000-0001-6477-2016
     scheme: orcid
 - affiliations:
   - name: the Netherlands eScience Center
   family_name: Kuzak
   given_name: Mateusz
+  id: 0000-0003-0087-6021
   identifiers:
-  - identifier: https://orcid.org/0000-0003-0087-6021
+  - identifier: 0000-0003-0087-6021
     scheme: orcid
 - affiliations:
   - name: University College London
   - name: Mapping for Change
   family_name: Haklay
   given_name: Mordechai
+  id: 0000-0001-6117-3026
   identifiers:
-  - identifier: https://orcid.org/0000-0001-6117-3026
+  - identifier: 0000-0001-6117-3026
     scheme: orcid
 - affiliations:
   - name: Know-Center GmbH
   family_name: Ross-Hellauer
   given_name: Tony
+  id: 0000-0003-4470-7027
   identifiers:
-  - identifier: https://orcid.org/0000-0003-4470-7027
+  - identifier: 0000-0003-4470-7027
     scheme: orcid
 - affiliations:
   - name: University of Strathclyde
   family_name: de Castro
   given_name: Pablo
+  id: 0000-0001-6300-1033
   identifiers:
-  - identifier: https://orcid.org/0000-0001-6300-1033
+  - identifier: 0000-0001-6300-1033
     scheme: orcid
 - affiliations:
   - name: Hellenic Naval Academy
@@ -60,21 +68,24 @@
   - name: Biomedical Sciences Research Center Alexander Fleming
   family_name: Dimopoulos
   given_name: Alexandros
+  id: 0000-0002-4602-2040
   identifiers:
-  - identifier: https://orcid.org/0000-0002-4602-2040
+  - identifier: 0000-0002-4602-2040
     scheme: orcid
 - affiliations:
   - name: "Universit\xE4t Bielefeld Universit\xE4tsbibliothek Bielefeld"
   family_name: "B\xE4cker"
   given_name: Amelie
+  id: 0000-0001-6015-2063
   identifiers:
-  - identifier: https://orcid.org/0000-0001-6015-2063
+  - identifier: 0000-0001-6015-2063
     scheme: orcid
 - affiliations: []
   family_name: Manola
   given_name: Natalia
+  id: 0000-0002-3477-3082
   identifiers:
-  - identifier: https://orcid.org/0000-0002-3477-3082
+  - identifier: 0000-0002-3477-3082
     scheme: orcid
 - affiliations:
   - name: University of Macau
@@ -82,137 +93,156 @@
   - name: Vienna University of Economics and Business
   family_name: Scherngell
   given_name: Thomas
+  id: 0000-0003-4592-4103
   identifiers:
-  - identifier: https://orcid.org/0000-0003-4592-4103
+  - identifier: 0000-0003-4592-4103
     scheme: orcid
 - affiliations:
   - name: European Organization for Nuclear Research
   family_name: Smith
   given_name: Tim
+  id: 0000-0002-1567-7116
   identifiers:
-  - identifier: https://orcid.org/0000-0002-1567-7116
+  - identifier: 0000-0002-1567-7116
     scheme: orcid
 - affiliations:
   - name: British Library
   family_name: Madden
   given_name: Frances
+  id: 0000-0002-5432-6116
   identifiers:
-  - identifier: https://orcid.org/0000-0002-5432-6116
+  - identifier: 0000-0002-5432-6116
     scheme: orcid
 - affiliations:
   - name: University of Glasgow
   family_name: Jones
   given_name: Sarah
+  id: 0000-0002-5094-7126
   identifiers:
-  - identifier: https://orcid.org/0000-0002-5094-7126
+  - identifier: 0000-0002-5094-7126
     scheme: orcid
 - affiliations:
   - name: Athena Research and Innovation Center in Information Communication and Knowledge
       Technologies
   family_name: Pierrakos
   given_name: Dimitrios
+  id: 0000-0001-6788-4128
   identifiers:
-  - identifier: https://orcid.org/0000-0001-6788-4128
+  - identifier: 0000-0001-6788-4128
     scheme: orcid
 - affiliations:
   - name: Athena Research Center
   family_name: Vergoulis
   given_name: Thanasis
+  id: 0000-0003-0555-4128
   identifiers:
-  - identifier: https://orcid.org/0000-0003-0555-4128
+  - identifier: 0000-0003-0555-4128
     scheme: orcid
 - affiliations:
   - name: The University of Manchester
   - name: "Universit\xE9 Paris-Est Marne-la-Vall\xE9e"
   family_name: Laredo
   given_name: Philippe
+  id: 0000-0002-5014-9132
   identifiers:
-  - identifier: https://orcid.org/0000-0002-5014-9132
+  - identifier: 0000-0002-5014-9132
     scheme: orcid
 - affiliations: []
   family_name: Gurdal
   given_name: Gultekin
+  id: 0000-0001-7259-8134
   identifiers:
-  - identifier: https://orcid.org/0000-0001-7259-8134
+  - identifier: 0000-0001-7259-8134
     scheme: orcid
 - affiliations:
   - name: Consiglio Nazionale delle Ricerche
   family_name: Pavone
   given_name: Gina
+  id: 0000-0003-0087-2151
   identifiers:
-  - identifier: https://orcid.org/0000-0003-0087-2151
+  - identifier: 0000-0003-0087-2151
     scheme: orcid
 - affiliations:
   - name: Istituto per le Risorse Biologiche e le Biotecnologie Marine Consiglio Nazionale
       delle Ricerche Sede Ancona
   family_name: Minelli
   given_name: Annalisa
+  id: 0000-0003-1772-0154
   identifiers:
-  - identifier: https://orcid.org/0000-0003-1772-0154
+  - identifier: 0000-0003-1772-0154
     scheme: orcid
 - affiliations:
   - name: Instytut Chemii Bioorganicznej
   family_name: Plociennik
   given_name: Marcin
+  id: 0000-0002-2355-2161
   identifiers:
-  - identifier: https://orcid.org/0000-0002-2355-2161
+  - identifier: 0000-0002-2355-2161
     scheme: orcid
 - affiliations: []
   family_name: Simeonov
   given_name: Georgi
+  id: 0000-0003-1198-7165
   identifiers:
-  - identifier: https://orcid.org/0000-0003-1198-7165
+  - identifier: 0000-0003-1198-7165
     scheme: orcid
 - affiliations:
   - name: Bielefeld University
   family_name: Czerniak
   given_name: Andreas
+  id: 0000-0003-3883-4169
   identifiers:
-  - identifier: https://orcid.org/0000-0003-3883-4169
+  - identifier: 0000-0003-3883-4169
     scheme: orcid
 - affiliations:
   - name: "Ru\u0111er Bo\u0161kovi\u0107 Institute"
   family_name: Macan
   given_name: Bojan
+  id: 0000-0003-1138-4188
   identifiers:
-  - identifier: https://orcid.org/0000-0003-1138-4188
+  - identifier: 0000-0003-1138-4188
     scheme: orcid
 - affiliations:
   - name: Universidade do Minho
   family_name: "Pr\xEDncipe"
   given_name: Pedro
+  id: 0000-0002-8588-4196
   identifiers:
-  - identifier: https://orcid.org/0000-0002-8588-4196
+  - identifier: 0000-0002-8588-4196
     scheme: orcid
 - affiliations:
   - name: SURF
   - name: Universiteit Leiden
   family_name: Tatum
   given_name: Clifford
+  id: 0000-0002-2212-3197
   identifiers:
-  - identifier: https://orcid.org/0000-0002-2212-3197
+  - identifier: 0000-0002-2212-3197
     scheme: orcid
 - affiliations:
   - name: European Bioinformatics Institute
   family_name: PESANT
   given_name: "St\xE9phane"
+  id: 0000-0002-4936-5209
   identifiers:
-  - identifier: https://orcid.org/0000-0002-4936-5209
+  - identifier: 0000-0002-4936-5209
     scheme: orcid
 - affiliations:
   - name: Stichting LIBER
   family_name: Kalaitzi
   given_name: Vasso
+  id: 0000-0001-8337-120X
   identifiers:
-  - identifier: https://orcid.org/0000-0001-8337-120X
+  - identifier: 0000-0001-8337-120X
     scheme: orcid
 - affiliations:
   - name: OpenAIRE AMKE
   - name: Consiglio Nazionale delle Ricerche
   family_name: Manghi
   given_name: Paolo
+  id: 0000-0001-7291-3210
   identifiers:
-  - identifier: https://orcid.org/0000-0001-7291-3210
+  - identifier: 0000-0001-7291-3210
     scheme: orcid
 - affiliations:
   - name: Communication & Information Technologies Experts S.A.
@@ -220,8 +250,9 @@
       Technologies
   family_name: Kakaletris
   given_name: Georgios
+  id: 0000-0002-2095-1220
   identifiers:
-  - identifier: https://orcid.org/0000-0002-2095-1220
+  - identifier: 0000-0002-2095-1220
     scheme: orcid
 - affiliations:
   - name: University of Rijeka
@@ -229,696 +260,797 @@
   - name: Institut Ruder Boskovic
   family_name: Stojanovski
   given_name: Jadranka
+  id: 0000-0001-7399-522X
   identifiers:
-  - identifier: https://orcid.org/0000-0001-7399-522X
+  - identifier: 0000-0001-7399-522X
     scheme: orcid
 - affiliations:
   - name: Royal Netherlands Academy of Arts & Sciences (KNAW)
   - name: Data Archiving and Networked Services
   family_name: Grootveld
   given_name: Marjan
+  id: 0000-0002-2789-322X
   identifiers:
-  - identifier: https://orcid.org/0000-0002-2789-322X
+  - identifier: 0000-0002-2789-322X
     scheme: orcid
 - affiliations:
   - name: "Nieders\xE4chsische Staats- und Universit\xE4tsbibliothek G\xF6ttingen"
   - name: Directory of Open Access Journals
   family_name: Fava
   given_name: Ilaria
+  id: 0000-0002-0298-0239
   identifiers:
-  - identifier: https://orcid.org/0000-0002-0298-0239
+  - identifier: 0000-0002-0298-0239
     scheme: orcid
 - affiliations:
   - name: Athena Research and Innovation Center
   family_name: Kokogiannaki
   given_name: Argiro
+  id: 0000-0002-3880-0244
   identifiers:
-  - identifier: https://orcid.org/0000-0002-3880-0244
+  - identifier: 0000-0002-3880-0244
     scheme: orcid
 - affiliations:
   - name: Consiglio Nazionale delle Ricerche Area della Ricerca di Pisa
   family_name: La Bruzzo
   given_name: Sandro
+  id: 0000-0003-2855-1245
   identifiers:
-  - identifier: https://orcid.org/0000-0003-2855-1245
+  - identifier: 0000-0003-2855-1245
     scheme: orcid
 - affiliations:
   - name: CSC - IT Center for Science (Finland)
   family_name: Rauste
   given_name: "P\xE4ivi"
+  id: 0000-0001-8315-5259
   identifiers:
-  - identifier: https://orcid.org/0000-0001-8315-5259
+  - identifier: 0000-0001-8315-5259
     scheme: orcid
 - affiliations:
   - name: Simon Fraser University
   family_name: Stranack
   given_name: Kevin
+  id: 0000-0001-8790-427X
   identifiers:
-  - identifier: https://orcid.org/0000-0001-8790-427X
+  - identifier: 0000-0001-8790-427X
     scheme: orcid
 - affiliations: []
   family_name: ARTINI
   given_name: MICHELE
+  id: 0000-0002-4406-428X
   identifiers:
-  - identifier: https://orcid.org/0000-0002-4406-428X
+  - identifier: 0000-0002-4406-428X
     scheme: orcid
 - affiliations:
   - name: Istituto di scienza e tecnologie dell'informazione Alessandro Faedo
   family_name: Bardi
   given_name: Alessia
+  id: 0000-0002-1112-1292
   identifiers:
-  - identifier: https://orcid.org/0000-0002-1112-1292
+  - identifier: 0000-0002-1112-1292
     scheme: orcid
 - affiliations: []
   family_name: rettberg
   given_name: najla
+  id: 0000-0003-1888-2294
   identifiers:
-  - identifier: https://orcid.org/0000-0003-1888-2294
+  - identifier: 0000-0003-1888-2294
     scheme: orcid
 - affiliations:
   - name: "Universidad Aut\xF3noma del Estado de M\xE9xico"
   family_name: "Becerril-Garc\xEDa"
   given_name: Arianna
+  id: 0000-0003-0278-8295
   identifiers:
-  - identifier: https://orcid.org/0000-0003-0278-8295
+  - identifier: 0000-0003-0278-8295
     scheme: orcid
 - affiliations:
   - name: University of Bologna
   family_name: Peroni
   given_name: Silvio
+  id: 0000-0003-0530-4305
   identifiers:
-  - identifier: https://orcid.org/0000-0003-0530-4305
+  - identifier: 0000-0003-0530-4305
     scheme: orcid
 - affiliations:
   - name: University of Minho
   family_name: Moura
   given_name: Paula
+  id: 0000-0002-0573-4308
   identifiers:
-  - identifier: https://orcid.org/0000-0002-0573-4308
+  - identifier: 0000-0002-0573-4308
     scheme: orcid
 - affiliations:
   - name: Dalhousie University
   family_name: Guibault
   given_name: Lucie
+  id: 0000-0002-9530-9312
   identifiers:
-  - identifier: https://orcid.org/0000-0002-9530-9312
+  - identifier: 0000-0002-9530-9312
     scheme: orcid
 - affiliations:
   - name: Research Consulting
   family_name: Chiarelli
   given_name: Andrea
+  id: 0000-0001-7336-8330
   identifiers:
-  - identifier: https://orcid.org/0000-0001-7336-8330
+  - identifier: 0000-0001-7336-8330
     scheme: orcid
 - affiliations: []
   family_name: Angelaki
   given_name: Marina
+  id: 0000-0002-9921-8338
   identifiers:
-  - identifier: https://orcid.org/0000-0002-9921-8338
+  - identifier: 0000-0002-9921-8338
     scheme: orcid
 - affiliations:
   - name: "Universit\xE4t Bielefeld"
   family_name: Pieper
   given_name: Dirk
+  id: 0000-0002-6083-9348
   identifiers:
-  - identifier: https://orcid.org/0000-0002-6083-9348
+  - identifier: 0000-0002-6083-9348
     scheme: orcid
 - affiliations:
   - name: Bielefeld University
   family_name: Summann
   given_name: Friedrich
+  id: 0000-0002-6297-3348
   identifiers:
-  - identifier: https://orcid.org/0000-0002-6297-3348
+  - identifier: 0000-0002-6297-3348
     scheme: orcid
 - affiliations:
   - name: Delft University of Technology
   - name: TU Delft
   family_name: Plomp
   given_name: Esther
+  id: 0000-0003-3625-1357
   identifiers:
-  - identifier: https://orcid.org/0000-0003-3625-1357
+  - identifier: 0000-0003-3625-1357
     scheme: orcid
 - affiliations: []
   family_name: Dillo
   given_name: Ingrid
+  id: 0000-0001-5654-2392
   identifiers:
-  - identifier: https://orcid.org/0000-0001-5654-2392
+  - identifier: 0000-0001-5654-2392
     scheme: orcid
 - affiliations:
   - name: "Canadian Research Knowledge Network (CRKN) / R\xE9seau canadien de documentation\
       \ pour la recherche (RCDR)"
   family_name: Friedman
   given_name: Jason
+  id: 0000-0001-8478-8402
   identifiers:
-  - identifier: https://orcid.org/0000-0001-8478-8402
+  - identifier: 0000-0001-8478-8402
     scheme: orcid
 - affiliations: []
   family_name: Ioannidis
   given_name: Alex
+  id: 0000-0002-5082-6404
   identifiers:
-  - identifier: https://orcid.org/0000-0002-5082-6404
+  - identifier: 0000-0002-5082-6404
     scheme: orcid
 - affiliations:
   - name: EGI Foundation
   family_name: Ferrari
   given_name: Tiziana
+  id: 0000-0003-3425-1409
   identifiers:
-  - identifier: https://orcid.org/0000-0003-3425-1409
+  - identifier: 0000-0003-3425-1409
     scheme: orcid
 - affiliations:
   - name: Netherlands eScience Center
   family_name: de Jong
   given_name: Maaike
+  id: 0000-0003-4803-7411
   identifiers:
-  - identifier: https://orcid.org/0000-0003-4803-7411
+  - identifier: 0000-0003-4803-7411
     scheme: orcid
 - affiliations:
   - name: University of Debrecen
   family_name: Fazekas-Paragh
   given_name: Judit Eva
+  id: 0000-0003-0364-2423
   identifiers:
-  - identifier: https://orcid.org/0000-0003-0364-2423
+  - identifier: 0000-0003-0364-2423
     scheme: orcid
 - affiliations:
   - name: Koninklijke Nederlandse Akademie van Wetenschappen
   family_name: Hof
   given_name: Cees
+  id: 0000-0001-9624-2431
   identifiers:
-  - identifier: https://orcid.org/0000-0001-9624-2431
+  - identifier: 0000-0001-9624-2431
     scheme: orcid
 - affiliations:
   - name: Stichting eIFL.net (EIFL)
   family_name: Kuchma
   given_name: Iryna
+  id: 0000-0002-2064-3439
   identifiers:
-  - identifier: https://orcid.org/0000-0002-2064-3439
+  - identifier: 0000-0002-2064-3439
     scheme: orcid
 - affiliations:
   - name: University of Minho
   - name: "Instituto Portugu\xEAs de Administra\xE7\xE3o de Marketing"
   family_name: Vieira
   given_name: "Andr\xE9"
+  id: 0000-0002-4302-645X
   identifiers:
-  - identifier: https://orcid.org/0000-0002-4302-645X
+  - identifier: 0000-0002-4302-645X
     scheme: orcid
 - affiliations: []
   family_name: Jahn
   given_name: Najko
+  id: 0000-0001-5105-1463
   identifiers:
-  - identifier: https://orcid.org/0000-0001-5105-1463
+  - identifier: 0000-0001-5105-1463
     scheme: orcid
 - affiliations:
   - name: Cranfield University
   family_name: Needham
   given_name: Paul
+  id: 0000-0001-9771-3469
   identifiers:
-  - identifier: https://orcid.org/0000-0001-9771-3469
+  - identifier: 0000-0001-9771-3469
     scheme: orcid
 - affiliations:
   - name: Consortium GARR
   - name: Consiglio Nazionale delle Ricerche
   family_name: Lazzeri
   given_name: Emma
+  id: 0000-0003-0506-046X
   identifiers:
-  - identifier: https://orcid.org/0000-0003-0506-046X
+  - identifier: 0000-0003-0506-046X
     scheme: orcid
 - affiliations:
   - name: European Organization for Nuclear Research
   family_name: Nielsen
   given_name: Lars Holm
+  id: 0000-0001-8135-3489
   identifiers:
-  - identifier: https://orcid.org/0000-0001-8135-3489
+  - identifier: 0000-0001-8135-3489
     scheme: orcid
 - affiliations:
   - name: Couperin
   family_name: Dazy
   given_name: "Andr\xE9"
+  id: 0000-0002-1353-3493
   identifiers:
-  - identifier: https://orcid.org/0000-0002-1353-3493
+  - identifier: 0000-0002-1353-3493
     scheme: orcid
 - affiliations:
   - name: CNR - IREA
   family_name: Casu
   given_name: Francesco
+  id: 0000-0001-8555-6494
   identifiers:
-  - identifier: https://orcid.org/0000-0001-8555-6494
+  - identifier: 0000-0001-8555-6494
     scheme: orcid
 - affiliations:
   - name: Web2Learn
   family_name: Zourou
   given_name: Katerina
+  id: 0000-0002-3679-3503
   identifiers:
-  - identifier: https://orcid.org/0000-0002-3679-3503
+  - identifier: 0000-0002-3679-3503
     scheme: orcid
 - affiliations: []
   family_name: Papadopoulou
   given_name: Elli
+  id: 0000-0002-0893-8509
   identifiers:
-  - identifier: https://orcid.org/0000-0002-0893-8509
+  - identifier: 0000-0002-0893-8509
     scheme: orcid
 - affiliations:
   - name: McMaster University
   family_name: Mircea
   given_name: Gabriela
+  id: 0000-0003-1800-1522
   identifiers:
-  - identifier: https://orcid.org/0000-0003-1800-1522
+  - identifier: 0000-0003-1800-1522
     scheme: orcid
 - affiliations:
   - name: Czech Technical University
   - name: Charles University in Prague
   family_name: "Dvo\u0159\xE1k"
   given_name: Jan
+  id: 0000-0001-8985-152X
   identifiers:
-  - identifier: https://orcid.org/0000-0001-8985-152X
+  - identifier: 0000-0001-8985-152X
     scheme: orcid
 - affiliations: []
   family_name: manunta
   given_name: michele
+  id: 0000-0002-7245-1551
   identifiers:
-  - identifier: https://orcid.org/0000-0002-7245-1551
+  - identifier: 0000-0002-7245-1551
     scheme: orcid
 - affiliations:
   - name: Data Archiving and Networked Services
   family_name: Leenarts
   given_name: Ellen
+  id: 0000-0002-5589-756X
   identifiers:
-  - identifier: https://orcid.org/0000-0002-5589-756X
+  - identifier: 0000-0002-5589-756X
     scheme: orcid
 - affiliations:
   - name: Creative Commons
   - name: Stichting eIFLnet
   family_name: Franck
   given_name: Gwen
+  id: 0000-0002-9719-0570
   identifiers:
-  - identifier: https://orcid.org/0000-0002-9719-0570
+  - identifier: 0000-0002-9719-0570
     scheme: orcid
 - affiliations:
   - name: "Universit\xE4t Bielefeld"
   family_name: Broschinski
   given_name: Christoph
+  id: 0000-0003-1972-7587
   identifiers:
-  - identifier: https://orcid.org/0000-0003-1972-7587
+  - identifier: 0000-0003-1972-7587
     scheme: orcid
 - affiliations: []
   family_name: Koers
   given_name: Hylke
+  id: 0000-0001-6538-7590
   identifiers:
-  - identifier: https://orcid.org/0000-0001-6538-7590
+  - identifier: 0000-0001-6538-7590
     scheme: orcid
 - affiliations:
   - name: The University of Edinburgh
   family_name: Delipalta
   given_name: Alexandra
+  id: 0000-0002-9947-0592
   identifiers:
-  - identifier: https://orcid.org/0000-0002-9947-0592
+  - identifier: 0000-0002-9947-0592
     scheme: orcid
 - affiliations: []
   family_name: Matas
   given_name: "Lautaro Juli\xE1n"
+  id: 0000-0003-0272-1592
   identifiers:
-  - identifier: https://orcid.org/0000-0003-0272-1592
+  - identifier: 0000-0003-0272-1592
     scheme: orcid
 - affiliations:
   - name: Delft University of Technology
   - name: Technische Universiteit Delft
   family_name: Teperek
   given_name: Marta
+  id: 0000-0001-8520-5598
   identifiers:
-  - identifier: https://orcid.org/0000-0001-8520-5598
+  - identifier: 0000-0001-8520-5598
     scheme: orcid
 - affiliations:
   - name: Universiteit Gent
   family_name: Van Nieuwerburgh
   given_name: Inge
+  id: 0000-0002-7285-1598
   identifiers:
-  - identifier: https://orcid.org/0000-0002-7285-1598
+  - identifier: 0000-0002-7285-1598
     scheme: orcid
 - affiliations: []
   family_name: "Mart\xEDn Hern\xE1ndez"
   given_name: "Iv\xE1n"
+  id: 0000-0003-4127-6604
   identifiers:
-  - identifier: https://orcid.org/0000-0003-4127-6604
+  - identifier: 0000-0003-4127-6604
     scheme: orcid
 - affiliations:
   - name: Data Archiving and Networked Services
   family_name: van Horik
   given_name: "Ren\xE9"
+  id: 0000-0001-6899-760X
   identifiers:
-  - identifier: https://orcid.org/0000-0001-6899-760X
+  - identifier: 0000-0001-6899-760X
     scheme: orcid
 - affiliations: []
   family_name: "Hellstr\xF6m"
   given_name: Margareta
+  id: 0000-0002-4154-2610
   identifiers:
-  - identifier: https://orcid.org/0000-0002-4154-2610
+  - identifier: 0000-0002-4154-2610
     scheme: orcid
 - affiliations: []
   family_name: Tziotzios
   given_name: Diamantis
+  id: 0000-0003-1670-4611
   identifiers:
-  - identifier: https://orcid.org/0000-0003-1670-4611
+  - identifier: 0000-0003-1670-4611
     scheme: orcid
 - affiliations:
   - name: "Universit\xE9 du Luxembourg"
   family_name: England
   given_name: Jonathan
+  id: 0000-0001-6715-8628
   identifiers:
-  - identifier: https://orcid.org/0000-0001-6715-8628
+  - identifier: 0000-0001-6715-8628
     scheme: orcid
 - affiliations: []
   family_name: Marek
   given_name: "Ji\u0159\xED"
+  id: 0000-0003-2132-762X
   identifiers:
-  - identifier: https://orcid.org/0000-0003-2132-762X
+  - identifier: 0000-0003-2132-762X
     scheme: orcid
 - affiliations:
   - name: 4Science
   family_name: Mornati
   given_name: Susanna
+  id: 0000-0001-9931-3637
   identifiers:
-  - identifier: https://orcid.org/0000-0001-9931-3637
+  - identifier: 0000-0001-9931-3637
     scheme: orcid
 - affiliations:
   - name: Istituto di scienza e tecnologie dell'informazione Alessandro Faedo
   family_name: Atzori
   given_name: Claudio
+  id: 0000-0001-9613-6639
   identifiers:
-  - identifier: https://orcid.org/0000-0001-9613-6639
+  - identifier: 0000-0001-9613-6639
     scheme: orcid
 - affiliations:
   - name: Stichting LIBER
   family_name: Yankelevich
   given_name: Tatsiana
+  id: 0000-0002-7203-9671
   identifiers:
-  - identifier: https://orcid.org/0000-0002-7203-9671
+  - identifier: 0000-0002-7203-9671
     scheme: orcid
 - affiliations:
   - name: Utrecht University
   family_name: Huigen
   given_name: Frans
+  id: 0000-0002-9482-7679
   identifiers:
-  - identifier: https://orcid.org/0000-0002-9482-7679
+  - identifier: 0000-0002-9482-7679
     scheme: orcid
 - affiliations: []
   family_name: "T\xF3th-Czifra"
   given_name: "Erzs\xE9bet"
+  id: 0000-0002-5350-067X
   identifiers:
-  - identifier: https://orcid.org/0000-0002-5350-067X
+  - identifier: 0000-0002-5350-067X
     scheme: orcid
 - affiliations:
   - name: "Forschungszentrum J\xFClich GmbH"
   family_name: Petzold
   given_name: Andreas
+  id: 0000-0002-2504-1680
   identifiers:
-  - identifier: https://orcid.org/0000-0002-2504-1680
+  - identifier: 0000-0002-2504-1680
     scheme: orcid
 - affiliations:
   - name: Universidade do Minho
   family_name: Rodrigues
   given_name: Eloy
+  id: 0000-0002-7862-2681
   identifiers:
-  - identifier: https://orcid.org/0000-0002-7862-2681
+  - identifier: 0000-0002-7862-2681
     scheme: orcid
 - affiliations:
   - name: University of Helsinki
   family_name: Asmi
   given_name: Ari
+  id: 0000-0003-3933-4684
   identifiers:
-  - identifier: https://orcid.org/0000-0003-3933-4684
+  - identifier: 0000-0003-3933-4684
     scheme: orcid
 - affiliations:
   - name: University Of Edinburgh
   family_name: Venkataraman
   given_name: Shanmugasundaram
+  id: 0000-0002-3200-2698
   identifiers:
-  - identifier: https://orcid.org/0000-0002-3200-2698
+  - identifier: 0000-0002-3200-2698
     scheme: orcid
 - affiliations:
   - name: ESRF-The European Synchrotron
   - name: "Universit\xE9 Grenoble Alpes"
   family_name: Favre-Nicolin
   given_name: Vincent
+  id: 0000-0003-0801-6712
   identifiers:
-  - identifier: https://orcid.org/0000-0003-0801-6712
+  - identifier: 0000-0003-0801-6712
     scheme: orcid
 - affiliations:
   - name: Data Archiving and Networked Services
   family_name: Coen
   given_name: Gerard Peter
+  id: 0000-0001-9915-9721
   identifiers:
-  - identifier: https://orcid.org/0000-0001-9915-9721
+  - identifier: 0000-0001-9915-9721
     scheme: orcid
 - affiliations:
   - name: University of Oslo
   family_name: Jensenius
   given_name: Alexander Refsum
+  id: 0000-0001-6171-8743
   identifiers:
-  - identifier: https://orcid.org/0000-0001-6171-8743
+  - identifier: 0000-0001-6171-8743
     scheme: orcid
 - affiliations: []
   family_name: Jonkers
   given_name: Koen
+  id: 0000-0001-6226-5758
   identifiers:
-  - identifier: https://orcid.org/0000-0001-6226-5758
+  - identifier: 0000-0001-6226-5758
     scheme: orcid
 - affiliations: []
   family_name: von Stein
   given_name: Ilona
+  id: 0000-0003-3179-0773
   identifiers:
-  - identifier: https://orcid.org/0000-0003-3179-0773
+  - identifier: 0000-0003-3179-0773
     scheme: orcid
 - affiliations:
   - name: Data Archiving and Networked Services - DANS
   family_name: Dijk
   given_name: Elly
+  id: 0000-0002-5089-8774
   identifiers:
-  - identifier: https://orcid.org/0000-0002-5089-8774
+  - identifier: 0000-0002-5089-8774
     scheme: orcid
 - affiliations:
   - name: Confederation of Open Access Repositories
   family_name: Shearer
   given_name: Kathleen
+  id: 0000-0001-8617-5781
   identifiers:
-  - identifier: https://orcid.org/0000-0001-8617-5781
+  - identifier: 0000-0001-8617-5781
     scheme: orcid
 - affiliations:
   - name: National Information Standards Organization
   family_name: Meadows
   given_name: Alice
+  id: 0000-0003-2161-3781
   identifiers:
-  - identifier: https://orcid.org/0000-0003-2161-3781
+  - identifier: 0000-0003-2161-3781
     scheme: orcid
 - affiliations:
   - name: Istituto di ricerca sulla crescita economica sostenibile Consiglio Nazionale
       delle Ricerche
   family_name: REALE
   given_name: EMANUELA
+  id: 0000-0002-2961-1783
   identifiers:
-  - identifier: https://orcid.org/0000-0002-2961-1783
+  - identifier: 0000-0002-2961-1783
     scheme: orcid
 - affiliations:
   - name: University College London
   - name: National Hellenic Research Foundation
   family_name: Tsiavos
   given_name: Prodromos
+  id: 0000-0003-2459-6817
   identifiers:
-  - identifier: https://orcid.org/0000-0003-2459-6817
+  - identifier: 0000-0003-2459-6817
     scheme: orcid
 - affiliations:
   - name: CCSD
   family_name: Tournoy
   given_name: "Rapha\xEBl"
+  id: 0000-0003-1244-0823
   identifiers:
-  - identifier: https://orcid.org/0000-0003-1244-0823
+  - identifier: 0000-0003-1244-0823
     scheme: orcid
 - affiliations:
   - name: Ghent University
   family_name: Hermans
   given_name: Emilie
+  id: 0000-0001-6594-7826
   identifiers:
-  - identifier: https://orcid.org/0000-0001-6594-7826
+  - identifier: 0000-0001-6594-7826
     scheme: orcid
 - affiliations:
   - name: RWTH Aachen University
   - name: Fraunhofer FIT
   family_name: Lange
   given_name: Christoph
+  id: 0000-0001-9879-3827
   identifiers:
-  - identifier: https://orcid.org/0000-0001-9879-3827
+  - identifier: 0000-0001-9879-3827
     scheme: orcid
 - affiliations:
   - name: University of Bremen
   family_name: Diepenbroek
   given_name: Michael
+  id: 0000-0003-3096-6829
   identifiers:
-  - identifier: https://orcid.org/0000-0003-3096-6829
+  - identifier: 0000-0003-3096-6829
     scheme: orcid
 - affiliations:
   - name: University of Edinburgh
   family_name: Whyte
   given_name: Angus
+  id: 0000-0002-5198-0833
   identifiers:
-  - identifier: https://orcid.org/0000-0002-5198-0833
+  - identifier: 0000-0002-5198-0833
     scheme: orcid
 - affiliations: []
   family_name: Papastefanatos
   given_name: George
+  id: 0000-0002-9273-9843
   identifiers:
-  - identifier: https://orcid.org/0000-0002-9273-9843
+  - identifier: 0000-0002-9273-9843
     scheme: orcid
 - affiliations:
   - name: Istituto di Scienza e Tecnologie dell'Informazione Alessandro Faedo Consiglio
       Nazionale delle Ricerche
   family_name: Mannocci
   given_name: Andrea
+  id: 0000-0002-5193-7851
   identifiers:
-  - identifier: https://orcid.org/0000-0002-5193-7851
+  - identifier: 0000-0002-5193-7851
     scheme: orcid
 - affiliations:
   - name: University of Vienna
   - name: Vienna University Library
   family_name: Kaiser
   given_name: Olivia
+  id: 0000-0002-1264-4853
   identifiers:
-  - identifier: https://orcid.org/0000-0002-1264-4853
+  - identifier: 0000-0002-1264-4853
     scheme: orcid
 - affiliations:
   - name: Universidade do Minho
   family_name: Correia
   given_name: Antonia
+  id: 0000-0002-6610-8853
   identifiers:
-  - identifier: https://orcid.org/0000-0002-6610-8853
+  - identifier: 0000-0002-6610-8853
     scheme: orcid
 - affiliations:
   - name: 4Science (an ITWay Group Company)
   family_name: Bollini
   given_name: Andrea
+  id: 0000-0002-9029-1854
   identifiers:
-  - identifier: https://orcid.org/0000-0002-9029-1854
+  - identifier: 0000-0002-9029-1854
     scheme: orcid
 - affiliations: []
   family_name: Appleton
   given_name: Owen
+  id: 0000-0002-2571-6860
   identifiers:
-  - identifier: https://orcid.org/0000-0002-2571-6860
+  - identifier: 0000-0002-2571-6860
     scheme: orcid
 - affiliations:
   - name: Royal Irish Academy
   family_name: Bangert
   given_name: Daniel
+  id: 0000-0003-4981-2870
   identifiers:
-  - identifier: https://orcid.org/0000-0003-4981-2870
+  - identifier: 0000-0003-4981-2870
     scheme: orcid
 - affiliations:
   - name: Ghent University
   - name: Royal Meteorological Institute of Belgium
   family_name: Caluwaerts
   given_name: Steven
+  id: 0000-0001-7456-3891
   identifiers:
-  - identifier: https://orcid.org/0000-0001-7456-3891
+  - identifier: 0000-0001-7456-3891
     scheme: orcid
 - affiliations:
   - name: Universidad Industrial de Santander
   family_name: Nunez
   given_name: Luis
+  id: 0000-0003-4575-5899
   identifiers:
-  - identifier: https://orcid.org/0000-0003-4575-5899
+  - identifier: 0000-0003-4575-5899
     scheme: orcid
 - affiliations: []
   family_name: Blomberg
   given_name: Niklas
+  id: 0000-0003-4155-5910
   identifiers:
-  - identifier: https://orcid.org/0000-0003-4155-5910
+  - identifier: 0000-0003-4155-5910
     scheme: orcid
 - affiliations: []
   family_name: Alexiou
   given_name: Giorgos
+  id: 0000-0003-2244-4916
   identifiers:
-  - identifier: https://orcid.org/0000-0003-2244-4916
+  - identifier: 0000-0003-2244-4916
     scheme: orcid
 - affiliations: []
   family_name: O'Connor
   given_name: Ryan
+  id: 0000-0001-5386-3932
   identifiers:
-  - identifier: https://orcid.org/0000-0001-5386-3932
+  - identifier: 0000-0001-5386-3932
     scheme: orcid
 - affiliations:
   - name: Athena Research Center
   family_name: Chatzigeorgakidis
   given_name: Georgios
+  id: 0000-0002-5965-7934
   identifiers:
-  - identifier: https://orcid.org/0000-0002-5965-7934
+  - identifier: 0000-0002-5965-7934
     scheme: orcid
 - affiliations:
   - name: European Bioinformatics Institute (EMBL-EBI)
   family_name: McEntyre
   given_name: Jo
+  id: 0000-0002-1611-6935
   identifiers:
-  - identifier: https://orcid.org/0000-0002-1611-6935
+  - identifier: 0000-0002-1611-6935
     scheme: orcid
 - affiliations: []
   family_name: Pispiringas
   given_name: Leonidas
+  id: 0000-0002-7111-094X
   identifiers:
-  - identifier: https://orcid.org/0000-0002-7111-094X
+  - identifier: 0000-0002-7111-094X
     scheme: orcid
 - affiliations: []
   family_name: Antonioli Mantegazzini
   given_name: Barbara
+  id: 0000-0003-3513-1951
   identifiers:
-  - identifier: https://orcid.org/0000-0003-3513-1951
+  - identifier: 0000-0003-3513-1951
     scheme: orcid
 - affiliations:
   - name: Research Consulting
   family_name: Johnson
   given_name: Rob
+  id: 0000-0001-7126-2954
   identifiers:
-  - identifier: https://orcid.org/0000-0001-7126-2954
+  - identifier: 0000-0001-7126-2954
     scheme: orcid
 - affiliations: []
   family_name: MacIntyre
   given_name: Ross
+  id: 0000-0001-8186-6954
   identifiers:
-  - identifier: https://orcid.org/0000-0001-8186-6954
+  - identifier: 0000-0001-8186-6954
     scheme: orcid
 - affiliations:
   - name: CESSDA
   family_name: Dekker
   given_name: Ron
+  id: 0000-0003-0989-4963
   identifiers:
-  - identifier: https://orcid.org/0000-0003-0989-4963
+  - identifier: 0000-0003-0989-4963
     scheme: orcid
 - affiliations:
   - name: European Bioinformatics Institute
   family_name: "Gr\xE4f"
   given_name: Florian
+  id: 0000-0003-4890-5979
   identifiers:
-  - identifier: https://orcid.org/0000-0003-4890-5979
+  - identifier: 0000-0003-4890-5979
     scheme: orcid
 - affiliations: []
   family_name: Mokrane
   given_name: Mustapha
+  id: 0000-0002-0925-7983
   identifiers:
-  - identifier: https://orcid.org/0000-0002-0925-7983
+  - identifier: 0000-0002-0925-7983
     scheme: orcid
 - affiliations:
   - name: Humboldt University of Berlin
   family_name: Harris
   given_name: Emma Anne
+  id: 0000-0002-1224-6986
   identifiers:
-  - identifier: https://orcid.org/0000-0002-1224-6986
+  - identifier: 0000-0002-1224-6986
     scheme: orcid
 - affiliations:
   - name: Universiteit Leiden
   family_name: Noyons
   given_name: Ed
+  id: 0000-0002-3103-2991
   identifiers:
-  - identifier: https://orcid.org/0000-0002-3103-2991
+  - identifier: 0000-0002-3103-2991
     scheme: orcid
 - affiliations:
   - name: "Instituto Brasileiro de Informa\xE7\xE3o em Ci\xEAncia e Tecnologia"
   family_name: Amaro
   given_name: Bianca
+  id: 0000-0002-4703-8992
   identifiers:
-  - identifier: https://orcid.org/0000-0002-4703-8992
+  - identifier: 0000-0002-4703-8992
     scheme: orcid
