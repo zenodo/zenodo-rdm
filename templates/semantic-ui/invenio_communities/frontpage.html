@@ -32,8 +32,16 @@
         <div class="eight wide tablet five wide computer column mt-auto mb-auto">
           <form action="{{ url_for('invenio_communities.communities_search') }}" class="ui form">
             <div class="ui fluid action input">
-              <input type="text" name="q" class="form-control" placeholder="{{ _('Search communities') }}">
-              <button type="submit" class="ui icon search button"><i class="search icon"></i></button>
+              <input
+                type="text"
+                name="q"
+                class="form-control"
+                placeholder="{{ _('Search communities') }}"
+                aria-label="{{ _('Search communities') }}"
+              >
+              <button type="submit" class="ui icon search button" aria-label="Search">
+                <i class="search icon" aria-hidden="true"></i>
+              </button>
             </div>
           </form>
         </div>
