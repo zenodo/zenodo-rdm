@@ -9,7 +9,7 @@
 
 from celery import shared_task
 
-from . import utils
+from zenodo_rdm.metrics import utils
 
 
 @shared_task(ignore_result=True)

@@ -9,7 +9,7 @@
 
 from flask import current_app
 
-from . import config
+from zenodo_rdm.metrics import config
 
 
 class ZenodoMetrics(object):

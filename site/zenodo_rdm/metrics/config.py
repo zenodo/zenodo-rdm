@@ -9,7 +9,7 @@
 
 import datetime
 
-from .api import ZenodoMetric
+from zenodo_rdm.metrics.api import ZenodoMetric
 
 METRICS_START_DATE = datetime.datetime(2021, 1, 1)
 METRICS_CACHE_TIMEOUT = int(datetime.timedelta(hours=1).total_seconds())

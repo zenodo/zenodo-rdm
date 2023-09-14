@@ -10,7 +10,7 @@
 import humanize
 from flask import Blueprint, Response, current_app
 
-from . import tasks, utils
+from zenodo_rdm.metrics import tasks, utils
 
 blueprint = Blueprint("METRICS", __name__)
 

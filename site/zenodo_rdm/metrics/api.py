@@ -7,8 +7,6 @@
 
 """ZenodoRDM Metrics API."""
 
-from __future__ import absolute_import
-
 import calendar
 from datetime import datetime, timedelta
 
@@ -21,7 +19,7 @@ from invenio_search import current_search_client
 from invenio_search.utils import build_alias_name
 from opensearchpy import Search
 
-from .proxies import current_metrics
+from zenodo_rdm.metrics.proxies import current_metrics
 
 
 class ZenodoMetric(object):
