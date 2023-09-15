@@ -9,8 +9,8 @@
 
 from invenio_cache import current_cache
 
-from . import config
-from .generators import generator_fns
+from zenodo_rdm.sitemap import config
+from zenodo_rdm.sitemap.generators import generator_fns
 
 
 class ZenodoSitemap(object):

@@ -7,8 +7,6 @@
 
 """Redirects for legacy URLs."""
 
-from __future__ import absolute_import, print_function, unicode_literals
-
 from flask import Blueprint, abort, current_app
 from invenio_cache import current_cache
 
