@@ -23,12 +23,12 @@ from zenodo_rdm_migrator.actions.transform import (
 
 
 @pytest.fixture()
-def create_oauth_server_token_tx(tx_files):
+def create_oauth_server_token_tx():
     """Transaction data to create an OAuth server token.
 
     As it would be after the extraction step.
     """
-    datafile = Path(__file__).parent / "testdata" / "create.jsonl"
+    datafile = Path(__file__).parent / "testdata" / "tokens" / "create.jsonl"
     with open(datafile, "rb") as reader:
         ops = [orjson.loads(line)["value"] for line in reader]
 
@@ -156,12 +156,12 @@ class TestOAuthServerTokenCreateAction:
 
 
 @pytest.fixture()
-def update_oauth_server_token_tx(tx_files):
+def update_oauth_server_token_tx():
     """Transaction data to update an OAuth server token.
 
     As it would be after the extraction step.
     """
-    datafile = Path(__file__).parent / "testdata" / "update.jsonl"
+    datafile = Path(__file__).parent / "testdata" / "tokens" / "update.jsonl"
     with open(datafile, "rb") as reader:
         ops = [orjson.loads(line)["value"] for line in reader]
 
@@ -290,12 +290,12 @@ class TestOAuthServerTokenUpdateAction:
 
 
 @pytest.fixture()
-def delete_oauth_server_token_tx(tx_files):
+def delete_oauth_server_token_tx():
     """Transaction data to delete an OAuth server token.
 
     As it would be after the extraction step.
     """
-    datafile = Path(__file__).parent / "testdata" / "delete.jsonl"
+    datafile = Path(__file__).parent / "testdata" / "tokens" / "delete.jsonl"
     with open(datafile, "rb") as reader:
         ops = [orjson.loads(line)["value"] for line in reader]
 

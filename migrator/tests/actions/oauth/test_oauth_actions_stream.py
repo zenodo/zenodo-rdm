@@ -16,11 +16,11 @@ from zenodo_rdm_migrator.transform.transactions import ZenodoTxTransform
 
 
 def test_community_create_action_stream(
-    database, session, pg_tx_load, test_extract_cls, tx_files
+    database, session, pg_tx_load, test_extract_cls, tx_files_tokens
 ):
     stream = Stream(
         name="action",
-        extract=test_extract_cls(tx_files["create"]),
+        extract=test_extract_cls(tx_files_tokens["create"]),
         transform=ZenodoTxTransform(),
         load=pg_tx_load,
     )
@@ -66,11 +66,11 @@ def db_client_server(database, session):
 
 
 def test_community_create_action_stream(
-    db_client_server, pg_tx_load, test_extract_cls, tx_files
+    db_client_server, pg_tx_load, test_extract_cls, tx_files_tokens
 ):
     stream = Stream(
         name="action",
-        extract=test_extract_cls(tx_files["update"]),
+        extract=test_extract_cls(tx_files_tokens["update"]),
         transform=ZenodoTxTransform(),
         load=pg_tx_load,
     )
@@ -84,11 +84,11 @@ def test_community_create_action_stream(
 
 
 def test_community_create_action_stream(
-    db_client_server, pg_tx_load, test_extract_cls, tx_files
+    db_client_server, pg_tx_load, test_extract_cls, tx_files_tokens
 ):
     stream = Stream(
         name="action",
-        extract=test_extract_cls(tx_files["delete"]),
+        extract=test_extract_cls(tx_files_tokens["delete"]),
         transform=ZenodoTxTransform(),
         load=pg_tx_load,
     )
