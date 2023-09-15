@@ -68,20 +68,30 @@ class OAuthServerTokenUpdateAction(TransformAction):
     @classmethod
     def matches_action(cls, tx):
         """Checks if the data corresponds with that required by the action."""
-        if len(tx.operations) < 1 or len(tx.operations) > 2:  # must be 1 or 2
-            return False
+        if len(tx.operations) == 1:
+            # note 1: this action would handle both personal and application tokens
+            # note 2: tx with only oauth2server_client are handled by the app action
 
-        rules = {
-            "oauth2server_client": OperationType.UPDATE,
-            "oauth2server_token": OperationType.UPDATE,
-        }
+            op = tx.operations[0]
+            return (
+                op["source"]["table"] == "oauth2server_token"
+                and op["op"] == OperationType.UPDATE
+            )
 
-        for op in tx.operations:
-            rule = rules.pop(op["source"]["table"], None)
-            if not rule or rule != op["op"]:
-                return False
+        if len(tx.operations) == 2:
+            rules = {
+                "oauth2server_client": OperationType.UPDATE,
+                "oauth2server_token": OperationType.UPDATE,
+            }
 
-        return True
+            for op in tx.operations:
+                rule = rules.pop(op["source"]["table"], None)
+                if not rule or rule != op["op"]:
+                    return False
+
+            return True
+
+        return False
 
     def _transform_data(self):
         """Transforms the data and returns dictionary."""
@@ -123,4 +133,94 @@ class OAuthServerTokenDeleteAction(TransformAction):
         return {
             "tx_id": self.tx.id,
             "token": OAuthServerTokenTransform()._transform(op["before"]),
+        }
+
+
+class OAuthApplicationCreateAction(TransformAction):
+    """Zenodo to RDM OAuth server create action."""
+
+    name = "oauth-application-create"
+    load_cls = load.OAuthApplicationCreateAction
+
+    @classmethod
+    def matches_action(cls, tx):
+        """Checks if the data corresponds with that required by the action."""
+        if len(tx.operations) != 1:
+            return False
+
+        op = tx.operations[0]
+
+        return (
+            op["source"]["table"] == "oauth2server_client"
+            and op["op"] == OperationType.INSERT
+        )
+
+    def _transform_data(self):
+        """Transforms the data and returns dictionary."""
+        op = self.tx.operations[0]
+
+        return {
+            "tx_id": self.tx.id,
+            "client": IdentityTransform()._transform(op["after"]),
+        }
+
+
+class OAuthApplicationUpdateAction(TransformAction):
+    """Zenodo to RDM OAuth server create action."""
+
+    name = "oauth-application-update"
+    load_cls = load.OAuthApplicationUpdateAction
+
+    @classmethod
+    def matches_action(cls, tx):
+        """Checks if the data corresponds with that required by the action."""
+        # note: it will absorb OAuthServerTokenUpdateAction that update only
+        # the client (e.g. a name), but the behavior/outcome is left unchanged:
+        # an update to oauth2server_client
+        if len(tx.operations) != 1:
+            return False
+
+        op = tx.operations[0]
+
+        return (
+            op["source"]["table"] == "oauth2server_client"
+            and op["op"] == OperationType.UPDATE
+        )
+
+    def _transform_data(self):
+        """Transforms the data and returns dictionary."""
+        op = self.tx.operations[0]
+
+        return {
+            "tx_id": self.tx.id,
+            "client": IdentityTransform()._transform(op["after"]),
+        }
+
+
+class OAuthApplicationDeleteAction(TransformAction):
+    """Zenodo to RDM OAuth server create action."""
+
+    name = "oauth-application-delete"
+    load_cls = load.OAuthApplicationDeleteAction
+
+    @classmethod
+    def matches_action(cls, tx):
+        """Checks if the data corresponds with that required by the action."""
+        if len(tx.operations) != 1:
+            return False
+
+        op = tx.operations[0]
+
+        return (
+            op["source"]["table"] == "oauth2server_client"
+            and op["op"] == OperationType.DELETE
+        )
+
+    def _transform_data(self):
+        """Transforms the data and returns dictionary."""
+        op = self.tx.operations[0]
+
+        return {
+            "tx_id": self.tx.id,
+            "client": IdentityTransform()._transform(op["before"]),
         }

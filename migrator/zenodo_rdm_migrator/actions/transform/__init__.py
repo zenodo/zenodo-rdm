@@ -15,6 +15,9 @@ from .communities import (
 from .drafts import DraftCreateAction, DraftEditAction, DraftPublishAction
 from .files import DraftFileUploadAction
 from .oauth import (
+    OAuthApplicationCreateAction,
+    OAuthApplicationDeleteAction,
+    OAuthApplicationUpdateAction,
     OAuthServerTokenCreateAction,
     OAuthServerTokenDeleteAction,
     OAuthServerTokenUpdateAction,
@@ -29,6 +32,9 @@ __all__ = (
     "DraftEditAction",
     "DraftFileUploadAction",
     "DraftPublishAction",
+    "OAuthApplicationCreateAction",
+    "OAuthApplicationDeleteAction",
+    "OAuthApplicationUpdateAction",
     "OAuthServerTokenCreateAction",
     "OAuthServerTokenDeleteAction",
     "OAuthServerTokenUpdateAction",
