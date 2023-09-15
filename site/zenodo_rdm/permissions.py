@@ -5,8 +5,9 @@
 # Zenodo is free software; you can redistribute it and/or modify
 # it under the terms of the MIT License; see LICENSE file for more details.
 
-"""Zenodo legacy permissions."""
+"""Zenodo permissions."""
 
+from invenio_communities.permissions import CommunityPermissionPolicy
 from invenio_rdm_records.services.generators import (
     AccessGrant,
     IfDeleted,
@@ -22,6 +23,7 @@ from invenio_rdm_records.services.generators import (
 )
 from invenio_rdm_records.services.permissions import RDMRecordPermissionPolicy
 from invenio_records_permissions.generators import Disable, IfConfig, SystemProcess
+from invenio_users_resources.services.permissions import UserManager
 
 from .generators import (
     IfFilesRestrictedForCommunity,
@@ -200,4 +202,20 @@ class ZenodoRDMRecordPermissionPolicy(RDMRecordPermissionPolicy):
         # note: even though this is closer to business logic than permissions,
         # it was simpler and less coupling to implement this as permission check
         IfFileIsLocal(then_=can_read, else_=[SystemProcess()])
+    ]
+
+    can_moderate = [
+        # moderators
+        UserManager,
+        SystemProcess(),
+    ]
+
+
+class ZenodoCommunityPermissionPolicy(CommunityPermissionPolicy):
+    """Permissions for Community CRUD operations."""
+
+    can_moderate = [
+        # moderators
+        UserManager,
+        SystemProcess(),
     ]
