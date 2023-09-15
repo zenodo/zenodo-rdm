@@ -13,6 +13,7 @@ from invenio_communities.communities.records.models import CommunityMetadata
 from invenio_db import db
 from invenio_pidstore.models import PersistentIdentifier, PIDStatus
 from invenio_records.models import RecordMetadata
+from invenio_rdm_records.records.models import RDMRecordMetadata
 
 
 def _sitemapdtformat(dt):
@@ -29,8 +30,10 @@ def _sitemapdtformat(dt):
 def records_generator():
     """Generate the records links."""
     q = (
-        db.session.query(PersistentIdentifier, RecordMetadata)
-        .join(RecordMetadata, RecordMetadata.id == PersistentIdentifier.object_uuid)
+        db.session.query(PersistentIdentifier, RDMRecordMetadata)
+        .join(
+            RDMRecordMetadata, RDMRecordMetadata.id == PersistentIdentifier.object_uuid
+        )
         .filter(
             PersistentIdentifier.status == PIDStatus.REGISTERED,
             PersistentIdentifier.pid_type == "recid",
@@ -41,7 +44,7 @@ def records_generator():
     for pid, rm in q.yield_per(1000):
         yield {
             "loc": url_for(
-                "invenio_records_ui.recid",
+                "invenio_app_rdm_records.record_detail",
                 pid_value=pid.pid_value,
                 _external=True,
                 _scheme=scheme,
