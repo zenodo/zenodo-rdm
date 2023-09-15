@@ -29,13 +29,3 @@ def set_user_quota(id, quota_size, max_file_size=None, notes=None):
         max_file_size=max_file_size,
         notes=notes,
     )
-
-
-def delete_record(id, data):
-    """Util method to delete a specific record."""
-    return current_rdm_records_service.delete_record(system_identity, id, data=data)
-
-
-def restore_record(id):
-    """Util method to restore a specific record."""
-    return current_rdm_records_service.restore_record(system_identity, id)
