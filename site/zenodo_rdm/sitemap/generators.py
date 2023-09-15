@@ -55,11 +55,20 @@ def communities_generator():
     q = CommunityMetadata.query.filter(CommunityMetadata.is_deleted.is_(False))
     scheme = current_app.config["ZENODO_SITEMAP_URL_SCHEME"]
     for comm in q.yield_per(1000):
-        for endpoint in "detail", "search", "about":
+        yield {
+            "loc": url_for(
+                "invenio_app_rdm_communities.communities_detail",
+                pid_value=comm.id,
+                _external=True,
+                _scheme=scheme,
+            ),
+            "lastmod": _sitemapdtformat(comm.updated),
+        }
+        for endpoint in "search", "about":
             yield {
                 "loc": url_for(
-                    "invenio_communities.{}".format(endpoint),
-                    community_id=comm.id,
+                    f"invenio_communities.communities_{endpoint}",
+                    pid_value=comm.id,
                     _external=True,
                     _scheme=scheme,
                 ),
