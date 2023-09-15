@@ -39,10 +39,6 @@ class ZenodoMetric(object):
                 "range",
                 timestamp=time_range,
             )
-            .filter(
-                "term",
-                is_parent=False,
-            )
             .params(request_timeout=120)
         )
         search.aggs.metric("download_volume", "sum", field="volume")
