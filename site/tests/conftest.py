@@ -645,9 +645,7 @@ def minimal_community2():
     """Data for a minimal community two."""
     return {
         "slug": "rdm",
-        "access": {
-            "visibility": "public",
-        },
+        "access": {"visibility": "public", "review_policy": "open"},
         "metadata": {"title": "Research Data Management", "type": {"id": "topic"}},
     }
 

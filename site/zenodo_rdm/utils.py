@@ -7,12 +7,12 @@
 """Utility functions."""
 
 import re
-import idutils
 from urllib.parse import parse_qs, urlencode, urlsplit, urlunsplit
-from invenio_i18n import _
 
+import idutils
 from flask import current_app, url_for
 from invenio_app_rdm.records_ui.utils import dump_external_resource
+from invenio_i18n import _
 
 
 def github_link_render(record):

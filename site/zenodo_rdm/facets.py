@@ -4,12 +4,13 @@
 #
 # ZenodoRDM is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
+
+"""Zenodo communities facets."""
+
 from invenio_i18n import gettext as _
-from invenio_records_resources.services.records.facets import (
-    TermsFacet,
-)
-from invenio_vocabularies.contrib.funders.facets import FundersLabels
+from invenio_records_resources.services.records.facets import TermsFacet
 from invenio_vocabularies.contrib.affiliations.facets import AffiliationsLabels
+from invenio_vocabularies.contrib.funders.facets import FundersLabels
 
 funder = TermsFacet(
     field="metadata.funding.funder.id",
