@@ -70,9 +70,7 @@ export class CitationsSearch extends React.Component {
     };
   }
 
-  initialState = () => {
-    const { recordPIDs } = this.props;
-    const doi = _get(recordPIDs, "doi.identifier");
+  initialState = (recordParentPID) => {
     return {
       sortBy: "mostrecent",
       sortOrder: "asc",
@@ -81,7 +79,7 @@ export class CitationsSearch extends React.Component {
       size: 10,
       filters: [
         ["group_by", "version"],
-        ["id", doi],
+        ["id", recordParentPID],
         ["relation", "isCitedBy"],
         ["scheme", "doi"],
       ],
@@ -101,12 +99,15 @@ export class CitationsSearch extends React.Component {
 
   render() {
     const { active } = this.state;
+    const { recordPIDs, recordParentPIDs } = this.props;
+    const recordPID = _get(recordPIDs, "doi.identifier");
+    const recordParentPID = _get(recordParentPIDs, "doi.identifier");
     return (
       <OverridableContext.Provider value={overriddenComponents}>
         <ReactSearchKit
           appName={citationSearchAppID}
           searchApi={this.searchApi()}
-          initialQueryState={this.initialState()}
+          initialQueryState={this.initialState(recordParentPID)}
           urlHandlerApi={{ enabled: false }}
         >
           <Accordion className="panel">
@@ -133,7 +134,7 @@ export class CitationsSearch extends React.Component {
               <Grid padded>
                 <Grid.Row>
                   <Grid.Column width="10">
-                    <Filter />
+                    <Filter recordPID={recordPID} recordParentPID={recordParentPID} />
                   </Grid.Column>
 
                   <Grid.Column width="6">
@@ -202,5 +203,6 @@ export class CitationsSearch extends React.Component {
 
 CitationsSearch.propTypes = {
   recordPIDs: PropTypes.object.isRequired,
+  recordParentPIDs: PropTypes.object.isRequired,
   endpoint: PropTypes.string.isRequired,
 };

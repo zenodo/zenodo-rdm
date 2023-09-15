@@ -73,6 +73,7 @@
     <section
       id="citations-search"
       data-record-pids='{{ record.pids | tojson }}'
+      data-record-parent-pids='{{ record.parent.pids | tojson }}'
       data-citations-endpoint="{{config.ZENODO_RECORDS_UI_CITATIONS_ENDPOINT}}" aria-label="{{ _('Record citations')}}"
       class="rel-mb-1"
     >

@@ -27,7 +27,13 @@ import { withState, BucketAggregation } from "react-searchkit";
 import { Grid, Header, List, Checkbox } from "semantic-ui-react";
 
 export const Filter = withState(
-  ({ currentResultsState, updateQueryState, currentQueryState }) => {
+  ({
+    currentResultsState,
+    updateQueryState,
+    currentQueryState,
+    recordPID,
+    recordParentPID,
+  }) => {
     const missingTypes = missingTypesFilter(
       currentResultsState.data.aggregations?.type?.buckets
     );
@@ -36,9 +42,12 @@ export const Filter = withState(
       const isChecked = data.checked;
       const groupByKey = "group_by";
       const groupByValue = isChecked ? "identity" : "version";
+      const idKey = "id";
+      const idValue = isChecked ? recordPID : recordParentPID;
 
       const filters = currentQueryState.filters.map((filter) => {
         if (filter[0] === groupByKey) return [groupByKey, groupByValue];
+        if (filter[0] === idKey) return [idKey, idValue];
         return filter;
       });
       updateQueryState({ ...currentQueryState, filters });
@@ -83,6 +92,8 @@ Filter.propTypes = {
   currentResultsState: PropTypes.object,
   updateQueryState: PropTypes.func,
   currentQueryState: PropTypes.object,
+  recordPID: PropTypes.object.isRequired,
+  recordParentPID: PropTypes.object.isRequired,
 };
 
 Filter.defaultProps = {
