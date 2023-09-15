@@ -69,3 +69,10 @@ class IfRecordManagementAllowedForCommunity(ConditionalGenerator):
             can_community_manage_record = True
 
         return can_community_manage_record
+
+    def query_filter(self, **kwargs):
+        """Filters for current identity as super user."""
+        then_query = self._make_query(self.then_, **kwargs)
+        else_query = self._make_query(self.else_, **kwargs)
+
+        return then_query if then_query else else_query
