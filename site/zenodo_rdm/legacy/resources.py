@@ -48,8 +48,7 @@ from .serializers import (
 record_serializers = copy.deepcopy(default_record_serializers)
 record_serializers.update(
     {
-        # TODO: remove when https://github.com/zenodo/zenodo-rdm/issues/492 is fixed
-        # "application/json": ResponseHandler(LegacyJSONSerializer()),
+        "application/json": ResponseHandler(LegacyJSONSerializer()),
         "application/vnd.zenodo.v1+json": ResponseHandler(ZenodoJSONSerializer()),
         # Alias for the DataCite XML serializer
         "application/x-datacite+xml": record_serializers[
