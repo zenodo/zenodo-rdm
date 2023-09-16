@@ -121,10 +121,6 @@ class MetadataSchema(Schema):
 
         unknown = EXCLUDE
 
-    # TODO add later
-    # if not data:
-    #     raise ValidationError("Empty metadata is not accepted")
-
     @pre_load
     def split_identifiers(self, data, **kwargs):
         """Splits alternate and related identifiers."""
@@ -133,7 +129,7 @@ class MetadataSchema(Schema):
         alternate_identifiers = []
         related_identifiers = []
         for identifier in input_identifiers:
-            if identifier.get("relation", "") == "isAlternateIdentifier":
+            if identifier.get("relation") == "isAlternateIdentifier":
                 alternate_identifiers.append(identifier)
             else:
                 related_identifiers.append(identifier)
@@ -162,7 +158,10 @@ class MetadataSchema(Schema):
     references = fields.Method(deserialize="load_references")
     language = fields.Method(deserialize="load_language")
     related_identifiers = fields.Method(deserialize="load_related_identifiers")
-    identifiers = fields.Method(deserialize="load_alternate_identifiers")
+    identifiers = fields.Method(
+        deserialize="load_alternate_identifiers",
+        data_key="alternate_identifiers",
+    )
 
     @post_load(pass_original=True)
     def load_upload_type(self, result, original, **kwargs):
@@ -434,9 +433,7 @@ class MetadataSchema(Schema):
 
         for legacy_identifier in obj:
             rdm_identifier = identifier_schema.load(
-                {
-                    "identifier": legacy_identifier["identifier"],
-                }
+                {"identifier": legacy_identifier["identifier"]}
             )
 
             alternate_identifiers.append(rdm_identifier)

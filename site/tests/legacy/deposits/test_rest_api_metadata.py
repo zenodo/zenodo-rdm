@@ -47,7 +47,7 @@ def test_input_output(
     client = client_with_login
 
     # Create
-    res = client.post(deposit_url, data=json.dumps(test_data), headers=headers)
+    res = client.post(deposit_url, json=test_data, headers=headers)
     assert res.status_code == 201
     links = res.json["links"]
 
@@ -66,13 +66,13 @@ def test_input_output(
         }
     )
 
-    ignored_keys = set()
-
-    # doi is returned as a top level key (and not inside metadata)
-    ignored_keys.add("doi")
-
     differences = list(
-        dictdiffer.diff(data["metadata"], expected_record_metadata, ignore=ignored_keys)
+        dictdiffer.diff(
+            data["metadata"],
+            expected_record_metadata,
+            # doi is returned as a top level key (and not inside metadata)
+            ignore={"doi"},
+        )
     )
 
     assert not differences

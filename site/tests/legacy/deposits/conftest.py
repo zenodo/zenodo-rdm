@@ -17,8 +17,7 @@ def test_data():
     return dict(
         metadata=dict(
             access_right="embargoed",
-            # TODO uncomment when communities are implemented
-            # communities=[{"identifier": "c1"}],
+            communities=[{"identifier": "c1"}],
             conference_acronym="Some acronym",
             conference_dates="Some dates",
             conference_place="Some place",
@@ -41,7 +40,7 @@ def test_data():
             grants=[
                 dict(id="10.13039/501100001665::755021"),
             ],
-            # TODO changed previous string ("Some isbn") to a valid isbn
+            # NOTE: changed previous string ("Some isbn") to a valid isbn
             imprint_isbn="978-3-16-148410-0",
             imprint_place="Some place",
             # TODO changed previous string ("Some publisher") to "Zenodo" which is the hardcoded publisher for now.
@@ -74,13 +73,11 @@ def test_data():
                     scheme="doi",
                     resource_type="dataset",
                 ),
-                # TODO commented since scheme ads not supported in rdm
-                # dict(
-                #     identifier="2011ApJS..192...18K",
-                #     relation="isAlternateIdentifier",
-                #     scheme="ads",
-                #     resource_type="publication-article",
-                # ),
+                dict(
+                    identifier="2011ApJS..192...18K",
+                    relation="isAlternateIdentifier",
+                    scheme="ads",
+                ),
             ],
             thesis_supervisors=[
                 dict(name="Doe, John", affiliation="Atlantis"),
@@ -122,8 +119,7 @@ def expected_record_metadata():
     """Return expected rdm draft metadata."""
     return dict(
         access_right="embargoed",
-        # TODO uncomment when communities are implemented
-        # communities=[{"identifier": "c1"}],
+        communities=[{"identifier": "c1"}],
         conference_acronym="Some acronym",
         conference_dates="Some dates",
         conference_place="Some place",
@@ -176,6 +172,11 @@ def expected_record_metadata():
                 relation="cites",
                 scheme="doi",
                 resource_type="dataset",
+            ),
+            dict(
+                identifier="2011ApJS..192...18K",
+                relation="isAlternateIdentifier",
+                scheme="ads",
             ),
         ],
         thesis_university="Some thesis_university",

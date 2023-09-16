@@ -86,8 +86,9 @@ class MetadataSchema(common.MetadataSchema):
         related_identifiers = data.get("related_identifiers", [])
         for identifier in alternate_identifiers:
             related_identifier = {
-                "relation_type": {"id": "isAlternateIdentifier"},
+                "relation_type": {"id": "isalternateidentifier"},
                 "identifier": identifier["identifier"],
+                "scheme": identifier["scheme"],
             }
             related_identifiers.append(related_identifier)
         if related_identifiers:

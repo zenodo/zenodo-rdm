@@ -55,6 +55,7 @@ RELATION_TYPE_MAPPING = {
     "requires": "requires",
     "isobsoletedby": "isObsoletedBy",
     "obsoletes": "obsoletes",
+    "isalternateidentifier": "isAlternateIdentifier",
 }
 
 
