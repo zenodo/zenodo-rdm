@@ -7,12 +7,8 @@
 
 """Zenodo legacy format serializer schemas."""
 
-from invenio_access.permissions import system_identity
-from invenio_pidstore.errors import PIDDeletedError, PIDDoesNotExistError
-from invenio_records_resources.proxies import current_service_registry
 from marshmallow import fields, missing, post_dump, pre_dump
 from marshmallow_utils.fields import SanitizedUnicode
-from zenodo_legacy.funders import FUNDER_ROR_TO_DOI
 
 from . import common
 
@@ -24,44 +20,22 @@ class MetadataSchema(common.MetadataSchema):
 
     def dump_grants(self, obj):
         """Dump grants from funding field."""
-        funding = obj.get("funding")
+        funding = obj.get("funding", [])
         if not funding:
             return missing
 
         ret = []
         for funding_item in funding:
             award = funding_item.get("award")
-
-            # in case there are multiple funding entries, service calls could be
-            # optimized calling read_many
-            aid = award.get("id")
-            if aid:
-                a_service = current_service_registry.get("awards")
-                try:
-                    award = a_service.read(system_identity, aid).to_dict()
-                except (PIDDeletedError, PIDDoesNotExistError):
-                    # funder only funding, or custom awards are not supported in the
-                    # legacy API
-                    return missing
-
-            # we are ignoring funding.funder.id in favour of the awards.funder.id
-            fid = award["funder"]["id"]
-            f_service = current_service_registry.get("funders")
-            # every vocabulary award must be linked to a vocabulary funder
-            # therefore this read call cannot fail
-            funder = f_service.read(system_identity, fid).to_dict()
-
-            # No custom funder/awards in legacy therefore it would always resolve
-            # the read ops above.
-            legacy_grant = self._award(award)
-            legacy_grant["funder"] = self._funder(funder)
-
-            award_number = award["number"]
-            funder_doi = FUNDER_ROR_TO_DOI.get(funder["id"])
-            serialized_grant = {"id": f"{funder_doi}::{award_number}"}
-            ret.append(serialized_grant)
-
-        return ret
+            funder = funding_item.get("funder")
+            legacy_grant = self._grant(award, funder)
+            if not legacy_grant:
+                continue
+            grant_id = legacy_grant["internal_id"]
+            if legacy_grant.get("program") == "FP7":
+                grant_id = legacy_grant["code"]
+            ret.append({"id": grant_id})
+        return ret or missing
 
     license = SanitizedUnicode()
 

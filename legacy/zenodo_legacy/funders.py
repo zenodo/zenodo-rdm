@@ -27,8 +27,9 @@ FUNDER_DOI_TO_ROR = {
     "10.13039/501100000038": "01h531d29",
     "10.13039/100000001": "021nxhr62",
     "10.13039/501100003246": "04jsz6e67",
-    # NOTE: RCUK was succeeded by UKRI. All awards/grants were transferred, so
-    #       we're also remapping the funder IDs to point to UKRI (001aqnf71)
+    # NOTE: RCUK (10.13039/100014013) was succeeded by UKRI (10.13039/501100000690).
+    # All awards/grants were transferred, so we're also remapping the funder IDs to
+    # point to the UKRI ROR ID (001aqnf71).
     "10.13039/501100000690": "001aqnf71",
     "10.13039/100014013": "001aqnf71",
     "10.13039/501100001602": "0271asj38",
@@ -39,4 +40,34 @@ FUNDER_DOI_TO_ROR = {
     "10.13039/501100006364": "03m8vkq32",
 }
 
+FUNDER_ACRONYMS = {
+    "10.13039/501100001665": "ASAP",
+    "10.13039/501100002341": "AKA",
+    "10.13039/501100000923": "ARC",
+    "10.13039/100018231": "ASAP",
+    "10.13039/501100000024": "CIHR",
+    "10.13039/501100000780": "EC",
+    "10.13039/501100000806": "EEA",
+    "10.13039/501100001871": "FCT",
+    "10.13039/501100002428": "FWF",
+    "10.13039/501100004488": "HRZZ",
+    "10.13039/501100004564": "MESTD",
+    "10.13039/501100000925": "NHMRC",
+    "10.13039/100000002": "NIH",
+    "10.13039/501100000038": "NSERC",
+    "10.13039/100000001": "NSF",
+    "10.13039/501100003246": "NWO",
+    "10.13039/501100000690": "RCUK",
+    "10.13039/100014013": "UKRI",
+    "10.13039/501100001602": "SFI",
+    "10.13039/501100001711": "SNSF",
+    "10.13039/100001345": "SSHRC",
+    "10.13039/501100004410": "TUBITAK",
+    "10.13039/100004440": "WT",
+    "10.13039/501100006364": "INCa",
+}
+
+
 FUNDER_ROR_TO_DOI = {v: k for k, v in FUNDER_DOI_TO_ROR.items()}
+# NOTE: We want to always resolve to the UKRI award
+FUNDER_ROR_TO_DOI["001aqnf71"] = "10.13039/100014013"

@@ -10,8 +10,6 @@ from datetime import datetime, timedelta
 
 import pytest
 
-from zenodo_rdm.legacy.resources import LegacyRecordResourceConfig
-
 
 @pytest.fixture(scope="function")
 def test_data():

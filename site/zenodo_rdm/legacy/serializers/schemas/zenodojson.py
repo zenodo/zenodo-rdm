@@ -7,8 +7,8 @@
 
 """Zenodo serializer schemas."""
 
-from marshmallow import Schema, fields, missing, post_dump, pre_dump
-from marshmallow_utils.fields import EDTFDateString, SanitizedHTML, SanitizedUnicode
+from marshmallow import Schema, fields, missing
+from marshmallow_utils.fields import SanitizedUnicode
 
 from . import common
 
@@ -65,34 +65,6 @@ class ThesisSchema(Schema):
     supervisors = fields.Nested(common.CreatorSchema, many=True)
 
 
-class FunderSchema(Schema):
-    """Schema for a funder."""
-
-    doi = fields.Str()
-    name = fields.Str(dump_only=True)
-    acronyms = fields.List(fields.Str(), dump_only=True)
-    links = fields.Method("get_funder_url", dump_only=True)
-
-    def get_funder_url(self, obj):
-        """Get grant url."""
-        return dict(self=common.api_link_for("funder", id=obj["doi"]))
-
-
-class GrantSchema(Schema):
-    """Schema for a grant."""
-
-    title = fields.Str(dump_only=True)
-    code = fields.Str()
-    program = fields.Str(dump_only=True)
-    acronym = fields.Str(dump_only=True)
-    funder = fields.Nested(FunderSchema)
-    links = fields.Method("get_grant_url", dump_only=True)
-
-    def get_grant_url(self, obj):
-        """Get grant url."""
-        return dict(self=common.api_link_for("grant", id=obj["internal_id"]))
-
-
 class FilesSchema(Schema):
     """Files metadata schema."""
 
@@ -125,9 +97,25 @@ class MetadataSchema(common.MetadataSchema):
     alternate_identifiers = fields.Method("dump_alternate_identifiers")
 
     license = fields.Nested({"id": fields.Function(lambda x: x)})
-    grants = fields.Nested(GrantSchema, many=True)
+    grants = fields.Method("dump_grants")
     communities = fields.Method("dump_communities")
     relations = fields.Method("dump_relations")
+
+    def dump_grants(self, obj):
+        """Dump grants from funding field."""
+        funding = obj.get("funding", [])
+        if not funding:
+            return missing
+
+        ret = []
+        for funding_item in funding:
+            award = funding_item.get("award")
+            funder = funding_item.get("funder")
+            legacy_grant = self._grant(award, funder)
+            if not legacy_grant:
+                continue
+            ret.append(legacy_grant)
+        return ret or missing
 
     def dump_communities(self, obj):
         """Dump communities."""

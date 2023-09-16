@@ -10,7 +10,7 @@
 from invenio_communities.proxies import current_communities
 from marshmallow import Schema, fields, missing, post_dump, pre_dump
 from marshmallow_utils.fields import EDTFDateString, SanitizedHTML, SanitizedUnicode
-from zenodo_legacy.funders import FUNDER_ROR_TO_DOI
+from zenodo_legacy.funders import FUNDER_ACRONYMS, FUNDER_ROR_TO_DOI
 from zenodo_legacy.licenses import rdm_to_legacy
 
 
@@ -270,51 +270,52 @@ class MetadataSchema(Schema):
 
         return legacy_access
 
-    def _funder(self, funder):
-        """Serialize RDM funder into Zenodo legacy funder."""
-        legacy_funder = {"name": funder["name"]}
+    def _grant(self, award, funder):
+        """Serialize an RDM award and funder into a legacy Zenodo grant."""
+        funder_id = funder.get("id")
+        funder_id = FUNDER_ROR_TO_DOI.get(funder_id, funder_id)
+        award_number = award.get("number")
+        if not (funder_id and award_number):
+            return
 
-        for identifier in funder.get("identifiers"):
-            scheme = identifier["scheme"]
-
-            if scheme == "doi":
-                legacy_funder["doi"] = identifier["identifier"]
-
-        value = funder.get("country")
-        if value:
-            legacy_funder["country"] = value
-
-        return legacy_funder
-
-    def _award(self, award):
-        """Serialize an RDM award into a legacy Zenodo grant."""
-        funder_ror = award["funder"]["id"]
-        funder_doi_or_ror = FUNDER_ROR_TO_DOI.get(funder_ror, funder_ror)
-        legacy_grant = {
-            "code": award["number"],
-            "internal_id": f"{funder_doi_or_ror}::{award['id']}",
+        grant = {
+            "code": award_number,
+            "internal_id": f"{funder_id}::{award_number}",
+            "funder": {"name": funder["name"]},
         }
 
-        try:
-            title = award["title"].get("en", next(iter(award["title"])))
-            legacy_grant["title"] = title
-        except StopIteration:
-            pass
-
-        value = award.get("acronym")
-        if value:
-            legacy_grant["acronym"] = value
-
-        for identifier in award.get("identifiers"):
+        # Add more funder fields
+        for identifier in funder.get("identifiers", []):
             scheme = identifier["scheme"]
-
-            if scheme == "url":
-                legacy_grant["url"] = identifier["identifier"]
-
             if scheme == "doi":
-                legacy_grant["doi"] = identifier["doi"]
+                grant["funder"]["doi"] = identifier["identifier"]
+        if "doi" not in grant["funder"] and funder_id.startswith("10.13039/"):
+            grant["funder"]["doi"] = funder_id
+        country = funder.get("country")
+        if country:
+            grant["funder"]["country"] = country
+        acronym = FUNDER_ACRONYMS.get(funder_id) or funder.get("acronym")
+        if acronym:
+            grant["funder"]["acronym"] = acronym
 
-        return legacy_grant
+        # Add more award fields
+        i18n_title = award.get("title") or {}
+        title = i18n_title.get("en") or next(iter(i18n_title.values()), None)
+        if title:
+            grant["title"] = title
+
+        for key in ("acronym", "program"):
+            value = award.get(key)
+            if value:
+                grant[key] = value
+
+        for identifier in award.get("identifiers", []):
+            scheme = identifier["scheme"]
+            if scheme == "url":
+                grant["url"] = identifier["identifier"]
+            if scheme == "doi":
+                grant["doi"] = identifier["doi"]
+        return grant
 
     @post_dump(pass_original=True)
     def dump_additional_descriptions(self, result, original, **kwargs):
