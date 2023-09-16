@@ -32,14 +32,14 @@ jobs:
       matrix:
           package-dir: ["site", "legacy"]
           python-version: [3.9]
-          db-service: [postgresql13]
+          db-service: [postgresql14]
           search-service: [opensearch2]
           ignore-failure: [false]
           include:
           - package-dir: "migrator"
             ignore-failure: true
             python-version: 3.9
-            db-service: postgresql13
+            db-service: postgresql14
     env:
       DB: ${{ matrix.db-service }}
       SEARCH: ${{ matrix.search-service }}
