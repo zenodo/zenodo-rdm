@@ -26,7 +26,11 @@ from invenio_rdm_migrator.streams.oauth import (
     OAuthServerTokenCopyLoad,
     OAuthServerTokenTransform,
 )
-from invenio_rdm_migrator.streams.records import RDMDraftCopyLoad, RDMRecordCopyLoad, RDMVersionStateCopyLoad
+from invenio_rdm_migrator.streams.records import (
+    RDMDraftCopyLoad,
+    RDMRecordCopyLoad,
+    RDMVersionStateCopyLoad,
+)
 from invenio_rdm_migrator.streams.requests import RequestCopyLoad
 from invenio_rdm_migrator.streams.users import UserCopyLoad
 
@@ -128,7 +132,7 @@ OAuthClientStreamDefinition = StreamDefinition(
 """ETL stream for Zenodo to import OAutch clients related information."""
 
 OAuthServerClientStreamDefinition = StreamDefinition(
-    name="oauthserver",
+    name="oauthserver_clients",
     extract_cls=JSONLExtract,
     transform_cls=OAuthServerClientTransform,
     load_cls=OAuthServerClientCopyLoad,
@@ -136,7 +140,7 @@ OAuthServerClientStreamDefinition = StreamDefinition(
 """ETL stream for Zenodo to import OAutch clients related information."""
 
 OAuthServerTokenStreamDefinition = StreamDefinition(
-    name="oauthserver",
+    name="oauthserver_tokens",
     extract_cls=JSONLExtract,
     transform_cls=OAuthServerTokenTransform,
     load_cls=OAuthServerTokenCopyLoad,
