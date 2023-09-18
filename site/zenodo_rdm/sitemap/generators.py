@@ -12,8 +12,8 @@ from flask import current_app, url_for
 from invenio_communities.communities.records.models import CommunityMetadata
 from invenio_db import db
 from invenio_pidstore.models import PersistentIdentifier, PIDStatus
-from invenio_records.models import RecordMetadata
 from invenio_rdm_records.records.models import RDMRecordMetadata
+from invenio_records.models import RecordMetadata
 
 
 def _sitemapdtformat(dt):
