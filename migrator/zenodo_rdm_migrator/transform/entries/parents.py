@@ -26,11 +26,17 @@ class ParentRecordEntry(Entry):
         self.partial = partial
 
     def _communities(self, entry):
+        result = {}
         communities = entry["json"].get("communities")
         if communities:
             slugs = [slug for slug in communities]
-            return {"ids": slugs, "default": slugs[0]}
-        return {}
+            result["ids"] = slugs
+            # If there's only one community, we set it as the default also
+            if len(slugs) == 1:
+                result["default"] = slugs[0]
+            else:
+                result["default"] = None
+        return result
 
     def _pids(self, entry):
         pids = {}

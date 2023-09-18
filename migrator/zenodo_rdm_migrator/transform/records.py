@@ -10,7 +10,6 @@
 from invenio_rdm_migrator.streams.records import RDMRecordTransform
 
 from .entries.parents import ParentRecordEntry
-from .entries.records.record_files import ZenodoRDMRecordFileEntry
 from .entries.records.records import ZenodoDraftEntry, ZenodoRecordEntry
 
 
@@ -29,21 +28,6 @@ class ZenodoRecordTransform(RDMRecordTransform):
         """Extract a draft."""
         return ZenodoDraftEntry().transform(entry)
 
-    def _file_records(self, entry):
-        """Transform file records for an entry."""
-        files = entry["json"].get("_files", [])
-        return list(map(ZenodoRDMRecordFileEntry(context=entry).transform, files))
-
-    def _draft_files(self, entry):
-        """Transform file records of a record."""
-        # draft files are migrated as post load since new versions/new drafts
-        # do not have _files until they are saved so we cannot rely on it
-        return {}
-
-    def _record_files(self, entry):
-        """Transform file records of a record."""
-        return self._file_records(entry)
-
     def _transform(self, entry):
         """Transform a single entry."""
         is_draft = "deposits" in entry["json"]["$schema"]
@@ -60,11 +44,9 @@ class ZenodoRecordTransform(RDMRecordTransform):
             return {
                 "draft": draft,
                 "parent": parent,
-                "draft_files": self._draft_files(entry),
             }
 
         return {
             "record": self._record(entry),
             "parent": self._parent(entry),
-            "record_files": self._record_files(entry),
         }
