@@ -71,10 +71,13 @@ logs/
 **DS_Store
 
 # celerybeat
-celerybeat-schedule
+celerybeat-schedule*
 
 # migration data folder
 **/migrator/tmp
 
 # migration private script
 *migrate.private.sh
+
+# IDEs
+.vscode/
