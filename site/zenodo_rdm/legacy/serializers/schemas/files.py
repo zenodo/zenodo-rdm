@@ -7,7 +7,7 @@
 
 """Zenodo legacy files schemas."""
 
-from marshmallow import Schema, fields
+from marshmallow import Schema, fields, post_dump
 from marshmallow_utils.fields import SanitizedUnicode
 
 
@@ -53,3 +53,14 @@ class LegacyFilesRESTSchema(Schema):
             for k, v in obj["links"].items()
             if k.startswith("files_rest.")
         }
+
+
+class LegacyFileListSchema(Schema):
+    """Files list schema."""
+
+    entries = fields.List(fields.Nested(LegacyFileSchema), dump_only=True)
+
+    @post_dump()
+    def unwrap(self, data, many, **kwargs):
+        """Unwrap into a top-level array."""
+        return data.get("entries", [])
