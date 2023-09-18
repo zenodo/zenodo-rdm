@@ -26,7 +26,7 @@ from invenio_rdm_migrator.streams.oauth import (
     OAuthServerTokenCopyLoad,
     OAuthServerTokenTransform,
 )
-from invenio_rdm_migrator.streams.records import RDMDraftCopyLoad, RDMRecordCopyLoad
+from invenio_rdm_migrator.streams.records import RDMDraftCopyLoad, RDMRecordCopyLoad, RDMVersionStateCopyLoad
 from invenio_rdm_migrator.streams.requests import RequestCopyLoad
 from invenio_rdm_migrator.streams.users import UserCopyLoad
 
@@ -62,6 +62,22 @@ DraftStreamDefinition = StreamDefinition(
     load_cls=RDMDraftCopyLoad,
 )
 """ETL stream for Zenodo to RDM drafts."""
+
+DeletedRecordStreamDefinition = StreamDefinition(
+    name="deleted_records",
+    extract_cls=JSONLExtract,
+    transform_cls=ZenodoRecordTransform,
+    load_cls=RDMRecordCopyLoad,
+)
+"""ETL stream for Zenodo deleted records."""
+
+VersionStateStreamDefinition = StreamDefinition(
+    name="version_state",
+    extract_cls=JSONLExtract,
+    transform_cls=ZenodoRecordTransform,
+    load_cls=RDMVersionStateCopyLoad,
+)
+"""ETL stream for version state."""
 
 UserStreamDefinition = StreamDefinition(
     name="users",

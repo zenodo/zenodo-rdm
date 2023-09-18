@@ -514,6 +514,7 @@ def expected_rdm_record_entry():
                 "gbif-dwc:identifiedByID": ["foo", "bar"],
                 "gbif-dwc:recordedByID": ["foo", "bar"],
             },
+            "tombstone": None,
         },
     }
 
@@ -574,6 +575,26 @@ def test_record_transform_parent_record(zenodo_record_data, expected_rdm_record_
     """Tests the parent record transformation."""
     result = ZenodoRecordTransform()._parent(zenodo_record_data)
     assert not list(dictdiffer.diff(result, expected_rdm_record_parent))
+
+
+def test_record_transform_tombstone(zenodo_record_data, expected_rdm_record_entry):
+    """Tests record tombstone transformation."""
+    zenodo_record_data["removal_date"] = "2023-09-15T11:39:52.929322"
+    zenodo_record_data["removal_json"] = {
+        "removed_by": 567,
+        "removal_reason": "Spam record, removed by Zenodo staff.",
+    }
+    expected_rdm_record_entry["json"]["tombstone"] = {
+        "note": "Spam record, removed by Zenodo staff.",
+        "is_visible": True,
+        "removed_by": {"user": "567"},
+        "removal_date": "2023-09-15T11:39:52.929322",
+        "removal_reason": {"id": "spam"},
+        "citation_text": None,
+    }
+
+    result = ZenodoRecordEntry().transform(zenodo_record_data)
+    assert result == expected_rdm_record_entry
 
 
 ###

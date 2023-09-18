@@ -108,6 +108,25 @@ class ZenodoRecordEntry(RDMRecordEntry):
         """Transform custom fields."""
         return ZenodoCustomFieldsEntry.transform(entry["json"])
 
+    def _tombstone(self, entry):
+        """Transform tombstone."""
+        removal_json = entry.get("removal_json")
+        if removal_json:
+            removed_by = removal_json.get("removed_by") or None
+            if isinstance(removed_by, int):
+                removed_by = {"user": str(removed_by)}
+            note = removal_json.get("removal_reason") or ""
+            removal_reason = {"id": "spam"} if "spam" in note.lower() else None
+            removal_date = entry.get("removal_date")
+            return {
+                "note": note,
+                "is_visible": True,
+                "removed_by": removed_by,
+                "removal_date": removal_date,
+                "citation_text": None,
+                "removal_reason": removal_reason,
+            }
+
 
 class ZenodoDraftEntry(ZenodoRecordEntry):
     """Zenodo draft transform.
