@@ -40,8 +40,7 @@ def formatted_response(metrics):
     response = ""
     for metric in metrics:
         response += (
-            "# HELP {name} {help}\n# TYPE {name} {type}\n{name} "
-            "{value}\n".format(**metric)
-        )
+            "# HELP {name} {help}\n# TYPE {name} {type}\n{name} " "{value}\n"
+        ).format(**metric)
 
     return response

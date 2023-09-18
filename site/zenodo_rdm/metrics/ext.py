@@ -24,7 +24,7 @@ class ZenodoMetrics(object):
     def init_config(app):
         """Initialize configuration."""
         for k in dir(config):
-            if k.startswith("METRICS"):
+            if k.startswith("METRICS_"):
                 app.config.setdefault(k, getattr(config, k))
 
     def init_app(self, app):

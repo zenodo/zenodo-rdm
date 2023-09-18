@@ -46,7 +46,10 @@ class ZenodoMetric(object):
         download_volume = result.get("download_volume", {}).get("value", 0)
 
         search = (
-            Search(using=current_search_client, index=build_alias_name("rdmrecords"))
+            Search(
+                using=current_search_client,
+                index=build_alias_name("rdmrecords-records"),
+            )
             .filter("range", created=time_range)
             .params(request_timeout=120)
         )
