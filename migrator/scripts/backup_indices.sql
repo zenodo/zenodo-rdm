@@ -1,4 +1,5 @@
 -- From https://www.postgresql.org/message-id/flat/877em2racj.fsf%40gmail.com#36a9eba4b16b8172e379b2a19f403939
+DROP TABLE rdm_index_backup;
 CREATE TABLE rdm_index_backup AS
 SELECT *
 FROM pg_indexes
@@ -14,6 +15,9 @@ WHERE
     'accounts_user_login_information',
     'accounts_user_session_activity',
     'oauth2server_token',
+    'oauth2server_client',
+    'oauthclient_remoteaccount',
+    'oauthclient_remotetoken',
     'accounts_useridentity',
     -- communities
     'communities_metadata',
@@ -27,12 +31,19 @@ WHERE
     'rdm_drafts_metadata',
     'rdm_versions_state',
     'rdm_records_files',
+    'rdm_records_media_files',
     'rdm_drafts_files',
+    'rdm_drafts_media_files',
     'pidstore_pid',
     -- requests
     'request_metadata',
     -- github
     'webhooks_events',
     'github_repositories',
-    'github_releases'
+    'github_releases',
+    -- vocabularies
+    'name_metadata',
+    'affiliation_metadata',
+    'award_metadata',
+    'funder_metadata'
   );
