@@ -138,10 +138,11 @@ class LegacySchema(common.LegacySchema):
         result = []
         bucket_url = obj["links"].get("bucket")
         files_url = obj["links"]["files"]
-        for f in obj["files"]["entries"].values():
-            links = {"self": f"{files_url}/{f['id']}"}
+        for key, f in obj["files"].get("entries", {}).items():
+            file_id = f["id"]
+            links = {"self": f"{files_url}/{file_id}"}
             if bucket_url:
-                links["download"] = f"{bucket_url}/{f['key']}"
+                links["download"] = f"{bucket_url}/{key}"
             result.append(
                 {
                     "id": f["id"],
