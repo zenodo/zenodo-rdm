@@ -77,6 +77,40 @@ def app_config(app_config):
     app_config["BLUEPRINTS_URL_PREFIXES"] = {
         "invenio_files_rest": "/legacy-files",
     }
+    # OpenAIRE configs
+    app_config["OPENAIRE_PORTAL_URL"] = "https://explore.openaire.eu"
+    app_config["OPENAIRE_COMMUNITIES"] = {
+        "foo": {
+            "name": "Foo Optimization Organization",
+            "communities": [
+                "c1",
+                "c2",
+            ],
+            "types": {
+                "software": [
+                    {"id": "foo:t1", "name": "Foo sft type one"},
+                    {"id": "foo:t2", "name": "Foo sft type two"},
+                ],
+                "other": [
+                    {"id": "foo:t4", "name": "Foo other type four"},
+                    {"id": "foo:t5", "name": "Foo other type five"},
+                ],
+            },
+        },
+        "bar": {
+            "name": "Bar Association Resources",
+            "communities": ["c3", "c1"],
+            "types": {
+                "software": [
+                    {"id": "bar:t3", "name": "Bar sft type three"},
+                ],
+                "other": [
+                    {"id": "bar:t6", "name": "Bar other type six"},
+                ],
+            },
+        },
+    }
+
     return app_config
 
 
@@ -313,12 +347,70 @@ def resource_type_v(app, resource_type_type):
         },
     )
 
-    vocab = vocabulary_service.create(
+    vocabulary_service.create(
         system_identity,
         {
             "id": "image-photo",
             "tags": ["depositable", "linkable"],
             "type": "resourcetypes",
+            "props": {
+                "csl": "graphic",
+                "datacite_general": "Image",
+                "datacite_type": "Photo",
+                "openaire_resourceType": "0025",
+                "openaire_type": "dataset",
+                "eurepo": "info:eu-repo/semantics/other",
+                "schema.org": "https://schema.org/Photograph",
+                "subtype": "image-photo",
+                "type": "image",
+            },
+        },
+    )
+
+    vocabulary_service.create(
+        system_identity,
+        {
+            "id": "software",
+            "icon": "code",
+            "type": "resourcetypes",
+            "props": {
+                "csl": "software",
+                "datacite_general": "Software",
+                "datacite_type": "",
+                "openaire_resourceType": "0029",
+                "openaire_type": "software",
+                "eurepo": "info:eu-repo/semantics/other",
+                "schema.org": "https://schema.org/SoftwareSourceCode",
+                "subtype": "",
+                "type": "software",
+            },
+            "title": {"en": "Software", "de": "Software"},
+            "tags": ["depositable", "linkable"],
+        },
+    )
+
+    vocab = vocabulary_service.create(
+        system_identity,
+        {
+            "id": "other",
+            "icon": "asterisk",
+            "type": "resourcetypes",
+            "props": {
+                "csl": "article",
+                "datacite_general": "Other",
+                "datacite_type": "",
+                "openaire_resourceType": "0020",
+                "openaire_type": "other",
+                "eurepo": "info:eu-repo/semantics/other",
+                "schema.org": "https://schema.org/CreativeWork",
+                "subtype": "",
+                "type": "other",
+            },
+            "title": {
+                "en": "Other",
+                "de": "Sonstige",
+            },
+            "tags": ["depositable", "linkable"],
         },
     )
 
