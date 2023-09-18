@@ -27,10 +27,17 @@ class ZenodoRecordMetadataEntry(Entry):
         It can be part of a creator, contributor or thesis supervisor.
         """
         r = {"type": "personal"}
+        identifiers = []
         if creatibutor.get("orcid"):
-            r["identifiers"] = [
+            identifiers.append(
                 {"scheme": "orcid", "identifier": creatibutor["orcid"]},
-            ]
+            )
+        if creatibutor.get("gnd"):
+            identifiers.append(
+                {"scheme": "gnd", "identifier": creatibutor["gnd"]},
+            )
+        if identifiers:
+            r["identifiers"] = identifiers
 
         name = creatibutor["name"]
 
