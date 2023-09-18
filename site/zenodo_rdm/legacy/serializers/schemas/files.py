@@ -37,7 +37,7 @@ class LegacyFilesRESTSchema(Schema):
 
     version_id = SanitizedUnicode()
     key = SanitizedUnicode()
-    size = fields.Number()
+    size = fields.Integer()
     mimetype = SanitizedUnicode()
     checksum = SanitizedUnicode()
 
