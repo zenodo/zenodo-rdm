@@ -9,7 +9,7 @@
 from flask_resources import BaseListSchema, JSONSerializer
 from flask_resources.serializers import MarshmallowSerializer
 
-from .schema import OpenAIRESchema
+from zenodo_rdm.openaire.serializers.schema import OpenAIRESchema
 
 
 class OpenAIREV1Serializer(MarshmallowSerializer):
