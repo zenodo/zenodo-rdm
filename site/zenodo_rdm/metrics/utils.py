@@ -13,6 +13,7 @@ from invenio_cache import current_cache
 
 
 def get_metrics(metric_id):
+    """Get metrics from cache."""
     cached_data = current_cache.get(f"METRICS_CACHE::{metric_id}")
     if cached_data is not None:
         return cached_data
