@@ -11,7 +11,6 @@ from urllib.parse import urlparse
 
 from idutils import detect_identifier_schemes
 from invenio_rdm_migrator.transform import Entry, drop_nones
-from nameparser import HumanName
 from zenodo_legacy.funders import FUNDER_DOI_TO_ROR
 from zenodo_legacy.licenses import LEGACY_LICENSES, legacy_to_rdm
 
@@ -32,11 +31,20 @@ class ZenodoRecordMetadataEntry(Entry):
             r["identifiers"] = [
                 {"scheme": "orcid", "identifier": creatibutor["orcid"]},
             ]
-        name = HumanName(creatibutor["name"])
-        r["given_name"] = name.first
-        r["family_name"] = name.surnames
-        # autocompleted by RDM Metadata schema
-        r["name"] = f"{name.surnames}, {name.first}"
+
+        name = creatibutor["name"]
+
+        # We only split if users have strictly followed the input format.
+        if name.count(",") == 1:
+            family, given = name.split(",")
+            r["given_name"] = given.strip()
+            r["family_name"] = family.strip()
+            # autocompleted by RDM Metadata schema
+            r["name"] = name
+        else:
+            r["family_name"] = name
+            # autocompleted by RDM Metadata schema
+            r["name"] = name
 
         return r
 
