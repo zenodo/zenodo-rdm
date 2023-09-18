@@ -134,11 +134,14 @@ class MetadataSchema(Schema):
             else:
                 related_identifiers.append(identifier)
 
-        if related_identifiers:
-            data["related_identifiers"] = related_identifiers
+        # A single alternate identifier will need ot set
+        if input_identifiers:
+            if related_identifiers:
+                data["related_identifiers"] = related_identifiers
+            else:
+                data.pop("related_identifiers")
         if alternate_identifiers:
             data["alternate_identifiers"] = alternate_identifiers
-
         return data
 
     title = SanitizedUnicode()
@@ -182,6 +185,10 @@ class MetadataSchema(Schema):
             return missing
 
         for grant in grants:
+            # FP7 project grant - special case for FP7 project grant
+            if not "::" in grant["id"]:
+                grant["id"] = "10.13039/501100000780::{0}".format(grant["id"])
+
             # format "10.13039/501100000780::190101904"
             id_parts = grant["id"].split("::", 1)
             assert len(id_parts) == 2
