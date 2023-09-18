@@ -7,13 +7,14 @@
 
 """Zenodo legacy services."""
 
-from .files import LegacyFileSchema, LegacyFilesRESTSchema
+from .files import LegacyFileListSchema, LegacyFileSchema, LegacyFilesRESTSchema
 from .legacyjson import LegacySchema
 from .zenodojson import ZenodoSchema
 
 __all__ = (
-    "LegacySchema",
+    "LegacyFileListSchema",
     "LegacyFileSchema",
     "LegacyFilesRESTSchema",
+    "LegacySchema",
     "ZenodoSchema",
 )

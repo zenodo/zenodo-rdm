@@ -8,9 +8,15 @@
 """Zenodo legacy serializers."""
 
 from flask_resources import BaseListSchema, JSONSerializer, MarshmallowSerializer
-from marshmallow import post_dump
+from marshmallow import fields, post_dump
 
-from .schemas import LegacyFileSchema, LegacyFilesRESTSchema, LegacySchema, ZenodoSchema
+from .schemas import (
+    LegacyFileListSchema,
+    LegacyFileSchema,
+    LegacyFilesRESTSchema,
+    LegacySchema,
+    ZenodoSchema,
+)
 
 
 class LegacyListSchema(BaseListSchema):
@@ -59,7 +65,7 @@ class LegacyDraftFileJSONSerializer(MarshmallowSerializer):
         super().__init__(
             format_serializer_cls=JSONSerializer,
             object_schema_cls=LegacyFileSchema,
-            list_schema_cls=LegacyListSchema,
+            list_schema_cls=LegacyFileListSchema,
         )
 
 
