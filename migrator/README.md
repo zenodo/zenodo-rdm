@@ -204,7 +204,16 @@ psql $DB_URI -f scripts/records_dump.sql | sed 's/\\\\/\\/g' | gzip -c > "dumps/
 # Deposits/drafts, ~30min
 psql $DB_URI -f scripts/deposits_dump.sql | sed 's/\\\\/\\/g' | gzip -c > "dumps/deposits-$(date -I).jsonl.gz"
 
-# For dumping files we use a different style, since we're not filtering anything:
+# Oauth2 server clients
+psql $DB_URI -f scripts/oauth2server_clients_dump.sql | sed 's/\\\\/\\/g' > "dumps/oauth2server-clients-$(date -I).jsonl"
+# Oauth2 server tokens
+psql $DB_URI -f scripts/oauth2server_tokens_dump.sql | sed 's/\\\\/\\/g' > "dumps/oauth2server-tokens-$(date -I).jsonl"
+
+# NOTE: For OAuth client and files we use the CSV format, since we're not transforming anything
+# Oauth-Client accounts
+psql $DB_URI -f scripts/oauthclient_remoteaccount_dump.sql | sed 's/\\\\/\\/g' > "dumps/oauthclient_remoteaccount.csv"
+# Oauth-Client tokens
+psql $DB_URI -f scripts/oauthclient_remotetoken_dump.sql | sed 's/\\\\/\\/g' > "dumps/oauthclient_remotetoken.csv"
 # File instances, ~10min
 psql $DB_URI -f scripts/files_files_dump.sql | gzip -c > "dumps/files_files-$(date -I).csv.gz"
 # Buckets, ~1min

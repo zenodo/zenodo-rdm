@@ -21,11 +21,12 @@ from invenio_rdm_migrator.streams.github import (
 )
 from invenio_rdm_migrator.streams.oauth import (
     OAuthClientCopyLoad,
-    OAuthRemoteTokenTransform,
-    OAuthServerCopyLoad,
+    OAuthServerClientCopyLoad,
+    OAuthServerClientTransform,
+    OAuthServerTokenCopyLoad,
     OAuthServerTokenTransform,
 )
-from invenio_rdm_migrator.streams.records import RDMRecordCopyLoad
+from invenio_rdm_migrator.streams.records import RDMDraftCopyLoad, RDMRecordCopyLoad
 from invenio_rdm_migrator.streams.requests import RequestCopyLoad
 from invenio_rdm_migrator.streams.users import UserCopyLoad
 
@@ -58,7 +59,7 @@ DraftStreamDefinition = StreamDefinition(
     name="drafts",
     extract_cls=JSONLExtract,
     transform_cls=ZenodoRecordTransform,
-    load_cls=RDMRecordCopyLoad,
+    load_cls=RDMDraftCopyLoad,
 )
 """ETL stream for Zenodo to RDM drafts."""
 
@@ -104,21 +105,25 @@ AwardsStreamDefinition = StreamDefinition(
 
 OAuthClientStreamDefinition = StreamDefinition(
     name="oauthclient",
-    # only the tokens need loading from file, the rest are existing data
-    extract_cls=JSONLExtract,
-    # will use transform the tokens and forward on the rest
-    transform_cls=OAuthRemoteTokenTransform,
+    extract_cls=None,
+    transform_cls=None,
     load_cls=OAuthClientCopyLoad,
 )
 """ETL stream for Zenodo to import OAutch clients related information."""
 
-OAuthServerStreamDefinition = StreamDefinition(
+OAuthServerClientStreamDefinition = StreamDefinition(
     name="oauthserver",
-    # only the tokens need loading from file, the rest are existing data
     extract_cls=JSONLExtract,
-    # will use transform the tokens and forward on the rest
+    transform_cls=OAuthServerClientTransform,
+    load_cls=OAuthServerClientCopyLoad,
+)
+"""ETL stream for Zenodo to import OAutch clients related information."""
+
+OAuthServerTokenStreamDefinition = StreamDefinition(
+    name="oauthserver",
+    extract_cls=JSONLExtract,
     transform_cls=OAuthServerTokenTransform,
-    load_cls=OAuthServerCopyLoad,
+    load_cls=OAuthServerTokenCopyLoad,
 )
 """ETL stream for Zenodo to import OAutch clients related information."""
 
