@@ -194,15 +194,17 @@ directly on the legacy database, in the following manner:
 DB_URI="postgresql://zenodo@zenodo-legacy-db-host:5432/zenodo"
 
 # Users, ~30min
-psql $DB_URI -f scripts/users_dump.sql | sed 's/\\\\/\\/g' | gzip -c > "dumps/users-$(date -I).jsonl.gz"
+psql $DB_URI -f scripts/users_dump.sql | sed 's/\\\\/\\/g' > "dumps/users-$(date -I).jsonl"
 # Communities, ~5min
-psql $DB_URI -f scripts/communities_dump.sql | sed 's/\\\\/\\/g' | gzip -c > "dumps/communities-$(date -I).jsonl.gz"
+psql $DB_URI -f scripts/communities_dump.sql | sed 's/\\\\/\\/g' > "dumps/communities-$(date -I).jsonl"
 # Community record inclusion requests, ~10min
-psql $DB_URI -f scripts/requests_dump.sql | sed 's/\\\\/\\/g' | gzip -c > "dumps/requests-$(date -I).jsonl.gz"
+psql $DB_URI -f scripts/requests_dump.sql | sed 's/\\\\/\\/g' > "dumps/requests-$(date -I).jsonl"
 # Records, ~2-3h
-psql $DB_URI -f scripts/records_dump.sql | sed 's/\\\\/\\/g' | gzip -c > "dumps/records-$(date -I).jsonl.gz"
+psql $DB_URI -f scripts/records_dump.sql | sed 's/\\\\/\\/g' > "dumps/records-$(date -I).jsonl"
 # Deposits/drafts, ~30min
-psql $DB_URI -f scripts/deposits_dump.sql | sed 's/\\\\/\\/g' | gzip -c > "dumps/deposits-$(date -I).jsonl.gz"
+psql $DB_URI -f scripts/deposits_dump.sql | sed 's/\\\\/\\/g' > "dumps/deposits-$(date -I).jsonl"
+# Deleted records, ~3-4h
+psql $DB_URI -f scripts/deleted_records_dump.sql | sed 's/\\\\/\\/g' > "dumps/deleted-records-$(date -I).jsonl"
 
 # Oauth2 server clients
 psql $DB_URI -f scripts/oauth2server_clients_dump.sql | sed 's/\\\\/\\/g' > "dumps/oauth2server-clients-$(date -I).jsonl"
@@ -215,16 +217,16 @@ psql $DB_URI -f scripts/oauthclient_remoteaccount_dump.sql | sed 's/\\\\/\\/g' >
 # Oauth-Client tokens
 psql $DB_URI -f scripts/oauthclient_remotetoken_dump.sql | sed 's/\\\\/\\/g' > "dumps/oauthclient_remotetoken.csv"
 # File instances, ~10min
-psql $DB_URI -f scripts/files_files_dump.sql | gzip -c > "dumps/files_files-$(date -I).csv.gz"
+psql $DB_URI -f scripts/files_files_dump.sql > "dumps/files_files-$(date -I).csv"
 # Buckets, ~1min
-psql $DB_URI -f scripts/files_bucket_dump.sql | gzip -c > "dumps/files_bucket-$(date -I).csv.gz"
+psql $DB_URI -f scripts/files_bucket_dump.sql > "dumps/files_bucket-$(date -I).csv"
 # File object versions, ~3min
-psql $DB_URI -f scripts/files_object_dump.sql | gzip -c > "dumps/files_object-$(date -I).csv.gz"
+psql $DB_URI -f scripts/files_object_dump.sql > "dumps/files_object-$(date -I).csv"
 
 # Webhook Events
-psql $DB_URI -f scripts/webhook_events_dump.sql | gzip -c > "dumps/webhook_events-$(date -I).csv.gz"
+psql $DB_URI -f scripts/webhook_events_dump.sql > "dumps/webhook_events-$(date -I).csv"
 # GitHub repositories
-psql $DB_URI -f scripts/github_repositories_dump.sql | gzip -c > "dumps/github_repositories-$(date -I).csv.gz"
+psql $DB_URI -f scripts/github_repositories_dump.sql > "dumps/github_repositories-$(date -I).csv"
 # GitHub releases
-psql $DB_URI -f scripts/github_releases_dump.sql | gzip -c > "dumps/github_releases-$(date -I).jsonl.gz"
+psql $DB_URI -f scripts/github_releases_dump.sql > "dumps/github_releases-$(date -I).jsonl"
 ```
