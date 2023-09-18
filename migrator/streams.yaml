@@ -14,17 +14,27 @@ files:
 users:
   extract:
     filepath: /path/to/users.jsonl
+oauthclient:
+  existing_data: True
+oauthserver_clients:
+  extract:
+    filepath: /path/to/oauthserver_clients.jsonl
+oauthserver_tokens:
+  extract:
+    filepath: /path/to/oauthserver_tokens.jsonl
 communities:
   extract:
     filepath: /path/to/communities.jsonl
 records:
   extract:
     filepath: /path/to/records.jsonl
-  load:
-    versioning: false
 drafts:
   extract:
     filepath: /path/to/deposits.jsonl
+deleted_records:
+  extract:
+    filepath: /path/to/deleted_records.jsonl
+version_state:
 requests:
   extract:
     filepath: /path/to/requests.jsonl
