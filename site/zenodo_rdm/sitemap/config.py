@@ -8,7 +8,7 @@
 """Configuration for ZenodoRDM Sitemap."""
 
 #: Sitemap links URL scheme
-ZENODO_SITEMAP_URL_SCHEME = "https"
+SITEMAP_URL_SCHEME = "https"
 
 #: Max URLs per sitemap page
-ZENODO_SITEMAP_MAX_URL_COUNT = 10000
+SITEMAP_MAX_URL_COUNT = 10000

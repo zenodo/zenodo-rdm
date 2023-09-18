@@ -40,7 +40,7 @@ def records_generator():
         )
     )
 
-    scheme = current_app.config["ZENODO_SITEMAP_URL_SCHEME"]
+    scheme = current_app.config["SITEMAP_URL_SCHEME"]
     for pid, rm in q.yield_per(1000):
         yield {
             "loc": url_for(
@@ -56,7 +56,7 @@ def records_generator():
 def communities_generator():
     """Generate the communities links."""
     q = CommunityMetadata.query.filter(CommunityMetadata.is_deleted.is_(False))
-    scheme = current_app.config["ZENODO_SITEMAP_URL_SCHEME"]
+    scheme = current_app.config["SITEMAP_URL_SCHEME"]
     for comm in q.yield_per(1000):
         yield {
             "loc": url_for(
@@ -67,7 +67,7 @@ def communities_generator():
             ),
             "lastmod": _sitemapdtformat(comm.updated),
         }
-        for endpoint in "search", "about":
+        for endpoint in ("search", "about"):
             yield {
                 "loc": url_for(
                     f"invenio_communities.communities_{endpoint}",
