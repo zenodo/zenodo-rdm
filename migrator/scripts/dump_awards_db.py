@@ -13,11 +13,12 @@ import uuid
 from invenio_rdm_migrator.utils import ts
 
 DATA_PATHS = [
-    "awards-apr-2023.jsonl.gz",  # https://zenodo.org/record/7870151
-    "awards-mar-2023.jsonl.gz",  # https://zenodo.org/record/7803150
-    "awards-feb-2023.jsonl.gz",  # https://zenodo.org/record/7683844
-    "awards-jan-2023.jsonl.gz",  # https://zenodo.org/record/7561801
-    "awards-dec-2022.jsonl.gz",  # https://zenodo.org/record/7745773
+    "awards-2023-08.jsonl.gz"  # https://zenodo.org/record/8224080
+    "awards-2023-04.jsonl.gz"  # https://zenodo.org/record/7870151
+    "awards-2023-03.jsonl.gz"  # https://zenodo.org/record/7803150
+    "awards-2023-02.jsonl.gz"  # https://zenodo.org/record/7683844
+    "awards-2023-01.jsonl.gz"  # https://zenodo.org/record/7561801
+    "awards-2022-12.jsonl.gz"  # https://zenodo.org/record/7745773
 ]
 
 VOCABULARIES_AWARDS_OPENAIRE_FUNDERS = {
@@ -64,6 +65,16 @@ def transform_openaire_grant(data):
         return
 
     award["id"] = f"{funder_id}::{code}"
+
+    funding = next(iter(data.get("funding", [])), None)
+    if funding:
+        funding_stream_id = funding.get("funding_stream", {}).get("id", "")
+        # Example funding stream ID: `EC::HE::HORIZON-AG-UN`. We need the `EC`
+        # string, i.e. the second "part" of the identifier.
+        program = next(iter(funding_stream_id.split("::")[1:2]), "")
+        if program:
+            award["program"] = program
+
     identifiers = []
     if funder_id == VOCABULARIES_AWARDS_EC_ROR_ID:
         identifiers.append(
