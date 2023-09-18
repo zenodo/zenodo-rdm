@@ -10,7 +10,7 @@ from flask import current_app
 from marshmallow import Schema, fields, missing, pre_dump
 from marshmallow_utils.fields import ISODateString
 
-from ..utils import (
+from zenodo_rdm.openaire.utils import (
     get_resource_type_vocabulary,
     openaire_datasource_id,
     openaire_original_id,
