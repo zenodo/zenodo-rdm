@@ -177,6 +177,9 @@ class MetadataSchema(Schema):
             st = original.get(f"{t}_type")
             upload_type = {"id": f"{t}-{st}"} if st else {"id": t}
             result["resource_type"] = upload_type
+
+        if "language" in result:
+            result["languages"] = result.pop("language")
         return result
 
     def load_funding(self, obj):
