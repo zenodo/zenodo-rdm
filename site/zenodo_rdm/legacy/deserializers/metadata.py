@@ -50,9 +50,12 @@ class PersonSchema(Schema):
         name = original.get("name")
 
         if name:
-            human_name = HumanName(name)
-            result["given_name"] = human_name.first
-            result["family_name"] = human_name.surnames
+            if name.count(",") == 1:
+                family, given = name.split(",")
+                result["given_name"] = given.strip()
+                result["family_name"] = family.strip()
+            else:
+                result["family_name"] = name
 
         return result
 
