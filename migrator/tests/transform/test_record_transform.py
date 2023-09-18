@@ -10,7 +10,6 @@
 from datetime import datetime
 from unittest.mock import patch
 
-import dictdiffer
 import pytest
 
 from zenodo_rdm_migrator.errors import InvalidIdentifier
@@ -85,7 +84,7 @@ def zenodo_record_data():
             },
             "creators": [
                 {
-                    "gnd": "",
+                    "gnd": "170118215",
                     "name": "Doe, John",
                     "orcid": "0000-0001-6759-6273",
                     "familyname": "Doe",
@@ -136,7 +135,6 @@ def zenodo_record_data():
                 },
             ],
             "notes": "A note",
-            "license": {"$ref": "https://dx.zenodo.org/licenses/cc-zero"},
             "language": "eng",
             "alternate_identifiers": [
                 {
@@ -198,7 +196,7 @@ def zenodo_record_data():
                 "university": "Test University",
                 "supervisors": [
                     {
-                        "gnd": "",
+                        "gnd": "170118215",
                         "name": "Doe, Jane",
                         "orcid": "0000-0001-6759-6273",
                         "familyname": "Doe",
@@ -316,7 +314,11 @@ def expected_rdm_record_entry():
                         "person_or_org": {
                             "type": "personal",
                             "identifiers": [
-                                {"scheme": "orcid", "identifier": "0000-0001-6759-6273"}
+                                {
+                                    "scheme": "orcid",
+                                    "identifier": "0000-0001-6759-6273",
+                                },
+                                {"scheme": "gnd", "identifier": "170118215"},
                             ],
                             "name": "Doe, John",
                             "family_name": "Doe",
@@ -343,7 +345,11 @@ def expected_rdm_record_entry():
                         "person_or_org": {
                             "type": "personal",
                             "identifiers": [
-                                {"scheme": "orcid", "identifier": "0000-0001-6759-6273"}
+                                {
+                                    "scheme": "orcid",
+                                    "identifier": "0000-0001-6759-6273",
+                                },
+                                {"scheme": "gnd", "identifier": "170118215"},
                             ],
                             "name": "Doe, Jane",
                             "family_name": "Doe",
@@ -354,7 +360,7 @@ def expected_rdm_record_entry():
                     },
                 ],
                 "publisher": "CERN's Publishing",
-                "rights": [{"id": "cc-by-1.0"}],
+                "rights": [{"id": "cc0-1.0"}],
                 "dates": [
                     {
                         "date": "2018-03-21/2018-03-25",
@@ -404,7 +410,6 @@ def expected_rdm_record_entry():
                     {"subject": "Zenodo"},
                     {"subject": "RDM"},
                 ],
-                "rights": [{"id": "cc0-1.0"}],
                 "languages": [{"id": "eng"}],
                 "identifiers": [
                     {"scheme": "doi", "identifier": "10.13039/901100010730"}
@@ -547,7 +552,7 @@ def expected_rdm_record_parent():
 def test_record_entry(zenodo_record_data, expected_rdm_record_entry):
     """Test the transformation of a full Zenodo record."""
     result = ZenodoRecordEntry().transform(zenodo_record_data)
-    assert not list(dictdiffer.diff(result, expected_rdm_record_entry))
+    assert result == expected_rdm_record_entry
 
 
 def test_record_entry_with_restricted_files():
@@ -574,7 +579,7 @@ def test_record_entry_with_embargoed_files():
 def test_record_transform_parent_record(zenodo_record_data, expected_rdm_record_parent):
     """Tests the parent record transformation."""
     result = ZenodoRecordTransform()._parent(zenodo_record_data)
-    assert not list(dictdiffer.diff(result, expected_rdm_record_parent))
+    assert result == expected_rdm_record_parent
 
 
 def test_record_transform_tombstone(zenodo_record_data, expected_rdm_record_entry):
@@ -634,7 +639,7 @@ def zenodo_draft_data():
             "license": {"$ref": "http://dx.zenodo.org/licenses/cc-zero"},
             "creators": [
                 {
-                    "gnd": "",
+                    "gnd": "170118215",
                     "name": "Doe, John",
                     "orcid": "0000-0001-6759-6273",
                     "familyname": "Doe",
@@ -701,7 +706,7 @@ def zenodo_draft_data():
                 "university": "Test University",
                 "supervisors": [
                     {
-                        "gnd": "",
+                        "gnd": "170118215",
                         "name": "Doe, Jane",
                         "orcid": "0000-0001-6759-6273",
                         "familyname": "Doe",
@@ -811,7 +816,11 @@ def expected_rdm_draft_entry():
                         "person_or_org": {
                             "type": "personal",
                             "identifiers": [
-                                {"scheme": "orcid", "identifier": "0000-0001-6759-6273"}
+                                {
+                                    "scheme": "orcid",
+                                    "identifier": "0000-0001-6759-6273",
+                                },
+                                {"scheme": "gnd", "identifier": "170118215"},
                             ],
                             "name": "Doe, John",
                             "family_name": "Doe",
@@ -838,7 +847,11 @@ def expected_rdm_draft_entry():
                         "person_or_org": {
                             "type": "personal",
                             "identifiers": [
-                                {"scheme": "orcid", "identifier": "0000-0001-6759-6273"}
+                                {
+                                    "scheme": "orcid",
+                                    "identifier": "0000-0001-6759-6273",
+                                },
+                                {"scheme": "gnd", "identifier": "170118215"},
                             ],
                             "name": "Doe, Jane",
                             "family_name": "Doe",
@@ -1008,8 +1021,8 @@ def test_draft_entry(
         "migration",
     ]
     result = ZenodoRecordTransform()._transform(zenodo_draft_data)
-    assert not list(dictdiffer.diff(result["parent"], expected_rdm_draft_parent))
-    assert not list(dictdiffer.diff(result["draft"], expected_rdm_draft_entry))
+    assert result["parent"] == expected_rdm_draft_parent
+    assert result["draft"] == expected_rdm_draft_entry
 
 
 @patch(
@@ -1028,7 +1041,7 @@ def test_legacy_draft_entry(zenodo_draft_data, expected_rdm_draft_entry):
     result = ZenodoDraftEntry().transform(zenodo_draft_data)
     expected_rdm_draft_entry["json"]["id"] = "111111"
 
-    assert not list(dictdiffer.diff(result, expected_rdm_draft_entry))
+    assert result == expected_rdm_draft_entry
 
 
 def test_draft_entry_no_access(zenodo_draft_data):
@@ -1036,15 +1049,7 @@ def test_draft_entry_no_access(zenodo_draft_data):
     zenodo_draft_data["json"].pop("access_right")
     access = ZenodoDraftEntry().transform(zenodo_draft_data)["json"]["access"]
 
-    assert not list(
-        dictdiffer.diff(
-            access,
-            {
-                "record": "public",
-                "files": "restricted",
-            },
-        )
-    )
+    assert access == {"record": "public", "files": "restricted"}
 
 
 ###
