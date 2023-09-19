@@ -7,8 +7,6 @@
 
 """Proxies for ZenodoRDM stats module."""
 
-from __future__ import absolute_import, print_function
-
 from flask import current_app
 from werkzeug.local import LocalProxy
 

@@ -7,14 +7,12 @@
 
 """Exporter extension."""
 
-from __future__ import absolute_import, print_function
-
-from elasticsearch import Elasticsearch
-from elasticsearch.connection import RequestsHttpConnection
+from opensearchpy import OpenSearch
+from opensearchpy.connection import RequestsHttpConnection
 from flask import current_app
 from werkzeug.utils import cached_property
 
-from . import config
+from zenodo_rdm.stats import config
 
 
 class ZenodoStats(object):
@@ -29,19 +27,19 @@ class ZenodoStats(object):
     def search_client(self):
         """Elasticsearch client for stats queries."""
         client_config = (
-            current_app.config.get("ZENODO_STATS_ELASTICSEARCH_CLIENT_CONFIG") or {}
+            current_app.config.get("STATS_ELASTICSEARCH_CLIENT_CONFIG") or {}
         )
         client_config.setdefault(
             "hosts", current_app.config.get("SEARCH_ELASTIC_HOSTS")
         )
         client_config.setdefault("connection_class", RequestsHttpConnection)
-        return Elasticsearch(**client_config)
+        return OpenSearch(**client_config)
 
     @staticmethod
     def init_config(app):
         """Initialize configuration."""
         for k in dir(config):
-            if k.startswith("ZENODO_STATS_"):
+            if k.startswith("STATS_"):
                 app.config.setdefault(k, getattr(config, k))
 
     def init_app(self, app):
