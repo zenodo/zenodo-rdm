@@ -246,7 +246,7 @@ class OAuthLinkedAccountConnectAction(TransformAction):
             # so the worst case scenario is not too bad
             "oauthclient_remoteaccount": [OperationType.INSERT, OperationType.UPDATE],
             "oauthclient_remotetoken": [OperationType.INSERT],
-            "accounts_useridentity": [OperationType.INSERT],
+            "oauthclient_useridentity": [OperationType.INSERT],
         }
 
         for op in tx.operations:
@@ -275,7 +275,7 @@ class OAuthLinkedAccountConnectAction(TransformAction):
                         remote_account[key] = value
             elif op["source"]["table"] == "oauthclient_remotetoken":
                 remote_token = op["after"]
-            elif op["source"]["table"] == "accounts_useridentity":
+            elif op["source"]["table"] == "oauthclient_useridentity":
                 user_identity = op["after"]
 
         return {
@@ -301,7 +301,7 @@ class OAuthLinkedAccountDisconnectAction(TransformAction):
         rules = {
             "oauthclient_remoteaccount": OperationType.DELETE,
             "oauthclient_remotetoken": OperationType.DELETE,
-            "accounts_useridentity": OperationType.DELETE,
+            "oauthclient_useridentity": OperationType.DELETE,
         }
 
         for op in tx.operations:
@@ -322,7 +322,7 @@ class OAuthLinkedAccountDisconnectAction(TransformAction):
                 remote_account = op["before"]
             elif op["source"]["table"] == "oauthclient_remotetoken":
                 remote_token = op["before"]
-            elif op["source"]["table"] == "accounts_useridentity":
+            elif op["source"]["table"] == "oauthclient_useridentity":
                 user_identity = op["before"]
 
         return {
