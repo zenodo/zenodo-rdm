@@ -9,6 +9,8 @@
 from invenio_rdm_migrator.extract import JSONLExtract
 from invenio_rdm_migrator.load.postgresql.transactions import PostgreSQLTx
 from invenio_rdm_migrator.streams import StreamDefinition
+from invenio_rdm_migrator.streams.affiliations import ExistingAffiliationsLoad
+from invenio_rdm_migrator.streams.names import ExistingNamesLoad
 from invenio_rdm_migrator.streams.awards import ExistingAwardsLoad
 from invenio_rdm_migrator.streams.communities import CommunityCopyLoad
 from invenio_rdm_migrator.streams.files import ExistingFilesLoad
@@ -123,6 +125,23 @@ AwardsStreamDefinition = StreamDefinition(
 )
 """ETL stream for Zenodo to import awards."""
 
+AffiliationsStreamDefinition = StreamDefinition(
+    name="affiliations",
+    extract_cls=None,  # will use IdentityExtract
+    transform_cls=None,  # will use IdentityTransform
+    load_cls=ExistingAffiliationsLoad,
+)
+"""ETL stream for Zenodo to import affiliations."""
+
+NamesStreamDefinition = StreamDefinition(
+    name="names",
+    extract_cls=None,  # will use IdentityExtract
+    transform_cls=None,  # will use IdentityTransform
+    load_cls=ExistingNamesLoad,
+)
+"""ETL stream for Zenodo to import names."""
+
+
 OAuthClientStreamDefinition = StreamDefinition(
     name="oauthclient",
     extract_cls=None,
@@ -170,7 +189,6 @@ GitHubReleasesStreamDefinition = StreamDefinition(
     load_cls=GitHubReleasesCopyLoad,
 )
 """ETL stream for Zenodo to import GitHub releases."""
-
 
 ActionStreamDefinition = StreamDefinition(
     name="action",

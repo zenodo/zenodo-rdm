@@ -11,6 +11,7 @@ import sys
 from invenio_rdm_migrator.streams import Runner
 
 from .stream import (
+    AffiliationsStreamDefinition,
     ActionStreamDefinition,
     AwardsStreamDefinition,
     CommunitiesStreamDefinition,
@@ -18,6 +19,7 @@ from .stream import (
     DraftStreamDefinition,
     FilesStreamDefinition,
     FundersStreamDefinition,
+    NamesStreamDefinition,
     GitHubReleasesStreamDefinition,
     GitHubRepositoriesStreamDefinition,
     OAuthClientStreamDefinition,
@@ -40,6 +42,8 @@ if __name__ == "__main__":
             ActionStreamDefinition,
             FundersStreamDefinition,
             AwardsStreamDefinition,
+            AffiliationsStreamDefinition,
+            NamesStreamDefinition,
             UserStreamDefinition,
             OAuthClientStreamDefinition,
             OAuthServerClientStreamDefinition,

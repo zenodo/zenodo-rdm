@@ -9,6 +9,10 @@ funders:
   existing_data: True
 awards:
   existing_data: True
+affiliations:
+  existing_data: True
+names:
+  existing_data: True
 files:
   existing_data: True
 users:
