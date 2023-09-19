@@ -56,7 +56,7 @@ def state(tmp_dir):
     state_db = StateDB(
         db_dir=tmp_dir.name, validators={"parents": ParentModelValidator}
     )
-    STATE.initialized_state(state_db, cache=False)
+    STATE.initialized_state(state_db, cache=False, search_cache=False)
 
     return STATE
 

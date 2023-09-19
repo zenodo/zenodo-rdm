@@ -17,7 +17,7 @@ def create_community_manage_record_request(record_id):
 
     # add a permission flag to db (make record a legacy one)
     db_record = RDMRecord.get_record(record_id)
-    db_record.parent.permission_flags = {"can_community_manage_record": True}
+    db_record.parent.permission_flags = {"can_community_manage_record": False}
     db_record.parent.commit()
     db.session.commit()
 

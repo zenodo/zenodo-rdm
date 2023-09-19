@@ -96,13 +96,13 @@ class SubmitAction(actions.SubmitAction):
         # example: "May 11, 2024"
         expires_at = self.request.expires_at.strftime("%B %d, %Y")
         self.request["description"] = (
-            "<h4>Some of your records, that are going through migration process are part "
-            "of the communities that don't belong to you.</br>Accept this request to keep the old "
-            "behaviour and <b>allow community curators</b> to manage (edit, create new version, add to "
-            "another community, etc.) corresponding record. </br>In case of declining this "
+            "<h4>Some of your records, that are going through the migration process are part "
+            "of communities that don't belong to you.</br>Accept this request to adopt the new "
+            "behaviour and <b>allow community curators</b> to manage (edit, create new versions, add to "
+            "another community, etc.) your corresponding records. </br>In case of declining this "
             "request all your legacy records will be <b>removed from all communities</b> "
             "that you are not an owner of. </br></br>If you do not perform any action by "
-            f"<b>{expires_at}</b>, the permission for community curators to manage the record "
+            f"<b>{expires_at}</b>, the permission for community curators to manage your records "
             "will automatically be fully granted.</h4>"
         )
 

@@ -58,6 +58,7 @@ def expected_rdm_community():
             },
         },
         "bucket_id": None,
+        "deletion_status": "P",
     }
 
 
