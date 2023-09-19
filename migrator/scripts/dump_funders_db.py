@@ -7,13 +7,14 @@ To use call ``load_file(DATA_PATH, "funders.csv")``.
 """
 
 import csv
-import json
+import orjson as json
 import uuid
 
 from idutils import normalize_ror
 from invenio_rdm_migrator.utils import ts
 
-DATA_PATH = "v1.25-2023-05-11-ror-data.zip"  # https://zenodo.org/record/7926988
+DATA_PATH = "v1.32-2023-09-14-ror-data.zip"  # https://zenodo.org/record/8346986
+
 
 VOCABULARIES_FUNDER_SCHEMES = {
     "grid",
@@ -72,7 +73,7 @@ def load_file(datafile, outpath):
     with open(outpath, "w") as fout, open(datafile, "rb") as fp:
         print(f"[{ts()}] loading {datafile}")
         writer = csv.writer(fout)
-        entries = json.load(fp)
+        entries = json.loads(fp.read())
         for idx, data in enumerate(entries):
             if idx % 1000 == 0:
                 print(f"[{ts()}] {idx}")
