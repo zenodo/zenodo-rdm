@@ -10,7 +10,6 @@ from invenio_rdm_migrator.extract import JSONLExtract
 from invenio_rdm_migrator.load.postgresql.transactions import PostgreSQLTx
 from invenio_rdm_migrator.streams import StreamDefinition
 from invenio_rdm_migrator.streams.affiliations import ExistingAffiliationsLoad
-from invenio_rdm_migrator.streams.names import ExistingNamesLoad
 from invenio_rdm_migrator.streams.awards import ExistingAwardsLoad
 from invenio_rdm_migrator.streams.communities import CommunityCopyLoad
 from invenio_rdm_migrator.streams.files import ExistingFilesLoad
@@ -21,6 +20,7 @@ from invenio_rdm_migrator.streams.github import (
     GitHubReleasesCopyLoad,
     GitHubReleaseTransform,
 )
+from invenio_rdm_migrator.streams.names import ExistingNamesLoad
 from invenio_rdm_migrator.streams.oauth import (
     OAuthClientCopyLoad,
     OAuthServerClientCopyLoad,
@@ -41,9 +41,9 @@ from .transform import (
     ZenodoCommunityTransform,
     ZenodoRecordTransform,
     ZenodoRequestTransform,
-    ZenodoTxTransform,
     ZenodoUserTransform,
 )
+from .transform.transactions import ZenodoTxTransform
 
 CommunitiesStreamDefinition = StreamDefinition(
     name="communities",

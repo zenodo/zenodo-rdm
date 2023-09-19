@@ -7,9 +7,9 @@ To use call ``load_file(DATA_PATH, "funders.csv")``.
 """
 
 import csv
-import orjson as json
 import uuid
 
+import orjson as json
 from idutils import normalize_ror
 from invenio_rdm_migrator.utils import ts
 

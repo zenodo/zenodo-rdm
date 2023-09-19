@@ -11,17 +11,17 @@ import sys
 from invenio_rdm_migrator.streams import Runner
 
 from .stream import (
-    AffiliationsStreamDefinition,
     ActionStreamDefinition,
+    AffiliationsStreamDefinition,
     AwardsStreamDefinition,
     CommunitiesStreamDefinition,
     DeletedRecordStreamDefinition,
     DraftStreamDefinition,
     FilesStreamDefinition,
     FundersStreamDefinition,
-    NamesStreamDefinition,
     GitHubReleasesStreamDefinition,
     GitHubRepositoriesStreamDefinition,
+    NamesStreamDefinition,
     OAuthClientStreamDefinition,
     OAuthServerClientStreamDefinition,
     OAuthServerTokenStreamDefinition,
