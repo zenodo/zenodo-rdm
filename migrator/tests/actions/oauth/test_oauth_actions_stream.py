@@ -10,7 +10,13 @@
 import pytest
 import sqlalchemy as sa
 from invenio_rdm_migrator.streams import Stream
-from invenio_rdm_migrator.streams.models.oauth import ServerClient, ServerToken
+from invenio_rdm_migrator.streams.models.oauth import (
+    RemoteAccount,
+    RemoteToken,
+    ServerClient,
+    ServerToken,
+)
+from invenio_rdm_migrator.streams.models.users import UserIdentity
 
 from zenodo_rdm_migrator.transform.transactions import ZenodoTxTransform
 
@@ -164,3 +170,71 @@ def test_oauth_application_delete_action_stream(
     stream.run()
 
     assert not db_client_server.scalars(sa.select(ServerClient)).one_or_none()
+
+
+def test_oauth_linked_app_connect_action_stream(
+    db_client_server, pg_tx_load, test_extract_cls, tx_files_linked_accounts
+):
+    stream = Stream(
+        name="action",
+        extract=test_extract_cls(tx_files_linked_accounts["connect_orcid"]),
+        transform=ZenodoTxTransform(),
+        load=pg_tx_load,
+    )
+    stream.run()
+
+    assert db_client_server.scalars(sa.select(RemoteAccount)).one()
+    assert db_client_server.scalars(sa.select(RemoteToken)).one()
+    assert db_client_server.scalars(sa.select(UserIdentity)).one()
+
+
+@pytest.fixture(scope="function")
+def db_linked_account(database, session):
+    remote_account = RemoteAccount(
+        id=8546,
+        user_id=22858,
+        client_id="APP-MAX7XCD8Q98X4VT6",
+        extra_data='{"orcid": "0000-0002-5676-5956", "full_name": "Alex Ioannidis"}',
+        created="2023-06-29T13:00:00",
+        updated="2023-06-29T14:00:00",
+    )
+
+    remote_token = RemoteToken(
+        id_remote_account=8546,
+        token_type="",
+        access_token="R3RVeGc3K0RrM25rbXc4ZWxGM3oxYVA4LzcwVWpCNkM4aG8vRy9CNWxkZFFCMk9OR1d2d29lN3dKdWk2eEVTQQ==",
+        secret="",
+        created="2023-06-29T13:00:00",
+        updated="2023-06-29T14:00:00",
+    )
+
+    user_identity = UserIdentity(
+        id="0000-0002-5676-5956",
+        method="orcid",
+        id_user=22858,
+        created="2023-06-29T13:00:00",
+        updated="2023-06-29T14:00:00",
+    )
+
+    session.add(remote_account)
+    session.add(remote_token)
+    session.add(user_identity)
+    session.commit()
+
+    return session
+
+
+def test_oauth_linked_app_disconnect_action_stream(
+    db_linked_account, pg_tx_load, test_extract_cls, tx_files_linked_accounts
+):
+    stream = Stream(
+        name="action",
+        extract=test_extract_cls(tx_files_linked_accounts["disconnect_orcid"]),
+        transform=ZenodoTxTransform(),
+        load=pg_tx_load,
+    )
+    stream.run()
+
+    assert not db_linked_account.scalars(sa.select(RemoteAccount)).one_or_none()
+    assert not db_linked_account.scalars(sa.select(RemoteToken)).one_or_none()
+    assert not db_linked_account.scalars(sa.select(UserIdentity)).one_or_none()

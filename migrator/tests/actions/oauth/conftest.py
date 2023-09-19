@@ -27,3 +27,11 @@ def tx_files_applications():
     testdata_dir = Path(__file__).parent / "testdata" / "applications"
     assert testdata_dir.exists()
     return {f.stem: f for f in testdata_dir.iterdir() if f.is_file()}
+
+
+@pytest.fixture()
+def tx_files_linked_accounts():
+    """Transactions file paths."""
+    testdata_dir = Path(__file__).parent / "testdata" / "linked_accounts"
+    assert testdata_dir.exists()
+    return {f.stem: f for f in testdata_dir.iterdir() if f.is_file()}
