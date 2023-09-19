@@ -680,7 +680,7 @@ class TestOAuthLinkedAccountConnectAction:
                         },
                         {
                             "op": OperationType.INSERT,
-                            "source": {"table": "accounts_useridentity"},
+                            "source": {"table": "oauthclient_useridentity"},
                             "after": {},
                         },
                         {
@@ -705,7 +705,7 @@ class TestOAuthLinkedAccountConnectAction:
             },
             {
                 "op": OperationType.INSERT,
-                "source": {"table": "accounts_useridentity"},
+                "source": {"table": "oauthclient_useridentity"},
                 "after": {},
             },
             {
@@ -728,7 +728,7 @@ class TestOAuthLinkedAccountConnectAction:
             },
             {
                 "op": OperationType.INSERT,
-                "source": {"table": "accounts_useridentity"},
+                "source": {"table": "oauthclient_useridentity"},
                 "after": {},
             },
         ]
@@ -746,7 +746,7 @@ class TestOAuthLinkedAccountConnectAction:
             },
             {
                 "op": OperationType.INSERT,
-                "source": {"table": "accounts_useridentity"},
+                "source": {"table": "oauthclient_useridentity"},
                 "after": {},
             },
             {
@@ -769,7 +769,7 @@ class TestOAuthLinkedAccountConnectAction:
             },
             {
                 "op": OperationType.INSERT,
-                "source": {"table": "accounts_useridentity"},
+                "source": {"table": "oauthclient_useridentity"},
                 "after": {},
             },
             {
@@ -787,7 +787,7 @@ class TestOAuthLinkedAccountConnectAction:
             },
             {
                 "op": OperationType.INSERT,
-                "source": {"table": "accounts_useridentity"},
+                "source": {"table": "oauthclient_useridentity"},
                 "after": {},
             },
             {
@@ -828,7 +828,7 @@ class TestOAuthLinkedAccountConnectAction:
             },
             {
                 "op": OperationType.UPDATE,
-                "source": {"table": "accounts_useridentity"},
+                "source": {"table": "oauthclient_useridentity"},
                 "after": {},
             },
             {
@@ -904,7 +904,7 @@ class TestOAuthLinkedAccountDisconnectAction:
                         },
                         {
                             "op": OperationType.DELETE,
-                            "source": {"table": "accounts_useridentity"},
+                            "source": {"table": "oauthclient_useridentity"},
                             "after": {},
                         },
                     ],
@@ -924,7 +924,7 @@ class TestOAuthLinkedAccountDisconnectAction:
             },
             {
                 "op": OperationType.DELETE,
-                "source": {"table": "accounts_useridentity"},
+                "source": {"table": "oauthclient_useridentity"},
                 "after": {},
             },
         ]
@@ -937,7 +937,7 @@ class TestOAuthLinkedAccountDisconnectAction:
             },
             {
                 "op": OperationType.DELETE,
-                "source": {"table": "accounts_useridentity"},
+                "source": {"table": "oauthclient_useridentity"},
                 "after": {},
             },
         ]
@@ -968,7 +968,7 @@ class TestOAuthLinkedAccountDisconnectAction:
             },
             {
                 "op": OperationType.DELETE,
-                "source": {"table": "accounts_useridentity"},
+                "source": {"table": "oauthclient_useridentity"},
                 "after": {},
             },
         ]
@@ -992,7 +992,7 @@ class TestOAuthLinkedAccountDisconnectAction:
                 },
                 {
                     "op": OperationType.DELETE,
-                    "source": {"table": "accounts_useridentity"},
+                    "source": {"table": "oauthclient_useridentity"},
                     "after": {},
                 },
             ],

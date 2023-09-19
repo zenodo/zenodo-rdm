@@ -30,7 +30,12 @@ from invenio_rdm_migrator.streams.models.files import (
 )
 from invenio_rdm_migrator.streams.models.github import Release, Repository, WebhookEvent
 from invenio_rdm_migrator.streams.models.oai import OAISet
-from invenio_rdm_migrator.streams.models.oauth import ServerClient, ServerToken
+from invenio_rdm_migrator.streams.models.oauth import (
+    RemoteAccount,
+    RemoteToken,
+    ServerClient,
+    ServerToken,
+)
 from invenio_rdm_migrator.streams.models.pids import PersistentIdentifier
 from invenio_rdm_migrator.streams.models.records import (
     RDMDraftFile,
@@ -42,6 +47,7 @@ from invenio_rdm_migrator.streams.models.users import (
     LoginInformation,
     SessionActivity,
     User,
+    UserIdentity,
 )
 from invenio_rdm_migrator.streams.records.state import ParentModelValidator
 
@@ -162,12 +168,15 @@ def database(engine):
         RDMParentMetadata,
         RDMVersionState,
         RDMParentCommunityMetadata,
+        RemoteAccount,
+        RemoteToken,
         Release,
         Repository,
         ServerClient,
         ServerToken,
         SessionActivity,
         User,
+        UserIdentity,
         WebhookEvent,
     ]
 
