@@ -213,3 +213,19 @@ class LegacySchema(Schema):
             result.setdefault("custom_fields", {})
             result["custom_fields"].update({"legacy:communities": community_ids})
         return result
+
+    @post_load(pass_original=True)
+    def load_subjects(self, result, original, **kwargs):
+        """Store legacy subjects as a custom field."""
+        subjects = original.get("metadata", {}).get("subjects", [])
+        if subjects:
+            result.setdefault("custom_fields", {})
+            result["custom_fields"]["legacy:subjects"] = [
+                {
+                    "term": s.get("term"),
+                    "identifier": s.get("identifier"),
+                    "scheme": s.get("scheme"),
+                }
+                for s in subjects
+            ]
+        return result

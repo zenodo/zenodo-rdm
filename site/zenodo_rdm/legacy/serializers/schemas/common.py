@@ -166,6 +166,9 @@ class MetadataSchema(Schema):
     creators = fields.List(fields.Nested(CreatorSchema), dump_only=True)
     contributors = fields.List(fields.Nested(ContributorSchema), dump_only=True)
 
+    keywords = fields.Method("dump_keywords")
+    subjects = fields.Raw(attribute="custom_fields.legacy:subjects")
+
     related_identifiers = fields.List(fields.Nested(RelatedIdentifierSchema))
 
     locations = fields.Method("dump_locations")
@@ -212,11 +215,9 @@ class MetadataSchema(Schema):
             data["license"] = rdm_to_legacy(license["id"])
         return data
 
-    @post_dump(pass_original=True)
-    def dump_subjects(self, result, original, **kwargs):
-        """Dumps subjects."""
-        subjects = original.get("subjects", [])
-        serialized_subjects = []
+    def dump_keywords(self, obj):
+        """Dumps keywords from RDM subjects."""
+        subjects = obj.get("subjects", [])
         serialized_keywords = []
         if subjects:
             for _sbj in subjects:
@@ -224,19 +225,12 @@ class MetadataSchema(Schema):
                 _subject = _sbj.get("subject")
                 # If subject has an id, it's a controlled vocabulary
                 if _id:
-                    # TODO we still did not define a strategy to map legacy subjects to rdm.
                     pass
                 # Otherwise it's a free text string (keyword)
                 elif _subject:
                     serialized_keywords.append(_subject)
 
-        if serialized_keywords:
-            result["keywords"] = serialized_keywords
-
-        if serialized_subjects:
-            result["subjects"] = serialized_subjects
-
-        return result
+        return serialized_keywords or missing
 
     def dump_reference(self, obj):
         """Dumps reference."""

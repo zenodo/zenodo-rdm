@@ -14,6 +14,20 @@ class ZenodoCustomFieldsEntry(Entry):
     """Custom fields entry transform."""
 
     @classmethod
+    def _subjects(cls, subjects):
+        """Parse subjects."""
+        res = []
+        for s in subjects or []:
+            res.append(
+                {
+                    "term": s.get("term"),
+                    "identifier": s.get("identifier"),
+                    "scheme": s.get("scheme"),
+                }
+            )
+        return res or None
+
+    @classmethod
     def _journal(cls, journal):
         """Parse journal fields."""
         return {
@@ -131,6 +145,7 @@ class ZenodoCustomFieldsEntry(Entry):
                 entry.get("imprint", {}), entry.get("part_of", {})
             ),
             "thesis:university": entry.get("thesis", {}).get("university"),
+            "legacy:subjects": cls._subjects(entry.get("subjects", [])),
             "openbiodiv:TaxonomicConceptLabel": entry.get("custom", {}).get(
                 "openbiodiv:TaxonomicConceptLabel"
             ),
