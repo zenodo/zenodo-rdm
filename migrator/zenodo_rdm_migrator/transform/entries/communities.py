@@ -68,6 +68,10 @@ class ZenodoCommunityEntry(CommunityEntry):
         """Returns the community bucket id."""
         return None
 
+    def _deletion_status(self, entry):
+        """Returns the community's deletion status."""
+        return "P"
+
     def _metadata(self, entry):
         """Returns community metadata."""
         # Clean-up description
