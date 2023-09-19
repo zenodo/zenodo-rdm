@@ -19,6 +19,8 @@ from zenodo_rdm_migrator.actions.transform import (
     OAuthApplicationCreateAction,
     OAuthApplicationDeleteAction,
     OAuthApplicationUpdateAction,
+    OAuthLinkedAccountConnectAction,
+    OAuthLinkedAccountDisconnectAction,
     OAuthServerTokenCreateAction,
     OAuthServerTokenDeleteAction,
     OAuthServerTokenUpdateAction,
@@ -635,3 +637,387 @@ class TestOAuthApplicationDeleteAction:
             )
         )
         assert isinstance(action.transform(), load.OAuthApplicationDeleteAction)
+
+
+##
+# LINKED ACCOUNTS
+##
+
+
+@pytest.fixture()
+def connect_orcid_oauth_application_tx():
+    """Transaction data to connect an OAuth ORCID account.
+
+    As it would be after the extraction step.
+    """
+    datafile = (
+        Path(__file__).parent / "testdata" / "linked_accounts" / "connect_orcid.jsonl"
+    )
+    with open(datafile, "rb") as reader:
+        ops = [orjson.loads(line)["value"] for line in reader]
+
+    return {"tx_id": 1, "operations": ops}
+
+
+class TestOAuthLinkedAccountConnectAction:
+    """Connect an OAuth account action tests."""
+
+    def test_matches_with_valid_data(self):
+        assert (
+            OAuthLinkedAccountConnectAction.matches_action(
+                Tx(
+                    id=1,
+                    operations=[
+                        {
+                            "op": OperationType.INSERT,
+                            "source": {"table": "oauthclient_remoteaccount"},
+                            "after": {},
+                        },
+                        {
+                            "op": OperationType.INSERT,
+                            "source": {"table": "oauthclient_remotetoken"},
+                            "after": {},
+                        },
+                        {
+                            "op": OperationType.INSERT,
+                            "source": {"table": "accounts_useridentity"},
+                            "after": {},
+                        },
+                        {
+                            "op": OperationType.UPDATE,
+                            "source": {"table": "oauthclient_remoteaccount"},
+                            "after": {},
+                        },
+                    ],
+                )
+            )
+            is True
+        )
+
+    def test_matches_with_invalid_data(self):
+        empty = []
+
+        no_account = [
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "oauthclient_remotetoken"},
+                "after": {},
+            },
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "accounts_useridentity"},
+                "after": {},
+            },
+            {
+                "op": OperationType.UPDATE,
+                "source": {"table": "oauthclient_remoteaccount"},
+                "after": {},
+            },
+        ]
+
+        no_account_update = [
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "oauthclient_remoteaccount"},
+                "after": {},
+            },
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "oauthclient_remotetoken"},
+                "after": {},
+            },
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "accounts_useridentity"},
+                "after": {},
+            },
+        ]
+
+        double_insert = [
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "oauthclient_remoteaccount"},
+                "after": {},
+            },
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "oauthclient_remotetoken"},
+                "after": {},
+            },
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "accounts_useridentity"},
+                "after": {},
+            },
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "oauthclient_remoteaccount"},
+                "after": {},
+            },
+        ]
+
+        double_update = [
+            {
+                "op": OperationType.UPDATE,
+                "source": {"table": "oauthclient_remoteaccount"},
+                "after": {},
+            },
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "oauthclient_remotetoken"},
+                "after": {},
+            },
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "accounts_useridentity"},
+                "after": {},
+            },
+            {
+                "op": OperationType.UPDATE,
+                "source": {"table": "oauthclient_remoteaccount"},
+                "after": {},
+            },
+        ]
+
+        no_token = [
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "oauthclient_remoteaccount"},
+                "after": {},
+            },
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "accounts_useridentity"},
+                "after": {},
+            },
+            {
+                "op": OperationType.UPDATE,
+                "source": {"table": "oauthclient_remoteaccount"},
+                "after": {},
+            },
+        ]
+
+        no_user_identity = [
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "oauthclient_remoteaccount"},
+                "after": {},
+            },
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "oauthclient_remotetoken"},
+                "after": {},
+            },
+            {
+                "op": OperationType.UPDATE,
+                "source": {"table": "oauthclient_remoteaccount"},
+                "after": {},
+            },
+        ]
+
+        wrong_op = [
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "oauthclient_remoteaccount"},
+                "after": {},
+            },
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "oauthclient_remotetoken"},
+                "after": {},
+            },
+            {
+                "op": OperationType.UPDATE,
+                "source": {"table": "accounts_useridentity"},
+                "after": {},
+            },
+            {
+                "op": OperationType.UPDATE,
+                "source": {"table": "oauthclient_remoteaccount"},
+                "after": {},
+            },
+        ]
+
+        for invalid_ops in [
+            empty,
+            no_account,
+            no_account_update,
+            double_insert,
+            double_update,
+            no_token,
+            no_user_identity,
+            wrong_op,
+        ]:
+            assert (
+                OAuthLinkedAccountConnectAction.matches_action(
+                    Tx(id=1, operations=invalid_ops)
+                )
+                is False
+            )
+
+    def test_transform_with_valid_data(self, connect_orcid_oauth_application_tx):
+        action = OAuthLinkedAccountConnectAction(
+            Tx(
+                id=connect_orcid_oauth_application_tx["tx_id"],
+                operations=connect_orcid_oauth_application_tx["operations"],
+            )
+        )
+        assert isinstance(action.transform(), load.OAuthLinkedAccountConnectAction)
+
+
+@pytest.fixture()
+def disconnect_orcid_oauth_application_tx():
+    """Transaction data to connect an OAuth ORCID account.
+
+    As it would be after the extraction step.
+    """
+    datafile = (
+        Path(__file__).parent
+        / "testdata"
+        / "linked_accounts"
+        / "disconnect_orcid.jsonl"
+    )
+    with open(datafile, "rb") as reader:
+        ops = [orjson.loads(line)["value"] for line in reader]
+
+    return {"tx_id": 1, "operations": ops}
+
+
+class TestOAuthLinkedAccountDisconnectAction:
+    """Disonnect an OAuth account action tests."""
+
+    def test_matches_with_valid_data(self):
+        assert (
+            OAuthLinkedAccountDisconnectAction.matches_action(
+                Tx(
+                    id=1,
+                    operations=[
+                        {
+                            "op": OperationType.DELETE,
+                            "source": {"table": "oauthclient_remoteaccount"},
+                            "after": {},
+                        },
+                        {
+                            "op": OperationType.DELETE,
+                            "source": {"table": "oauthclient_remotetoken"},
+                            "after": {},
+                        },
+                        {
+                            "op": OperationType.DELETE,
+                            "source": {"table": "accounts_useridentity"},
+                            "after": {},
+                        },
+                    ],
+                )
+            )
+            is True
+        )
+
+    def test_matches_with_invalid_data(self):
+        empty = []
+
+        no_account = [
+            {
+                "op": OperationType.DELETE,
+                "source": {"table": "oauthclient_remotetoken"},
+                "after": {},
+            },
+            {
+                "op": OperationType.DELETE,
+                "source": {"table": "accounts_useridentity"},
+                "after": {},
+            },
+        ]
+
+        no_token = [
+            {
+                "op": OperationType.DELETE,
+                "source": {"table": "oauthclient_remoteaccount"},
+                "after": {},
+            },
+            {
+                "op": OperationType.DELETE,
+                "source": {"table": "accounts_useridentity"},
+                "after": {},
+            },
+        ]
+
+        no_user_identity = [
+            {
+                "op": OperationType.DELETE,
+                "source": {"table": "oauthclient_remoteaccount"},
+                "after": {},
+            },
+            {
+                "op": OperationType.DELETE,
+                "source": {"table": "oauthclient_remotetoken"},
+                "after": {},
+            },
+        ]
+
+        wrong_op = [
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "oauthclient_remoteaccount"},
+                "after": {},
+            },
+            {
+                "op": OperationType.DELETE,
+                "source": {"table": "oauthclient_remotetoken"},
+                "after": {},
+            },
+            {
+                "op": OperationType.DELETE,
+                "source": {"table": "accounts_useridentity"},
+                "after": {},
+            },
+        ]
+
+        extra_op = (
+            [
+                {
+                    "op": OperationType.DELETE,
+                    "source": {"table": "another"},
+                    "after": {},
+                },
+                {
+                    "op": OperationType.DELETE,
+                    "source": {"table": "oauthclient_remoteaccount"},
+                    "after": {},
+                },
+                {
+                    "op": OperationType.DELETE,
+                    "source": {"table": "oauthclient_remotetoken"},
+                    "after": {},
+                },
+                {
+                    "op": OperationType.DELETE,
+                    "source": {"table": "accounts_useridentity"},
+                    "after": {},
+                },
+            ],
+        )
+
+        for invalid_ops in [
+            empty,
+            no_account,
+            no_token,
+            no_user_identity,
+            wrong_op,
+            extra_op,
+        ]:
+            assert (
+                OAuthLinkedAccountDisconnectAction.matches_action(
+                    Tx(id=1, operations=invalid_ops)
+                )
+                is False
+            )
+
+    def test_transform_with_valid_data(self, disconnect_orcid_oauth_application_tx):
+        action = OAuthLinkedAccountDisconnectAction(
+            Tx(
+                id=disconnect_orcid_oauth_application_tx["tx_id"],
+                operations=disconnect_orcid_oauth_application_tx["operations"],
+            )
+        )
+        assert isinstance(action.transform(), load.OAuthLinkedAccountDisconnectAction)
