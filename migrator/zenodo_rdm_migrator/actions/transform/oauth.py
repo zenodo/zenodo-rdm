@@ -10,7 +10,10 @@
 from invenio_rdm_migrator.actions import TransformAction
 from invenio_rdm_migrator.load.postgresql.transactions.operations import OperationType
 from invenio_rdm_migrator.streams.actions import load
-from invenio_rdm_migrator.streams.oauth import OAuthServerTokenTransform
+from invenio_rdm_migrator.streams.oauth import (
+    OAuthServerClientTransform,
+    OAuthServerTokenTransform,
+)
 from invenio_rdm_migrator.transform import IdentityTransform
 
 
@@ -52,7 +55,7 @@ class OAuthServerTokenCreateAction(TransformAction):
 
         result = {
             "tx_id": self.tx.id,
-            "client": IdentityTransform()._transform(client_src),
+            "client": OAuthServerClientTransform()._transform(client_src),
             "token": OAuthServerTokenTransform()._transform(token_src),
         }
 
@@ -99,7 +102,7 @@ class OAuthServerTokenUpdateAction(TransformAction):
 
         for op in self.tx.operations:
             if op["source"]["table"] == "oauth2server_client":
-                result["client"] = IdentityTransform()._transform(op["after"])
+                result["client"] = OAuthServerClientTransform()._transform(op["after"])
 
             elif op["source"]["table"] == "oauth2server_token":
                 result["token"] = OAuthServerTokenTransform()._transform(op["after"])
@@ -161,7 +164,7 @@ class OAuthApplicationCreateAction(TransformAction):
 
         return {
             "tx_id": self.tx.id,
-            "client": IdentityTransform()._transform(op["after"]),
+            "client": OAuthServerClientTransform()._transform(op["after"]),
         }
 
 
@@ -193,7 +196,7 @@ class OAuthApplicationUpdateAction(TransformAction):
 
         return {
             "tx_id": self.tx.id,
-            "client": IdentityTransform()._transform(op["after"]),
+            "client": OAuthServerClientTransform()._transform(op["after"]),
         }
 
 
@@ -222,5 +225,109 @@ class OAuthApplicationDeleteAction(TransformAction):
 
         return {
             "tx_id": self.tx.id,
-            "client": IdentityTransform()._transform(op["before"]),
+            "client": OAuthServerClientTransform()._transform(op["before"]),
+        }
+
+
+class OAuthLinkedAccountConnectAction(TransformAction):
+    """Zenodo to RDM OAuth client linked account connect action."""
+
+    name = "oauth-application-connect"
+    load_cls = load.OAuthLinkedAccountConnectAction
+
+    @classmethod
+    def matches_action(cls, tx):
+        """Checks if the data corresponds with that required by the action."""
+        if len(tx.operations) != 4:
+            return False
+
+        rules = {
+            # OpType is not hashable (to use a dict), the list won't be long in any case
+            # so the worst case scenario is not too bad
+            "oauthclient_remoteaccount": [OperationType.INSERT, OperationType.UPDATE],
+            "oauthclient_remotetoken": [OperationType.INSERT],
+            "accounts_useridentity": [OperationType.INSERT],
+        }
+
+        for op in tx.operations:
+            rule = rules.get(op["source"]["table"])
+            if not rule:
+                return False
+            try:
+                rule.remove(op["op"])  # prevents double update/insert in sets
+            except ValueError:
+                return False
+
+        return True
+
+    def _transform_data(self):
+        """Transforms the data and returns dictionary."""
+        remote_account = None
+        remote_token = None
+        user_identity = None
+
+        for op in self.tx.operations:
+            if op["source"]["table"] == "oauthclient_remoteaccount":
+                if op["op"] == OperationType.INSERT:
+                    remote_account = op["after"]
+                else:
+                    for key, value in op["after"].items():
+                        remote_account[key] = value
+            elif op["source"]["table"] == "oauthclient_remotetoken":
+                remote_token = op["after"]
+            elif op["source"]["table"] == "accounts_useridentity":
+                user_identity = op["after"]
+
+        return {
+            "tx_id": self.tx.id,
+            "remote_account": IdentityTransform()._transform(remote_account),
+            "remote_token": IdentityTransform()._transform(remote_token),
+            "user_identity": IdentityTransform()._transform(user_identity),
+        }
+
+
+class OAuthLinkedAccountDisconnectAction(TransformAction):
+    """Zenodo to RDM OAuth client linked account disconnect action."""
+
+    name = "oauth-application-disconnect"
+    load_cls = load.OAuthLinkedAccountDisconnectAction
+
+    @classmethod
+    def matches_action(cls, tx):
+        """Checks if the data corresponds with that required by the action."""
+        if len(tx.operations) != 3:
+            return False
+
+        rules = {
+            "oauthclient_remoteaccount": OperationType.DELETE,
+            "oauthclient_remotetoken": OperationType.DELETE,
+            "accounts_useridentity": OperationType.DELETE,
+        }
+
+        for op in tx.operations:
+            rule = rules.pop(op["source"]["table"], None)
+            if not rule or rule != op["op"]:
+                return False
+
+        return True
+
+    def _transform_data(self):
+        """Transforms the data and returns dictionary."""
+        remote_account = None
+        remote_token = None
+        user_identity = None
+
+        for op in self.tx.operations:
+            if op["source"]["table"] == "oauthclient_remoteaccount":
+                remote_account = op["before"]
+            elif op["source"]["table"] == "oauthclient_remotetoken":
+                remote_token = op["before"]
+            elif op["source"]["table"] == "accounts_useridentity":
+                user_identity = op["before"]
+
+        return {
+            "tx_id": self.tx.id,
+            "remote_account": IdentityTransform()._transform(remote_account),
+            "remote_token": IdentityTransform()._transform(remote_token),
+            "user_identity": IdentityTransform()._transform(user_identity),
         }
