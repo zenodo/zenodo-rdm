@@ -27,7 +27,7 @@ FUNDER_DOI_TO_ROR = {
     "10.13039/501100000038": "01h531d29",
     "10.13039/100000001": "021nxhr62",
     "10.13039/501100003246": "04jsz6e67",
-    # NOTE: RCUK (10.13039/100014013) was succeeded by UKRI (10.13039/501100000690).
+    # NOTE: RCUK (10.13039/501100000690) was succeeded by UKRI (10.13039/100014013).
     # All awards/grants were transferred, so we're also remapping the funder IDs to
     # point to the UKRI ROR ID (001aqnf71).
     "10.13039/501100000690": "001aqnf71",
