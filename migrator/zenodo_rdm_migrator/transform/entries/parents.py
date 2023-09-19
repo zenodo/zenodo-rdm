@@ -8,6 +8,7 @@
 """Zenodo migrator parent record transformer entries."""
 
 
+from invenio_rdm_migrator.state import STATE
 from invenio_rdm_migrator.transform import Entry
 
 from ...errors import NoConceptRecidForDraft
@@ -76,15 +77,28 @@ class ParentRecordEntry(Entry):
                 # we raise so the error logger writes these cases in the log file
                 raise NoConceptRecidForDraft(draft=entry)
 
+            communities = self._communities(entry)
             transformed["json"] = {
                 # loader is responsible for creating/updating if the PID exists.
                 "id": parent_pid,
-                "communities": self._communities(entry),
+                "communities": communities,
                 "pids": self._pids(entry),
             }
             owner = next(iter(entry["json"].get("owners", [])), None)
             if owner is not None:
                 transformed["json"]["access"] = {"owned_by": {"user": owner}}
+
+            permission_flags = {}
+            owner_comm_slugs = {
+                comm["slug"]
+                for comm in (
+                    STATE.COMMUNITIES.search("owner_id", owner) if owner else []
+                )
+            }
+            comm_slugs = set(communities.get("ids", []))
+            has_only_managed_communities = comm_slugs < owner_comm_slugs
+            if not has_only_managed_communities:
+                permission_flags["can_community_manage_record"] = False
         elif not self.partial:
             raise KeyError("json")
         # else, pass

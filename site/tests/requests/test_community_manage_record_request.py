@@ -87,7 +87,7 @@ def test_submit_a_request(uploader):
     assert db_request["title"] == "Communities manage legacy records"
     assert db_request["expires_at"] is not None
     assert db_request["description"].startswith(
-        "<h4>Some of your records, that are going through migration"
+        "<h4>Some of your records, that are going through the migration"
     )
 
 
