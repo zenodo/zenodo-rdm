@@ -158,7 +158,7 @@ class MetadataSchema(Schema):
     contributors = fields.List(fields.Dict())
     additional_descriptions = fields.List(fields.Dict())
     locations = fields.Method(deserialize="load_locations")
-    subjects = fields.List(fields.Dict())
+    subjects = fields.Method(deserialize="load_subjects", data_key="keywords")
     version = SanitizedUnicode()
     dates = fields.Method(deserialize="load_dates")
     references = fields.Method(deserialize="load_references")
@@ -301,37 +301,14 @@ class MetadataSchema(Schema):
 
         return {"features": features}
 
-    @post_load(pass_original=True)
-    def _subjects(self, result, original, **kwargs):
+    def load_subjects(self, obj):
         """Transform subjects of a legacy record.
 
-        RDM subjects translate to either legacy keywords or subjects.
+        RDM subjects translate to legacy keywords.
         """
-
-        def _from_keywords(keywords):
-            """Legacy keywords are free text strings.
-
-            They map to custom subjects.
-            """
-            return [{"subject": kw} for kw in keywords]
-
-        def _from_subjects(data):
-            """Maps RDM subjects to legacy subjects.
-
-            Legacy subjects are custom vocabularies.
-            """
-            # TODO we still did not define a strategy to map legacy subjects to rdm.
-            return []
-
-        keywords = original.get("keywords", [])
-        subjects = original.get("subjects", [])
-
-        if keywords or subjects:
-            rdm_subjects = _from_keywords(keywords) + _from_subjects(subjects)
-
-            result["subjects"] = rdm_subjects
-
-        return result
+        if not obj:
+            return missing
+        return [{"subject": kw} for kw in obj]
 
     def load_dates(self, obj):
         """Transform dates of a legacy record."""

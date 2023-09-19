@@ -149,11 +149,10 @@ def expected_record_metadata():
         journal_title="Some journal name",
         journal_volume="Some volume",
         keywords=["Keyword 1", "keyword 2"],
-        # TODO uncomment when subjects are implemented
-        # subjects=[
-        #     dict(scheme="gnd", identifier="gnd:1234567899", term="Astronaut"),
-        #     dict(scheme="gnd", identifier="gnd:1234567898", term="Amish"),
-        # ],
+        subjects=[
+            dict(scheme="gnd", identifier="gnd:1234567899", term="Astronaut"),
+            dict(scheme="gnd", identifier="gnd:1234567898", term="Amish"),
+        ],
         license="cc-zero",
         notes="Some notes",
         partof_pages="SOme part of",

@@ -156,6 +156,18 @@ def zenodo_record_data():
             ],
             "references": [{"raw_reference": "Test reference"}],
             "keywords": ["migration", "test", "Zenodo", "RDM"],
+            "subjects": [
+                {
+                    "term": "Astronomy",
+                    "identifier": "http://id.loc.gov/authorities/subjects/sh85009003",
+                    "scheme": "url",
+                },
+                {
+                    "term": "Klassenrat",
+                    "identifier": "gnd:4180044-8",
+                    "scheme": "gnd",
+                },
+            ],
             "_internal": {
                 "source": {
                     "agents": [
@@ -455,6 +467,18 @@ def expected_rdm_record_entry():
                     "title": "A book title",
                 },
                 "thesis:university": "Test University",
+                "legacy:subjects": [
+                    {
+                        "term": "Astronomy",
+                        "identifier": "http://id.loc.gov/authorities/subjects/sh85009003",
+                        "scheme": "url",
+                    },
+                    {
+                        "term": "Klassenrat",
+                        "identifier": "gnd:4180044-8",
+                        "scheme": "gnd",
+                    },
+                ],
                 # dwc
                 "dwc:basisOfRecord": ["foo", "bar"],
                 "dwc:catalogNumber": ["foo", "bar"],
@@ -656,6 +680,18 @@ def zenodo_draft_data():
                 },
             ],
             "keywords": ["migration", "test", "Zenodo", "RDM"],
+            "subjects": [
+                {
+                    "term": "Astronomy",
+                    "identifier": "http://id.loc.gov/authorities/subjects/sh85009003",
+                    "scheme": "url",
+                },
+                {
+                    "term": "Klassenrat",
+                    "identifier": "gnd:4180044-8",
+                    "scheme": "gnd",
+                },
+            ],
             "_internal": {
                 "source": {
                     "agents": [
@@ -919,6 +955,18 @@ def expected_rdm_draft_entry():
                     "title": "A book title",
                 },
                 "thesis:university": "Test University",
+                "legacy:subjects": [
+                    {
+                        "term": "Astronomy",
+                        "identifier": "http://id.loc.gov/authorities/subjects/sh85009003",
+                        "scheme": "url",
+                    },
+                    {
+                        "term": "Klassenrat",
+                        "identifier": "gnd:4180044-8",
+                        "scheme": "gnd",
+                    },
+                ],
                 # dwc
                 "dwc:basisOfRecord": ["foo", "bar"],
                 "dwc:catalogNumber": ["foo", "bar"],
