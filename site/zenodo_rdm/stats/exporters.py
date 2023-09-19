@@ -11,17 +11,16 @@ import json
 
 import requests
 from dateutil.parser import parse as dateutil_parse
-from elasticsearch_dsl import Search
-from flask import current_app
+from opensearch_dsl import Search
+from flask import current_app, url_for
 from invenio_cache import current_cache
 from invenio_pidstore.errors import PIDDeletedError
 from invenio_search import current_search_client
 from invenio_search.utils import build_alias_name
 from six.moves.urllib.parse import urlencode, urlsplit, urlunsplit
 
-from zenodo.modules.records.serializers.schemas.common import ui_link_for
-from zenodo.modules.stats.errors import PiwikExportRequestError
-from zenodo.modules.stats.utils import chunkify, fetch_record
+from zenodo_rdm.stats.errors import PiwikExportRequestError
+from zenodo_rdm.stats.utils import chunkify, fetch_record
 
 
 class PiwikExporter:
@@ -53,13 +52,9 @@ class PiwikExporter:
             .scan()
         )
 
-        url = current_app.config["ZENODO_STATS_PIWIK_EXPORTER"].get("url", None)
-        token_auth = current_app.config["ZENODO_STATS_PIWIK_EXPORTER"].get(
-            "token_auth", None
-        )
-        chunk_size = current_app.config["ZENODO_STATS_PIWIK_EXPORTER"].get(
-            "chunk_size", 0
-        )
+        url = current_app.config["STATS_PIWIK_EXPORTER"].get("url", None)
+        token_auth = current_app.config["STATS_PIWIK_EXPORTER"].get("token_auth", None)
+        chunk_size = current_app.config["STATS_PIWIK_EXPORTER"].get("chunk_size", 0)
 
         for event_chunk in chunkify(events, chunk_size):
             query_strings = []
@@ -105,39 +100,47 @@ class PiwikExporter:
                 raise PiwikExportRequestError(msg, export_info=info)
 
     def _build_query_string(self, event):
-        id_site = current_app.config["ZENODO_STATS_PIWIK_EXPORTER"].get("id_site", None)
-        url = ui_link_for("record_html", id=event.recid)
-        visitor_id = event.visitor_id[0:16]
-        _, record = fetch_record(event.recid)
-        oai = record.get("_oai", {}).get("id")
-        cvar = json.dumps({"1": ["oaipmhID", oai]})
-        action_name = record.get("title")[:150]  # max 150 characters
-        urlref = None
-        if event.referrer:
-            try:
-                scheme, netloc, path, _, _ = urlsplit(event.referrer)
-                urlref = urlunsplit((scheme, netloc, path, None, None))
-            except Exception:
-                pass
-
-        params = dict(
-            idsite=id_site,
-            rec=1,
-            url=url,
-            _id=visitor_id,
-            cid=visitor_id,
-            cvar=cvar,
-            cdt=event.timestamp,
-            urlref=urlref,
-            action_name=action_name,
-        )
-
-        if event.to_dict().get("country"):
-            params["country"] = event.country.lower()
-        if event.to_dict().get("file_key"):
-            params["url"] = ui_link_for(
-                "record_file", id=event.recid, filename=event.file_key
+        siteurl = current_app.config["SITE_UI_URL"]
+        with current_app.test_request_context(base_url=siteurl):
+            id_site = current_app.config["STATS_PIWIK_EXPORTER"].get("id_site", None)
+            url = url_for(
+                "invenio_app_rdm_records.record_detail",
+                pid_value=event.recid,
+                scheme="https",
+                _external=True,
             )
-            params["download"] = params["url"]
+            visitor_id = event.visitor_id[0:16]
+            record = fetch_record(event.recid)
+            oai, action_name = record["oai_id"], record["title"]
+            cvar = json.dumps({"1": ["oaipmhID", oai]})
+            urlref = None
+            if event.referrer:
+                try:
+                    scheme, netloc, path, _, _ = urlsplit(event.referrer)
+                    urlref = urlunsplit((scheme, netloc, path, None, None))
+                except Exception:
+                    pass
 
-        return "?{}".format(urlencode(params, "utf-8"))
+            params = dict(
+                idsite=id_site,
+                rec=1,
+                url=url,
+                _id=visitor_id,
+                cid=visitor_id,
+                cvar=cvar,
+                cdt=event.timestamp,
+                urlref=urlref,
+                action_name=action_name,
+            )
+
+            if event.to_dict().get("country"):
+                params["country"] = event.country.lower()
+            if event.to_dict().get("file_key"):
+                params["url"] = url_for(
+                    "invenio_app_rdm_records.record_file_download",
+                    pid_value=event.recid,
+                    filename=event.file_key,
+                )
+                params["download"] = params["url"]
+
+            return "?{}".format(urlencode(params, "utf-8"))
