@@ -99,6 +99,8 @@ class ParentRecordEntry(Entry):
             has_only_managed_communities = comm_slugs < owner_comm_slugs
             if not has_only_managed_communities:
                 permission_flags["can_community_manage_record"] = False
+            if permission_flags:
+                transformed["json"]["permission_flags"] = permission_flags
         elif not self.partial:
             raise KeyError("json")
         # else, pass
