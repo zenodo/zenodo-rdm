@@ -172,7 +172,12 @@ def test_oauth_application_delete_action_stream(
     assert not db_client_server.scalars(sa.select(ServerClient)).one_or_none()
 
 
-def test_oauth_linked_app_connect_action_stream(
+#
+# ORCID
+#
+
+
+def test_oauth_linked_app_connect_orcid_action_stream(
     db_client_server, pg_tx_load, test_extract_cls, tx_files_linked_accounts
 ):
     stream = Stream(
@@ -189,7 +194,7 @@ def test_oauth_linked_app_connect_action_stream(
 
 
 @pytest.fixture(scope="function")
-def db_linked_account(database, session):
+def db_linked_orcid_account(database, session):
     remote_account = RemoteAccount(
         id=8546,
         user_id=22858,
@@ -224,8 +229,8 @@ def db_linked_account(database, session):
     return session
 
 
-def test_oauth_linked_app_disconnect_action_stream(
-    db_linked_account, pg_tx_load, test_extract_cls, tx_files_linked_accounts
+def test_oauth_linked_app_disconnect_orcid_action_stream(
+    db_linked_orcid_account, pg_tx_load, test_extract_cls, tx_files_linked_accounts
 ):
     stream = Stream(
         name="action",
@@ -235,6 +240,99 @@ def test_oauth_linked_app_disconnect_action_stream(
     )
     stream.run()
 
-    assert not db_linked_account.scalars(sa.select(RemoteAccount)).one_or_none()
-    assert not db_linked_account.scalars(sa.select(RemoteToken)).one_or_none()
-    assert not db_linked_account.scalars(sa.select(UserIdentity)).one_or_none()
+    assert not db_linked_orcid_account.scalars(sa.select(RemoteAccount)).one_or_none()
+    assert not db_linked_orcid_account.scalars(sa.select(RemoteToken)).one_or_none()
+    assert not db_linked_orcid_account.scalars(sa.select(UserIdentity)).one_or_none()
+
+
+#
+# GH
+#
+
+
+# def test_oauth_linked_app_connect_gh_action_stream(
+#     db_client_server, pg_tx_load, test_extract_cls, tx_files_linked_accounts
+# ):
+#     stream = Stream(
+#         name="action",
+#         extract=test_extract_cls(tx_files_linked_accounts["connect_gh"]),
+#         transform=ZenodoTxTransform(),
+#         load=pg_tx_load,
+#     )
+#     stream.run()
+
+#     assert db_client_server.scalars(sa.select(RemoteAccount)).one()
+#     assert db_client_server.scalars(sa.select(RemoteToken)).one()
+#     assert db_client_server.scalars(sa.select(UserIdentity)).one()
+
+
+@pytest.fixture(scope="function")
+def db_linked_gh_account(database, session):
+    remote_account = RemoteAccount(
+        id=8546,
+        user_id=86490,
+        client_id="APP-MAX7XCD8Q98X4VT6",
+        extra_data='{"orcid": "0000-0002-5676-5956", "full_name": "Alex Ioannidis"}',
+        created="2023-06-29T13:00:00",
+        updated="2023-06-29T14:00:00",
+    )
+
+    remote_token = RemoteToken(
+        id_remote_account=8546,
+        token_type="",
+        access_token="R3RVeGc3K0RrM25rbXc4ZWxGM3oxYVA4LzcwVWpCNkM4aG8vRy9CNWxkZFFCMk9OR1d2d29lN3dKdWk2eEVTQQ==",
+        secret="",
+        created="2023-06-29T13:00:00",
+        updated="2023-06-29T14:00:00",
+    )
+
+    user_identity = UserIdentity(
+        id="6756943",
+        method="github",
+        id_user=86490,
+        created="2023-06-29T13:00:00",
+        updated="2023-06-29T14:00:00",
+    )
+
+    server_token = ServerToken(
+        id=157734,
+        client_id="rKmVKlRxnQJfyizWeVKRO26cZjLqd2yWhsBFkjv0",
+        user_id=86490,
+        token_type="bearer",
+        access_token="cH4ng3DzbXd4QTcrRjFMcTVMRHl3QlY2Rkdib0VwREY4aDhPcHo2dUt2ZnZ3OVVPa1BvRDl0L1NRZmFrdXNIU2hJR2JWc0NHZDZSVEhVT2JQcmdjS1E9PQ==",
+        refresh_token=None,
+        expires=None,
+        _scopes="webhooks:event",
+        is_personal=True,
+        is_internal=False,
+    )
+
+    session.add(remote_account)
+    session.add(remote_token)
+    session.add(user_identity)
+    session.add(server_token)
+    session.commit()
+
+    return session
+
+
+def test_oauth_linked_app_disconnect_gh_action_stream(
+    db_linked_gh_account, pg_tx_load, test_extract_cls, tx_files_linked_accounts
+):
+    stream = Stream(
+        name="action",
+        extract=test_extract_cls(
+            [
+                tx_files_linked_accounts["disconnect_gh_client"],
+                tx_files_linked_accounts["disconnect_gh_token"],
+            ]
+        ),
+        transform=ZenodoTxTransform(),
+        load=pg_tx_load,
+    )
+    stream.run()
+
+    assert not db_linked_gh_account.scalars(sa.select(RemoteAccount)).one_or_none()
+    assert not db_linked_gh_account.scalars(sa.select(RemoteToken)).one_or_none()
+    assert not db_linked_gh_account.scalars(sa.select(ServerToken)).one_or_none()
+    assert not db_linked_gh_account.scalars(sa.select(UserIdentity)).one_or_none()

@@ -19,6 +19,7 @@ from zenodo_rdm_migrator.actions.transform import (
     OAuthApplicationCreateAction,
     OAuthApplicationDeleteAction,
     OAuthApplicationUpdateAction,
+    OAuthGHDisconnectToken,
     OAuthLinkedAccountConnectAction,
     OAuthLinkedAccountDisconnectAction,
     OAuthServerTokenCreateAction,
@@ -887,31 +888,47 @@ class TestOAuthLinkedAccountDisconnectAction:
     """Disonnect an OAuth account action tests."""
 
     def test_matches_with_valid_data(self):
-        assert (
-            OAuthLinkedAccountDisconnectAction.matches_action(
-                Tx(
-                    id=1,
-                    operations=[
-                        {
-                            "op": OperationType.DELETE,
-                            "source": {"table": "oauthclient_remoteaccount"},
-                            "after": {},
-                        },
-                        {
-                            "op": OperationType.DELETE,
-                            "source": {"table": "oauthclient_remotetoken"},
-                            "after": {},
-                        },
-                        {
-                            "op": OperationType.DELETE,
-                            "source": {"table": "oauthclient_useridentity"},
-                            "after": {},
-                        },
-                    ],
+        full = [
+            {
+                "op": OperationType.DELETE,
+                "source": {"table": "oauthclient_remoteaccount"},
+                "after": {},
+            },
+            {
+                "op": OperationType.DELETE,
+                "source": {"table": "oauthclient_remotetoken"},
+                "after": {},
+            },
+            {
+                "op": OperationType.DELETE,
+                "source": {"table": "oauthclient_useridentity"},
+                "after": {},
+            },
+        ]
+
+        no_user_identity = [
+            {
+                "op": OperationType.DELETE,
+                "source": {"table": "oauthclient_remoteaccount"},
+                "after": {},
+            },
+            {
+                "op": OperationType.DELETE,
+                "source": {"table": "oauthclient_remotetoken"},
+                "after": {},
+            },
+        ]
+
+        for valid_ops in [
+            full,
+            no_user_identity,
+        ]:
+            assert (
+                OAuthLinkedAccountDisconnectAction.matches_action(
+                    Tx(id=1, operations=valid_ops)
                 )
+                is True
             )
-            is True
-        )
 
     def test_matches_with_invalid_data(self):
         empty = []
@@ -938,19 +955,6 @@ class TestOAuthLinkedAccountDisconnectAction:
             {
                 "op": OperationType.DELETE,
                 "source": {"table": "oauthclient_useridentity"},
-                "after": {},
-            },
-        ]
-
-        no_user_identity = [
-            {
-                "op": OperationType.DELETE,
-                "source": {"table": "oauthclient_remoteaccount"},
-                "after": {},
-            },
-            {
-                "op": OperationType.DELETE,
-                "source": {"table": "oauthclient_remotetoken"},
                 "after": {},
             },
         ]
@@ -1002,7 +1006,6 @@ class TestOAuthLinkedAccountDisconnectAction:
             empty,
             no_account,
             no_token,
-            no_user_identity,
             wrong_op,
             extra_op,
         ]:
@@ -1021,3 +1024,120 @@ class TestOAuthLinkedAccountDisconnectAction:
             )
         )
         assert isinstance(action.transform(), load.OAuthLinkedAccountDisconnectAction)
+
+
+@pytest.fixture()
+def disconnect_gh_token_oauth_app_tx():
+    """Transaction data for the second phase of GH disconnection.
+
+    As it would be after the extraction step.
+    """
+    datafile = (
+        Path(__file__).parent
+        / "testdata"
+        / "linked_accounts"
+        / "disconnect_gh_token.jsonl"
+    )
+    with open(datafile, "rb") as reader:
+        ops = [orjson.loads(line)["value"] for line in reader]
+
+    return {"tx_id": 1, "operations": ops}
+
+
+class TestOAuthGHDisconnectToken:
+    """Disonnect an OAuth account action tests."""
+
+    def test_matches_with_valid_data(self):
+        assert (
+            OAuthGHDisconnectToken.matches_action(
+                Tx(
+                    id=1,
+                    operations=[
+                        {
+                            "op": OperationType.DELETE,
+                            "source": {"table": "oauthclient_useridentity"},
+                            "after": {},
+                        },
+                        {
+                            "op": OperationType.DELETE,
+                            "source": {"table": "oauth2server_token"},
+                            "after": {},
+                        },
+                    ],
+                )
+            )
+            is True
+        )
+
+    def test_matches_with_invalid_data(self):
+        empty = []
+
+        no_token = [
+            {
+                "op": OperationType.DELETE,
+                "source": {"table": "oauthclient_useridentity"},
+                "after": {},
+            },
+        ]
+
+        no_identity = [
+            {
+                "op": OperationType.DELETE,
+                "source": {"table": "oauth2server_token"},
+                "after": {},
+            },
+        ]
+
+        wrong_op = [
+            {
+                "op": OperationType.UPDATE,
+                "source": {"table": "oauthclient_useridentity"},
+                "after": {},
+            },
+            {
+                "op": OperationType.DELETE,
+                "source": {"table": "oauth2server_token"},
+                "after": {},
+            },
+        ]
+
+        extra_op = (
+            [
+                {
+                    "op": OperationType.DELETE,
+                    "source": {"table": "another"},
+                    "after": {},
+                },
+                {
+                    "op": OperationType.DELETE,
+                    "source": {"table": "oauthclient_useridentity"},
+                    "after": {},
+                },
+                {
+                    "op": OperationType.DELETE,
+                    "source": {"table": "oauth2server_token"},
+                    "after": {},
+                },
+            ],
+        )
+
+        for invalid_ops in [
+            empty,
+            no_identity,
+            no_token,
+            wrong_op,
+            extra_op,
+        ]:
+            assert (
+                OAuthGHDisconnectToken.matches_action(Tx(id=1, operations=invalid_ops))
+                is False
+            )
+
+    def test_transform_with_valid_data(self, disconnect_gh_token_oauth_app_tx):
+        action = OAuthGHDisconnectToken(
+            Tx(
+                id=disconnect_gh_token_oauth_app_tx["tx_id"],
+                operations=disconnect_gh_token_oauth_app_tx["operations"],
+            )
+        )
+        assert isinstance(action.transform(), load.OAuthGHDisconnectToken)

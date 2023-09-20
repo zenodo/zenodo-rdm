@@ -99,8 +99,8 @@ def test_extract_cls():
     class TestExtract(Extract):
         """Test extractor."""
 
-        def __init__(self, tx, filter_unchanged=True):
-            self.tx = tx
+        def __init__(self, txs, filter_unchanged=True):
+            self.txs = txs if isinstance(txs, list) else [txs]
             self.filter_unchanged = filter_unchanged
 
         # NOTE: Copied from KafkaExtract
@@ -118,26 +118,29 @@ def test_extract_cls():
 
         def run(self):
             """Yield one element at a time."""
-            if isinstance(self.tx, dict):
-                tx = self.tx
-            if isinstance(self.tx, (str, Path)):
-                tx_path = Path(self.tx)
-                assert tx_path.exists()
-                with jsonlines.open(tx_path) as tx_ops:
-                    tx = {
-                        "operations": [
-                            {"key": op["key"], **op["value"]} for op in tx_ops
-                        ]
-                    }
-                    # convert "op" to OperationType enum
-                    for op in tx["operations"]:
-                        op["op"] = OperationType(op["op"].upper())
-                    # extract the tx_id
-                    tx["tx_id"] = tx["operations"][0]["source"]["txId"]
-            yield Tx(
-                id=tx["tx_id"],
-                operations=list(map(self._filter_unchanged_values, tx["operations"])),
-            )
+            for tx in self.txs:
+                if isinstance(tx, dict):
+                    tx = tx
+                if isinstance(tx, (str, Path)):
+                    tx_path = Path(tx)
+                    assert tx_path.exists()
+                    with jsonlines.open(tx_path) as tx_ops:
+                        tx = {
+                            "operations": [
+                                {"key": op["key"], **op["value"]} for op in tx_ops
+                            ]
+                        }
+                        # convert "op" to OperationType enum
+                        for op in tx["operations"]:
+                            op["op"] = OperationType(op["op"].upper())
+                        # extract the tx_id
+                        tx["tx_id"] = tx["operations"][0]["source"]["txId"]
+                yield Tx(
+                    id=tx["tx_id"],
+                    operations=list(
+                        map(self._filter_unchanged_values, tx["operations"])
+                    ),
+                )
 
     return TestExtract
 
