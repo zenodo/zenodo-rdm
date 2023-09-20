@@ -33,6 +33,7 @@ from invenio_records_resources.resources.files.resource import (
     request_stream,
     request_view_args,
 )
+from invenio_records_resources.resources.records.headers import etag_headers
 from invenio_records_resources.services.errors import FileKeyNotFoundError
 from invenio_records_resources.services.uow import UnitOfWork
 from werkzeug.utils import secure_filename
@@ -48,8 +49,12 @@ from .serializers import (
 record_serializers = copy.deepcopy(default_record_serializers)
 record_serializers.update(
     {
-        "application/json": ResponseHandler(LegacyJSONSerializer()),
-        "application/vnd.zenodo.v1+json": ResponseHandler(ZenodoJSONSerializer()),
+        "application/json": ResponseHandler(
+            LegacyJSONSerializer(), headers=etag_headers
+        ),
+        "application/vnd.zenodo.v1+json": ResponseHandler(
+            ZenodoJSONSerializer(), headers=etag_headers
+        ),
         # Alias for the DataCite XML serializer
         "application/x-datacite+xml": record_serializers[
             "application/vnd.datacite.datacite+xml"
@@ -69,7 +74,9 @@ class LegacyRecordResourceConfig(RDMRecordResourceConfig):
     }
 
     response_handlers = {
-        "application/json": ResponseHandler(LegacyJSONSerializer()),
+        "application/json": ResponseHandler(
+            LegacyJSONSerializer(), headers=etag_headers
+        ),
     }
 
     routes = {
@@ -139,7 +146,9 @@ class LegacyDraftFilesResourceConfig(RDMDraftFilesResourceConfig):
     url_prefix = "/deposit/depositions"
 
     response_handlers = {
-        "application/json": ResponseHandler(LegacyDraftFileJSONSerializer()),
+        "application/json": ResponseHandler(
+            LegacyDraftFileJSONSerializer(), headers=etag_headers
+        ),
     }
 
     routes = {
@@ -236,7 +245,9 @@ class LegacyFilesRESTResourceConfig(RDMDraftFilesResourceConfig):
     url_prefix = "/files"
 
     response_handlers = {
-        "application/json": ResponseHandler(LegacyFilesRESTJSONSerializer()),
+        "application/json": ResponseHandler(
+            LegacyFilesRESTJSONSerializer(), headers=etag_headers
+        ),
     }
 
     routes = {
