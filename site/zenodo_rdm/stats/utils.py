@@ -8,13 +8,9 @@
 """Statistics utilities."""
 
 import itertools
+from functools import lru_cache
 
 from invenio_rdm_records.proxies import current_rdm_records_service
-
-try:
-    from functools import lru_cache
-except ImportError:
-    from functools32 import lru_cache
 
 
 def chunkify(iterable, n):
