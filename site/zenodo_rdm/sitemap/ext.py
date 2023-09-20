@@ -50,7 +50,7 @@ class ZenodoSitemap(object):
     def init_config(app):
         """Initialize configuration."""
         for k in dir(config):
-            if k.startswith("ZENODO_SITEMAP_"):
+            if k.startswith("SITEMAP_"):
                 app.config.setdefault(k, getattr(config, k))
 
     def _generate_all_urls(self):
