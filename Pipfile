@@ -19,7 +19,6 @@ ipython = "!=8.1.0"
 uwsgi = ">=2.0"
 uwsgitop = ">=0.11"
 uwsgi-tools = ">=1.1.1"
-six = ">=1.16.0"
 
 [requires]
 python_version = "3.9"

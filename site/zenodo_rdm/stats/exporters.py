@@ -17,7 +17,7 @@ from invenio_cache import current_cache
 from invenio_pidstore.errors import PIDDeletedError
 from invenio_search import current_search_client
 from invenio_search.utils import build_alias_name
-from six.moves.urllib.parse import urlencode, urlsplit, urlunsplit
+from urllib.parse import urlencode, urlsplit, urlunsplit
 
 from zenodo_rdm.stats.errors import PiwikExportRequestError
 from zenodo_rdm.stats.utils import chunkify, fetch_record
