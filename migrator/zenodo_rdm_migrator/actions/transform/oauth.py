@@ -238,32 +238,47 @@ class OAuthLinkedAccountConnectAction(TransformAction):
     @classmethod
     def matches_action(cls, tx):
         """Checks if the data corresponds with that required by the action."""
-        if len(tx.operations) != 4:
+        if 3 > len(tx.operations) or len(tx.operations) > 7:
             return False
 
-        rules = {
-            # OpType is not hashable (to use a dict), the list won't be long in any case
-            # so the worst case scenario is not too bad
-            "oauthclient_remoteaccount": [OperationType.INSERT, OperationType.UPDATE],
-            "oauthclient_remotetoken": [OperationType.INSERT],
-            "oauthclient_useridentity": [OperationType.INSERT],
+        mandatory = {
+            "oauthclient_remoteaccount",
+            "oauthclient_remotetoken",
+            "oauthclient_useridentity",
         }
 
+        optional = {
+            "oauth2server_client",
+            "oauth2server_token",
+        }
+
+        allow_updates = {"oauthclient_remoteaccount"}
+
         for op in tx.operations:
-            rule = rules.get(op["source"]["table"])
-            if not rule:
-                return False
-            try:
-                rule.remove(op["op"])  # prevents double update/insert in sets
-            except ValueError:
+            if op["op"] == OperationType.UPDATE:
+                # nested to be able to have the final else clause by op type
+                if op["source"]["table"] not in allow_updates:
+                    return False
+            elif op["op"] == OperationType.INSERT:
+                try:
+                    mandatory.remove(op["source"]["table"])
+                except KeyError:
+                    try:
+                        optional.remove(op["source"]["table"])
+                    except KeyError:
+                        return False
+            else:
                 return False
 
-        return True
+        # all mandatory were found and optionals are all or none
+        return len(mandatory) == 0 and (len(optional) == 2 or len(optional) == 0)
 
     def _transform_data(self):
         """Transforms the data and returns dictionary."""
         remote_account = None
         remote_token = None
+        server_client = None
+        server_token = None
         user_identity = None
 
         for op in self.tx.operations:
@@ -277,13 +292,25 @@ class OAuthLinkedAccountConnectAction(TransformAction):
                 remote_token = op["after"]
             elif op["source"]["table"] == "oauthclient_useridentity":
                 user_identity = op["after"]
+            elif op["source"]["table"] == "oauth2server_client":
+                server_client = op["after"]
+            elif op["source"]["table"] == "oauth2server_token":
+                server_token = op["after"]
 
-        return {
+        result = {
             "tx_id": self.tx.id,
             "remote_account": IdentityTransform()._transform(remote_account),
             "remote_token": IdentityTransform()._transform(remote_token),
             "user_identity": IdentityTransform()._transform(user_identity),
         }
+        if server_client:
+            result["server_client"]: OAuthServerClientTransform()._transform(
+                server_client
+            )
+        if server_token:
+            result["server_token"]: OAuthServerTokenTransform()._transform(server_token)
+
+        return result
 
 
 class OAuthLinkedAccountDisconnectAction(TransformAction):

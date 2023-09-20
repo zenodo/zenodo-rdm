@@ -250,20 +250,22 @@ def test_oauth_linked_app_disconnect_orcid_action_stream(
 #
 
 
-# def test_oauth_linked_app_connect_gh_action_stream(
-#     db_client_server, pg_tx_load, test_extract_cls, tx_files_linked_accounts
-# ):
-#     stream = Stream(
-#         name="action",
-#         extract=test_extract_cls(tx_files_linked_accounts["connect_gh"]),
-#         transform=ZenodoTxTransform(),
-#         load=pg_tx_load,
-#     )
-#     stream.run()
+def test_oauth_linked_app_connect_gh_action_stream(
+    db_client_server, pg_tx_load, test_extract_cls, tx_files_linked_accounts
+):
+    stream = Stream(
+        name="action",
+        extract=test_extract_cls(tx_files_linked_accounts["connect_gh"]),
+        transform=ZenodoTxTransform(),
+        load=pg_tx_load,
+    )
+    stream.run()
 
-#     assert db_client_server.scalars(sa.select(RemoteAccount)).one()
-#     assert db_client_server.scalars(sa.select(RemoteToken)).one()
-#     assert db_client_server.scalars(sa.select(UserIdentity)).one()
+    assert db_client_server.scalars(sa.select(RemoteAccount)).one()
+    assert db_client_server.scalars(sa.select(RemoteToken)).one()
+    assert db_client_server.scalars(sa.select(UserIdentity)).one()
+    assert db_client_server.scalars(sa.select(ServerClient)).one()
+    assert db_client_server.scalars(sa.select(ServerToken)).one()
 
 
 @pytest.fixture(scope="function")
