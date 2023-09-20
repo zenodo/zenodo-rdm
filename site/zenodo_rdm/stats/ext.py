@@ -7,9 +7,9 @@
 
 """Exporter extension."""
 
+from flask import current_app
 from opensearchpy import OpenSearch
 from opensearchpy.connection import RequestsHttpConnection
-from flask import current_app
 from werkzeug.utils import cached_property
 
 from zenodo_rdm.stats import config
