@@ -8,16 +8,16 @@
 """ZenodoRDM stats exporters."""
 
 import json
+from urllib.parse import urlencode, urlsplit, urlunsplit
 
 import requests
 from dateutil.parser import parse as dateutil_parse
-from opensearch_dsl import Search
 from flask import current_app, url_for
 from invenio_cache import current_cache
 from invenio_pidstore.errors import PIDDeletedError
 from invenio_search import current_search_client
 from invenio_search.utils import build_alias_name
-from urllib.parse import urlencode, urlsplit, urlunsplit
+from opensearch_dsl import Search
 
 from zenodo_rdm.stats.errors import PiwikExportRequestError
 from zenodo_rdm.stats.utils import chunkify, fetch_record
