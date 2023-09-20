@@ -23,18 +23,6 @@ class ZenodoStats(object):
         if app:
             self.init_app(app)
 
-    @cached_property
-    def search_client(self):
-        """Elasticsearch client for stats queries."""
-        client_config = (
-            current_app.config.get("STATS_ELASTICSEARCH_CLIENT_CONFIG") or {}
-        )
-        client_config.setdefault(
-            "hosts", current_app.config.get("SEARCH_ELASTIC_HOSTS")
-        )
-        client_config.setdefault("connection_class", RequestsHttpConnection)
-        return OpenSearch(**client_config)
-
     @staticmethod
     def init_config(app):
         """Initialize configuration."""
