@@ -660,40 +660,87 @@ def connect_orcid_oauth_application_tx():
     return {"tx_id": 1, "operations": ops}
 
 
+@pytest.fixture()
+def connect_gh_oauth_application_tx():
+    """Transaction data to connect an OAuth ORCID account.
+
+    As it would be after the extraction step.
+    """
+    datafile = (
+        Path(__file__).parent / "testdata" / "linked_accounts" / "connect_gh.jsonl"
+    )
+    with open(datafile, "rb") as reader:
+        ops = [orjson.loads(line)["value"] for line in reader]
+
+    return {"tx_id": 1, "operations": ops}
+
+
 class TestOAuthLinkedAccountConnectAction:
     """Connect an OAuth account action tests."""
 
     def test_matches_with_valid_data(self):
-        assert (
-            OAuthLinkedAccountConnectAction.matches_action(
-                Tx(
-                    id=1,
-                    operations=[
-                        {
-                            "op": OperationType.INSERT,
-                            "source": {"table": "oauthclient_remoteaccount"},
-                            "after": {},
-                        },
-                        {
-                            "op": OperationType.INSERT,
-                            "source": {"table": "oauthclient_remotetoken"},
-                            "after": {},
-                        },
-                        {
-                            "op": OperationType.INSERT,
-                            "source": {"table": "oauthclient_useridentity"},
-                            "after": {},
-                        },
-                        {
-                            "op": OperationType.UPDATE,
-                            "source": {"table": "oauthclient_remoteaccount"},
-                            "after": {},
-                        },
-                    ],
+        full = [
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "oauthclient_remoteaccount"},
+                "after": {},
+            },
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "oauthclient_remotetoken"},
+                "after": {},
+            },
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "oauthclient_useridentity"},
+                "after": {},
+            },
+            {
+                "op": OperationType.UPDATE,
+                "source": {"table": "oauthclient_remoteaccount"},
+                "after": {},
+            },
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "oauth2server_client"},
+                "after": {},
+            },
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "oauth2server_token"},
+                "after": {},
+            },
+            {
+                "op": OperationType.UPDATE,
+                "source": {"table": "oauthclient_remoteaccount"},
+                "after": {},
+            },
+        ]
+        minimal = [
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "oauthclient_remoteaccount"},
+                "after": {},
+            },
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "oauthclient_remotetoken"},
+                "after": {},
+            },
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "oauthclient_useridentity"},
+                "after": {},
+            },
+        ]
+
+        for valid_ops in [minimal]:
+            assert (
+                OAuthLinkedAccountConnectAction.matches_action(
+                    Tx(id=1, operations=valid_ops)
                 )
+                is True
             )
-            is True
-        )
 
     def test_matches_with_invalid_data(self):
         empty = []
@@ -709,75 +756,6 @@ class TestOAuthLinkedAccountConnectAction:
                 "source": {"table": "oauthclient_useridentity"},
                 "after": {},
             },
-            {
-                "op": OperationType.UPDATE,
-                "source": {"table": "oauthclient_remoteaccount"},
-                "after": {},
-            },
-        ]
-
-        no_account_update = [
-            {
-                "op": OperationType.INSERT,
-                "source": {"table": "oauthclient_remoteaccount"},
-                "after": {},
-            },
-            {
-                "op": OperationType.INSERT,
-                "source": {"table": "oauthclient_remotetoken"},
-                "after": {},
-            },
-            {
-                "op": OperationType.INSERT,
-                "source": {"table": "oauthclient_useridentity"},
-                "after": {},
-            },
-        ]
-
-        double_insert = [
-            {
-                "op": OperationType.INSERT,
-                "source": {"table": "oauthclient_remoteaccount"},
-                "after": {},
-            },
-            {
-                "op": OperationType.INSERT,
-                "source": {"table": "oauthclient_remotetoken"},
-                "after": {},
-            },
-            {
-                "op": OperationType.INSERT,
-                "source": {"table": "oauthclient_useridentity"},
-                "after": {},
-            },
-            {
-                "op": OperationType.INSERT,
-                "source": {"table": "oauthclient_remoteaccount"},
-                "after": {},
-            },
-        ]
-
-        double_update = [
-            {
-                "op": OperationType.UPDATE,
-                "source": {"table": "oauthclient_remoteaccount"},
-                "after": {},
-            },
-            {
-                "op": OperationType.INSERT,
-                "source": {"table": "oauthclient_remotetoken"},
-                "after": {},
-            },
-            {
-                "op": OperationType.INSERT,
-                "source": {"table": "oauthclient_useridentity"},
-                "after": {},
-            },
-            {
-                "op": OperationType.UPDATE,
-                "source": {"table": "oauthclient_remoteaccount"},
-                "after": {},
-            },
         ]
 
         no_token = [
@@ -789,11 +767,6 @@ class TestOAuthLinkedAccountConnectAction:
             {
                 "op": OperationType.INSERT,
                 "source": {"table": "oauthclient_useridentity"},
-                "after": {},
-            },
-            {
-                "op": OperationType.UPDATE,
-                "source": {"table": "oauthclient_remoteaccount"},
                 "after": {},
             },
         ]
@@ -809,14 +782,9 @@ class TestOAuthLinkedAccountConnectAction:
                 "source": {"table": "oauthclient_remotetoken"},
                 "after": {},
             },
-            {
-                "op": OperationType.UPDATE,
-                "source": {"table": "oauthclient_remoteaccount"},
-                "after": {},
-            },
         ]
 
-        wrong_op = [
+        no_server_token = [
             {
                 "op": OperationType.INSERT,
                 "source": {"table": "oauthclient_remoteaccount"},
@@ -828,7 +796,53 @@ class TestOAuthLinkedAccountConnectAction:
                 "after": {},
             },
             {
-                "op": OperationType.UPDATE,
+                "op": OperationType.INSERT,
+                "source": {"table": "oauthclient_useridentity"},
+                "after": {},
+            },
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "oauth2server_client"},
+                "after": {},
+            },
+        ]
+
+        no_server_client = [
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "oauthclient_remoteaccount"},
+                "after": {},
+            },
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "oauthclient_remotetoken"},
+                "after": {},
+            },
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "oauthclient_useridentity"},
+                "after": {},
+            },
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "oauth2server_token"},
+                "after": {},
+            },
+        ]
+
+        wrong_update_op = [
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "oauthclient_remoteaccount"},
+                "after": {},
+            },
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "oauthclient_remotetoken"},
+                "after": {},
+            },
+            {
+                "op": OperationType.INSERT,
                 "source": {"table": "oauthclient_useridentity"},
                 "after": {},
             },
@@ -837,17 +851,109 @@ class TestOAuthLinkedAccountConnectAction:
                 "source": {"table": "oauthclient_remoteaccount"},
                 "after": {},
             },
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "oauth2server_client"},
+                "after": {},
+            },
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "oauth2server_token"},
+                "after": {},
+            },
+            {
+                "op": OperationType.UPDATE,  # wrong
+                "source": {"table": "oauth2server_token"},
+                "after": {},
+            },
+        ]
+
+        extra_update = [
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "oauthclient_remoteaccount"},
+                "after": {},
+            },
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "oauthclient_remotetoken"},
+                "after": {},
+            },
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "oauthclient_useridentity"},
+                "after": {},
+            },
+            {
+                "op": OperationType.UPDATE,
+                "source": {"table": "oauthclient_remoteaccount"},
+                "after": {},
+            },
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "oauth2server_client"},
+                "after": {},
+            },
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "oauth2server_token"},
+                "after": {},
+            },
+            {
+                "op": OperationType.UPDATE,
+                "source": {"table": "another"},
+                "after": {},
+            },
+        ]
+
+        extra_insert = [
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "oauthclient_remoteaccount"},
+                "after": {},
+            },
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "oauthclient_remotetoken"},
+                "after": {},
+            },
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "oauthclient_useridentity"},
+                "after": {},
+            },
+            {
+                "op": OperationType.UPDATE,
+                "source": {"table": "oauthclient_remoteaccount"},
+                "after": {},
+            },
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "oauth2server_client"},
+                "after": {},
+            },
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "oauth2server_token"},
+                "after": {},
+            },
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "another"},
+                "after": {},
+            },
         ]
 
         for invalid_ops in [
             empty,
             no_account,
-            no_account_update,
-            double_insert,
-            double_update,
             no_token,
             no_user_identity,
-            wrong_op,
+            no_server_token,
+            no_server_client,
+            wrong_update_op,
+            extra_update,
+            extra_insert,
         ]:
             assert (
                 OAuthLinkedAccountConnectAction.matches_action(
@@ -856,11 +962,20 @@ class TestOAuthLinkedAccountConnectAction:
                 is False
             )
 
-    def test_transform_with_valid_data(self, connect_orcid_oauth_application_tx):
+    def test_transform_with_valid_orcid_data(self, connect_orcid_oauth_application_tx):
         action = OAuthLinkedAccountConnectAction(
             Tx(
                 id=connect_orcid_oauth_application_tx["tx_id"],
                 operations=connect_orcid_oauth_application_tx["operations"],
+            )
+        )
+        assert isinstance(action.transform(), load.OAuthLinkedAccountConnectAction)
+
+    def test_transform_with_valid_gh_data(self, connect_gh_oauth_application_tx):
+        action = OAuthLinkedAccountConnectAction(
+            Tx(
+                id=connect_gh_oauth_application_tx["tx_id"],
+                operations=connect_gh_oauth_application_tx["operations"],
             )
         )
         assert isinstance(action.transform(), load.OAuthLinkedAccountConnectAction)
