@@ -71,3 +71,21 @@ def openaire_direct_index(record_id, retry=True):
             openaire_direct_index.retry(exc=exc)
         else:
             raise exc
+
+
+@shared_task
+def retry_openaire_failures():
+    """Retries failed OpenAIRE indexing/deletion operations."""
+    cache = current_cache.cache
+    failed_records = cache._write_client.keys(
+        cache.key_prefix + "openaire_direct_index:*"
+    )
+    for key in failed_records:
+        record_id = key.decode().split("openaire_direct_index:")[1]
+        record = records_service.read(system_identity, record_id)
+        resource_type = record.data.get("metadata", {}).get("resource_type")
+        if resource_type:
+            openaire_direct_index.delay(record_id, retry=False)
+        else:
+            # openaire_delete.delay(str(record.id)) # TODO enable this when migrated
+            pass

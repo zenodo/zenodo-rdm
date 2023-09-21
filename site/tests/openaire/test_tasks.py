@@ -10,7 +10,9 @@
 import json
 from unittest.mock import call
 
-from zenodo_rdm.openaire.tasks import openaire_direct_index
+from invenio_cache.proxies import current_cache
+
+from zenodo_rdm.openaire.tasks import openaire_direct_index, retry_openaire_failures
 
 
 def test_openaire_direct_index_task(
@@ -62,3 +64,35 @@ def test_openaire_direct_index_task_with_beta(
         call(beta_endpoint, data=json.dumps(serialized_record), timeout=10),
     ]
     mocked_session.post.assert_has_calls(calls)
+
+
+def test_openaire_retries_task(
+    running_app,
+    openaire_record,
+    mocked_session,
+):
+    """Test OpenAIRE retry task.
+
+    The test mocks the post request to fail.
+    """
+    mocked_session.post.side_effect = Exception("An error.")
+
+    # The task will fail multiple times: the first one + N retries (configured)
+    openaire_direct_index.delay(openaire_record.id)
+
+    assert current_cache.cache.has(f"openaire_direct_index:{openaire_record.id}")
+
+    # After failing, the cache has is populated with ``openaire_direct_index:<record.id>`` that is picked up by the task ``retry_openaire_failures``
+    mocked_session.post.side_effect = None
+
+    # Reset number of calls on ``post`` - this can be used to assess whether openaire indexing executed succesfully
+    mocked_session.post.reset_mock()
+
+    # Execute retry task and validate that the direct indexing succeeded
+    retry_openaire_failures.delay()
+
+    # Assert post was executed N times
+    assert mocked_session.post.called_once()
+
+    # Assert cache does not have the key
+    assert not current_cache.cache.has(f"openaire_direct_index:{openaire_record.id}")
