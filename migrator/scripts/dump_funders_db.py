@@ -9,7 +9,7 @@ To use call ``load_file(DATA_PATH, "funders.csv")``.
 import csv
 import uuid
 
-import orjson as json
+import orjson
 from idutils import normalize_ror
 from invenio_rdm_migrator.utils import ts
 
@@ -73,7 +73,7 @@ def load_file(datafile, outpath):
     with open(outpath, "w") as fout, open(datafile, "rb") as fp:
         print(f"[{ts()}] loading {datafile}")
         writer = csv.writer(fout)
-        entries = json.loads(fp.read())
+        entries = orjson.loads(fp.read())
         for idx, data in enumerate(entries):
             if idx % 1000 == 0:
                 print(f"[{ts()}] {idx}")
@@ -88,7 +88,7 @@ def load_file(datafile, outpath):
                     (
                         str(uuid.uuid4()),  # id
                         funder_id,  # pid
-                        json.dumps(funder),  # json
+                        orjson.dumps(funder).decode("utf-8"),  # json
                         creation_ts,  # created
                         creation_ts,  # updated (same as created)
                         1,  # version_id
