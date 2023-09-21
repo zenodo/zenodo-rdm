@@ -55,6 +55,9 @@ def openaire_record_data(minimal_record):
     minimal_record["metadata"]["funding"] = [
         {"funder": {"id": "00rbzpz17"}, "award": {"id": "00rbzpz17::755021"}}
     ]
+
+    minimal_record["metadata"]["languages"] = [{"id": "eng"}]
+    minimal_record["metadata"]["version"] = "1.0"
     return minimal_record
 
 
