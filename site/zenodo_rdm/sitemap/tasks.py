@@ -35,7 +35,7 @@ def update_sitemap_cache(urls=None, max_url_count=None):
             page = render_template(
                 "zenodo_sitemap/sitemap.xml", urlset=filter(None, urls_slice)
             )
-            sitemap.set_cache("sitemap:{page_n}", page)
+            sitemap.set_cache(f"sitemap:{page_n}", page)
             urls_slice = list(itertools.islice(urls, max_url_count))
 
         urlset = [
