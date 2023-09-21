@@ -7,12 +7,16 @@
 
 """Invenio RDM migration github actions module."""
 
+import orjson
 from invenio_rdm_migrator.actions import TransformAction
 from invenio_rdm_migrator.load.postgresql.transactions.operations import OperationType
 from invenio_rdm_migrator.streams.actions import load
 from invenio_rdm_migrator.streams.github import GitHubRepositoryTransform
 from invenio_rdm_migrator.streams.oauth import OAuthServerTokenTransform
 from invenio_rdm_migrator.transform import IdentityTransform
+
+from ...transform.entries.parents import ParentRecordEntry
+from ...transform.entries.records.records import ZenodoRecordEntry
 
 #
 # Hooks
@@ -228,3 +232,187 @@ class ReleaseUpdateAction(TransformAction):
             # using identity because it accounts for partial updates
             "gh_release": IdentityTransform()._transform(op["after"]),
         }
+
+
+class ReleaseProcess(TransformAction):
+    """Zenodo to RDM process a GitHub release action."""
+
+    name = "gh-release-process"
+    load_cls = load.ReleaseProcess
+
+    @staticmethod
+    def _patch_data(original, patch):
+        for key, value in patch.items():
+            original[key] = value
+
+    @classmethod
+    def matches_action(cls, tx):
+        """Checks if the data corresponds with that required by the action."""
+        if len(tx.operations) != 1:
+            return False
+
+        op = tx.operations[0]
+
+        return (
+            op["source"]["table"] == "github_releases"
+            and op["op"] == OperationType.UPDATE
+        )
+
+    def _transform_data(self):
+        """Transforms the data and returns dictionary."""
+        # the logic behind having dictionaries is that there are many rows of the same
+        # table (e.g record and deposit bucket, many pids), and they cannot be discarded
+        # until the record metadata is final and complete. then for example we can discard
+        # the deposit bucket, however, until that point we had to patch the updates on all
+        # rows.
+        records = {}
+        pids = {}
+        dois = {}
+        buckets = {}
+        fos = {}  # file objects
+
+        record_oai = None
+        release = None
+
+        for op in self.tx.operations:
+            table = op["source"]["table"]
+            if table == "pidstore_pid":
+                if op["before"] == None:  # create
+                    # ignore depid
+                    if op["after"]["pid_type"] == "doi":
+                        dois[op["after"]["object_uuid"]] = op["after"]
+                    elif op["after"]["pid_type"] == "oai":
+                        record_oai = op["after"]
+                    elif op["after"]["pid_type"] == "recid":
+                        # add pids then find which is which once the rec meta is processed
+                        # there might be more than two, but excluded by the rec meta
+                        pids[op["after"]["id"]] = op["after"]
+                else:  # updates only to recids (not asserted in the code though)
+                    recid = op["after"]["id"]
+                    # not pid -> e.g. when the parent already exists
+                    pid = pids.get(recid)
+                    pids[recid] = (
+                        self._patch_data(pid, op["after"]) if pid else op["after"]
+                    )
+
+            elif table == "files_bucket":
+                # should be only two, deposit and record
+                bucket_id = op["after"]["id"]
+                bucket = buckets.get(bucket_id)
+                buckets[bucket_id] = (
+                    self._patch_data(bucket, op["after"]) if bucket else op["after"]
+                )
+
+            elif table == "files_object":
+                # should be only two, deposit and record
+                bucket_id = op["after"]["bucket_id"]
+                fo = fos.get(bucket_id)
+                fos[bucket_id] = (
+                    self._patch_data(fo, op["after"]) if fo else op["after"]
+                )
+
+            elif table == "files_files":
+                # there is only one, both fo point to it
+                fi = self._patch_data(fi, op["after"]) if fi else op["after"]
+
+            elif table == "records_metadata":
+                # there are two created: record and deposit
+                # updates to other records are discarded
+                # deposit is discarded after transformation
+                if op["before"] == None:  # create
+                    records[op["after"]["id"]] = op["after"]
+                else:
+                    records[op["after"]["id"]] = self._patch_data(
+                        records[op["after"]["id"]], op["after"]
+                    )
+
+            elif table == "github_releases":
+                if not release:
+                    release = op["after"]
+                else:
+                    self._patch_data(release, op["after"])
+
+            else:
+                if table not in {"pidstore_redirect", "pidrelations_pidrelation"}:
+                    # ignoring a table that was not considered, might be a bug
+                    raise
+
+        # transform records and discard deposit
+        record = None
+        for _, rec_meta in records.items():
+            rec_meta["json"] = orjson.loads(rec_meta["json"])
+            if not "deposits" in rec_meta["json"]["$schema"]:
+                # this code assumes there is only one record and one deposit
+                record = rec_meta
+
+        record = ZenodoRecordEntry(partial=True).transform(rec_meta)
+        parent = ParentRecordEntry(partial=True).transform(record)
+        # communities should not be needed to clear since the GH releases
+        # don't belong to one
+        # parent["json"]["communities"] = {}
+
+        # choose pid and parent pid based on record metadata
+        record_pid = pids[record["json"]["id"]]
+        try:
+            parent_pid = pids[parent["json"]["id"]]
+        except KeyError:
+            # when it's not the first release the parent was already created
+            parent_pid = {
+                "id": parent["json"]["pid"]["pk"],  # change from state on load
+                "pid_type": "recid",
+                "pid_value": parent["json"]["id"],
+                "status": "R",
+                "object_type": "rec",
+                # object_uuid is assigned by the pks generation of the load action
+            }
+
+        # calculate parent doi
+        record_doi = dois[record["id"]]
+        try:
+            parent_doi = dois[parent["id"]]
+        except KeyError:
+            # if not present it was already registered in a previous release
+            pass
+
+        # choose the bucket according to the record bucket_id
+        bucket = buckets[record["bucket_id"]]
+        fo = fos[bucket["id"]]  # file object
+
+        # transform datetime fields
+        self._microseconds_to_isodate(data=record_pid, fields=["created", "updated"])
+        self._microseconds_to_isodate(data=record_doi, fields=["created", "updated"])
+        self._microseconds_to_isodate(data=record_oai, fields=["created", "updated"])
+        self._microseconds_to_isodate(data=parent_pid, fields=["created", "updated"])
+        self._microseconds_to_isodate(data=bucket, fields=["created", "updated"])
+        self._microseconds_to_isodate(data=fo, fields=["created", "updated"])
+        self._microseconds_to_isodate(
+            data=fi, fields=["created", "updated", "last_checked_at"]
+        )
+        self._microseconds_to_isodate(
+            data=record, fields=["created", "updated", "expires_at"]
+        )
+        self._microseconds_to_isodate(data=parent, fields=["created", "updated"])
+        self._microseconds_to_isodate(data=release, fields=["created", "updated"])
+
+        # note: the load action needs to store the pids in state because the parent
+        # could be in the first release and this be the second, need to find it
+        result = {
+            "tx_id": self.tx.id,
+            "record_pid": record_pid,
+            "parent_pid": parent_pid,
+            "record_doi": record_doi,
+            "record_oai": record_oai,
+            "file_bucket": bucket,
+            "file_object": fo,
+            "file_instance": fi,
+            "parent": record,
+            "record": parent,
+            # using identity because it accounts for partial updates
+            "gh_release": IdentityTransform()._transform(release),
+        }
+
+        if parent_doi:
+            self._microseconds_to_isodate(
+                data=parent_doi, fields=["created", "updated"]
+            )
+            result["parent_doi"] = parent_doi
