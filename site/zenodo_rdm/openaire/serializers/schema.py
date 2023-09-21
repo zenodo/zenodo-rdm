@@ -32,9 +32,8 @@ class OpenAIRESchema(Schema):
 
     authors = fields.Method("get_authors")
 
-    # TODO language is not being sent on Zenodo legacy. Also, it seems to be incorrect with the OA specs.
-    language = fields.Str(attribute="metadata.language")
-    version = fields.Str(attribute="versions.index")
+    language = fields.Method("get_language")
+    version = fields.Str(attribute="metadata.version")
     contexts = fields.Method("get_communities")
 
     licenseCode = fields.Method("get_license_code", required=True)
@@ -233,3 +232,13 @@ class OpenAIRESchema(Schema):
 
         embargo_date = embargo_obj["until"]
         return embargo_date
+
+    def get_language(self, obj):
+        """Get language.
+
+        In RDM, there can be multiple languages. Therefore, we serialize only the first one.
+        """
+        langs = obj["metadata"].get("languages", [])
+        if langs:
+            return langs[0]["id"]
+        return missing

@@ -6,6 +6,24 @@
 # it under the terms of the MIT License; see LICENSE file for more details.
 """Tests for openaire serializer."""
 
+expected_keys = (
+    "language",
+    "type",
+    "resourceType",
+    "originalId",
+    "title",
+    "url",
+    "authors",
+    "licenseCode",
+    "publisher",
+    "collectedFromId",
+    "hostedById",
+    "pids",
+    "contexts",
+    "linksToProjects",
+    "version",
+)
+
 
 def test_record_serializer(
     running_app, openaire_serializer, create_record, openaire_record_data, community
@@ -15,21 +33,6 @@ def test_record_serializer(
     record = create_record(openaire_record_data, community)
 
     serialized_record = serializer.dump_obj(record.data)
-    expected_keys = (
-        "type",
-        "resourceType",
-        "originalId",
-        "title",
-        "url",
-        "authors",
-        "licenseCode",
-        "publisher",
-        "collectedFromId",
-        "hostedById",
-        "pids",
-        "contexts",
-        "linksToProjects",
-    )
     assert serialized_record
     assert all([k for k in expected_keys if k in serialized_record])
     assert (
@@ -50,25 +53,10 @@ def test_embargoed_record(
     }
     record = create_record(openaire_record_data, community)
     serialized_record = serializer.dump_obj(record.data)
-    expected_keys = (
-        "type",
-        "resourceType",
-        "originalId",
-        "title",
-        "url",
-        "authors",
-        "licenseCode",
-        "publisher",
-        "collectedFromId",
-        "hostedById",
-        "pids",
-        "contexts",
-        "linksToProjects",
-        "embargoEndDate",
-    )
     assert serialized_record
     assert all([k for k in expected_keys if k in serialized_record])
     assert serialized_record["licenseCode"] == "EMBARGO"
+    assert serialized_record["embargoEndDate"]
 
 
 def test_closed_record(
@@ -91,21 +79,6 @@ def test_closed_record(
 
     record = create_record(openaire_record_data, community)
     serialized_record = serializer.dump_obj(record.data)
-    expected_keys = (
-        "type",
-        "resourceType",
-        "originalId",
-        "title",
-        "url",
-        "authors",
-        "licenseCode",
-        "publisher",
-        "collectedFromId",
-        "hostedById",
-        "pids",
-        "contexts",
-        "linksToProjects",
-    )
     assert serialized_record
     assert all([k for k in expected_keys if k in serialized_record])
     assert serialized_record["licenseCode"] == "CLOSED"

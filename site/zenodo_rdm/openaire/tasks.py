@@ -83,7 +83,7 @@ def openaire_direct_index(record_id, retry=True):
     default_retry_delay=4 * 60 * 60,
     rate_limit="100/m",
 )
-def openaire_delete(record_id=None):
+def openaire_delete(record_id=None, retry=True):  # TODO add retry
     """Delete record from OpenAIRE index.
 
     :param record_id: Record Metadata UUID.
@@ -91,18 +91,6 @@ def openaire_delete(record_id=None):
     """
     try:
         record = records_service.read(system_identity, record_id)
-        resource_type = record.data.get("metadata", {}).get("resource_type")
-
-        if record and not resource_type:
-            # record was deleted, find last revision with metadata
-            record = next(
-                r._record
-                for r in record._record.get_records_by_parent(record._record.parent)
-                if r.data.get("metadata", {}).get("resource_type")
-            )
-
-        if not record:
-            raise OpenAIRERequestError("Could not resolve record.")
 
         original_id = openaire_original_id(record.data)[1]
         datasource_id = openaire_datasource_id(record.data)
@@ -131,7 +119,10 @@ def openaire_delete(record_id=None):
         current_cache.set(
             f"openaire_direct_index:{record_id}", datetime.now(), timeout=-1
         )
-        openaire_delete.retry(exc=exc)
+        if retry:
+            openaire_delete.retry(exc=exc)
+        else:
+            raise exc
 
 
 @shared_task
@@ -144,8 +135,10 @@ def retry_openaire_failures():
     for key in failed_records:
         record_id = key.decode().split("openaire_direct_index:")[1]
         record = records_service.read(system_identity, record_id)
-        resource_type = record.data.get("metadata", {}).get("resource_type")
-        if resource_type:
-            openaire_direct_index.delay(record_id, retry=False)
+        is_deleted = record.data["deletion_status"]["is_deleted"]
+
+        # If record was deleted, try to remove it from OpenAIRE
+        if is_deleted:
+            openaire_delete.delay(record_id, retry=False)
         else:
-            openaire_delete.delay(record_id)
+            openaire_direct_index.delay(record_id, retry=False)
