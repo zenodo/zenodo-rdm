@@ -7,9 +7,9 @@ To use call ``load_files(DATA_PATHS, "awards.csv")``.
 """
 import csv
 import gzip
-import json
 import uuid
 
+import orjson
 from invenio_rdm_migrator.utils import ts
 
 DATA_PATHS = [
@@ -111,7 +111,7 @@ def load_files(file_paths, outpath):
                     if idx % 1000 == 0:
                         print(f"[{ts()}] {idx}")
                     try:
-                        data = json.loads(line)
+                        data = orjson.loads(line)
                         award = transform_openaire_grant(data)
                         if not award:
                             print(f"[{ts()}] Failed to transform line {idx}:\n{data}\n")
@@ -127,7 +127,7 @@ def load_files(file_paths, outpath):
                                 (
                                     str(uuid.uuid4()),  # id
                                     award_id,  # pid
-                                    json.dumps(award),  # json
+                                    orjson.dumps(award).decode("utf-8"),  # json
                                     creation_ts,  # created
                                     creation_ts,  # updated (same as created)
                                     1,  # version_id
