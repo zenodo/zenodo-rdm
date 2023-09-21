@@ -6,7 +6,7 @@
 # it under the terms of the MIT License; see LICENSE file for more details.
 """OpenAire schema."""
 
-from flask import current_app, g
+from invenio_access.permissions import system_identity
 from invenio_communities.proxies import current_communities
 from marshmallow import Schema, fields, missing, pre_dump
 from zenodo_legacy.funders import FUNDER_ACRONYMS, FUNDER_ROR_TO_DOI
@@ -32,6 +32,7 @@ class OpenAIRESchema(Schema):
 
     authors = fields.Method("get_authors")
 
+    # TODO language is not being sent on Zenodo legacy. Also, it seems to be incorrect with the OA specs.
     language = fields.Str(attribute="metadata.language")
     version = fields.Str(attribute="versions.index")
     contexts = fields.Method("get_communities")
@@ -46,6 +47,9 @@ class OpenAIRESchema(Schema):
 
     linksToProjects = fields.Method("get_links_to_projects")
     pids = fields.Method("get_pids")
+
+    type = fields.Method("get_type")
+    resourceType = fields.Method("get_resource_type")
 
     @pre_dump
     def add_oatypes(self, data, **kwargs):
@@ -63,6 +67,16 @@ class OpenAIRESchema(Schema):
         data["type"] = oatype["props"]["openaire_type"]
         data["resourceType"] = oatype["props"]["openaire_resourceType"]
         return data
+
+    def get_type(self, obj):
+        """Get OpenAIRE type."""
+        # Added in ``pre_dump``
+        return obj["type"]
+
+    def get_resource_type(self, obj):
+        """Get OpenAIRE resourceType."""
+        # Added in ``pre_dump``
+        return obj["resourceType"]
 
     def get_authors(self, obj):
         """Get authors."""
@@ -96,7 +110,7 @@ class OpenAIRESchema(Schema):
         result = []
         comm_service = current_communities.service
         community_ids = obj.get("parent", {}).get("communities", {}).get("ids", [])
-        communities = comm_service.read_many(g.identity, community_ids)
+        communities = comm_service.read_many(system_identity, community_ids)
         for comm in communities:
             result.append(comm["links"]["self_html"])
         return result or missing

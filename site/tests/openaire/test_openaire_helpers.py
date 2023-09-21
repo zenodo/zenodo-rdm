@@ -15,7 +15,6 @@ from zenodo_rdm.openaire.utils import (
     OA_OTHER,
     OA_PUBLICATION,
     OA_SOFTWARE,
-    openaire_id,
     openaire_link,
     openaire_type,
 )
@@ -87,26 +86,6 @@ def test_funded_publication_serialization(
     assert openaire_type(r) == OA_PUBLICATION
     r["parent"] = {"communities": {"ids": ["zenodo"]}}
     assert openaire_type(r) is None
-
-
-@pytest.mark.parametrize(
-    "resource_type,expected",
-    [
-        ("software", "od______2659::47287d1800c112499a117ca17aa1909d"),
-        ("other", "od______2659::47287d1800c112499a117ca17aa1909d"),
-        ("dataset", "od______2659::204007f516ddcf0a452c2f22d48695ca"),
-        ("publication", "od______2659::47287d1800c112499a117ca17aa1909d"),
-    ],
-)
-def test_openaire_id(running_app, minimal_open_record, resource_type, expected):
-    """Test OpenAIRE ID."""
-    r = deepcopy(minimal_open_record)
-    r["pids"] = {
-        "doi": {"identifier": "10.5281/zenodo.123"},
-        "oai": {"identifier": "oai:zenodo.org:123"},
-    }
-    r["metadata"]["resource_type"] = {"id": resource_type}
-    assert openaire_id(r) == expected
 
 
 @pytest.mark.parametrize(

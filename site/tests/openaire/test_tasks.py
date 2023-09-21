@@ -7,8 +7,8 @@
 """Test OpenAIRE tasks."""
 
 
-from typing import Any
-from unittest.mock import MagicMock, call, patch
+import json
+from unittest.mock import call
 
 from zenodo_rdm.openaire.tasks import openaire_direct_index
 
@@ -30,7 +30,7 @@ def test_openaire_direct_index_task(
     # Will be executed synchronously in tests
     openaire_direct_index.delay(openaire_record.id)
     mocked_session.post.assert_called_once_with(
-        openaire_api_endpoint, data=serialized_record, timeout=10
+        openaire_api_endpoint, data=json.dumps(serialized_record), timeout=10
     )
 
 
@@ -58,7 +58,7 @@ def test_openaire_direct_index_task_with_beta(
     # Assert two ``post`` requests were issued: one to production and one to beta
     beta_endpoint = f"{beta_url}/feedObject"
     calls = [
-        call(openaire_api_endpoint, data=serialized_record, timeout=10),
-        call(beta_endpoint, data=serialized_record, timeout=10),
+        call(openaire_api_endpoint, data=json.dumps(serialized_record), timeout=10),
+        call(beta_endpoint, data=json.dumps(serialized_record), timeout=10),
     ]
     mocked_session.post.assert_has_calls(calls)

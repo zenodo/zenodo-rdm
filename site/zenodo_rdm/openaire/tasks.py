@@ -6,6 +6,7 @@
 # it under the terms of the MIT License; see LICENSE file for more details.
 """OpenAIRE celery tasks."""
 
+import json
 from datetime import datetime
 
 from celery import shared_task
@@ -46,7 +47,7 @@ def openaire_direct_index(record_id, retry=True):
         openaire_api_url = current_app.config["OPENAIRE_API_URL"]
         url = f"{openaire_api_url}/feedObject"
         request = openaire_request_factory()
-        res = request.post(url, data=serialized_record, timeout=10)
+        res = request.post(url, data=json.dumps(serialized_record), timeout=10)
 
         if not res.ok:
             raise OpenAIRERequestError(res.text)
@@ -54,7 +55,9 @@ def openaire_direct_index(record_id, retry=True):
         beta_url = current_app.config.get("OPENAIRE_API_URL_BETA")
         if beta_url:
             beta_endpoint = f"{beta_url}/feedObject"
-            res_beta = request.post(beta_endpoint, data=serialized_record, timeout=10)
+            res_beta = request.post(
+                beta_endpoint, data=json.dumps(serialized_record), timeout=10
+            )
 
             if not res_beta.ok:
                 raise OpenAIRERequestError(res_beta.text)

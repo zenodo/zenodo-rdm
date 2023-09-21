@@ -16,9 +16,6 @@ OPENAIRE_API_CREDENTIALS = {"username": "CHANGE_ME", "password": "CHANGE_ME"}
 OPENAIRE_API_URL_BETA = None
 
 # Other configs
-OPENAIRE_COMMUNITIES = {}
-"""OpenAIRE communities resource subtypes configuration."""
-
 OPENAIRE_PORTAL_URL = "https://explore.openaire.eu"
 """OpenAIRE portal url."""
 

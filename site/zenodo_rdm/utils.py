@@ -118,7 +118,7 @@ def reana_link_render(record):
 def openaire_link_render(record):
     """Entry for OpenAIRE."""
     ret = []
-    oa_link = openaire_link(record.data)
+    oa_link = openaire_link(record)
     if oa_link:
         ret.append(
             dump_external_resource(

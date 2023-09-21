@@ -79,37 +79,6 @@ def app_config(app_config):
     }
     # OpenAIRE configs
     app_config["OPENAIRE_PORTAL_URL"] = "https://explore.openaire.eu"
-    app_config["OPENAIRE_COMMUNITIES"] = {
-        "foo": {
-            "name": "Foo Optimization Organization",
-            "communities": [
-                "c1",
-                "c2",
-            ],
-            "types": {
-                "software": [
-                    {"id": "foo:t1", "name": "Foo sft type one"},
-                    {"id": "foo:t2", "name": "Foo sft type two"},
-                ],
-                "other": [
-                    {"id": "foo:t4", "name": "Foo other type four"},
-                    {"id": "foo:t5", "name": "Foo other type five"},
-                ],
-            },
-        },
-        "bar": {
-            "name": "Bar Association Resources",
-            "communities": ["c3", "c1"],
-            "types": {
-                "software": [
-                    {"id": "bar:t3", "name": "Bar sft type three"},
-                ],
-                "other": [
-                    {"id": "bar:t6", "name": "Bar other type six"},
-                ],
-            },
-        },
-    }
 
     return app_config
 
