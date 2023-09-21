@@ -53,6 +53,8 @@ class OAuthServerTokenCreateAction(TransformAction):
             client_src = self.tx.operations[1]["after"]
             token_src = self.tx.operations[0]["after"]
 
+        self._microseconds_to_isodate(data=token_src, fields=["expires"])
+
         result = {
             "tx_id": self.tx.id,
             "client": OAuthServerClientTransform()._transform(client_src),
@@ -105,6 +107,7 @@ class OAuthServerTokenUpdateAction(TransformAction):
                 result["client"] = OAuthServerClientTransform()._transform(op["after"])
 
             elif op["source"]["table"] == "oauth2server_token":
+                self._microseconds_to_isodate(data=op["after"], fields=["expires"])
                 result["token"] = OAuthServerTokenTransform()._transform(op["after"])
 
         return result
@@ -133,6 +136,7 @@ class OAuthServerTokenDeleteAction(TransformAction):
         """Transforms the data and returns dictionary."""
         op = self.tx.operations[0]
 
+        self._microseconds_to_isodate(data=op["before"], fields=["expires"])
         return {
             "tx_id": self.tx.id,
             "token": OAuthServerTokenTransform()._transform(op["before"]),
@@ -297,6 +301,11 @@ class OAuthLinkedAccountConnectAction(TransformAction):
             elif op["source"]["table"] == "oauth2server_token":
                 server_token = op["after"]
 
+        self._microseconds_to_isodate(
+            data=remote_account, fields=["created", "updated"]
+        )
+        self._microseconds_to_isodate(data=remote_token, fields=["created", "updated"])
+        self._microseconds_to_isodate(data=user_identity, fields=["created", "updated"])
         result = {
             "tx_id": self.tx.id,
             "remote_account": IdentityTransform()._transform(remote_account),
@@ -308,6 +317,7 @@ class OAuthLinkedAccountConnectAction(TransformAction):
                 server_client
             )
         if server_token:
+            self._microseconds_to_isodate(data=server_token, fields=["expires"])
             result["server_token"]: OAuthServerTokenTransform()._transform(server_token)
 
         return result
@@ -357,6 +367,10 @@ class OAuthLinkedAccountDisconnectAction(TransformAction):
             elif op["source"]["table"] == "oauthclient_useridentity":
                 user_identity = op["before"]
 
+        self._microseconds_to_isodate(
+            data=remote_account, fields=["created", "updated"]
+        )
+        self._microseconds_to_isodate(data=remote_token, fields=["created", "updated"])
         result = {
             "tx_id": self.tx.id,
             "remote_account": IdentityTransform()._transform(remote_account),
@@ -364,6 +378,9 @@ class OAuthLinkedAccountDisconnectAction(TransformAction):
         }
 
         if user_identity:
+            self._microseconds_to_isodate(
+                data=user_identity, fields=["created", "updated"]
+            )
             result["user_identity"] = IdentityTransform()._transform(user_identity)
 
         return result
@@ -400,8 +417,12 @@ class OAuthGHDisconnectToken(TransformAction):
 
         for op in self.tx.operations:
             if op["source"]["table"] == "oauth2server_token":
+                self._microseconds_to_isodate(data=op["before"], fields=["expires"])
                 token = op["before"]
             elif op["source"]["table"] == "oauthclient_useridentity":
+                self._microseconds_to_isodate(
+                    data=op["before"], fields=["created", "updated"]
+                )
                 user_identity = op["before"]
 
         return {
