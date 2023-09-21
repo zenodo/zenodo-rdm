@@ -7,4 +7,4 @@ COPY (
     created,
     updated
   FROM oauthclient_remoteaccount
-) TO STDOUT WITH (FORMAT csv);
+) TO STDOUT WITH (FORMAT binary);
