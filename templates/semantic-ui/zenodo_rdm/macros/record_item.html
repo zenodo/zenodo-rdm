@@ -103,25 +103,25 @@
           </div>
 
           {# Statistics #}
-          {% set downloads = record.stats.all_versions.downloads %}
-          {% set views = record.stats.all_versions.views %}
+          {% set downloads = record.stats.all_versions.unique_downloads %}
+          {% set views = record.stats.all_versions.unique_views %}
           <small class="flex align-items-center">
             {% if views is defined %}
-              <div class="ui transparent label stats-popup total-views" aria-label="{{ _('Total views') }}">
+              <div class="ui transparent label stats-popup stats-views" aria-label="{{ _('Views') }}">
                 <i class="ui eye icon" aria-hidden="true"></i>
                 {{ views }}
                 <div class="ui tiny popup" aria-hidden="true">
-                  {{ _("Total views") }}
+                  {{ _("Views") }}
                 </div>
               </div>
             {% endif %}
 
             {% if downloads is defined %}
-              <div class="ui transparent label stats-popup total-downloads" aria-label="{{ _('Total downloads') }}">
+              <div class="ui transparent label stats-popup stats-downloads" aria-label="{{ _('Downloads') }}">
                 <i class="ui download icon" aria-hidden="true"></i>
                 {{ downloads}}
                 <div class="ui tiny popup" aria-hidden="true">
-                  {{ _("Total downloads") }}
+                  {{ _("Downloads") }}
                 </div>
               </div>
             {% endif %}

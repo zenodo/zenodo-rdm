@@ -14,7 +14,7 @@
 
   }
 
-  &.total-views {
+  &.stats-views {
     .ui.popup {
       left: 0;
 
@@ -25,7 +25,7 @@
     }
   }
 
-  &.total-downloads {
+  &.stats-downloads {
     .ui.popup {
       right: 0;
 
