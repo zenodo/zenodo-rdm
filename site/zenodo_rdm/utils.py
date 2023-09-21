@@ -13,6 +13,7 @@ import idutils
 from flask import current_app, url_for
 from invenio_app_rdm.records_ui.utils import dump_external_resource
 from invenio_i18n import _
+from zenodo_rdm.openaire.utils import openaire_link
 
 
 def github_link_render(record):
@@ -117,16 +118,11 @@ def reana_link_render(record):
 def openaire_link_render(record):
     """Entry for OpenAIRE."""
     ret = []
-    openaire_types = set(["publication", "dataset", "software", "other"])
-    metadata = record.get("metadata", {})
-    doi = record.get("pids", {}).get("doi", {}).get("identifier")
-    resource_type = metadata.get("resource_type", {}).get("id")
-    if resource_type in openaire_types and doi:
-        openaire_url = current_app.config.get("OPENAIRE_PORTAL_URL", "")
-        url = f"{openaire_url}/search/{resource_type}?pid={doi}"
+    oa_link = openaire_link(record.data)
+    if oa_link:
         ret.append(
             dump_external_resource(
-                url,
+                oa_link,
                 title="OpenAIRE",
                 section=_("Indexed in"),
                 icon=url_for("static", filename="images/openaire.svg"),

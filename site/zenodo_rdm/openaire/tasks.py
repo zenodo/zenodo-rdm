@@ -35,34 +35,34 @@ def openaire_direct_index(record_id, retry=True):
         record = records_service.read(system_identity, record_id)
 
         # Bail out if not an OpenAIRE record.
-        if not (openaire_type(record)):
+        if not (openaire_type(record.data)):
             return
 
+        # Serialize record for OpenAIRE indexing
         serializer = OpenAIREV1Serializer()
-        serialized_record = serializer.dump_obj(record)
-        url = "{}/feedObject".format(current_app.config["OPENAIRE_API_URL"])
+        serialized_record = serializer.dump_obj(record.data)
+
+        # Build the request
+        openaire_api_url = current_app.config["OPENAIRE_API_URL"]
+        url = f"{openaire_api_url}/feedObject"
         request = openaire_request_factory()
         res = request.post(url, data=serialized_record, timeout=10)
 
         if not res.ok:
             raise OpenAIRERequestError(res.text)
 
-        res_beta = None
-        if current_app.config["OPENAIRE_API_URL_BETA"]:
-            url_beta = "{}/feedObject".format(
-                current_app.config["OPENAIRE_API_URL_BETA"]
-            )
-            res_beta = request.post(url_beta, data=serialized_record, timeout=10)
+        beta_url = current_app.config.get("OPENAIRE_API_URL_BETA")
+        if beta_url:
+            beta_endpoint = f"{beta_url}/feedObject"
+            res_beta = request.post(beta_endpoint, data=serialized_record, timeout=10)
 
-        if res_beta and not res_beta.ok:
-            raise OpenAIRERequestError(res_beta.text)
-        else:
-            recid = record.get("recid")
-            current_cache.delete("openaire_direct_index:{}".format(recid))
+            if not res_beta.ok:
+                raise OpenAIRERequestError(res_beta.text)
+        recid = record["id"]
+        current_cache.delete(f"openaire_direct_index:{recid}")
     except Exception as exc:
-        recid = record.get("recid")
         current_cache.set(
-            "openaire_direct_index:{}".format(recid), datetime.now(), timeout=-1
+            "openaire_direct_index:{}".format(record_id), datetime.now(), timeout=-1
         )
         if retry:
             openaire_direct_index.retry(exc=exc)
