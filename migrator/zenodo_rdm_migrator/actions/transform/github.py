@@ -46,6 +46,8 @@ class HookRepoUpdateAction(TransformAction):
         """Transforms the data and returns dictionary."""
         op = self.tx.operations[0]
 
+        self._microseconds_to_isodate(data=op["after"], fields=["created", "updated"])
+
         result = {
             "tx_id": self.tx.id,
             "gh_repository": GitHubRepositoryTransform()._transform(op["after"]),
@@ -95,8 +97,12 @@ class HookEventCreateAction(TransformAction):
         server_token = None
         for op in self.tx.operations:
             if op["source"]["table"] == "webhooks_events":
+                self._microseconds_to_isodate(
+                    data=op["after"], fields=["created", "updated"]
+                )
                 webhook_event = op["after"]
             elif op["source"]["table"] == "oauth2server_token":
+                self._microseconds_to_isodate(data=op["after"], fields=["expires"])
                 server_token = op["after"]
 
         result = {
@@ -131,6 +137,8 @@ class HookEventUpdateAction(TransformAction):
     def _transform_data(self):
         """Transforms the data and returns dictionary."""
         op = self.tx.operations[0]
+
+        self._microseconds_to_isodate(data=op["after"], fields=["created", "updated"])
 
         result = {
             "tx_id": self.tx.id,
