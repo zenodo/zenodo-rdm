@@ -14,6 +14,10 @@ from invenio_rdm_migrator.streams.github import GitHubRepositoryTransform
 from invenio_rdm_migrator.streams.oauth import OAuthServerTokenTransform
 from invenio_rdm_migrator.transform import IdentityTransform
 
+#
+# Hooks
+#
+
 
 class HookRepoUpdateAction(TransformAction):
     """Zenodo to RDM GitHub repository update of a webhook.
@@ -134,3 +138,85 @@ class HookEventUpdateAction(TransformAction):
         }
 
         return result
+
+
+#
+# Releases
+#
+
+
+class ReleaseReceiveAction(TransformAction):
+    """Zenodo to RDM receive/create a GitHub release action."""
+
+    name = "gh-release-receive"
+    load_cls = load.ReleaseReceiveAction
+
+    @classmethod
+    def matches_action(cls, tx):
+        """Checks if the data corresponds with that required by the action."""
+        if len(tx.operations) != 2:
+            return False
+
+        rules = {
+            "github_repositories": OperationType.UPDATE,
+            "github_releases": OperationType.INSERT,
+        }
+
+        for op in tx.operations:
+            rule = rules.pop(op["source"]["table"], None)
+            if not rule or rule != op["op"]:
+                return False
+
+        return True
+
+    def _transform_data(self):
+        """Transforms the data and returns dictionary."""
+        repo = None
+        release = None
+        for op in self.tx.operations:
+            self._microseconds_to_isodate(
+                data=op["after"], fields=["created", "updated"]
+            )
+            if op["source"]["table"] == "github_repositories":
+                repo = op["after"]
+            elif op["source"]["table"] == "github_releases":
+                release = op["after"]
+
+        return {
+            "tx_id": self.tx.id,
+            "gh_repository": GitHubRepositoryTransform()._transform(repo),
+            # using identity because it accounts for partial updates
+            "gh_release": IdentityTransform()._transform(release),
+        }
+
+
+class ReleaseUpdateAction(TransformAction):
+    """Zenodo to RDM update a GitHub release action."""
+
+    name = "gh-release-update"
+    load_cls = load.ReleaseUpdateAction
+
+    @classmethod
+    def matches_action(cls, tx):
+        """Checks if the data corresponds with that required by the action."""
+        if len(tx.operations) != 1:
+            return False
+
+        op = tx.operations[0]
+
+        return (
+            op["source"]["table"] == "github_releases"
+            and op["op"] == OperationType.UPDATE
+        )
+
+    def _transform_data(self):
+        """Transforms the data and returns dictionary."""
+        op = self.tx.operations[0]
+
+        self._microseconds_to_isodate(data=op["after"], fields=["created", "updated"])
+
+        return {
+            "tx_id": self.tx.id,
+            # using identity because it accounts for partial updates
+            "gh_release": IdentityTransform()._transform(op["after"]),
+        }
