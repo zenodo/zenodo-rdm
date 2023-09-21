@@ -19,10 +19,12 @@ from zenodo_rdm_migrator.actions.transform import (
     HookEventCreateAction,
     HookEventUpdateAction,
     HookRepoUpdateAction,
+    ReleaseReceiveAction,
+    ReleaseUpdateAction,
 )
 
 ##
-# TOKENS
+# Hooks
 ##
 
 
@@ -285,3 +287,177 @@ class TestHookEventUpdateAction:
             )
         )
         assert isinstance(action.transform(), load.HookEventUpdateAction)
+
+
+##
+# Releases
+##
+
+
+@pytest.fixture()
+def release_receive_tx():
+    """Transaction receive a release.
+
+    As it would be after the extraction step.
+    """
+    datafile = Path(__file__).parent / "testdata" / "release_receive.jsonl"
+    with open(datafile, "rb") as reader:
+        ops = [orjson.loads(line)["value"] for line in reader]
+
+    return {"tx_id": 1, "operations": ops}
+
+
+class TestReleaseReceiveAction:
+    """Release reception action tests."""
+
+    def test_matches_with_valid_data(self):
+        assert (
+            ReleaseReceiveAction.matches_action(
+                Tx(
+                    id=1,
+                    operations=[
+                        {
+                            "op": OperationType.UPDATE,
+                            "source": {"table": "github_repositories"},
+                            "after": {},
+                        },
+                        {
+                            "op": OperationType.INSERT,
+                            "source": {"table": "github_releases"},
+                            "after": {},
+                        },
+                    ],
+                )
+            )
+            is True
+        )
+
+    def test_matches_with_invalid_data(self):
+        empty = []
+
+        no_release = [
+            {
+                "op": OperationType.UPDATE,
+                "source": {"table": "github_repositories"},
+                "after": {},
+            },
+        ]
+
+        no_repository = [
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "github_releases"},
+                "after": {},
+            },
+        ]
+
+        wrong_op = [
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "github_repositories"},
+                "after": {},
+            },
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "github_releases"},
+                "after": {},
+            },
+        ]
+
+        extra_op = [
+            {
+                "op": OperationType.UPDATE,
+                "source": {"table": "github_repositories"},
+                "after": {},
+            },
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "github_releases"},
+                "after": {},
+            },
+            {"op": OperationType.INSERT, "source": {"table": "another"}, "after": {}},
+        ]
+
+        for invalid_ops in [empty, no_release, no_repository, wrong_op, extra_op]:
+            assert (
+                ReleaseReceiveAction.matches_action(Tx(id=1, operations=invalid_ops))
+                is False
+            )
+
+    def test_transform_with_valid_data(self, release_receive_tx):
+        action = ReleaseReceiveAction(
+            Tx(
+                id=release_receive_tx["tx_id"],
+                operations=release_receive_tx["operations"],
+            )
+        )
+        assert isinstance(action.transform(), load.ReleaseReceiveAction)
+
+
+@pytest.fixture()
+def release_update_tx():
+    """Transaction update a release.
+
+    As it would be after the extraction step.
+    """
+    datafile = Path(__file__).parent / "testdata" / "release_update.jsonl"
+    with open(datafile, "rb") as reader:
+        ops = [orjson.loads(line)["value"] for line in reader]
+
+    return {"tx_id": 1, "operations": ops}
+
+
+class TestReleaseUpdateAction:
+    """Release update action tests."""
+
+    def test_matches_with_valid_data(self):
+        assert (
+            ReleaseUpdateAction.matches_action(
+                Tx(
+                    id=1,
+                    operations=[
+                        {
+                            "op": OperationType.UPDATE,
+                            "source": {"table": "github_releases"},
+                            "after": {},
+                        },
+                    ],
+                )
+            )
+            is True
+        )
+
+    def test_matches_with_invalid_data(self):
+        empty = []
+
+        wrong_op = [
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "github_releases"},
+                "after": {},
+            },
+        ]
+
+        extra_op = [
+            {
+                "op": OperationType.INSERT,
+                "source": {"table": "github_releases"},
+                "after": {},
+            },
+            {"op": OperationType.INSERT, "source": {"table": "another"}, "after": {}},
+        ]
+
+        for invalid_ops in [empty, wrong_op, extra_op]:
+            assert (
+                ReleaseUpdateAction.matches_action(Tx(id=1, operations=invalid_ops))
+                is False
+            )
+
+    def test_transform_with_valid_data(self, release_update_tx):
+        action = ReleaseUpdateAction(
+            Tx(
+                id=release_update_tx["tx_id"],
+                operations=release_update_tx["operations"],
+            )
+        )
+        assert isinstance(action.transform(), load.ReleaseUpdateAction)
