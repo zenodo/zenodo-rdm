@@ -9,10 +9,11 @@
 import hashlib
 import urllib
 
-import requests
-from flask import current_app
+from flask import current_app, g
 from invenio_access.permissions import system_identity
+from invenio_communities.proxies import current_communities
 from invenio_vocabularies.proxies import current_service as vocab_service
+from requests import Session
 
 OPENAIRE_NAMESPACE_PREFIXES = {
     "publication": "od______2659",
@@ -81,9 +82,19 @@ def is_openaire_publication(record, oatype):
 
     # Has grants, is part of ecfunded community or is open access.
     has_grants = record.get("metadata", {}).get("funding")
-    is_ecfunded = "ecfunded" in record.get("parent", {}).get("communities", {}).get(
-        "ids", []
-    )
+
+    # Compute communities to determine whether record belongs to "ecfunded" community.
+    comm_service = current_communities.service
+    community_ids = record.get("parent", {}).get("communities", {}).get("ids", [])
+    is_ecfunded = False
+
+    if community_ids:
+        communities = comm_service.read_many(g.identity, community_ids)
+        for comm in communities:
+            if comm["slug"] == "ecfunded":
+                is_ecfunded = True
+                break
+
     is_open = rights["record"] == "public" and rights["files"] == "public"
     if has_grants or is_ecfunded or is_open:
         return True
@@ -113,13 +124,14 @@ def openaire_datasource_id(record):
 
 def openaire_request_factory(headers=None, auth=None):
     """Request factory for OpenAIRE API."""
-    ses = requests.Session()
+    ses = Session()
     ses.headers.update(
         headers or {"Content-type": "application/json", "Accept": "application/json"}
     )
     if not auth:
-        username = current_app.config.get("OPENAIRE_API_USERNAME")
-        password = current_app.config.get("OPENAIRE_API_PASSWORD")
+        credentials = current_app.config.get("OPENAIRE_API_CREDENTIALS", {})
+        username = credentials.get("username")
+        password = credentials.get("password")
         if username and password:
             auth = (username, password)
     ses.auth = auth

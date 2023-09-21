@@ -69,7 +69,9 @@ def test_embardoged_publication_serialization(running_app, minimal_record):
     assert openaire_type(r) is None
 
 
-def test_funded_publication_serialization(running_app, minimal_record):
+def test_funded_publication_serialization(
+    running_app, minimal_record, ec_funded_community
+):
     """Test a publication that is funded (e.g. has grants)."""
     r = deepcopy(minimal_record)
 
@@ -81,7 +83,7 @@ def test_funded_publication_serialization(running_app, minimal_record):
 
     # in ecfunded community
     del r["metadata"]["funding"]
-    r["parent"] = {"communities": {"ids": ["ecfunded"]}}
+    r["parent"] = {"communities": {"ids": [ec_funded_community.id]}}
     assert openaire_type(r) == OA_PUBLICATION
     r["parent"] = {"communities": {"ids": ["zenodo"]}}
     assert openaire_type(r) is None

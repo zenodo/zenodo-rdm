@@ -497,6 +497,7 @@ def awards_v(app, funders_v):
             },
             "funder": {"id": "00rbzpz17"},
             "acronym": "HIT-CF",
+            "program": "H2020",
         },
     )
 
@@ -743,6 +744,19 @@ def minimal_community2():
 
 
 @pytest.fixture()
+def ec_funded_community_data():
+    """Data for a 'ecfunded' community."""
+    return {
+        "slug": "ecfunded",
+        "access": {"visibility": "public", "review_policy": "open"},
+        "metadata": {
+            "title": "European Commission Funded Research (OpenAIRE)",
+            "type": {"id": "topic"},
+        },
+    }
+
+
+@pytest.fixture()
 def test_user(UserFixture, app, db):
     """User meant to test permissions."""
     u = UserFixture(
@@ -904,6 +918,14 @@ def community_with_uploader_owner(
 ):
     """Create a community with an uploader owner."""
     return _community_get_or_create(minimal_community2, uploader.identity)
+
+
+@pytest.fixture()
+def ec_funded_community(
+    running_app, community_type_record, community_owner, ec_funded_community_data
+):
+    """Get the current RDM records service."""
+    return _community_get_or_create(ec_funded_community_data, community_owner.identity)
 
 
 @pytest.fixture(scope="module")

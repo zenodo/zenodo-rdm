@@ -6,26 +6,100 @@
 # it under the terms of the MIT License; see LICENSE file for more details.
 """Tests for openaire serializer."""
 
-import pytest
-from zenodo_rdm.openaire.serializers import OpenAIREV1Serializer
-from invenio_rdm_records.proxies import current_rdm_records_service as records_service
-from invenio_access.permissions import system_identity
 
-
-@pytest.fixture(scope="module")
-def openaire_serializer():
-    yield OpenAIREV1Serializer()
-
-
-def test_record_serializer(running_app, minimal_record, openaire_serializer):
+def test_record_serializer(
+    running_app, openaire_serializer, create_record, openaire_record_data, community
+):
+    """Test a simple record."""
     serializer = openaire_serializer
+    record = create_record(openaire_record_data, community)
 
-    # Disable files, we don't care about files for this test.
-    minimal_record["files"]["enabled"] = False
-
-    # We use system identity since we just want a record to be serialized, we don't care about permissions.
-    draft = records_service.create(system_identity, minimal_record)
-    record = records_service.publish(id_=draft.id, identity=system_identity)
-
-    serialized_record = serializer.dump_obj(record)
+    serialized_record = serializer.dump_obj(record.data)
+    expected_keys = (
+        "originalId",
+        "title",
+        "url",
+        "authors",
+        "licenseCode",
+        "publisher",
+        "collectedFromId",
+        "hostedById",
+        "pids",
+        "contexts",
+        "linksToProjects",
+    )
     assert serialized_record
+    assert all([k for k in expected_keys if k in serialized_record])
+    assert (
+        len([pid for pid in serialized_record["pids"] if pid["type"] in ("doi", "oai")])
+        == 2
+    )
+
+
+def test_embargoed_record(
+    running_app, openaire_record_data, create_record, openaire_serializer, community
+):
+    """Test an embargoed record."""
+    serializer = openaire_serializer
+    openaire_record_data["access"] = {
+        "files": "restricted",
+        "record": "restricted",
+        "embargo": {"active": True, "until": "2500-12-12"},
+    }
+    record = create_record(openaire_record_data, community)
+    serialized_record = serializer.dump_obj(record.data)
+    expected_keys = (
+        "originalId",
+        "title",
+        "url",
+        "authors",
+        "licenseCode",
+        "publisher",
+        "collectedFromId",
+        "hostedById",
+        "pids",
+        "contexts",
+        "linksToProjects",
+        "embargoEndDate",
+    )
+    assert serialized_record
+    assert all([k for k in expected_keys if k in serialized_record])
+    assert serialized_record["licenseCode"] == "EMBARGO"
+
+
+def test_closed_record(
+    running_app, openaire_record_data, create_record, openaire_serializer, community
+):
+    """Test a closed record.
+
+    In RDM, a closed record does not exist by design. However, we can map it following legacy Zenodo logic.
+    A record is closed if it's restricted AND does not allow any access requests (e.g. it's totally restricted to only the owner).
+    """
+    serializer = openaire_serializer
+    openaire_record_data["parent"] = {
+        "access": {
+            "settings": {
+                "allow_user_requests": False,
+                "allow_guest_requests": False,
+            }
+        },
+    }
+
+    record = create_record(openaire_record_data, community)
+    serialized_record = serializer.dump_obj(record.data)
+    expected_keys = (
+        "originalId",
+        "title",
+        "url",
+        "authors",
+        "licenseCode",
+        "publisher",
+        "collectedFromId",
+        "hostedById",
+        "pids",
+        "contexts",
+        "linksToProjects",
+    )
+    assert serialized_record
+    assert all([k for k in expected_keys if k in serialized_record])
+    assert serialized_record["licenseCode"] == "CLOSED"

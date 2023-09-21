@@ -6,15 +6,11 @@
 # it under the terms of the MIT License; see LICENSE file for more details.
 """OpenAire related configs."""
 
-# OpenAIRE API configs
-OPENAIRE_API_USERNAME = ""
-"""OpenAIRE API authentication - username."""
-
-OPENAIRE_API_PASSWORD = ""
-"""OpenAIRE API authentication - password."""
-
 OPENAIRE_API_URL = "http://dev.openaire.research-infrastructures.eu/is/mvc/api/results"
 """OpenAIRE API endpoint."""
+
+OPENAIRE_API_CREDENTIALS = {"username": "CHANGE_ME", "password": "CHANGE_ME"}
+"""API credentials."""
 
 # Beta configs
 OPENAIRE_API_URL_BETA = None
