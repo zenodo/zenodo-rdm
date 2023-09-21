@@ -13,6 +13,7 @@ import idutils
 from flask import current_app, url_for
 from invenio_app_rdm.records_ui.utils import dump_external_resource
 from invenio_i18n import _
+
 from zenodo_rdm.openaire.utils import openaire_link
 
 
