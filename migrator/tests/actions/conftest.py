@@ -28,7 +28,7 @@ from invenio_rdm_migrator.streams.models.files import (
     FilesInstance,
     FilesObjectVersion,
 )
-from invenio_rdm_migrator.streams.models.github import Repository, WebhookEvent
+from invenio_rdm_migrator.streams.models.github import Release, Repository, WebhookEvent
 from invenio_rdm_migrator.streams.models.oai import OAISet
 from invenio_rdm_migrator.streams.models.oauth import ServerClient, ServerToken
 from invenio_rdm_migrator.streams.models.pids import PersistentIdentifier
@@ -162,6 +162,7 @@ def database(engine):
         RDMParentMetadata,
         RDMVersionState,
         RDMParentCommunityMetadata,
+        Release,
         Repository,
         ServerClient,
         ServerToken,
