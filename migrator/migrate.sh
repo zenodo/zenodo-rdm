@@ -70,15 +70,6 @@ psql $DB_URI -f scripts/create_missing_indices.sql
 
 # Fixtures
 invenio rdm-records fixtures
-invenio vocabularies import -v names -f $script_path/app_data/vocabularies-future.yaml  # zenodo specific names
-
-# TODO: Load these via regular migration streams
-# Load awards via COPY
-pv awards.csv | psql $DB_URI -c "COPY award_metadata (id, pid, json, created, updated, version_id) FROM STDIN (FORMAT csv);"
-
-# Truncate any previous funders (e.g. from fixtures), and load funders via copy
-psql $DB_URI -c "truncate funder_metadata"
-pv funders.csv | psql $DB_URI -c "COPY funder_metadata (id, pid, json, created, updated, version_id) FROM STDIN (FORMAT csv);"
 
 # Reindex records and communities
 invenio rdm-records rebuild-index

@@ -1,5 +1,4 @@
 SELECT setval(pg_get_serial_sequence('access_actionssystemroles', 'id'), COALESCE(max(id) + 1, 1), false) FROM access_actionssystemroles;
-SELECT setval(pg_get_serial_sequence('accounts_role', 'id'), COALESCE(max(id) + 1, 1), false) FROM accounts_role;
 SELECT setval(pg_get_serial_sequence('accounts_user', 'id'), COALESCE(max(id) + 1, 1), false) FROM accounts_user;
 SELECT setval(pg_get_serial_sequence('banners', 'id'), COALESCE(max(id) + 1, 1), false) FROM banners;
 SELECT setval(pg_get_serial_sequence('files_location', 'id'), COALESCE(max(id) + 1, 1), false) FROM files_location;
