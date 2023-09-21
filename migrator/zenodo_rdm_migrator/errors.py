@@ -21,6 +21,15 @@ class NoConceptRecidForDraft(Exception):
         return f"No conceptrecid for draft: {self.draft}"
 
 
+class InvalidTombstoneRecord(Exception):
+    """Invalid tombstone record error."""
+
+    @property
+    def description(self):
+        """Exception's description."""
+        return "Not possible to generate tombstone record from entry."
+
+
 class InvalidIdentifier(Exception):
     """Invalid identifiers, for example a missing scheme."""
 
