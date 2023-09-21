@@ -228,5 +228,5 @@ psql $DB_URI -f scripts/webhook_events_dump.sql > "dumps/webhook_events-$(date -
 # GitHub repositories
 psql $DB_URI -f scripts/github_repositories_dump.sql > "dumps/github_repositories-$(date -I).csv"
 # GitHub releases
-psql $DB_URI -f scripts/github_releases_dump.sql > "dumps/github_releases-$(date -I).jsonl"
+psql $DB_URI -f scripts/github_releases_dump.sql | sed 's/\\\\/\\/g' > "dumps/github_releases-$(date -I).jsonl"
 ```
