@@ -32,9 +32,10 @@ invenio communities custom-fields init
 # Script base path
 script_path=$( cd -- "$(dirname "$0")" && pwd )
 
-# Backup FK/PK/unique constraints
-DB_URI="postgresql://zenodo:zenodo@localhost/zenodo"
+LEGACY_DB_URI="service=zenodo-legacy"
+DB_URI="service=zenodo-dev"
 
+# Backup FK/PK/unique constraints
 psql $DB_URI --tuples-only --quiet -f scripts/gen_create_constraints.sql > scripts/create_constraints.sql
 psql $DB_URI --tuples-only --quiet -f scripts/gen_delete_constraints.sql > scripts/delete_constraints.sql
 
@@ -51,6 +52,11 @@ python -m zenodo_rdm_migrator "streams.yaml"
 # TODO: These should be fixed in the legacy/source
 # Apply various consistency fixes
 
+# Import OAuthclient models
+psql $DB_URI -f scripts/oauthclient_remoteaccount_dump.sql > "dumps/oauthclient_remoteaccount.bin"
+psql $DB_URI -f scripts/oauthclient_remotetoken_dump.sql > "dumps/oauthclient_remotetoken.bin"
+pv dumps/oauthclient_remoteaccount.bin | psql $DB_URI -c "COPY oauthclient_remoteaccount (id, user_id, client_id, extra_data, created, updated) FROM STDIN (FORMAT binary);"
+pv dumps/oauthclient_remotetoken.bin | psql $DB_URI -c "COPY oauthclient_remotetoken (id_remote_account, token_type, access_token, secret, created, updated) FROM STDIN (FORMAT binary);"
 
 # Restore FK/PK/unique constraints and indices
 psql $DB_URI -f scripts/create_constraints.sql

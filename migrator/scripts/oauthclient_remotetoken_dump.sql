@@ -8,4 +8,4 @@ COPY (
     updated
   FROM
     oauthclient_remotetoken
-) TO STDOUT WITH (FORMAT csv);
+) TO STDOUT WITH (FORMAT binary);
