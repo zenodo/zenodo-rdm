@@ -12,7 +12,12 @@ from unittest.mock import call
 
 from invenio_cache.proxies import current_cache
 
-from zenodo_rdm.openaire.tasks import openaire_direct_index, retry_openaire_failures
+from zenodo_rdm.openaire.tasks import (
+    openaire_delete,
+    openaire_direct_index,
+    retry_openaire_failures,
+)
+from zenodo_rdm.openaire.utils import openaire_datasource_id, openaire_original_id
 
 
 def test_openaire_direct_index_task(
@@ -34,6 +39,9 @@ def test_openaire_direct_index_task(
     mocked_session.post.assert_called_once_with(
         openaire_api_endpoint, data=json.dumps(serialized_record), timeout=10
     )
+
+    # Assert key is not in cache : means success
+    assert not current_cache.cache.has(f"openaire_direct_index:{openaire_record.id}")
 
 
 def test_openaire_direct_index_task_with_beta(
@@ -65,6 +73,9 @@ def test_openaire_direct_index_task_with_beta(
     ]
     mocked_session.post.assert_has_calls(calls)
 
+    # Assert key is not in cache : means success
+    assert not current_cache.cache.has(f"openaire_direct_index:{openaire_record.id}")
+
 
 def test_openaire_retries_task(
     running_app,
@@ -95,4 +106,24 @@ def test_openaire_retries_task(
     assert mocked_session.post.called_once()
 
     # Assert cache does not have the key
+    assert not current_cache.cache.has(f"openaire_direct_index:{openaire_record.id}")
+
+
+def test_openaire_delete_task(
+    running_app,
+    openaire_record,
+    mocked_session,
+):
+    # Will be executed synchronously in tests
+    openaire_delete.delay(openaire_record.id)
+
+    # Assert ``requests.delete`` was executed once
+    original_id = openaire_original_id(openaire_record.data)[1]
+    datasource_id = openaire_datasource_id(openaire_record.data)
+    openaire_url = running_app.app.config["OPENAIRE_API_URL"]
+    params = {"originalId": original_id, "collectedFromId": datasource_id}
+
+    mocked_session.delete.assert_called_once_with(openaire_url, data=json.dumps(params))
+
+    # Assert key is not in cache : means success
     assert not current_cache.cache.has(f"openaire_direct_index:{openaire_record.id}")

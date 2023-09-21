@@ -34,6 +34,7 @@ def mocked_session():
     # Patch with default ``MagicMock``
     with patch("zenodo_rdm.openaire.utils.Session", MagicMock) as mock:
         mock.post = MagicMock(return_value=MockedReponse)
+        mock.delete = MagicMock(return_value=MockedReponse)
         yield mock
 
 
