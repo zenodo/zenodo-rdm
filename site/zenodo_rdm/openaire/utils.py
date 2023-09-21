@@ -9,7 +9,7 @@
 import hashlib
 import urllib
 
-from flask import current_app, g
+from flask import current_app
 from invenio_access.permissions import system_identity
 from invenio_communities.proxies import current_communities
 from invenio_vocabularies.proxies import current_service as vocab_service
@@ -89,7 +89,7 @@ def is_openaire_publication(record, oatype):
     is_ecfunded = False
 
     if community_ids:
-        communities = comm_service.read_many(g.identity, community_ids)
+        communities = comm_service.read_many(system_identity, community_ids)
         for comm in communities:
             if comm["slug"] == "ecfunded":
                 is_ecfunded = True
@@ -136,18 +136,6 @@ def openaire_request_factory(headers=None, auth=None):
             auth = (username, password)
     ses.auth = auth
     return ses
-
-
-def openaire_id(record):
-    """Compute the OpenAIRE identifier."""
-    prefix, identifier = openaire_original_id(record)
-    if not identifier or not prefix:
-        return None
-
-    m = hashlib.md5()
-    m.update(identifier.encode("utf8"))
-
-    return "{}::{}".format(prefix, m.hexdigest())
 
 
 def openaire_link(record):

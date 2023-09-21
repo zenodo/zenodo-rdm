@@ -16,6 +16,8 @@ def test_record_serializer(
 
     serialized_record = serializer.dump_obj(record.data)
     expected_keys = (
+        "type",
+        "resourceType",
         "originalId",
         "title",
         "url",
@@ -49,6 +51,8 @@ def test_embargoed_record(
     record = create_record(openaire_record_data, community)
     serialized_record = serializer.dump_obj(record.data)
     expected_keys = (
+        "type",
+        "resourceType",
         "originalId",
         "title",
         "url",
@@ -88,6 +92,8 @@ def test_closed_record(
     record = create_record(openaire_record_data, community)
     serialized_record = serializer.dump_obj(record.data)
     expected_keys = (
+        "type",
+        "resourceType",
         "originalId",
         "title",
         "url",
