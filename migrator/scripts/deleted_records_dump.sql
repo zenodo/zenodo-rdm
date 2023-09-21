@@ -8,6 +8,7 @@ COPY (
                 removal_json,
                 removal_date,
                 version_id,
+                recid,
                 transaction_id
             ) AS (
                 SELECT
@@ -15,6 +16,7 @@ COPY (
                     r.json as removal_json,
                     r.updated as removal_date,
                     r.version_id,
+                    p.pid_value,
                     r.transaction_id
                 FROM
                     records_metadata_version as r
@@ -30,8 +32,9 @@ COPY (
                 r.id as id,
                 r.json as json,
                 r.created as created,
-                dr.removal_date as updated,
                 dr.version_id as version_id,
+                dr.recid as recid,
+                dr.removal_date as updated,
                 dr.removal_json as removal_json,
                 dr.removal_date as removal_date
             FROM

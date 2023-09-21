@@ -9,7 +9,7 @@
 
 
 from .communities import ZenodoCommunityTransform
-from .records import ZenodoRecordTransform
+from .records import ZenodoDeletedRecordTransform, ZenodoRecordTransform
 from .requests import ZenodoRequestTransform
 from .users import ZenodoUserTransform
 
@@ -18,4 +18,5 @@ __all__ = (
     ZenodoRecordTransform,
     ZenodoRequestTransform,
     ZenodoUserTransform,
+    ZenodoDeletedRecordTransform,
 )

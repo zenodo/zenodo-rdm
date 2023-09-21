@@ -29,6 +29,7 @@ from invenio_rdm_migrator.streams.oauth import (
     OAuthServerTokenTransform,
 )
 from invenio_rdm_migrator.streams.records import (
+    RDMDeletedRecordCopyLoad,
     RDMDraftCopyLoad,
     RDMRecordCopyLoad,
     RDMVersionStateCopyLoad,
@@ -39,6 +40,7 @@ from invenio_rdm_migrator.streams.users import UserCopyLoad
 from .extract import KafkaExtract
 from .transform import (
     ZenodoCommunityTransform,
+    ZenodoDeletedRecordTransform,
     ZenodoRecordTransform,
     ZenodoRequestTransform,
     ZenodoUserTransform,
@@ -72,15 +74,15 @@ DraftStreamDefinition = StreamDefinition(
 DeletedRecordStreamDefinition = StreamDefinition(
     name="deleted_records",
     extract_cls=JSONLExtract,
-    transform_cls=ZenodoRecordTransform,
-    load_cls=RDMRecordCopyLoad,
+    transform_cls=ZenodoDeletedRecordTransform,
+    load_cls=RDMDeletedRecordCopyLoad,
 )
 """ETL stream for Zenodo deleted records."""
 
 VersionStateStreamDefinition = StreamDefinition(
     name="version_state",
-    extract_cls=JSONLExtract,
-    transform_cls=ZenodoRecordTransform,
+    extract_cls=None,
+    transform_cls=None,
     load_cls=RDMVersionStateCopyLoad,
 )
 """ETL stream for version state."""
