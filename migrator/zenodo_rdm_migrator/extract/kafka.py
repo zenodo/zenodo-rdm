@@ -18,15 +18,16 @@ from invenio_rdm_migrator.extract import Extract, Tx
 from invenio_rdm_migrator.load.postgresql.transactions.operations import OperationType
 from invenio_rdm_migrator.logging import Logger
 from kafka import KafkaConsumer, TopicPartition
-from sortedcontainers import SortedDict, SortedList
+from sortedcontainers import SortedList
 
 
 class _TxState:
     """Transaction state, internally used in the Kafka extract only."""
 
-    def __init__(self, id, info=None):
+    def __init__(self, id, commit_lsn=None, info=None):
         """Constructor."""
         self.id = id
+        self.commit_lsn = commit_lsn
         self.info = info
         # We order operations based on the Postgres LSN
         self.ops = SortedList(key=lambda o: o["source"]["lsn"])
@@ -91,6 +92,7 @@ class KafkaExtract(Extract):
             ops_topic="zenodo-migration.public",
             tx_topic="zenodo-migration.postgres_transaction",
             last_tx=563385187,
+            last_lsn=563385187,
             offset=datetime.utcnow() - timedelta(minutes=5),
             config={
                 "bootstrap_servers": [
@@ -155,7 +157,7 @@ class KafkaExtract(Extract):
         assert last_tx is not None, "`last_tx` is required."
         self.last_tx = last_tx
         self.config = config or {}
-        self.tx_registry = SortedDict({})
+        self.tx_registry = {}
         self.tx_buffer = tx_buffer
         self.max_tx_info_fetch = max_tx_info_fetch
         self.max_ops_fetch = max_ops_fetch
@@ -241,7 +243,7 @@ class KafkaExtract(Extract):
                 consumer.commit()
                 continue
 
-            tx_id, lsn = map(int, tx_msg.value["id"].split(":"))
+            tx_id, tx_lsn = map(int, tx_msg.value["id"].split(":"))
             # We drop anything before the configured last transaction ID
             if tx_id <= self.last_tx:
                 consumer.commit()
@@ -252,7 +254,7 @@ class KafkaExtract(Extract):
                 continue
             elif tx_msg.value["status"] == "END":
                 consumer.commit()
-                yield (tx_id, tx_msg.value)
+                yield ((tx_id, tx_lsn), tx_msg.value)
 
     @staticmethod
     def _filter_unchanged_values(msg):
@@ -291,17 +293,23 @@ class KafkaExtract(Extract):
     def _yield_completed_tx(self, min_batch=None):
         """Yields completed transactions.
 
-        Important: we only yield the "earliest" transactions that have been completed in
-        order. For example:
+        Important: we only yield the "earliest" commited transactions for which we have
+        complete data/ops. The commit order of transactions is defined by the COMMIT
+        operation's LSN. For example:
 
-        1. We have Tx1, Tx2, and Tx3 in ``self.tx_registry``.
-        2. Tx2 and Tx3 are complete, but Tx1 is still has missing operations (that will
-           come in a later iteration of the operations consumer).
-        3. In this case we don't yield Tx2 and Tx3, since we're still waiting for Tx1
-           to complete, so that we can return all the completed transactions in order.
+        1. We have Tx1 (LSN:50), Tx2 (LSN:30), and Tx3 (LSN:10) in ``self.tx_registry``.
+        2. We have complete data for Tx1 and Tx2, but not for Tx3. It has missing
+           operations that will come in a later iteration of the operations consumer.
+        3. In this case we don't yield Tx1 and Tx2, since we're still waiting for Tx3
+           to have complete data, so that we can return all the completed transactions
+           by their LSN order.
         """
+        lsn_sorted_tx = sorted(
+            self.tx_registry.values(),
+            key=lambda t: (t.commit_lsn is None, t.commit_lsn),
+        )
         completed_tx_batch = []
-        for tx_state in self.tx_registry.values():
+        for tx_state in lsn_sorted_tx:
             if not tx_state.complete:
                 # We stop at the first non-completed transaction
                 break
@@ -318,8 +326,8 @@ class KafkaExtract(Extract):
         for tx in completed_tx_batch:
             del self.tx_registry[tx.id]
             # Keep track of the last yielded transaction ID
-            self._last_yielded_tx = tx.id
-            yield Tx(id=tx.id, operations=list(tx.ops))
+            self._last_yielded_tx = (tx.id, tx.commit_lsn)
+            yield Tx(id=tx.id, commit_lsn=tx.commit_lsn, operations=list(tx.ops))
 
     def run(self):
         """Return a blocking generator yielding completed transactions."""
@@ -334,11 +342,16 @@ class KafkaExtract(Extract):
                     tx_info_stream = itertools.islice(
                         tx_info_stream, self.max_tx_info_fetch
                     )
-                for tx_id, tx_info in tx_info_stream:
+                for (tx_id, tx_lsn), tx_info in tx_info_stream:
                     if tx_id in self.tx_registry:
                         self.tx_registry[tx_id].info = tx_info
+                        self.tx_registry[tx_id].commit_lsn = tx_lsn
                     else:
-                        self.tx_registry[tx_id] = _TxState(tx_id, tx_info)
+                        self.tx_registry[tx_id] = _TxState(
+                            tx_id,
+                            commit_lsn=tx_lsn,
+                            info=tx_info,
+                        )
 
                 # We then consume operations and build up the (pending) transactions in
                 # the registry.
@@ -349,7 +362,9 @@ class KafkaExtract(Extract):
                     tx_state = self.tx_registry.setdefault(tx_id, _TxState(tx_id))
                     tx_state.append(op)
                     if tx_state.complete:
-                        self.logger.info(f"Completed transaction {tx_state.id}")
+                        self.logger.info(
+                            f"Completed transaction {tx_state.id}:{tx_state.commit_lsn}"
+                        )
 
                 yield from self._yield_completed_tx(min_batch=self.tx_buffer)
 

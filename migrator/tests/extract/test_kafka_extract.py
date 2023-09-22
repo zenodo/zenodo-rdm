@@ -109,12 +109,14 @@ def _assert_result(
         all(isinstance(o["op"], OperationType) for o in t.operations) for t in result
     )
     tx_dict = {t.id: t for t in result}
-    tx_ids = list(tx_dict.keys())
-    assert tx_ids == sorted(tx_ids)
-    assert tx_ids[0] == first_tx_id
-    assert tx_ids[-1] == last_tx_id
-    assert set(extra_tx_ids or []) <= set(tx_ids)
-    assert len(set(excluded_tx_ids or []).intersection(set(tx_ids))) == 0
+    tx_lsn_list = [(t.id, t.commit_lsn) for t in result]
+    assert tx_lsn_list == sorted(tx_lsn_list, key=lambda x: x[1])
+    assert tx_lsn_list[0][0] == first_tx_id
+    assert tx_lsn_list[-1][0] == last_tx_id
+    assert set(extra_tx_ids or []) <= set(tx_lsn_list)
+    assert (
+        len(set(excluded_tx_ids or []).intersection({t for t, _ in tx_lsn_list})) == 0
+    )
     for tx_id, op_counts in (tx_op_counts or {}).items():
         _assert_op_counts(tx_dict[tx_id], op_counts)
 

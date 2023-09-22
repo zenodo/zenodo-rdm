@@ -156,7 +156,7 @@ class ZenodoDeletedRecordTransform(RDMRecordTransform):
                 "updated": entry.get("updated"),
                 "version_id": entry.get("version_id"),
                 "json": {"id": recid, "tombstone": tombstone},
-                "index": entry.get("index", 0) + 1
+                "index": entry.get("index", 0) + 1,
             }
 
     def _transform(self, entry):
