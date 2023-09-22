@@ -8,12 +8,14 @@
 
 import json
 from datetime import datetime
+from functools import wraps
 
 from celery import shared_task
 from flask import current_app
 from invenio_access.permissions import system_identity
 from invenio_cache import current_cache
 from invenio_rdm_records.proxies import current_rdm_records_service as records_service
+from werkzeug.local import LocalProxy
 
 from .errors import OpenAIRERequestError
 from .serializers import OpenAIREV1Serializer
@@ -24,6 +26,25 @@ from .utils import (
     openaire_type,
 )
 
+is_openaire_enabled = LocalProxy(
+    lambda: current_app.config["OPENAIRE_DIRECT_INDEXING_ENABLED"]
+)
+
+
+def execute_if_openaire_enabled():
+    """Execute task if OpenAIRE is enabled."""
+
+    def decorator(f):
+        @wraps(f)
+        def inner(*args, **kwargs):
+            if is_openaire_enabled:
+                return f(*args, **kwargs)
+            return None
+
+        return inner
+
+    return decorator
+
 
 @shared_task(
     ignore_result=True,
@@ -31,6 +52,7 @@ from .utils import (
     default_retry_delay=4 * 60 * 60,
     rate_limit="100/m",
 )
+@execute_if_openaire_enabled()
 def openaire_direct_index(record_id, retry=True):
     """Send record for direct indexing at OpenAIRE.
 
@@ -83,7 +105,8 @@ def openaire_direct_index(record_id, retry=True):
     default_retry_delay=4 * 60 * 60,
     rate_limit="100/m",
 )
-def openaire_delete(record_id=None, retry=True):  # TODO add retry
+@execute_if_openaire_enabled()
+def openaire_delete(record_id=None, retry=True):  # TODO feature flag
     """Delete record from OpenAIRE index.
 
     :param record_id: Record Metadata UUID.
@@ -126,6 +149,7 @@ def openaire_delete(record_id=None, retry=True):  # TODO add retry
 
 
 @shared_task
+@execute_if_openaire_enabled()
 def retry_openaire_failures():
     """Retries failed OpenAIRE indexing/deletion operations."""
     cache = current_cache.cache

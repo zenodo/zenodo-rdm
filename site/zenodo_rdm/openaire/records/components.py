@@ -6,7 +6,7 @@
 # it under the terms of the MIT License; see LICENSE file for more details.
 """OpenAIRE record component."""
 
-
+from flask import current_app
 from invenio_drafts_resources.services.records.components import ServiceComponent
 from invenio_records_resources.services.uow import TaskOp
 
@@ -18,4 +18,6 @@ class OpenAIREComponent(ServiceComponent):
 
     def publish(self, identity, draft=None, record=None):
         """Publish handler."""
-        self.uow.register(TaskOp(openaire_direct_index, record_id=record["id"]))
+        is_openaire_enabled = current_app.config.get("OPENAIRE_DIRECT_INDEXING_ENABLED")
+        if is_openaire_enabled:
+            self.uow.register(TaskOp(openaire_direct_index, record_id=record["id"]))

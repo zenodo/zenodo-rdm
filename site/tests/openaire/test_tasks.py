@@ -26,6 +26,7 @@ def test_openaire_direct_index_task(
     openaire_serializer,
     mocked_session,
     openaire_api_endpoint,
+    enable_openaire_indexing,
 ):
     """Test OpenAIRE direct indexing task.
 
@@ -50,6 +51,7 @@ def test_openaire_direct_index_task_with_beta(
     openaire_serializer,
     mocked_session,
     openaire_api_endpoint,
+    enable_openaire_indexing,
     monkeypatch,
 ):
     """Test OpenAIRE direct indexing task but also hit BETA API."""
@@ -78,9 +80,7 @@ def test_openaire_direct_index_task_with_beta(
 
 
 def test_openaire_retries_task(
-    running_app,
-    openaire_record,
-    mocked_session,
+    running_app, openaire_record, mocked_session, enable_openaire_indexing
 ):
     """Test OpenAIRE retry task.
 
@@ -110,9 +110,7 @@ def test_openaire_retries_task(
 
 
 def test_openaire_delete_task(
-    running_app,
-    openaire_record,
-    mocked_session,
+    running_app, openaire_record, mocked_session, enable_openaire_indexing
 ):
     # Will be executed synchronously in tests
     openaire_delete.delay(openaire_record.id)
