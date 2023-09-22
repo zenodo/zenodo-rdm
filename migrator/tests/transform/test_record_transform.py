@@ -17,6 +17,7 @@ from zenodo_rdm_migrator.transform.entries.records.metadata import (
     ZenodoRecordMetadataEntry,
 )
 from zenodo_rdm_migrator.transform.records import (
+    ZenodoDeletedRecordTransform,
     ZenodoDraftEntry,
     ZenodoRecordEntry,
     ZenodoRecordTransform,
@@ -543,7 +544,6 @@ def expected_rdm_record_entry():
                 "gbif-dwc:identifiedByID": ["foo", "bar"],
                 "gbif-dwc:recordedByID": ["foo", "bar"],
             },
-            "tombstone": None,
         },
     }
 
@@ -562,6 +562,7 @@ def expected_rdm_record_parent():
             "id": "10122",
             "access": {"owned_by": {"user": 1234}},
             "communities": {"ids": ["zenodo", "migration"], "default": None},
+            "permission_flags": {"can_community_manage_record": False},
             "pids": {
                 "doi": {
                     "provider": "datacite",
@@ -606,7 +607,11 @@ def test_record_transform_parent_record(zenodo_record_data, expected_rdm_record_
     assert result == expected_rdm_record_parent
 
 
-def test_record_transform_tombstone(zenodo_record_data, expected_rdm_record_entry):
+def test_record_transform_tombstone(
+    zenodo_record_data,
+    expected_rdm_record_entry,
+    expected_rdm_record_parent,
+):
     """Tests record tombstone transformation."""
     zenodo_record_data["removal_date"] = "2023-09-15T11:39:52.929322"
     zenodo_record_data["removal_json"] = {
@@ -622,8 +627,9 @@ def test_record_transform_tombstone(zenodo_record_data, expected_rdm_record_entr
         "citation_text": None,
     }
 
-    result = ZenodoRecordEntry().transform(zenodo_record_data)
-    assert result == expected_rdm_record_entry
+    result = ZenodoDeletedRecordTransform()._transform(zenodo_record_data)
+    assert result["record"] == expected_rdm_record_entry
+    assert result["parent"] == expected_rdm_record_parent
 
 
 ###
@@ -1050,6 +1056,7 @@ def expected_rdm_draft_parent():
             "access": {"owned_by": {"user": 1234}},
             "communities": {},
             "pids": {},
+            "permission_flags": {"can_community_manage_record": False},
         },
     }
 
