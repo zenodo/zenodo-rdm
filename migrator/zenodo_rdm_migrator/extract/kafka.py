@@ -141,18 +141,17 @@ class KafkaExtract(Extract):
         max_tx_info_fetch=200,
         max_ops_fetch=2000,
         config=None,
-        offset="earliest",
+        tx_offset="earliest",
+        ops_offset="earliest",
         remove_unchanged_fields=True,
         _dump_dir=None,
     ):
         """Constructor."""
-        self.ops_topic = ops_topic
         self.tx_topic = tx_topic
-        if isinstance(offset, datetime):
-            offset = int(offset.timestamp() * 1000)
-        if isinstance(offset, str):
-            assert offset in ("earliest", "latest")
-        self.offset = offset
+        self.tx_offset = tx_offset
+        self.ops_topic = ops_topic
+        self.ops_offset = ops_offset
+
         assert last_tx is not None, "`last_tx` is required."
         self.last_tx = last_tx
         self.config = config or {}
@@ -181,8 +180,12 @@ class KafkaExtract(Extract):
             TopicPartition(topic, p): None for p in consumer.partitions_for_topic(topic)
         }
         consumer.assign(partitions)
-        # If we have a target timestamp to start from, use it...
         if isinstance(target_offset, int):
+            partitions.update({p: target_offset for p in partitions})
+        if isinstance(target_offset, dict):
+            partitions.update({p: target_offset[p.partition] for p in partitions})
+        if isinstance(target_offset, datetime):
+            target_offset = int(target_offset.timestamp() * 1000)
             offsets = consumer.offsets_for_times({p: target_offset for p in partitions})
             partitions.update({p: o for p, (o, _) in offsets.items()})
         elif isinstance(target_offset, str):
@@ -204,7 +207,7 @@ class KafkaExtract(Extract):
         for partition, offset in zip(partitions, offsets):
             consumer.seek(partition, offset)
 
-    def _get_consumer(self, topic, group_id):
+    def _get_consumer(self, topic, group_id, offset):
         consumer = KafkaConsumer(
             group_id=group_id,
             **self.DEFAULT_CONSUMER_CFG,
@@ -214,7 +217,7 @@ class KafkaExtract(Extract):
             self._topic_states[topic] = self._seek_offsets(
                 consumer,
                 topic,
-                target_offset=self.offset,
+                target_offset=offset,
             )
         else:
             self._seek_committed_offsets(consumer, topic)
@@ -223,11 +226,19 @@ class KafkaExtract(Extract):
     # NOTE: These two properties are useful for tests/mocking
     @property
     def _tx_consumer(self):
-        return self._get_consumer(self.tx_topic, "zenodo_migration_tx")
+        return self._get_consumer(
+            self.tx_topic,
+            "zenodo_migration_tx",
+            self.tx_offset,
+        )
 
     @property
     def _ops_consumer(self):
-        return self._get_consumer(self.ops_topic, "zenodo_migration_ops")
+        return self._get_consumer(
+            self.ops_topic,
+            "zenodo_migration_ops",
+            self.ops_offset,
+        )
 
     def iter_tx_info(self):
         """Yield commited transactions info."""
