@@ -14,7 +14,7 @@ from invenio_rdm_migrator.streams.oauth import (
     OAuthServerClientTransform,
     OAuthServerTokenTransform,
 )
-from invenio_rdm_migrator.transform import IdentityTransform
+from invenio_rdm_migrator.transform import IdentityTransform, JSONTransformMixin
 
 
 class OAuthServerTokenCreateAction(TransformAction):
@@ -233,7 +233,7 @@ class OAuthApplicationDeleteAction(TransformAction):
         }
 
 
-class OAuthLinkedAccountConnectAction(TransformAction):
+class OAuthLinkedAccountConnectAction(TransformAction, JSONTransformMixin):
     """Zenodo to RDM OAuth client linked account connect action."""
 
     name = "oauth-application-connect"
@@ -301,6 +301,7 @@ class OAuthLinkedAccountConnectAction(TransformAction):
             elif op["source"]["table"] == "oauth2server_token":
                 server_token = op["after"]
 
+        self._load_json_fields(data=remote_account, fields=["extra_data"])
         self._microseconds_to_isodate(
             data=remote_account, fields=["created", "updated"]
         )
@@ -323,7 +324,7 @@ class OAuthLinkedAccountConnectAction(TransformAction):
         return result
 
 
-class OAuthLinkedAccountDisconnectAction(TransformAction):
+class OAuthLinkedAccountDisconnectAction(TransformAction, JSONTransformMixin):
     """Zenodo to RDM OAuth client linked account disconnect action."""
 
     name = "oauth-application-disconnect"
@@ -367,6 +368,7 @@ class OAuthLinkedAccountDisconnectAction(TransformAction):
             elif op["source"]["table"] == "oauthclient_useridentity":
                 user_identity = op["before"]
 
+        self._load_json_fields(data=remote_account, fields=["extra_data"])
         self._microseconds_to_isodate(
             data=remote_account, fields=["created", "updated"]
         )
