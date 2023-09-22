@@ -86,7 +86,18 @@ class ParentRecordEntry(Entry):
             }
             owner = next(iter(entry["json"].get("owners", [])), None)
             if owner is not None:
+                transformed["json"].setdefault("access", {})
                 transformed["json"]["access"] = {"owned_by": {"user": owner}}
+
+            access_conditions = entry["json"].get("access_conditions")
+            if access_conditions:
+                transformed["json"].setdefault("access", {})
+                transformed["json"]["access"]["settings"] = {
+                    "allow_user_requests": True,
+                    "allow_guest_requests": True,
+                    "accept_conditions_text": access_conditions,
+                    "secret_link_expiration": 30,
+                }
 
             permission_flags = {}
             owner_comm_slugs = {
@@ -99,6 +110,9 @@ class ParentRecordEntry(Entry):
             has_only_managed_communities = comm_slugs < owner_comm_slugs
             if not has_only_managed_communities:
                 permission_flags["can_community_manage_record"] = False
+                if entry["json"].get("access_right") != "open":
+                    permission_flags["can_community_read_files"] = False
+
             if permission_flags:
                 transformed["json"]["permission_flags"] = permission_flags
         elif not self.partial:

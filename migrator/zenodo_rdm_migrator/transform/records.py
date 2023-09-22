@@ -7,6 +7,7 @@
 
 """Zenodo migrator records transformers."""
 
+from invenio_rdm_migrator.state import STATE
 from invenio_rdm_migrator.streams.records import RDMRecordTransform
 
 from zenodo_rdm_migrator.errors import InvalidTombstoneRecord
@@ -76,11 +77,8 @@ class ZenodoDeletedRecordTransform(RDMRecordTransform):
             "version_id": entry.get("version_id"),
         }
         parent_pid = entry["json"].get("conceptrecid")
-        transformed["json"] = {"id": parent_pid, "communities": {}}
-        owner = next(iter(entry["json"].get("owners", [])), None)
-        if owner is not None:
-            transformed["json"]["access"] = {"owned_by": {"user": owner}}
-
+        communities = ParentRecordEntry()._communities(entry)
+        transformed["json"] = {"id": parent_pid, "communities": communities}
         pids = {}
         doi = entry["json"].get("doi")
         conceptdoi = entry["json"].get("conceptdoi")
@@ -94,6 +92,36 @@ class ZenodoDeletedRecordTransform(RDMRecordTransform):
             else:  # old Zenodo DOI record without concept DOI
                 pids["doi"] = {"provider": "legacy", "identifier": ""}
         transformed["json"]["pids"] = pids
+
+        owner = next(iter(entry["json"].get("owners", [])), None)
+        if owner is not None:
+            transformed["json"].setdefault("access", {})
+            transformed["json"]["access"] = {"owned_by": {"user": owner}}
+
+        access_conditions = entry["json"].get("access_conditions")
+        if access_conditions:
+            transformed["json"].setdefault("access", {})
+            transformed["json"]["access"]["settings"] = {
+                "allow_user_requests": True,
+                "allow_guest_requests": True,
+                "accept_conditions_text": access_conditions,
+                "secret_link_expiration": 30,
+            }
+
+        permission_flags = {}
+        owner_comm_slugs = {
+            comm["slug"]
+            for comm in (STATE.COMMUNITIES.search("owner_id", owner) if owner else [])
+        }
+        comm_slugs = set(communities.get("ids", []))
+        has_only_managed_communities = comm_slugs < owner_comm_slugs
+        if not has_only_managed_communities:
+            permission_flags["can_community_manage_record"] = False
+            if entry["json"].get("access_right") != "open":
+                permission_flags["can_community_read_files"] = False
+
+        if permission_flags:
+            transformed["json"]["permission_flags"] = permission_flags
 
         return transformed
 
