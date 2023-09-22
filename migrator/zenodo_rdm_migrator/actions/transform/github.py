@@ -13,7 +13,7 @@ from invenio_rdm_migrator.load.postgresql.transactions.operations import Operati
 from invenio_rdm_migrator.streams.actions import load
 from invenio_rdm_migrator.streams.github import GitHubRepositoryTransform
 from invenio_rdm_migrator.streams.oauth import OAuthServerTokenTransform
-from invenio_rdm_migrator.transform import IdentityTransform
+from invenio_rdm_migrator.transform import IdentityTransform, JSONTransformMixin
 
 from ...transform.entries.parents import ParentRecordEntry
 from ...transform.entries.records.records import ZenodoRecordEntry
@@ -60,7 +60,7 @@ class HookRepoUpdateAction(TransformAction):
         return result
 
 
-class HookEventCreateAction(TransformAction):
+class HookEventCreateAction(TransformAction, JSONTransformMixin):
     """Zenodo to RDM webhook create action.
 
     This will serve for hook enabling first phase and for disabling, as well as for
@@ -104,6 +104,15 @@ class HookEventCreateAction(TransformAction):
                 self._microseconds_to_isodate(
                     data=op["after"], fields=["created", "updated"]
                 )
+                self._load_json_fields(
+                    data=op["after"],
+                    fields=[
+                        "payload",
+                        "payload_headers",
+                        "response",
+                        "response_headers",
+                    ],
+                )
                 webhook_event = op["after"]
             elif op["source"]["table"] == "oauth2server_token":
                 self._microseconds_to_isodate(data=op["after"], fields=["expires"])
@@ -119,7 +128,7 @@ class HookEventCreateAction(TransformAction):
         return result
 
 
-class HookEventUpdateAction(TransformAction):
+class HookEventUpdateAction(TransformAction, JSONTransformMixin):
     """Zenodo to RDM webhook event update."""
 
     name = "gh-hook-event-update"
@@ -142,6 +151,10 @@ class HookEventUpdateAction(TransformAction):
         """Transforms the data and returns dictionary."""
         op = self.tx.operations[0]
 
+        self._load_json_fields(
+            data=op["after"],
+            fields=["payload", "payload_headers", "response", "response_headers"],
+        )
         self._microseconds_to_isodate(data=op["after"], fields=["created", "updated"])
 
         result = {
@@ -157,7 +170,7 @@ class HookEventUpdateAction(TransformAction):
 #
 
 
-class ReleaseReceiveAction(TransformAction):
+class ReleaseReceiveAction(TransformAction, JSONTransformMixin):
     """Zenodo to RDM receive/create a GitHub release action."""
 
     name = "gh-release-receive"
@@ -193,6 +206,7 @@ class ReleaseReceiveAction(TransformAction):
                 repo = op["after"]
             elif op["source"]["table"] == "github_releases":
                 release = op["after"]
+                self._load_json_fields(data=release, fields=["errors"])
 
         return {
             "tx_id": self.tx.id,
@@ -202,7 +216,7 @@ class ReleaseReceiveAction(TransformAction):
         }
 
 
-class ReleaseUpdateAction(TransformAction):
+class ReleaseUpdateAction(TransformAction, JSONTransformMixin):
     """Zenodo to RDM update a GitHub release action."""
 
     name = "gh-release-update"
@@ -225,6 +239,7 @@ class ReleaseUpdateAction(TransformAction):
         """Transforms the data and returns dictionary."""
         op = self.tx.operations[0]
 
+        self._load_json_fields(data=op["after"], fields=["errors"])
         self._microseconds_to_isodate(data=op["after"], fields=["created", "updated"])
 
         return {
@@ -234,7 +249,7 @@ class ReleaseUpdateAction(TransformAction):
         }
 
 
-class ReleaseProcess(TransformAction):
+class ReleaseProcess(TransformAction, JSONTransformMixin):
     """Zenodo to RDM process a GitHub release action."""
 
     name = "gh-release-process"
@@ -377,6 +392,9 @@ class ReleaseProcess(TransformAction):
         # choose the bucket according to the record bucket_id
         bucket = buckets[record["bucket_id"]]
         fo = fos[bucket["id"]]  # file object
+
+        # load json fields
+        self._load_json_fields(data=release, fields=["errors"])
 
         # transform datetime fields
         self._microseconds_to_isodate(data=record_pid, fields=["created", "updated"])
