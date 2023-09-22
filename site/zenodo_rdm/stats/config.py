@@ -14,8 +14,4 @@ STATS_PIWIK_EXPORTER = {
     "chunk_size": 50,  # [max piwik payload size = 64k] / [max querystring size = 750]
 }
 
-STATS_PIWIK_EXPORT_ENABLED = True
-
-# Queries performed when processing aggregations might take more time than
-# usual. This is fine though, since this is happening during Celery tasks.
-STATS_ELASTICSEARCH_CLIENT_CONFIG = {"timeout": 60}
+STATS_PIWIK_EXPORT_ENABLED = False
