@@ -30,53 +30,55 @@ def _sitemapdtformat(dt):
 def records_generator():
     """Generate the records links."""
     q = (
-        db.session.query(PersistentIdentifier, RDMRecordMetadata)
+        db.session.query(PersistentIdentifier.pid_value, RDMRecordMetadata.updated)
         .join(
             RDMRecordMetadata, RDMRecordMetadata.id == PersistentIdentifier.object_uuid
         )
         .filter(
             PersistentIdentifier.status == PIDStatus.REGISTERED,
             PersistentIdentifier.pid_type == "recid",
+            RDMRecordMetadata.deletion_status == "P",
         )
     )
 
     scheme = current_app.config["SITEMAP_URL_SCHEME"]
-    for pid, rm in q.yield_per(1000):
+    for pid_value, updated_at in q.yield_per(1000):
         yield {
             "loc": url_for(
                 "invenio_app_rdm_records.record_detail",
-                pid_value=pid.pid_value,
+                pid_value=pid_value,
                 _external=True,
                 _scheme=scheme,
             ),
-            "lastmod": _sitemapdtformat(rm.updated),
+            "lastmod": _sitemapdtformat(updated_at),
         }
 
 
 def communities_generator():
     """Generate the communities links."""
-    q = CommunityMetadata.query.filter(CommunityMetadata.is_deleted.is_(False))
+    q = db.session.query(CommunityMetadata.slug, CommunityMetadata.updated).filter(
+        CommunityMetadata.deletion_status == "P"
+    )
     scheme = current_app.config["SITEMAP_URL_SCHEME"]
-    for comm in q.yield_per(1000):
+    for comm_slug, updated_at in q.yield_per(1000):
         yield {
             "loc": url_for(
                 "invenio_app_rdm_communities.communities_detail",
-                pid_value=comm.id,
+                pid_value=comm_slug,
                 _external=True,
                 _scheme=scheme,
             ),
-            "lastmod": _sitemapdtformat(comm.updated),
+            "lastmod": _sitemapdtformat(updated_at),
         }
-        for endpoint in ("search", "about"):
-            yield {
-                "loc": url_for(
-                    f"invenio_communities.communities_{endpoint}",
-                    pid_value=comm.id,
-                    _external=True,
-                    _scheme=scheme,
-                ),
-                "lastmod": _sitemapdtformat(comm.updated),
-            }
+        yield {
+            "loc": url_for(
+                "invenio_communities.communities_about",
+                pid_value=comm_slug,
+                _external=True,
+                _scheme=scheme,
+            ),
+            "lastmod": _sitemapdtformat(updated_at),
+        }
 
 
 generator_fns = [
