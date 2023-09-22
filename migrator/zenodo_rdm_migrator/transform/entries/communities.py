@@ -62,6 +62,7 @@ class ZenodoCommunityEntry(CommunityEntry):
             "visibility": "public",
             "member_policy": "open",
             "record_policy": "open",
+            "review_policy": "open",
         }
 
     def _bucket_id(self, entry):
