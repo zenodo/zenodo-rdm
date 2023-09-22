@@ -9,6 +9,7 @@
 
 import humanize
 from flask import Blueprint, Response, current_app
+from invenio_cache import current_cache
 
 from zenodo_rdm.metrics import tasks, utils
 
@@ -26,8 +27,11 @@ def metrics(metric_id):
         response = utils.formatted_response(metrics)
         return Response(response, mimetype="text/plain")
 
-    # Send off task to compute metrics
-    tasks.calculate_metrics.delay(metric_id)
+    # Send off task to compute metrics only if it wasn't already requested
+    if not current_cache.get(f"METRICS_EVALUATING::{metric_id}"):
+        tasks.calculate_metrics.delay(metric_id)
+        current_cache.set(f"METRICS_EVALUATING::{metric_id}", True, timeout=60 * 2)
+
     retry_after = current_app.config["METRICS_CACHE_UPDATE_INTERVAL"]
     return Response(
         f"Metrics not available. Try again after {humanize.naturaldelta(retry_after)}.",
