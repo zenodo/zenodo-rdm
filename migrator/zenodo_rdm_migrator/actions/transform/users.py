@@ -165,3 +165,10 @@ class UserDeactivationAction(TransformAction):
         return dict(
             tx_id=self.tx.id, user=user, login_information=login_info, sessions=sessions
         )
+
+
+USER_ACTIONS = [
+    UserRegistrationAction,
+    UserEditAction,
+    UserDeactivationAction,
+]

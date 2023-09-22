@@ -32,7 +32,8 @@ from .oauth import (
     OAuthServerTokenDeleteAction,
     OAuthServerTokenUpdateAction,
 )
-from .users import UserDeactivationAction, UserEditAction, UserRegistrationAction
+from .users import USER_ACTIONS
+from .ignored import IGNORED_ACTIONS
 
 __all__ = (
     "CommunityCreateAction",
@@ -56,7 +57,6 @@ __all__ = (
     "OAuthServerTokenUpdateAction",
     "ReleaseReceiveAction",
     "ReleaseUpdateAction",
-    "UserDeactivationAction",
-    "UserEditAction",
-    "UserRegistrationAction",
+    "IGNORED_ACTIONS",
+    "USER_ACTIONS",
 )
