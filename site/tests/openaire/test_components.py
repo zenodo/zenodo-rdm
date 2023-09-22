@@ -22,6 +22,7 @@ def test_on_publish(
     mocked_session,
     openaire_api_endpoint,
     openaire_serializer,
+    enable_openaire_indexing,
 ):
     """Test on publish components"""
 

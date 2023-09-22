@@ -39,6 +39,16 @@ def mocked_session():
 
 
 @pytest.fixture(scope="function")
+def enable_openaire_indexing(running_app, monkeypatch):
+    """Enable openaire only for some tests."""
+    monkeypatch.setitem(
+        running_app.app.config,
+        "OPENAIRE_DIRECT_INDEXING_ENABLED",
+        True,
+    )
+
+
+@pytest.fixture(scope="function")
 def openaire_api_endpoint(running_app):
     """Return OpenAIRE endpoint."""
     openaire_api_url = running_app.app.config["OPENAIRE_API_URL"]
