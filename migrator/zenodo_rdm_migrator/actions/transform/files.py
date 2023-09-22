@@ -83,3 +83,8 @@ class DraftFileUploadAction(TransformAction):
             file_instance=fi,
             file_record=fr,
         )
+
+
+FILES_ACTIONS = [
+    DraftFileUploadAction,
+]

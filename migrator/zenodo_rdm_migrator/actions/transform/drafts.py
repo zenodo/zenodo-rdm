@@ -286,3 +286,10 @@ class DraftPublishAction(TransformAction, DraftTransformMixin):
             parent=parent,
             draft=draft,
         )
+
+
+DRAFT_ACTIONS = [
+    DraftCreateAction,
+    DraftEditAction,
+    DraftPublishAction,
+]

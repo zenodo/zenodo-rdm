@@ -456,3 +456,12 @@ class ReleaseProcessAction(TransformAction, JSONTransformMixin):
             result["parent_doi"] = parent_doi
 
         return result
+
+
+GITHUB_ACTIONS = [
+    HookEventCreateAction,
+    HookEventUpdateAction,
+    HookRepoUpdateAction,
+    ReleaseReceiveAction,
+    ReleaseUpdateAction,
+]

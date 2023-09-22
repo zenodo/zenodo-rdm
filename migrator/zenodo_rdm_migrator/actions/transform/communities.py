@@ -188,3 +188,10 @@ class CommunityDeleteAction(TransformAction):
             "tx_id": self.tx.id,
             "community": {"slug": self.tx.operations[0]["after"]["id"]},
         }
+
+
+COMMUNITY_ACTIONS = [
+    CommunityCreateAction,
+    CommunityDeleteAction,
+    CommunityUpdateAction,
+]

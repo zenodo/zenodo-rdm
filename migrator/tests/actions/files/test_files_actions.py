@@ -12,7 +12,7 @@ from invenio_rdm_migrator.extract import Tx
 from invenio_rdm_migrator.load.postgresql.transactions.operations import OperationType
 from invenio_rdm_migrator.streams.actions import load
 
-from zenodo_rdm_migrator.actions.transform import DraftFileUploadAction
+from zenodo_rdm_migrator.actions.transform.files import DraftFileUploadAction
 
 
 def test_matches_with_valid_data(file_upload_tx):

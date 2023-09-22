@@ -432,3 +432,16 @@ class OAuthGHDisconnectToken(TransformAction):
             "token": OAuthServerTokenTransform()._transform(token),
             "user_identity": IdentityTransform()._transform(user_identity),
         }
+
+
+OAUTH_ACTIONS = [
+    OAuthApplicationCreateAction,
+    OAuthApplicationDeleteAction,
+    OAuthApplicationUpdateAction,
+    OAuthGHDisconnectToken,
+    OAuthLinkedAccountConnectAction,
+    OAuthLinkedAccountDisconnectAction,
+    OAuthServerTokenCreateAction,
+    OAuthServerTokenDeleteAction,
+    OAuthServerTokenUpdateAction,
+]
