@@ -13,11 +13,13 @@ body {
   }
 }
 
-h2, .ui.large.header,
-h3, .ui.medium.header,
-h4, .ui.small.header,
-h5, .ui.tiny.header {
-  font-weight: @semibold !important;
+.main-record-content {
+  h2, h2.ui.header, .ui.large.header,
+  h3, h3.ui.header, .ui.medium.header,
+  h4, h4.ui.header, .ui.small.header,
+  h5, h5.ui.header, .ui.tiny.header {
+    font-weight: @semibold !important;
+  }
 }
 
 #invenio-nav {
