@@ -92,7 +92,6 @@ class KafkaExtract(Extract):
             ops_topic="zenodo-migration.public",
             tx_topic="zenodo-migration.postgres_transaction",
             last_tx=563385187,
-            last_lsn=563385187,
             offset=datetime.utcnow() - timedelta(minutes=5),
             config={
                 "bootstrap_servers": [
@@ -246,6 +245,7 @@ class KafkaExtract(Extract):
             tx_id, tx_lsn = map(int, tx_msg.value["id"].split(":"))
             # We drop anything before the configured last transaction ID
             if tx_id <= self.last_tx:
+                self.logger.info(f"Skipped {tx_id} at offset: {tx_msg.offset}")
                 consumer.commit()
                 continue
             if tx_msg.value["status"] == "BEGIN":
@@ -342,6 +342,7 @@ class KafkaExtract(Extract):
                     tx_info_stream = itertools.islice(
                         tx_info_stream, self.max_tx_info_fetch
                     )
+                self.logger.info("Started streaming tx info")
                 for (tx_id, tx_lsn), tx_info in tx_info_stream:
                     if tx_id in self.tx_registry:
                         self.tx_registry[tx_id].info = tx_info
@@ -352,12 +353,14 @@ class KafkaExtract(Extract):
                             commit_lsn=tx_lsn,
                             info=tx_info,
                         )
+                self.logger.info("Stopped streaming tx info")
 
                 # We then consume operations and build up the (pending) transactions in
                 # the registry.
                 ops_stream = self.iter_ops()
                 if self.max_ops_fetch:
                     ops_stream = itertools.islice(ops_stream, self.max_ops_fetch)
+                self.logger.info("Started streaming ops")
                 for tx_id, op in ops_stream:
                     tx_state = self.tx_registry.setdefault(tx_id, _TxState(tx_id))
                     tx_state.append(op)
@@ -365,6 +368,7 @@ class KafkaExtract(Extract):
                         self.logger.info(
                             f"Completed transaction {tx_state.id}:{tx_state.commit_lsn}"
                         )
+                self.logger.info("Stopped streaming ops")
 
                 yield from self._yield_completed_tx(min_batch=self.tx_buffer)
 
