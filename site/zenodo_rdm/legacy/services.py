@@ -25,7 +25,7 @@ from invenio_rdm_records.services import (
     RDMRecordService,
     RDMRecordServiceConfig,
 )
-from invenio_rdm_records.services.config import has_doi, is_record_and_has_parent_doi
+from invenio_rdm_records.services.config import has_doi
 from invenio_records_resources.services import ConditionalLink
 from invenio_records_resources.services.base.config import FromConfig
 from invenio_records_resources.services.base.links import preprocess_vars
@@ -49,6 +49,11 @@ record_thumbnail_sizes = LocalProxy(
 def is_published(record, ctx):
     """True if the record/draft is published."""
     return record.is_published
+
+
+def is_record_and_has_parent_doi(record, ctx):
+    """Determine if record has parent doi."""
+    return is_record(record, ctx) and has_doi(record.parent, ctx)
 
 
 class LegacyRecordLink(RecordLink):
