@@ -49,6 +49,7 @@ def expected_rdm_community():
                 "visibility": "public",
                 "member_policy": "open",
                 "record_policy": "open",
+                "review_policy": "open",
             },
             "metadata": {
                 "page": "",
