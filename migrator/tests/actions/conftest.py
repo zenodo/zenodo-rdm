@@ -197,4 +197,4 @@ def database(engine):
 @pytest.fixture(scope="function")
 def pg_tx_load(db_uri, session):
     """Load instance configured with the DB session fixture."""
-    return PostgreSQLTx(db_uri, _session=session)
+    return PostgreSQLTx(db_uri, _session=session, dry=False)

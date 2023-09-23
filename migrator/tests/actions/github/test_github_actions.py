@@ -18,9 +18,10 @@ from invenio_rdm_migrator.streams.actions import load
 from zenodo_rdm_migrator.actions.transform.github import (
     HookEventCreateAction,
     HookEventUpdateAction,
-    HookRepoUpdateAction,
     ReleaseReceiveAction,
     ReleaseUpdateAction,
+    RepoCreateAction,
+    RepoUpdateAction,
 )
 
 ##
@@ -41,12 +42,12 @@ def hook_enable_step1_tx():
     return {"tx_id": 1, "operations": ops}
 
 
-class TestHookRepoUpdateAction:
+class TestRepoUpdateAction:
     """Create OAuth server token action tests."""
 
     def test_matches_with_valid_data(self):
         assert (
-            HookRepoUpdateAction.matches_action(
+            RepoUpdateAction.matches_action(
                 Tx(
                     id=1,
                     operations=[
@@ -87,18 +88,18 @@ class TestHookRepoUpdateAction:
             extra_op,
         ]:
             assert (
-                HookRepoUpdateAction.matches_action(Tx(id=1, operations=invalid_ops))
+                RepoUpdateAction.matches_action(Tx(id=1, operations=invalid_ops))
                 is False
             )
 
     def test_transform_with_valid_data(self, hook_enable_step1_tx):
-        action = HookRepoUpdateAction(
+        action = RepoUpdateAction(
             Tx(
                 id=hook_enable_step1_tx["tx_id"],
                 operations=hook_enable_step1_tx["operations"],
             )
         )
-        assert isinstance(action.transform(), load.HookRepoUpdateAction)
+        assert isinstance(action.transform(), load.RepoUpdateAction)
 
 
 @pytest.fixture()

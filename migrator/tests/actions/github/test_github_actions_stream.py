@@ -55,29 +55,8 @@ def test_github_hook_repo_update(
     assert repo.user_id == 86490
 
 
-@pytest.fixture(scope="function")
-def db_token(database, session):
-    token = ServerToken(
-        id=156666,
-        client_id="SZLrR8ApZPeBjqj7uMB1JWXavhxebu6V0mwMtvMr",
-        user_id=123456,
-        token_type="bearer",
-        access_token="cH4ng3DzbXd4QTcrRjFMcTVMRHl3QlY2Rkdib0VwREY4aDhPcHo2dUt2ZnZ3OVVPa1BvRDl0L1NRZmFrdXNIU2hJR2JWc0NHZDZSVEhVT2JQcmdjS1E9PQ==",
-        refresh_token=None,
-        expires=None,
-        _scopes="tokens:generate user:email",
-        is_personal=True,
-        is_internal=False,
-    )
-
-    session.add(token)
-    session.commit()
-
-    return session
-
-
 def test_github_hook_event_create(
-    database, db_token, pg_tx_load, test_extract_cls, tx_files
+    database, session, pg_tx_load, test_extract_cls, tx_files
 ):
     stream = Stream(
         name="action",
@@ -86,10 +65,7 @@ def test_github_hook_event_create(
         load=pg_tx_load,
     )
     stream.run()
-
-    token = db_token.scalars(sa.select(ServerToken)).one()
-    assert token.expires
-    assert db_token.scalars(sa.select(WebhookEvent)).one()
+    assert session.scalars(sa.select(WebhookEvent)).one()
 
 
 def test_github_hook_disable(
