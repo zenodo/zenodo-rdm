@@ -19,6 +19,18 @@ ZENODO_DATACITE_PREFIX = "10.5281/"
 class ParentRecordEntry(Entry):
     """Parent record transform entry class."""
 
+    def _created(self, entry):
+        """Returns the creation date of the record."""
+        return entry["created"]
+
+    def _updated(self, entry):
+        """Returns the creation date of the record."""
+        return entry["updated"]
+
+    def _version_id(self, entry):
+        """Returns the version id of the record."""
+        return entry["version_id"]
+
     def _communities(self, entry):
         result = {}
         communities = entry["json"].get("communities")
