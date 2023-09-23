@@ -387,7 +387,6 @@ class KafkaExtract(Extract):
 
                 yield from self._yield_completed_tx(min_batch=self.tx_buffer)
 
-                self.logger.info(f"Transactions in registry: {self.tx_registry.keys()}")
                 self.logger.info(f"{self._last_yielded_tx=}")
 
                 # If no new transactions, we don't need to sleep since consumers
