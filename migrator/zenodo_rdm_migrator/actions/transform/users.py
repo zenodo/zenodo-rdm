@@ -117,7 +117,7 @@ class UserDeactivationAction(TransformAction):
         for operation in tx.operations:
             if "accounts_user" == operation["source"]["table"]:
                 update_not_active = (
-                    operation["after"]["active"]
+                    operation["after"].get("active", True)
                     or not operation["op"] == OperationType.UPDATE
                 )
                 if update_not_active or account_seen:
