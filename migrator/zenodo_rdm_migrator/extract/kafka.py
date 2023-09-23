@@ -323,6 +323,7 @@ class KafkaExtract(Extract):
         for tx_state in lsn_sorted_tx:
             if not tx_state.complete:
                 # We stop at the first non-completed transaction
+                self.logger.info(f"Earliest incomplete Tx: {tx_state}")
                 break
             completed_tx_batch.append(tx_state)
 
@@ -332,6 +333,8 @@ class KafkaExtract(Extract):
 
         # If we didn't make a big enough batch we return
         if min_batch and len(completed_tx_batch) < min_batch:
+            next_missing_tx = lsn_sorted_tx[len(completed_tx_batch)]
+            self.logger.info(f"Couldn't gather {min_batch=}: {next_missing_tx=}")
             return
 
         for tx in completed_tx_batch:
@@ -382,6 +385,9 @@ class KafkaExtract(Extract):
                 self.logger.info("Stopped streaming ops")
 
                 yield from self._yield_completed_tx(min_batch=self.tx_buffer)
+
+                self.logger.info(f"Transactions in registry: {self.tx_registry.keys()}")
+                self.logger.info(f"{self._last_yielded_tx=}")
 
                 # If no new transactions, we don't need to sleep since consumers
                 # have a timeout/sleep already via "consumer_timeout_ms".
