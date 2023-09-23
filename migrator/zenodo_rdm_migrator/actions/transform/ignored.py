@@ -58,7 +58,7 @@ class UserSessionAction(IgnoredTransformAction):
         # there might be one optional user update + multiple session_activirty ops
         return (
             len(ops) == len(user_updates + session_activity_ops)
-            and len(session_activity_ops) > 1
+            and len(session_activity_ops) >= 1
         )
 
 
