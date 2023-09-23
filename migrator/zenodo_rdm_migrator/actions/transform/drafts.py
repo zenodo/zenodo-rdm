@@ -83,9 +83,12 @@ class DraftCreateAction(TransformAction, DraftTransformMixin):
         # draft files should be a separate transaction
         for operation in self.tx.operations:
             table_name = operation["source"]["table"]
-
             if table_name == "pidstore_pid":
                 if operation["after"]["pid_type"] == "recid":
+                    self._microseconds_to_isodate(
+                        data=operation["after"],
+                        fields=["created", "updated"],
+                    )
                     draft_pid = IdentityTransform()._transform(operation["after"])
             elif table_name == "files_bucket":
                 bucket = IdentityTransform()._transform(operation["after"])

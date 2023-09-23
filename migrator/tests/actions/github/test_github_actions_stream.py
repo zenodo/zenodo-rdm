@@ -136,7 +136,7 @@ def test_receive_release(
     stream.run()
 
     repo = db_repository.scalars(sa.select(Repository)).one()
-    assert repo.updated == "2023-09-20T11:52:48.809652"
+    assert repo.updated.isoformat() == "2023-09-20T11:52:48.809652"
     assert db_repository.scalars(sa.select(Release)).one()
 
 

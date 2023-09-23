@@ -104,8 +104,8 @@ def test_user_register_action_stream(
     # User
     user = session.scalars(sa.select(User)).one()
     assert user.id == 123456
-    assert user.created == "2023-08-01T16:14:06.964000"
-    assert user.updated == "2023-08-01T16:14:06.964000"
+    assert user.created.isoformat() == "2023-08-01T16:14:06.964000"
+    assert user.updated.isoformat() == "2023-08-01T16:14:06.964000"
 
     # Login information
     loginfo = session.scalars(sa.select(LoginInformation)).one()
@@ -133,8 +133,8 @@ def test_user_login_action_stream(
 
     # Login information
     loginfo = session.scalars(sa.select(LoginInformation)).one()
-    assert loginfo.last_login_at == "2023-08-01T16:14:07.550349"
-    assert loginfo.current_login_at == "2023-08-01T16:14:07.550349"
+    assert loginfo.last_login_at.isoformat() == "2023-08-01T16:14:07.550349"
+    assert loginfo.current_login_at.isoformat() == "2023-08-01T16:14:07.550349"
     assert loginfo.last_login_ip is None
     assert loginfo.current_login_ip == "192.0.238.78"
     assert loginfo.login_count == 1
@@ -152,7 +152,7 @@ def test_confirm_user_action_stream(
     stream.run()
 
     user = session.scalars(sa.select(User)).one()
-    assert user.confirmed_at == "2023-08-01T16:14:19.612306"
+    assert user.confirmed_at.isoformat() == "2023-08-01T16:14:19.612306"
 
 
 @pytest.mark.skip("UserProfileEditAction not implemented yet")

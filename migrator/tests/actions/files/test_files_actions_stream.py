@@ -62,17 +62,17 @@ def test_draft_create_action_stream(
     bucket = session.scalars(sa.select(FilesBucket)).one()
     assert bucket.id == UUID("0e12b4b6-9cc7-46df-9a04-c11c478de211")
     # check the latest update time
-    assert bucket.updated == "2023-06-29T14:00:00"
+    assert bucket.updated.isoformat() == "2023-06-29T14:00:00"
 
     ov = session.scalars(sa.select(FilesObjectVersion)).one()
     assert ov.version_id == UUID("f8200dc7-55b6-4785-abd0-f3d13b143c98")
     # check the latest update time
-    assert ov.updated == "2023-06-29T14:00:00"
+    assert ov.updated.isoformat() == "2023-06-29T14:00:00"
 
     fi = session.scalars(sa.select(FilesInstance)).one()
     assert fi.id == UUID("e94b243e-9c0c-44df-bd1f-6decc374cf78")
     # check the latest update time
-    assert fi.updated == "2023-06-29T14:00:00"
+    assert fi.updated.isoformat() == "2023-06-29T14:00:00"
 
     fr = session.scalars(sa.select(RDMDraftFile)).one()
     assert fr.record_id == UUID("d94f793c-47d2-48e2-9867-ca597b4ebb41")

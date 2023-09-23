@@ -110,12 +110,12 @@ def test_draft_create_action_stream(
     # Draft parent and versioning
     draft = session.scalars(sa.select(RDMDraftMetadata)).one()
 
-    assert draft.created == "2023-06-29T13:38:48.842023"
-    assert draft.updated == "2023-06-29T13:38:48.842023"
+    assert draft.created.isoformat() == "2023-06-29T13:38:48.842023"
+    assert draft.updated.isoformat() == "2023-06-29T13:38:48.842023"
 
     parent = session.scalars(sa.select(RDMParentMetadata)).one()
-    assert parent.created == "2023-06-29T13:38:48.842023"
-    assert parent.updated == "2023-06-29T13:38:48.842023"
+    assert parent.created.isoformat() == "2023-06-29T13:38:48.842023"
+    assert parent.updated.isoformat() == "2023-06-29T13:38:48.842023"
 
     versioning = session.scalars(sa.select(RDMVersionState)).one()
     assert parent.id == draft.parent_id == versioning.parent_id
@@ -141,13 +141,13 @@ def test_draft_edit_action_stream(
 
     # Draft parent and versioning
     draft = session.scalars(sa.select(RDMDraftMetadata)).one()
-    assert draft.created == "2021-05-01T00:00:00"
-    assert draft.updated == "2023-06-29T13:00:00"
+    assert draft.created.isoformat() == "2021-05-01T00:00:00"
+    assert draft.updated.isoformat() == "2023-06-29T13:00:00"
     assert draft.json["metadata"]["title"] == "update test"
 
     parent = session.scalars(sa.select(RDMParentMetadata)).one()
-    assert parent.created == "2021-05-01T00:00:00"
-    assert parent.updated == "2023-06-29T13:00:00"
+    assert parent.created.isoformat() == "2021-05-01T00:00:00"
+    assert parent.updated.isoformat() == "2023-06-29T13:00:00"
 
 
 def test_draft_partial_edit_action_stream(
@@ -175,14 +175,14 @@ def test_draft_partial_edit_action_stream(
 
     # Draft parent and versioning
     draft = session.scalars(sa.select(RDMDraftMetadata)).one()
-    assert draft.created == "2021-05-01T00:00:00"
-    assert draft.updated == "2023-07-01T13:00:00"
+    assert draft.created.isoformat() == "2021-05-01T00:00:00"
+    assert draft.updated.isoformat() == "2023-07-01T13:00:00"
     assert draft.json["metadata"]["title"] == "update partial test"
 
     parent = session.scalars(sa.select(RDMParentMetadata)).one()
-    assert parent.created == "2021-05-01T00:00:00"
+    assert parent.created.isoformat() == "2021-05-01T00:00:00"
     # this is not a 100% true since the parent might not be updated
     # to fix it, we could store this in the state, on the other hand
     # it does not affect the workflows of the system and it makes the code
     # easier/more readable
-    assert parent.updated == "2023-07-01T13:00:00"
+    assert parent.updated.isoformat() == "2023-07-01T13:00:00"
