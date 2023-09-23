@@ -264,6 +264,7 @@ def test_later_last_tx(mocker, kafka_data):
 def test_unchanged_fields(mocker):
     """Test the unchanged fields filtering for UPDATEs."""
     tx_info = {
+        "offset": 0,
         "key": {"id": "563388795:1461026653952"},
         "value": {
             "status": "END",
@@ -276,6 +277,7 @@ def test_unchanged_fields(mocker):
         },
     }
     op = {
+        "offset": 0,
         "key": {
             "id": "2c5e1797-e030-40e2-b32f-99335730a39d",
         },

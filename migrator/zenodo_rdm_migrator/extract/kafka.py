@@ -24,10 +24,11 @@ from sortedcontainers import SortedList
 class _TxState:
     """Transaction state, internally used in the Kafka extract only."""
 
-    def __init__(self, id, commit_lsn=None, info=None):
+    def __init__(self, id, commit_lsn=None, commit_offset=None, info=None):
         """Constructor."""
         self.id = id
         self.commit_lsn = commit_lsn
+        self.commit_offset = commit_offset
         self.info = info
         # We order operations based on the Postgres LSN
         self.ops = SortedList(key=lambda o: o["source"]["lsn"])
@@ -265,7 +266,7 @@ class KafkaExtract(Extract):
                 continue
             elif tx_msg.value["status"] == "END":
                 consumer.commit()
-                yield ((tx_id, tx_lsn), tx_msg.value)
+                yield ((tx_id, tx_lsn, tx_msg.offset), tx_msg.value)
 
     @staticmethod
     def _filter_unchanged_values(msg):
@@ -341,7 +342,7 @@ class KafkaExtract(Extract):
         for tx in completed_tx_batch:
             del self.tx_registry[tx.id]
             # Keep track of the last yielded transaction ID
-            self._last_yielded_tx = (tx.id, tx.commit_lsn)
+            self._last_yielded_tx = (tx.id, tx.commit_lsn, tx.commit_offset)
             yield Tx(id=tx.id, commit_lsn=tx.commit_lsn, operations=list(tx.ops))
 
     def run(self):
@@ -358,14 +359,16 @@ class KafkaExtract(Extract):
                         tx_info_stream, self.max_tx_info_fetch
                     )
                 self.logger.info("Started streaming tx info")
-                for (tx_id, tx_lsn), tx_info in tx_info_stream:
+                for (tx_id, tx_lsn, offset), tx_info in tx_info_stream:
                     if tx_id in self.tx_registry:
                         self.tx_registry[tx_id].info = tx_info
                         self.tx_registry[tx_id].commit_lsn = tx_lsn
+                        self.tx_registry[tx_id].commit_offset = offset
                     else:
                         self.tx_registry[tx_id] = _TxState(
                             tx_id,
                             commit_lsn=tx_lsn,
+                            commit_offset=offset,
                             info=tx_info,
                         )
                 self.logger.info("Stopped streaming tx info")
