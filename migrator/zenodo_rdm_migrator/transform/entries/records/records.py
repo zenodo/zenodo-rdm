@@ -115,13 +115,6 @@ class ZenodoDraftEntry(ZenodoRecordEntry):
     Many functions are identical to ZenodoRecordEntry but making the fields optional.
     """
 
-    def __init__(self, partial=False):
-        """Constructor.
-
-        :param partial: a boolean enabling partial transformations, i.e. missing keys.
-        """
-        self.partial = partial
-
     def _expires_at(self, entry):
         """Transform the expiry date of the draft."""
         next_year = datetime.today() + timedelta(days=365)
@@ -191,43 +184,36 @@ class ZenodoDraftEntry(ZenodoRecordEntry):
 
     def transform(self, entry):
         """Transform a record single entry."""
-        keys = [
-            "id",
-            "created",
-            "updated",
-            "version_id",
-            "index",
-            "bucket_id",
-            "media_bucket_id",
-            "expires_at",
-            "fork_version_id",
-        ]
-
         transformed = {}
-        for key in keys:
-            func = getattr(self, "_" + key)
-            try:
-                transformed[key] = func(entry)
-            # this might mask nested missing keys, it is still a partial transformation
-            # full one (with more validation) should be checked on a record
-            except KeyError as ex:
-                if not self.partial:
-                    raise KeyError(ex)
-                pass
-
+        self._load_partial(
+            entry,
+            transformed,
+            [
+                "id",
+                "created",
+                "updated",
+                "version_id",
+                "index",
+                "bucket_id",
+                "media_bucket_id",
+                "expires_at",
+                "fork_version_id",
+            ],
+        )
         # json might give an inner KeyError that should not be masked
-        if "json" in entry:
-            transformed["json"] = {
-                "id": self._recid(entry),
-                "pids": self._pids(entry),
-                "files": self._files(entry),
-                "media_files": self._media_files(entry),
-                "metadata": self._metadata(entry),
-                "access": self._access(entry),
-                "custom_fields": self._custom_fields(entry),
-            }
-        elif not self.partial:
-            raise KeyError("json")
-        # else, pass
+        self._load_partial(
+            entry,
+            transformed,
+            [
+                "id",
+                "pids",
+                "files",
+                "media_files",
+                "metadata",
+                "access",
+                "custom_fields",
+            ],
+            prefix="json",
+        )
 
         return transformed
