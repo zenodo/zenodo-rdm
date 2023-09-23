@@ -108,20 +108,22 @@ class ZenodoDeletedRecordTransform(RDMRecordTransform):
                 "secret_link_expiration": 30,
             }
 
-        permission_flags = {}
-        owner_comm_slugs = {
-            comm["slug"]
-            for comm in (STATE.COMMUNITIES.search("owner_id", owner) if owner else [])
-        }
         comm_slugs = set(communities.get("ids", []))
-        has_only_managed_communities = comm_slugs < owner_comm_slugs
-        if not has_only_managed_communities:
-            permission_flags["can_community_manage_record"] = False
-            if entry["json"].get("access_right") != "open":
-                permission_flags["can_community_read_files"] = False
-
-        if permission_flags:
-            transformed["json"]["permission_flags"] = permission_flags
+        if comm_slugs:
+            permission_flags = {}
+            owner_comm_slugs = {
+                comm["slug"]
+                for comm in (
+                    STATE.COMMUNITIES.search("owner_id", owner) if owner else []
+                )
+            }
+            has_only_managed_communities = comm_slugs < owner_comm_slugs
+            if not has_only_managed_communities:
+                permission_flags["can_community_manage_record"] = False
+                if entry["json"].get("access_right") != "open":
+                    permission_flags["can_community_read_files"] = False
+            if permission_flags:
+                transformed["json"]["permission_flags"] = permission_flags
 
         return transformed
 
