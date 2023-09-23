@@ -31,10 +31,10 @@ class FileChecksumAction(IgnoredTransformAction):
     @classmethod
     def matches_action(cls, tx):
         """Checks for a single file instance update."""
-        table_ops = [(o["source"]["table"], o["op"]) for o in tx.operations]
-        if table_ops == [("files_files", OperationType.UPDATE)]:
-            changed_keys = tx.operations[0].get("after", {}).keys()
-            return {"last_check", "last_check_at"} < changed_keys
+        ops = [(o["source"]["table"], o["op"]) for o in tx.operations]
+        if ops == [("files_files", OperationType.UPDATE)]:
+            changed_keys = tx.operations[0].get("after", {}).keys() - {"id"}
+            return {"last_check", "last_check_at", "updated"} == changed_keys
         return False
 
 
@@ -46,8 +46,20 @@ class UserSessionAction(IgnoredTransformAction):
     @classmethod
     def matches_action(cls, tx):
         """Checks for a single ."""
-        table_ops = [(o["source"]["table"], o["op"]) for o in tx.operations]
-        return all(t == "accounts_user_session_activity" for t, _ in table_ops)
+        ops = [(o["source"]["table"], o["op"]) for o in tx.operations]
+        user_updates = [o for o in ops if o == ("accounts_user", OperationType.UPDATE)]
+        session_activity_ops = [
+            o for o in ops if o[0] == "accounts_user_session_activity"
+        ]
+        # Don't accidentally match user deactivations
+        if len(user_updates) == 1:
+            if tx.operations[0].get("after", {}).get("active") is False:
+                return False
+        # there might be one optional user update + multiple session_activirty ops
+        return (
+            len(ops) == len(user_updates + session_activity_ops)
+            and len(session_activity_ops) > 1
+        )
 
 
 class GitHubSyncAction(IgnoredTransformAction):
@@ -58,8 +70,23 @@ class GitHubSyncAction(IgnoredTransformAction):
     @classmethod
     def matches_action(cls, tx):
         """Checks for a single ."""
-        table_ops = [(o["source"]["table"], o["op"]) for o in tx.operations]
-        return table_ops == [("oauthclient_remoteaccount", OperationType.UPDATE)]
+        ops = [(o["source"]["table"], o["op"]) for o in tx.operations]
+        return ops == [("oauthclient_remoteaccount", OperationType.UPDATE)]
+
+
+class GitHubPingAction(IgnoredTransformAction):
+    """Zenodo to RDM for GitHub sync."""
+
+    name = "gh-ping"
+
+    @classmethod
+    def matches_action(cls, tx):
+        """Checks for a single ."""
+        ops = [(o["source"]["table"], o["op"]) for o in tx.operations]
+        if ops == [("github_repositories", OperationType.UPDATE)]:
+            changed_keys = tx.operations[0].get("after", {}).keys() - {"id"}
+            return {"ping", "updated"} == changed_keys
+        return False
 
 
 class OAuthReLoginAction(IgnoredTransformAction):
@@ -70,8 +97,8 @@ class OAuthReLoginAction(IgnoredTransformAction):
     @classmethod
     def matches_action(cls, tx):
         """Checks for a single ."""
-        table_ops = [(o["source"]["table"], o["op"]) for o in tx.operations]
-        return table_ops == [
+        ops = [(o["source"]["table"], o["op"]) for o in tx.operations]
+        return ops == [
             ("accounts_user", OperationType.UPDATE),
             ("oauthclient_remotetoken", OperationType.UPDATE),
         ]
@@ -81,5 +108,6 @@ IGNORED_ACTIONS = [
     FileChecksumAction,
     UserSessionAction,
     GitHubSyncAction,
+    GitHubPingAction,
     OAuthReLoginAction,
 ]

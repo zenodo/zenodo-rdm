@@ -78,13 +78,12 @@ class RepoUpdateAction(TransformAction):
     @classmethod
     def matches_action(cls, tx):
         """Checks if the data corresponds with that required by the action."""
-        if len(tx.operations) != 1:
-            return False
-        op = tx.operations[0]
-        return (
-            op["source"]["table"] == "github_repositories"
-            and op["op"] == OperationType.UPDATE
-        )
+        ops = [(o["source"]["table"], o["op"]) for o in tx.operations]
+        if ops == [("github_repositories", OperationType.UPDATE)]:
+            changed_keys = tx.operations[0].get("after", {}).keys() - {"id"}
+            # i.e. anything more than "ping" webhook
+            return {"ping", "updated"} != changed_keys
+        return False
 
     def _transform_data(self):
         """Transforms the data and returns dictionary."""
