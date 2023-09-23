@@ -137,7 +137,7 @@ class KafkaExtract(Extract):
         ops_topic,
         tx_topic,
         last_tx,
-        tx_buffer=10,
+        tx_buffer=100,
         max_tx_info_fetch=200,
         max_ops_fetch=2000,
         config=None,
@@ -301,7 +301,7 @@ class KafkaExtract(Extract):
 
             yield (tx_id, dict(key=op_msg.key, **op_msg.value))
 
-    def _yield_completed_tx(self, min_batch=None):
+    def _yield_completed_tx(self, min_batch=None, max_batch=None):
         """Yields completed transactions.
 
         Important: we only yield the "earliest" commited transactions for which we have
@@ -327,14 +327,15 @@ class KafkaExtract(Extract):
                 break
             completed_tx_batch.append(tx_state)
 
-            # if we reached the minimum batch size, we stop
-            if min_batch and len(completed_tx_batch) == min_batch:
+            # if we reached the maximum batch size, we stop
+            if max_batch and len(completed_tx_batch) == max_batch:
                 break
 
         # If we didn't make a big enough batch we return
         if min_batch and len(completed_tx_batch) < min_batch:
-            next_missing_tx = lsn_sorted_tx[len(completed_tx_batch)]
-            self.logger.info(f"Couldn't gather {min_batch=}: {next_missing_tx=}")
+            if len(completed_tx_batch) < len(lsn_sorted_tx):
+                next_missing_tx = lsn_sorted_tx[len(completed_tx_batch)]
+                self.logger.info(f"Couldn't gather {min_batch=}: {next_missing_tx=}")
             return
 
         for tx in completed_tx_batch:
