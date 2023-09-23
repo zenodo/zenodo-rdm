@@ -205,7 +205,7 @@ class ZenodoDraftEntry(ZenodoRecordEntry):
             entry,
             transformed,
             [
-                "id",
+                ("id", "recid"),
                 "pids",
                 "files",
                 "media_files",
