@@ -140,7 +140,7 @@ class CommunityUpdateAction(TransformAction):
         community_src, *files_payloads = payloads
         result = {
             "tx_id": self.tx.id,
-            "community": ZenodoCommunityEntry().transform(community_src),
+            "community": ZenodoCommunityEntry(partial=True).transform(community_src),
         }
 
         # Transform the logo data if there is one

@@ -19,13 +19,6 @@ ZENODO_DATACITE_PREFIX = "10.5281/"
 class ParentRecordEntry(Entry):
     """Parent record transform entry class."""
 
-    def __init__(self, partial=False):
-        """Constructor.
-
-        :param partial: a boolean enabling partial transformations, i.e. missing keys.
-        """
-        self.partial = partial
-
     def _communities(self, entry):
         result = {}
         communities = entry["json"].get("communities")
@@ -59,16 +52,10 @@ class ParentRecordEntry(Entry):
     def transform(self, entry):
         """Transform a parent."""
         transformed = {}
-
         # both created and updated are the same as the record
-        keys = ["created", "updated", "version_id"]
-        for key in keys:
-            try:
-                transformed[key] = entry[key]
-            except KeyError as ex:
-                if not self.partial:
-                    raise KeyError(ex)
-                pass
+        self._load_partial(entry, transformed, ["created", "updated", "version_id"])
+
+        # We "manually" handle partial data for the JSON field
         if "json" in entry:
             # check if conceptrecid exists and bail otherwise. should not happen!
             # this is the case for some deposits and they should be fixed in prod as it
