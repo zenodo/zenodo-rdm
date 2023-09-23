@@ -19,11 +19,53 @@ from ...transform.entries.parents import ParentRecordEntry
 from ...transform.entries.records.records import ZenodoRecordEntry
 
 #
-# Hooks
+# Repository
 #
 
 
-class HookRepoUpdateAction(TransformAction):
+class RepoCreateAction(TransformAction):
+    """Zenodo to RDM GitHub repository enable/create.
+
+    This will serve for hook enabling first phase and for disabling, as well as for
+    normal repository updates.
+    """
+
+    name = "gh-repo-create"
+    load_cls = load.RepoCreateAction
+
+    @classmethod
+    def matches_action(cls, tx):
+        """Checks if the data corresponds with that required by the action."""
+        ops = [(op["source"]["table"], op["op"]) for op in tx.operations]
+        has_release_ops = any(table == "github_releases" for table, _, in ops)
+        has_insert_and_update_repo_ops = all(
+            ("github_repositories", op_type) in ops
+            for op_type in (OperationType.INSERT, OperationType.UPDATE)
+        )
+        return has_insert_and_update_repo_ops and not has_release_ops
+
+    def _transform_data(self):
+        """Transforms the data and returns dictionary."""
+        repo_insert_op = self.tx.operations[0]
+        assert repo_insert_op["op"] == OperationType.INSERT
+        repo = repo_insert_op["after"]
+        for op in self.tx.operations[1:]:
+            if (
+                op["source"]["table"] == "github_repositories"
+                and op["op"] == OperationType.UPDATE
+            ):
+                self._microseconds_to_isodate(
+                    data=op["after"], fields=["created", "updated"]
+                )
+                repo.update(op["after"])
+
+        return {
+            "tx_id": self.tx.id,
+            "gh_repository": GitHubRepositoryTransform()._transform(repo),
+        }
+
+
+class RepoUpdateAction(TransformAction):
     """Zenodo to RDM GitHub repository update of a webhook.
 
     This will serve for hook enabling first phase and for disabling, as well as for
@@ -31,16 +73,14 @@ class HookRepoUpdateAction(TransformAction):
     """
 
     name = "gh-hook-repo-update"
-    load_cls = load.HookRepoUpdateAction
+    load_cls = load.RepoUpdateAction
 
     @classmethod
     def matches_action(cls, tx):
         """Checks if the data corresponds with that required by the action."""
         if len(tx.operations) != 1:
             return False
-
         op = tx.operations[0]
-
         return (
             op["source"]["table"] == "github_repositories"
             and op["op"] == OperationType.UPDATE
@@ -49,15 +89,16 @@ class HookRepoUpdateAction(TransformAction):
     def _transform_data(self):
         """Transforms the data and returns dictionary."""
         op = self.tx.operations[0]
-
         self._microseconds_to_isodate(data=op["after"], fields=["created", "updated"])
-
-        result = {
+        return {
             "tx_id": self.tx.id,
             "gh_repository": GitHubRepositoryTransform()._transform(op["after"]),
         }
 
-        return result
+
+#
+# Webhooks
+#
 
 
 class HookEventCreateAction(TransformAction, JSONTransformMixin):
@@ -73,34 +114,17 @@ class HookEventCreateAction(TransformAction, JSONTransformMixin):
     @classmethod
     def matches_action(cls, tx):
         """Checks if the data corresponds with that required by the action."""
-        if len(tx.operations) == 1:
-            op = tx.operations[0]
-            return (
-                op["source"]["table"] == "webhooks_events"
-                and op["op"] == OperationType.INSERT
-            )
-
-        if len(tx.operations) == 2:
-            rules = {
-                "webhooks_events": OperationType.INSERT,
-                "oauth2server_token": OperationType.UPDATE,
-            }
-
-            for op in tx.operations:
-                rule = rules.pop(op["source"]["table"], None)
-                if not rule or rule != op["op"]:
-                    return False
-
-            return True
-
-        return False
+        ops = [(op["source"]["table"], op["op"]) for op in tx.operations]
+        return ("webhooks_events", OperationType.INSERT) in ops
 
     def _transform_data(self):
         """Transforms the data and returns dictionary."""
         webhook_event = None
-        server_token = None
         for op in self.tx.operations:
-            if op["source"]["table"] == "webhooks_events":
+            if (
+                op["source"]["table"] == "webhooks_events"
+                and op["op"] == OperationType.INSERT
+            ):
                 self._microseconds_to_isodate(
                     data=op["after"], fields=["created", "updated"]
                 )
@@ -114,18 +138,10 @@ class HookEventCreateAction(TransformAction, JSONTransformMixin):
                     ],
                 )
                 webhook_event = op["after"]
-            elif op["source"]["table"] == "oauth2server_token":
-                self._microseconds_to_isodate(data=op["after"], fields=["expires"])
-                server_token = op["after"]
-
-        result = {
+        return {
             "tx_id": self.tx.id,
             "webhook_event": IdentityTransform()._transform(webhook_event),
         }
-        if server_token:
-            result["oauth_token"] = OAuthServerTokenTransform()._transform(server_token)
-
-        return result
 
 
 class HookEventUpdateAction(TransformAction, JSONTransformMixin):
@@ -150,19 +166,12 @@ class HookEventUpdateAction(TransformAction, JSONTransformMixin):
     def _transform_data(self):
         """Transforms the data and returns dictionary."""
         op = self.tx.operations[0]
-
         self._load_json_fields(
             data=op["after"],
             fields=["payload", "payload_headers", "response", "response_headers"],
         )
         self._microseconds_to_isodate(data=op["after"], fields=["created", "updated"])
-
-        result = {
-            "tx_id": self.tx.id,
-            "webhook_event": IdentityTransform()._transform(op["after"]),
-        }
-
-        return result
+        return {"tx_id": self.tx.id, "webhook_event": op["after"]}
 
 
 #
@@ -461,7 +470,8 @@ class ReleaseProcessAction(TransformAction, JSONTransformMixin):
 GITHUB_ACTIONS = [
     HookEventCreateAction,
     HookEventUpdateAction,
-    HookRepoUpdateAction,
+    RepoCreateAction,
+    RepoUpdateAction,
     ReleaseReceiveAction,
     ReleaseUpdateAction,
 ]
