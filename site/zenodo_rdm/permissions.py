@@ -219,3 +219,5 @@ class ZenodoCommunityPermissionPolicy(CommunityPermissionPolicy):
         UserManager,
         SystemProcess(),
     ]
+
+    can_rename = [SystemProcess()]
