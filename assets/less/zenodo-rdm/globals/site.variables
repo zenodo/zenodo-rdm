@@ -11,6 +11,7 @@
 @negativeColor: #D33B36;
 @primaryColor: #2F6FA7;
 
+@lightTextColor: #696969;
 @invertedTextColor: #FFF;
 @invertedTextColorLight: #dbeaff;
 @mutedTextColor: #696969;
