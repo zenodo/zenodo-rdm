@@ -24,7 +24,6 @@ from .redirector import (
     search_view_function,
 )
 
-
 # I18N_TRANSLATIONS_PATHS = [os.path.abspath("./site/zenodo_rdm/translations")]
 
 # Email address of sender.
