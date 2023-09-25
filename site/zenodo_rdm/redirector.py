@@ -54,7 +54,9 @@ def communities_detail_view_function():
     :return: url for the view 'invenio_app_rdm_communities.communities_detail'
     :rtype: str
     """
-    _id = request.view_args.get("id", request.view_args["community_id"])
+    _id = request.view_args.get("id")
+    if not _id:
+        _id = request.view_args["community_id"]
     values = {"pid_value": _id}
     target = url_for("invenio_app_rdm_communities.communities_detail", **values)
     return target
@@ -69,7 +71,9 @@ def communities_settings_view_function():
     :return: url for the view 'invenio_communities.communities_settings'
     :rtype: str
     """
-    _id = request.view_args.get("id", request.view_args["community_id"])
+    _id = request.view_args.get("id")
+    if not _id:
+        _id = request.view_args["community_id"]
     values = {"pid_value": _id}
     target = url_for("invenio_communities.communities_settings", **values)
     return target
