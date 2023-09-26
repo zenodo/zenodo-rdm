@@ -25,7 +25,7 @@
                 {{ render_field(form.email, icon="icon user", autofocus=True, errormsg=False) }}
                 {{ render_field(form.password, icon="icon lock", errormsg=False) }}
                 <button type="submit" class="ui fluid large labeled icon primary button">
-                  <i class="icon sign-in"></i> {{_('Log in')}}
+                  <i class="icon sign-in" aria-hidden="true"></i> {{_('Log in')}}
                 </button>
               </form>
             {%- endwith %}
@@ -36,12 +36,12 @@
       <div class="ui secondary segment rel-pt-2 rel-pb-2">
         {%- block registerable %}
           {%- if security.registerable %}
-            <h2 class="ui small header text-muted">
+            <p class="ui small header text-muted">
               {% trans sitename=config.ACCOUNTS_SITENAME %}
                 New to {{sitename}}?
               {% endtrans %} 
                 <a href="{{url_for('security.register')}}">{{_('Sign up')}}</a>
-            </h2>
+            </p>
             <a href="https://about.zenodo.org/privacy-policy/">Privacy notice</a>
           {%- endif %}
         {%- endblock %}

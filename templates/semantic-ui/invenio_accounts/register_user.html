@@ -10,15 +10,15 @@
 
 <div class="ui grid">
   <div class="sixteen wide mobile eight wide tablet eight wide computer left aligned column">
-    <dl class="mt-0">
-      <dt class="ui small inverted header"><b>Citeable. Discoverable</b></dt>
+    <dl class="features-list mt-0">
+      <dt class="ui small inverted header">Citeable. Discoverable</dt>
       <dd>Uploads get a Digital Object Identifier (DOI) to make them easily and uniquely citeable.</dd>
 
-      <dt class="ui small inverted header"><b>Communities</b></dt>
+      <dt class="ui small inverted header">Communities</dt>
       <dd>Accept or reject uploads to your own community (e.g workshops, EU projects, institutions or entire
         disciplines).</dd>
 
-      <dt class="ui small inverted header"><b>Trusted Research Data Management</b></dt>
+      <dt class="ui small inverted header">Trusted Research Data Management</dt>
       <dd>Built on top of CERN's expertise in managing 100s of petabytes of research data from the Large Hadron Collider.
       </dd>
     </dl>
@@ -26,19 +26,23 @@
 
   <div class="sixteen wide mobile eight wide tablet eight wide computer column">
     <div class="signup-social">
-      <a href="{{url_for('invenio_oauthclient.login', remote_app='github')}}" class="ui button fluid">
-        <i class="github icon"></i>
+      <a href="{{url_for('invenio_oauthclient.login', remote_app='github')}}" class="ui button fluid mb-5">
+        <i class="github icon" aria-hidden="true"></i>
         {{_('Sign up with GitHub')}}
       </a>
-      <a href="{{url_for('invenio_oauthclient.login', remote_app='orcid')}}" class="ui button fluid">
-        <i class="icon"><img id="signup-orcid-logo" src="{{ url_for('static', filename='images/orcid.svg')}}"></i>
+      <a href="{{url_for('invenio_oauthclient.login', remote_app='orcid')}}" class="ui button fluid mb-5">
+        <i class="icon" aria-hidden="true">
+          <img id="signup-orcid-logo" src="{{ url_for('static', filename='images/orcid.svg')}}" alt="">
+        </i>
         {{_('Sign up with ORCID')}}
       </a>
       <a href="{{url_for('invenio_oauthclient.login', remote_app='openaire_aai')}}" class="ui button fluid">
-        <i class="icon"><img id="signup-openaire-logo" src="{{ url_for('static', filename='images/openaire.svg')}}"></i>
+        <i class="icon" aria-hidden="true">
+          <img id="signup-openaire-logo" src="{{ url_for('static', filename='images/openaire.svg')}}" alt="">
+        </i>
         {{_('Sign up with OpenAIRE')}}
       </a>
-      <h3 class="ui header" id="testheader">— OR —</h3>
+      <p class="ui medium inverted header rel-mt-1 rel-mb-1" id="testheader">— OR —</p>
     </div>
     {%- with form = register_user_form %}
     <form class="credentials-form" action="{{ url_for_security('register') }}" method="POST" name="register_user_form">
@@ -59,16 +63,16 @@
       {%- endif %}
 
       <button type="submit" class="ui left labeled icon fluid button warning">
-        <i class="icon edit"></i>
+        <i class="icon edit" aria-hidden="true"></i>
         {{ _('Sign up') }}
       </button>
     </form>
 
     <div class="ui centered container rel-mt-2">
-      <h2 class="ui small inverted header">
+      <p class="ui small inverted header">
         {{ _('Already have an account?') }}
         <a href="{{ url_for_security('login') }}" class="inverted">{{ _('Log in') }}</a>
-      </h2>
+      </p>
       <a href="https://about.zenodo.org/privacy-policy/" class="inverted">Privacy notice</a>
     </div>
     {%- endwith %}
