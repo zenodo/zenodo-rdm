@@ -22,7 +22,7 @@ def openaire_serializer():
     yield OpenAIREV1Serializer()
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="function")
 def mocked_session():
     """Mock requests.Session() object."""
 
@@ -51,8 +51,7 @@ def enable_openaire_indexing(running_app, monkeypatch):
 @pytest.fixture(scope="function")
 def openaire_api_endpoint(running_app):
     """Return OpenAIRE endpoint."""
-    openaire_api_url = running_app.app.config["OPENAIRE_API_URL"]
-    return f"{openaire_api_url}/feedObject"
+    return running_app.app.config["OPENAIRE_API_URL"]
 
 
 @pytest.fixture(scope="function")
