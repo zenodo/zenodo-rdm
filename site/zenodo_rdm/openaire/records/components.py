@@ -7,17 +7,33 @@
 """OpenAIRE record component."""
 
 from flask import current_app
-from invenio_drafts_resources.services.records.components import ServiceComponent
+from invenio_rdm_records.services.components.record_deletion import (
+    RecordDeletionComponent,
+)
 from invenio_records_resources.services.uow import TaskOp
 
-from zenodo_rdm.openaire.tasks import openaire_direct_index
+from zenodo_rdm.openaire.tasks import openaire_direct_index, openaire_delete
 
 
-class OpenAIREComponent(ServiceComponent):
+class OpenAIREComponent(RecordDeletionComponent):
     """Service component for custom fields."""
 
     def publish(self, identity, draft=None, record=None):
         """Publish handler."""
+        is_openaire_enabled = current_app.config.get("OPENAIRE_DIRECT_INDEXING_ENABLED")
+        if is_openaire_enabled:
+            self.uow.register(TaskOp(openaire_direct_index, record_id=record["id"]))
+
+    def delete_record(self, identity, data=None, record=None, **kwargs):
+        """Remove record from OpenAIRE."""
+        is_openaire_enabled = current_app.config.get("OPENAIRE_DIRECT_INDEXING_ENABLED")
+        if is_openaire_enabled:
+            self.uow.register(TaskOp(openaire_delete, record_id=record["id"]))
+
+    def restore_record(self, identity, data=None, record=None, **kwargs):
+        """Restored record from OpenAIRE."""
+
+        # TODO check if this is allowed
         is_openaire_enabled = current_app.config.get("OPENAIRE_DIRECT_INDEXING_ENABLED")
         if is_openaire_enabled:
             self.uow.register(TaskOp(openaire_direct_index, record_id=record["id"]))

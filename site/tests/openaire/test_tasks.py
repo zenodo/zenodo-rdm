@@ -37,8 +37,9 @@ def test_openaire_direct_index_task(
 
     # Will be executed synchronously in tests
     openaire_direct_index.delay(openaire_record.id)
+    post_endpoint = f"{openaire_api_endpoint}/feedObject"
     mocked_session.post.assert_called_once_with(
-        openaire_api_endpoint, data=json.dumps(serialized_record), timeout=10
+        post_endpoint, data=json.dumps(serialized_record), timeout=10
     )
 
     # Assert key is not in cache : means success
@@ -68,9 +69,10 @@ def test_openaire_direct_index_task_with_beta(
     openaire_direct_index.delay(openaire_record.id)
 
     # Assert two ``post`` requests were issued: one to production and one to beta
+    post_endpoint = f"{openaire_api_endpoint}/feedObject"
     beta_endpoint = f"{beta_url}/feedObject"
     calls = [
-        call(openaire_api_endpoint, data=json.dumps(serialized_record), timeout=10),
+        call(post_endpoint, data=json.dumps(serialized_record), timeout=10),
         call(beta_endpoint, data=json.dumps(serialized_record), timeout=10),
     ]
     mocked_session.post.assert_has_calls(calls)

@@ -106,14 +106,14 @@ def openaire_direct_index(record_id, retry=True):
     rate_limit="100/m",
 )
 @execute_if_openaire_enabled()
-def openaire_delete(record_id=None, retry=True):  # TODO feature flag
+def openaire_delete(record_id=None, retry=True):
     """Delete record from OpenAIRE index.
 
     :param record_id: Record Metadata UUID.
     :type record_id: str
     """
     try:
-        record = records_service.read(system_identity, record_id)
+        record = records_service.read(system_identity, record_id, include_deleted=True)
 
         original_id = openaire_original_id(record.data)[1]
         datasource_id = openaire_datasource_id(record.data)
