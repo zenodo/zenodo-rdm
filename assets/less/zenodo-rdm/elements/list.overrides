@@ -8,6 +8,11 @@
   }
 }
 
+dl.features-list {
+  dd {
+    color: @invertedTextColorLight;
+  }
+}
 
 footer  {
   ul.ui.link.list {
