@@ -12,7 +12,7 @@ from invenio_rdm_records.services.components.record_deletion import (
 )
 from invenio_records_resources.services.uow import TaskOp
 
-from zenodo_rdm.openaire.tasks import openaire_direct_index, openaire_delete
+from zenodo_rdm.openaire.tasks import openaire_delete, openaire_direct_index
 
 
 class OpenAIREComponent(RecordDeletionComponent):
@@ -32,8 +32,6 @@ class OpenAIREComponent(RecordDeletionComponent):
 
     def restore_record(self, identity, data=None, record=None, **kwargs):
         """Restored record from OpenAIRE."""
-
-        # TODO check if this is allowed
         is_openaire_enabled = current_app.config.get("OPENAIRE_DIRECT_INDEXING_ENABLED")
         if is_openaire_enabled:
             self.uow.register(TaskOp(openaire_direct_index, record_id=record["id"]))
