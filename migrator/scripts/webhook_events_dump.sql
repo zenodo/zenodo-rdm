@@ -11,4 +11,4 @@ COPY (
     response_headers,
     response_code
   FROM webhooks_events
-) TO STDOUT WITH (FORMAT csv);
+) TO STDOUT WITH (FORMAT binary);
