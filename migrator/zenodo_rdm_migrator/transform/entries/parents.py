@@ -19,6 +19,10 @@ ZENODO_DATACITE_PREFIX = "10.5281/"
 class ParentRecordEntry(Entry):
     """Parent record transform entry class."""
 
+    def _schema(self, entry):
+        """Return JSONSchema of the parent."""
+        return "local://records/parent-v3.0.0.json"
+
     def _created(self, entry):
         """Returns the creation date of the record."""
         return entry["created"]
@@ -79,6 +83,7 @@ class ParentRecordEntry(Entry):
             communities = self._communities(entry)
             transformed["json"] = {
                 # loader is responsible for creating/updating if the PID exists.
+                "$schema": self._schema(entry),
                 "id": parent_pid,
                 "communities": communities,
                 "pids": self._pids(entry),

@@ -185,7 +185,11 @@ class ZenodoDeletedRecordTransform(RDMRecordTransform):
                 "created": entry.get("created"),
                 "updated": entry.get("updated"),
                 "version_id": entry.get("version_id"),
-                "json": {"id": recid, "tombstone": tombstone},
+                "json": {
+                    "$schema": ZenodoRecordEntry()._schema(entry),
+                    "id": recid,
+                    "tombstone": tombstone,
+                },
                 "index": entry.get("index", 0) + 1,
             }
 

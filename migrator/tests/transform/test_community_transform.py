@@ -44,6 +44,7 @@ def expected_rdm_community():
         "version_id": 1,
         "slug": "migrator",
         "json": {
+            "$schema": "local://communities/communities-v1.0.0.json",
             "files": {"enabled": True},
             "access": {
                 "visibility": "public",
