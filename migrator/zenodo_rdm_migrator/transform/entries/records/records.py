@@ -7,6 +7,7 @@
 
 """Zenodo migrator records transformers."""
 
+import random
 from datetime import datetime, timedelta
 
 from invenio_rdm_migrator.streams.records import RDMRecordEntry
@@ -117,7 +118,12 @@ class ZenodoDraftEntry(ZenodoRecordEntry):
 
     def _expires_at(self, entry):
         """Transform the expiry date of the draft."""
-        next_year = datetime.today() + timedelta(days=365)
+        next_year = (
+            datetime.today()
+            + timedelta(days=365)
+            # We add a bit of "noise" so that not all drafts expire at the same time
+            + timedelta(days=random.randrange(10, 100))
+        )
 
         # one year from the migration day
         return next_year.isoformat()
