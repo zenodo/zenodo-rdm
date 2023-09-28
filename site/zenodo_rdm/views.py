@@ -13,12 +13,14 @@ from invenio_rdm_records.resources.serializers import UIJSONSerializer
 from invenio_records_resources.resources.records.utils import search_preference
 from marshmallow import ValidationError
 
+from .decorators import cached_unless_authenticated_or_flashes
 from .support.support import ZenodoSupport
 
 
 #
 # Views
 #
+@cached_unless_authenticated_or_flashes(timeout=600, key_prefix="frontpage")
 def frontpage_view_function():
     """Zenodo frontpage view."""
     recent_uploads = current_rdm_records.records_service.search(
