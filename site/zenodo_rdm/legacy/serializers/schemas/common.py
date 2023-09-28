@@ -7,7 +7,10 @@
 
 """Zenodo common serializer schemas."""
 
+import time
+
 from invenio_communities.proxies import current_communities
+from invenio_communities.communities.services.service import get_cached_community_slug
 from marshmallow import Schema, fields, missing, post_dump, pre_dump
 from marshmallow_utils.fields import EDTFDateString, SanitizedHTML, SanitizedUnicode
 from zenodo_legacy.funders import FUNDER_ACRONYMS, FUNDER_ROR_TO_DOI
@@ -192,13 +195,12 @@ class MetadataSchema(Schema):
         parent_communities = (
             data.get("parent", {}).get("communities", {}).get("ids", [])
         )
-        community_cls = current_communities.service.record_cls
+        service_id = current_communities.service.id
+        one_day = round(time.time() / 60 * 60 * 24)
         for community_id in parent_communities:
-            # NOTE: This is bery bad, we're performing DB queries for every community ID
-            #       in order to resolve the slug required by the legacy API.
             try:
-                community = community_cls.pid.resolve(community_id)
-                community_slugs.add(community.slug)
+                slug = get_cached_community_slug(community_id, service_id, ttl_hash=one_day)
+                community_slugs.add(slug)
             except Exception:
                 pass
         if community_slugs:
