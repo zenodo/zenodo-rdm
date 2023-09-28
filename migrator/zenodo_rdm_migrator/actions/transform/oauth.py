@@ -56,7 +56,6 @@ class OAuthServerTokenCreateAction(TransformAction):
         self._microseconds_to_isodate(data=token_src, fields=["expires"])
 
         result = {
-            "tx_id": self.tx.id,
             "client": OAuthServerClientTransform()._transform(client_src),
             "token": OAuthServerTokenTransform()._transform(token_src),
         }
@@ -100,7 +99,7 @@ class OAuthServerTokenUpdateAction(TransformAction):
 
     def _transform_data(self):
         """Transforms the data and returns dictionary."""
-        result = {"tx_id": self.tx.id}
+        result = {}
 
         for op in self.tx.operations:
             if op["source"]["table"] == "oauth2server_client":
@@ -137,10 +136,7 @@ class OAuthServerTokenDeleteAction(TransformAction):
         op = self.tx.operations[0]
 
         self._microseconds_to_isodate(data=op["before"], fields=["expires"])
-        return {
-            "tx_id": self.tx.id,
-            "token": OAuthServerTokenTransform()._transform(op["before"]),
-        }
+        return {"token": OAuthServerTokenTransform()._transform(op["before"])}
 
 
 class OAuthApplicationCreateAction(TransformAction):
@@ -166,10 +162,7 @@ class OAuthApplicationCreateAction(TransformAction):
         """Transforms the data and returns dictionary."""
         op = self.tx.operations[0]
 
-        return {
-            "tx_id": self.tx.id,
-            "client": OAuthServerClientTransform()._transform(op["after"]),
-        }
+        return {"client": OAuthServerClientTransform()._transform(op["after"])}
 
 
 class OAuthApplicationUpdateAction(TransformAction):
@@ -198,10 +191,7 @@ class OAuthApplicationUpdateAction(TransformAction):
         """Transforms the data and returns dictionary."""
         op = self.tx.operations[0]
 
-        return {
-            "tx_id": self.tx.id,
-            "client": OAuthServerClientTransform()._transform(op["after"]),
-        }
+        return {"client": OAuthServerClientTransform()._transform(op["after"])}
 
 
 class OAuthApplicationDeleteAction(TransformAction):
@@ -227,10 +217,7 @@ class OAuthApplicationDeleteAction(TransformAction):
         """Transforms the data and returns dictionary."""
         op = self.tx.operations[0]
 
-        return {
-            "tx_id": self.tx.id,
-            "client": OAuthServerClientTransform()._transform(op["before"]),
-        }
+        return {"client": OAuthServerClientTransform()._transform(op["before"])}
 
 
 class OAuthLinkedAccountConnectAction(TransformAction, JSONTransformMixin):
@@ -308,7 +295,6 @@ class OAuthLinkedAccountConnectAction(TransformAction, JSONTransformMixin):
         self._microseconds_to_isodate(data=remote_token, fields=["created", "updated"])
         self._microseconds_to_isodate(data=user_identity, fields=["created", "updated"])
         result = {
-            "tx_id": self.tx.id,
             "remote_account": IdentityTransform()._transform(remote_account),
             "remote_token": IdentityTransform()._transform(remote_token),
             "user_identity": IdentityTransform()._transform(user_identity),
@@ -349,7 +335,7 @@ class OAuthLinkedAccountDisconnectAction(TransformAction, JSONTransformMixin):
 
         # the previous len check means that at this point the rules have 1 or 0 left
         # if the len is 1 then only left should be the identity
-        if len(rules) == 1 and not "oauthclient_useridentity" in rules.keys():
+        if len(rules) == 1 and "oauthclient_useridentity" not in rules.keys():
             return False
 
         return True
@@ -374,7 +360,6 @@ class OAuthLinkedAccountDisconnectAction(TransformAction, JSONTransformMixin):
         )
         self._microseconds_to_isodate(data=remote_token, fields=["created", "updated"])
         result = {
-            "tx_id": self.tx.id,
             "remote_account": IdentityTransform()._transform(remote_account),
             "remote_token": IdentityTransform()._transform(remote_token),
         }
@@ -428,7 +413,6 @@ class OAuthGHDisconnectToken(TransformAction):
                 user_identity = op["before"]
 
         return {
-            "tx_id": self.tx.id,
             "token": OAuthServerTokenTransform()._transform(token),
             "user_identity": IdentityTransform()._transform(user_identity),
         }

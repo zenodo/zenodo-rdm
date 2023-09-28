@@ -58,7 +58,6 @@ class CommunityCreateAction(TransformAction):
 
         community_src, oai_set_src, *files_payloads = payloads
         result = {
-            "tx_id": self.tx.id,
             "community": ZenodoCommunityEntry().transform(community_src),
             "owner": ZenodoCommunityMemberEntry().transform(community_src),
             "oai_set": oai_set_src,
@@ -139,7 +138,6 @@ class CommunityUpdateAction(TransformAction):
 
         community_src, *files_payloads = payloads
         result = {
-            "tx_id": self.tx.id,
             "community": ZenodoCommunityEntry(partial=True).transform(community_src),
         }
 
@@ -185,7 +183,6 @@ class CommunityDeleteAction(TransformAction):
     def _transform_data(self):
         """Transforms the data and returns an instance of the mapped_cls."""
         return {
-            "tx_id": self.tx.id,
             "community": {"slug": self.tx.operations[0]["after"]["id"]},
         }
 

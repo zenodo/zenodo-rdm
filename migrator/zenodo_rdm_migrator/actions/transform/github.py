@@ -60,7 +60,6 @@ class RepoCreateAction(TransformAction):
                 repo.update(op["after"])
 
         return {
-            "tx_id": self.tx.id,
             "gh_repository": GitHubRepositoryTransform()._transform(repo),
         }
 
@@ -90,7 +89,6 @@ class RepoUpdateAction(TransformAction):
         op = self.tx.operations[0]
         self._microseconds_to_isodate(data=op["after"], fields=["created", "updated"])
         return {
-            "tx_id": self.tx.id,
             "gh_repository": GitHubRepositoryTransform()._transform(op["after"]),
         }
 
@@ -138,7 +136,6 @@ class HookEventCreateAction(TransformAction, JSONTransformMixin):
                 )
                 webhook_event = op["after"]
         return {
-            "tx_id": self.tx.id,
             "webhook_event": IdentityTransform()._transform(webhook_event),
         }
 
@@ -170,7 +167,7 @@ class HookEventUpdateAction(TransformAction, JSONTransformMixin):
             fields=["payload", "payload_headers", "response", "response_headers"],
         )
         self._microseconds_to_isodate(data=op["after"], fields=["created", "updated"])
-        return {"tx_id": self.tx.id, "webhook_event": op["after"]}
+        return {"webhook_event": op["after"]}
 
 
 #
@@ -217,7 +214,6 @@ class ReleaseReceiveAction(TransformAction, JSONTransformMixin):
                 self._load_json_fields(data=release, fields=["errors"])
 
         return {
-            "tx_id": self.tx.id,
             "gh_repository": GitHubRepositoryTransform()._transform(repo),
             # using identity because it accounts for partial updates
             "gh_release": IdentityTransform()._transform(release),
@@ -251,7 +247,6 @@ class ReleaseUpdateAction(TransformAction, JSONTransformMixin):
         self._microseconds_to_isodate(data=op["after"], fields=["created", "updated"])
 
         return {
-            "tx_id": self.tx.id,
             # using identity because it accounts for partial updates
             "gh_release": IdentityTransform()._transform(op["after"]),
         }
@@ -437,7 +432,6 @@ class ReleaseProcessAction(TransformAction, JSONTransformMixin):
         # the rest are simple "identity" and since we already have a dict they can be
         # passed as they are
         result = {
-            "tx_id": self.tx.id,
             "record_pid": record_pid,
             "record_doi": record_doi,
             "record_oai": record_oai,

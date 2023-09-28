@@ -59,7 +59,7 @@ class UserRegistrationAction(TransformAction):
             data=login_info, fields=["last_login_at", "current_login_at"]
         )
 
-        return dict(tx_id=self.tx.id, user=user, login_information=login_info)
+        return dict(user=user, login_information=login_info)
 
 
 class UserEditAction(TransformAction):
@@ -100,7 +100,7 @@ class UserEditAction(TransformAction):
         self._microseconds_to_isodate(
             data=login_info, fields=["last_login_at", "current_login_at"]
         )
-        return dict(tx_id=self.tx.id, user=user, login_information=login_info)
+        return dict(user=user, login_information=login_info)
 
 
 class UserDeactivationAction(TransformAction):
@@ -162,9 +162,7 @@ class UserDeactivationAction(TransformAction):
         self._microseconds_to_isodate(
             data=login_info, fields=["last_login_at", "current_login_at"]
         )
-        return dict(
-            tx_id=self.tx.id, user=user, login_information=login_info, sessions=sessions
-        )
+        return dict(user=user, login_information=login_info, sessions=sessions)
 
 
 USER_ACTIONS = [
