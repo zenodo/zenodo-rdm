@@ -9,8 +9,8 @@
 
 import time
 
-from invenio_communities.proxies import current_communities
 from invenio_communities.communities.services.service import get_cached_community_slug
+from invenio_communities.proxies import current_communities
 from marshmallow import Schema, fields, missing, post_dump, pre_dump
 from marshmallow_utils.fields import EDTFDateString, SanitizedHTML, SanitizedUnicode
 from zenodo_legacy.funders import FUNDER_ACRONYMS, FUNDER_ROR_TO_DOI
@@ -199,7 +199,9 @@ class MetadataSchema(Schema):
         one_day = round(time.time() / 60 * 60 * 24)
         for community_id in parent_communities:
             try:
-                slug = get_cached_community_slug(community_id, service_id, ttl_hash=one_day)
+                slug = get_cached_community_slug(
+                    community_id, service_id, ttl_hash=one_day
+                )
                 community_slugs.add(slug)
             except Exception:
                 pass
