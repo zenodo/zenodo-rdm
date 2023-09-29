@@ -1183,11 +1183,11 @@
         },
         "invenio-records-resources": {
             "hashes": [
-                "sha256:9248b9c6e90fba4c4d2e5cc6d644fa5cc7b70fb142eaeb58e2d160afdb6c1ddc",
-                "sha256:d0cbaecb0c33c51282c3b3650c80b423728e8ec35d616150373c8e05d0997d45"
+                "sha256:58c3976a0a1b262bd1cea9e1c1dd176db091e82940e2ae2fa1f66626b0e70a2e",
+                "sha256:bdf1b6a35c37f8a09026f14095726f4bb93b72688a0f750474d00df6c478df84"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==4.11.4"
+            "version": "==4.11.5"
         },
         "invenio-records-rest": {
             "hashes": [
@@ -1287,12 +1287,12 @@
         },
         "ipython": {
             "hashes": [
-                "sha256:2baeb5be6949eeebf532150f81746f8333e2ccce02de1c7eedde3f23ed5e9f1e",
-                "sha256:45a2c3a529296870a97b7de34eda4a31bee16bc7bf954e07d39abe49caf8f887"
+                "sha256:7a1b2e1e6a3ec5baa466163c451335081f31859883889ff0289c6b21f7a095e2",
+                "sha256:dba644376826a532e362da945a672865be7efda76ecf999219e6021bda85d702"
             ],
             "index": "pypi",
             "markers": "python_version >= '3.9'",
-            "version": "==8.15.0"
+            "version": "==8.16.0"
         },
         "isbnlib": {
             "hashes": [
