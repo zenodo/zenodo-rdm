@@ -7,8 +7,6 @@
 
 """Zenodo common serializer schemas."""
 
-import time
-
 from invenio_communities.communities.services.service import get_cached_community_slug
 from invenio_communities.proxies import current_communities
 from marshmallow import Schema, fields, missing, post_dump, pre_dump
@@ -196,11 +194,10 @@ class MetadataSchema(Schema):
             data.get("parent", {}).get("communities", {}).get("ids", [])
         )
         service_id = current_communities.service.id
-        one_day = round(time.time() / 60 * 60 * 24)
         for community_id in parent_communities:
             try:
                 slug = get_cached_community_slug(
-                    community_id, service_id, ttl_hash=one_day
+                    community_id, service_id, cache_ttl=60 * 60 * 24
                 )
                 community_slugs.add(slug)
             except Exception:
