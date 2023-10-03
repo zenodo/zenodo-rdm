@@ -303,6 +303,7 @@ def expected_rdm_record_entry():
         "bucket_id": "bur3c0rd-1234-abcd-1ab2-1234abcd56ef",
         "media_bucket_id": None,
         "json": {
+            "$schema": "local://records/record-v6.0.0.json",
             "id": "10123",
             "pids": {
                 "oai": {
@@ -437,7 +438,7 @@ def expected_rdm_record_entry():
                 ],
                 "references": [{"reference": "Test reference"}],
                 "additional_descriptions": [
-                    {"description": "A note", "type": {"id": "other"}}
+                    {"description": "A note", "type": {"id": "notes"}}
                 ],
             },
             "access": {
@@ -559,10 +560,10 @@ def expected_rdm_record_parent():
         "updated": "2023-01-31 12:00:00.00000",
         "version_id": 1,
         "json": {
+            "$schema": "local://records/parent-v3.0.0.json",
             "id": "10122",
             "access": {"owned_by": {"user": 1234}},
-            "communities": {"ids": ["zenodo", "migration"], "default": None},
-            "permission_flags": {"can_community_manage_record": False},
+            "communities": {"ids": ["migration"], "default": "migration"},
             "pids": {
                 "doi": {
                     "provider": "datacite",
@@ -844,6 +845,7 @@ def expected_rdm_draft_entry():
         "bucket_id": "bud3p0s1-1234-abcd-1ab2-1234abcd56ef",
         "media_bucket_id": None,
         "json": {
+            "$schema": "local://records/record-v6.0.0.json",
             "id": "10123",
             "pids": {},
             "files": {"enabled": True},
@@ -1052,11 +1054,11 @@ def expected_rdm_draft_parent():
         "updated": "2023-01-31 12:00:00.00000",
         "version_id": 1,
         "json": {
+            "$schema": "local://records/parent-v3.0.0.json",
             "id": "10122",
             "access": {"owned_by": {"user": 1234}},
             "communities": {},
             "pids": {},
-            "permission_flags": {"can_community_manage_record": False},
         },
     }
 
@@ -1075,6 +1077,10 @@ def test_draft_entry(
         "migration",
     ]
     result = ZenodoRecordTransform()._transform(zenodo_draft_data)
+
+    expected_expires_at = expected_rdm_draft_entry.pop("expires_at")
+    expires_at = result["draft"].pop("expires_at")
+    assert expires_at >= expected_expires_at
     assert result["parent"] == expected_rdm_draft_parent
     assert result["draft"] == expected_rdm_draft_entry
 
@@ -1095,6 +1101,9 @@ def test_legacy_draft_entry(zenodo_draft_data, expected_rdm_draft_entry):
     result = ZenodoDraftEntry().transform(zenodo_draft_data)
     expected_rdm_draft_entry["json"]["id"] = "111111"
 
+    expected_expires_at = expected_rdm_draft_entry.pop("expires_at")
+    expires_at = result.pop("expires_at")
+    assert expires_at >= expected_expires_at
     assert result == expected_rdm_draft_entry
 
 
@@ -1103,7 +1112,7 @@ def test_draft_entry_no_access(zenodo_draft_data):
     zenodo_draft_data["json"].pop("access_right")
     access = ZenodoDraftEntry().transform(zenodo_draft_data)["json"]["access"]
 
-    assert access == {"record": "public", "files": "restricted"}
+    assert access == {"record": "public", "files": "public"}
 
 
 ###

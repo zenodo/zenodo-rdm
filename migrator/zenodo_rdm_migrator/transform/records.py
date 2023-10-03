@@ -83,6 +83,7 @@ class ZenodoDeletedRecordTransform(RDMRecordTransform):
         parent_pid = entry["json"].get("conceptrecid")
         communities = ParentRecordEntry()._communities(entry)
         transformed["json"] = {"id": parent_pid, "communities": communities}
+        transformed["json"]["$schema"] = ParentRecordEntry()._schema(entry)
         pids = {}
         doi = entry["json"].get("doi")
         conceptdoi = entry["json"].get("conceptdoi")
