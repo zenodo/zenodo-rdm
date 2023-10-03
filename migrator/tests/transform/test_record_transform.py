@@ -1072,7 +1072,6 @@ def test_draft_entry(
 ):
     """Test the transformation of a full Zenodo record."""
     expected_rdm_draft_entry["json"]["custom_fields"]["legacy:communities"] = [
-        "zenodo",
         "migration",
     ]
     result = ZenodoRecordTransform()._transform(zenodo_draft_data)

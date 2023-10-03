@@ -26,7 +26,7 @@ class ZenodoRecordMetadataEntry(Entry):
 
         It can be part of a creator, contributor or thesis supervisor.
         """
-        r = {"type": "personal"}
+        res = {"type": "personal"}
         identifiers = []
         if creatibutor.get("orcid"):
             identifiers.append(
@@ -37,32 +37,32 @@ class ZenodoRecordMetadataEntry(Entry):
                 {"scheme": "gnd", "identifier": creatibutor["gnd"]},
             )
         if identifiers:
-            r["identifiers"] = identifiers
+            res["identifiers"] = identifiers
 
         name = creatibutor["name"]
 
         # We only split if users have strictly followed the input format.
         if name.count(",") == 1:
             family, given = name.split(",")
-            r["given_name"] = given.strip()
-            r["family_name"] = family.strip()
+            res["given_name"] = given.strip()
+            res["family_name"] = family.strip()
             # autocompleted by RDM Metadata schema
-            r["name"] = name
+            res["name"] = name
         else:
-            r["family_name"] = name
+            res["family_name"] = name
             # autocompleted by RDM Metadata schema
-            r["name"] = name
+            res["name"] = name
 
-        return r
+        return res
 
     @classmethod
     def _creatibutor(cls, creatibutor):
         """Parses a creatibutor (person or org and affiliation)."""
-        r = {"person_or_org": cls._person_or_org(creatibutor)}
+        res = {"person_or_org": cls._person_or_org(creatibutor)}
         if creatibutor.get("affiliation"):
-            r["affiliations"] = [{"name": creatibutor["affiliation"]}]
+            res["affiliations"] = [{"name": creatibutor["affiliation"]}]
 
-        return r
+        return res
 
     @classmethod
     def _creators(cls, creators):
@@ -128,7 +128,7 @@ class ZenodoRecordMetadataEntry(Entry):
         additional_description = {
             "description": note,
             "type": {
-                "id": "other",
+                "id": "notes",
             },
         }
 
@@ -353,8 +353,8 @@ class ZenodoRecordMetadataEntry(Entry):
             "publication_date": entry["publication_date"],
             "resource_type": cls._resource_type(entry["resource_type"]),
             "creators": cls._creators(entry["creators"]),
-            "contributors": contributors,
-            "publisher": entry.get("imprint", {}).get("publisher"),
+            "contributors": contributors or None,
+            "publisher": entry.get("imprint", {}).get("publisher") or "Zenodo",
             "additional_descriptions": cls._additional_descriptions(entry.get("notes")),
             "rights": cls._rights(entry.get("license")),
             "languages": cls._languages(entry.get("language")),
@@ -367,6 +367,7 @@ class ZenodoRecordMetadataEntry(Entry):
             "dates": cls._dates(entry.get("dates")),
             "locations": cls._locations(entry.get("locations")),
             "funding": cls._funding(entry.get("grants")),
+            "version": entry.get("version"),
         }
 
         return drop_nones(metadata)
@@ -387,8 +388,8 @@ class ZenodoDraftMetadataEntry(ZenodoRecordMetadataEntry):
             "title": entry.get("title"),
             "description": entry.get("description"),
             "publication_date": entry.get("publication_date"),
-            "contributors": contributors,
-            "publisher": entry.get("imprint", {}).get("publisher"),
+            "contributors": contributors or None,
+            "publisher": entry.get("imprint", {}).get("publisher") or "Zenodo",
             "additional_descriptions": cls._additional_descriptions(entry.get("notes")),
             "rights": cls._rights(entry.get("license")),
             "languages": cls._languages(entry.get("language")),

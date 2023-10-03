@@ -15,7 +15,10 @@ from invenio_rdm_migrator.streams.records import RDMRecordEntry
 from .custom_fields import ZenodoCustomFieldsEntry
 from .metadata import ZenodoDraftMetadataEntry, ZenodoRecordMetadataEntry
 
-ZENODO_DATACITE_PREFIX = "10.5281/"
+ZENODO_DATACITE_PREFIXES = (
+    "10.5281/",
+    "10.5072/",  # Test DOI prefix, useful for tests
+)
 
 
 class ZenodoRecordEntry(RDMRecordEntry):
@@ -56,7 +59,7 @@ class ZenodoRecordEntry(RDMRecordEntry):
         }
         if record.get("doi"):
             _doi = record["doi"]
-            if _doi.startswith(ZENODO_DATACITE_PREFIX):
+            if _doi.startswith(ZENODO_DATACITE_PREFIXES):
                 r["doi"] = {
                     "client": "datacite",
                     "provider": "datacite",
@@ -89,12 +92,13 @@ class ZenodoRecordEntry(RDMRecordEntry):
 
     def _access(self, entry):
         record = entry["json"]
-        is_open = record["access_right"] == "open"
+        access_right = record.get("access_right")
+        is_open = access_right in ("open", None)
         r = {
             "record": "public",
             "files": "public" if is_open else "restricted",
         }
-        if record["access_right"] == "embargoed":
+        if access_right == "embargoed":
             r["embargo"] = {
                 "until": record["embargo_date"],
                 "active": True,
@@ -159,7 +163,7 @@ class ZenodoDraftEntry(ZenodoRecordEntry):
         # and "new" drafts don't have managed doi
         if draft.get("doi"):
             _doi = draft["doi"]
-            if not _doi.startswith(ZENODO_DATACITE_PREFIX):
+            if not _doi.startswith(ZENODO_DATACITE_PREFIXES):
                 # external doi
                 r["doi"] = {
                     "provider": "external",
@@ -175,17 +179,6 @@ class ZenodoDraftEntry(ZenodoRecordEntry):
     def _media_bucket_id(self, entry):
         """Transform the media bucket of a draft."""
         return entry["json"]["_buckets"].get("extra_formats")
-
-    def _access(self, entry):
-        draft = entry["json"]
-        access = draft.get("access_right")
-        if not access:
-            return {
-                "record": "public",
-                "files": "restricted",  # most restricted by default
-            }
-        else:
-            return super()._access(entry)
 
     def _metadata(self, entry):
         """Transform the metadata of a record."""
@@ -215,6 +208,7 @@ class ZenodoDraftEntry(ZenodoRecordEntry):
             transformed,
             [
                 ("id", "recid"),
+                ("$schema", "schema"),
                 "pids",
                 "files",
                 "media_files",

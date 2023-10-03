@@ -7,29 +7,33 @@
 
 """Zenodo migrator records transformers."""
 
-from invenio_rdm_migrator.state import STATE
 from invenio_rdm_migrator.streams.records import RDMRecordTransform
 
 from zenodo_rdm_migrator.errors import InvalidTombstoneRecord
 
-from .entries.parents import ZENODO_DATACITE_PREFIX, ParentRecordEntry
+from .entries.parents import ZENODO_DATACITE_PREFIXES, ParentRecordEntry
 from .entries.records.records import ZenodoDraftEntry, ZenodoRecordEntry
 
 
 class ZenodoRecordTransform(RDMRecordTransform):
     """Zenodo to RDM Record class for data transformation."""
 
+    def __init__(self, partial=False, **kwargs):
+        """Constructor."""
+        self.partial = partial
+        super().__init__(**kwargs)
+
     def _parent(self, entry):
         """Extract a parent record."""
-        return ParentRecordEntry().transform(entry)
+        return ParentRecordEntry(partial=self.partial).transform(entry)
 
     def _record(self, entry):
         """Extract a record."""
-        return ZenodoRecordEntry().transform(entry)
+        return ZenodoRecordEntry(partial=self.partial).transform(entry)
 
     def _draft(self, entry):
         """Extract a draft."""
-        return ZenodoDraftEntry().transform(entry)
+        return ZenodoDraftEntry(partial=self.partial).transform(entry)
 
     def _transform(self, entry):
         """Transform a single entry."""
@@ -82,7 +86,7 @@ class ZenodoDeletedRecordTransform(RDMRecordTransform):
         pids = {}
         doi = entry["json"].get("doi")
         conceptdoi = entry["json"].get("conceptdoi")
-        if doi and doi.startswith(ZENODO_DATACITE_PREFIX):
+        if doi and doi.startswith(ZENODO_DATACITE_PREFIXES):
             if conceptdoi:
                 pids["doi"] = {
                     "client": "datacite",
@@ -93,7 +97,9 @@ class ZenodoDeletedRecordTransform(RDMRecordTransform):
                 pids["doi"] = {"provider": "legacy", "identifier": ""}
         transformed["json"]["pids"] = pids
 
-        owner = next(iter(entry["json"].get("owners", [])), None)
+        owners = entry["json"].get("owners") or []
+        deposit_owners = entry["json"].get("_deposit", {}).get("owners") or []
+        owner = next(iter(owners or deposit_owners), None)
         if owner is not None:
             transformed["json"].setdefault("access", {})
             transformed["json"]["access"] = {"owned_by": {"user": owner}}
@@ -107,23 +113,6 @@ class ZenodoDeletedRecordTransform(RDMRecordTransform):
                 "accept_conditions_text": access_conditions,
                 "secret_link_expiration": 30,
             }
-
-        comm_slugs = set(communities.get("ids", []))
-        if comm_slugs:
-            permission_flags = {}
-            owner_comm_slugs = {
-                comm["slug"]
-                for comm in (
-                    STATE.COMMUNITIES.search("owner_id", owner) if owner else []
-                )
-            }
-            has_only_managed_communities = comm_slugs < owner_comm_slugs
-            if not has_only_managed_communities:
-                permission_flags["can_community_manage_record"] = False
-                if entry["json"].get("access_right") != "open":
-                    permission_flags["can_community_read_files"] = False
-            if permission_flags:
-                transformed["json"]["permission_flags"] = permission_flags
 
         return transformed
 

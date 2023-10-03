@@ -8,12 +8,19 @@
 """Zenodo migrator parent record transformer entries."""
 
 
-from invenio_rdm_migrator.state import STATE
 from invenio_rdm_migrator.transform import Entry
 
 from ...errors import NoConceptRecidForDraft
 
-ZENODO_DATACITE_PREFIX = "10.5281/"
+ZENODO_DATACITE_PREFIXES = (
+    "10.5281/",
+    "10.5072/",  # Test DOI prefix, useful for tests
+)
+
+IGNORED_COMMUNITIES = (
+    "zenodo",
+    "ecfunded",
+)
 
 
 class ParentRecordEntry(Entry):
@@ -39,7 +46,7 @@ class ParentRecordEntry(Entry):
         result = {}
         communities = entry["json"].get("communities")
         if communities:
-            slugs = [slug for slug in communities]
+            slugs = [slug for slug in communities if slug not in IGNORED_COMMUNITIES]
             result["ids"] = slugs
             # If there's only one community, we set it as the default also
             if len(slugs) == 1:
@@ -54,7 +61,7 @@ class ParentRecordEntry(Entry):
         is_draft = "deposits" in entry["json"]["$schema"]
         doi = entry["json"].get("doi")
         conceptdoi = entry["json"].get("conceptdoi")
-        if doi and doi.startswith(ZENODO_DATACITE_PREFIX):
+        if doi and doi.startswith(ZENODO_DATACITE_PREFIXES):
             if conceptdoi:
                 pids["doi"] = {
                     "client": "datacite",
@@ -88,7 +95,9 @@ class ParentRecordEntry(Entry):
                 "communities": communities,
                 "pids": self._pids(entry),
             }
-            owner = next(iter(entry["json"].get("owners", [])), None)
+            owners = entry["json"].get("owners") or []
+            deposit_owners = entry["json"].get("_deposit", {}).get("owners") or []
+            owner = next(iter(owners or deposit_owners), None)
             if owner is not None:
                 transformed["json"].setdefault("access", {})
                 transformed["json"]["access"] = {"owned_by": {"user": owner}}
@@ -102,23 +111,6 @@ class ParentRecordEntry(Entry):
                     "accept_conditions_text": access_conditions,
                     "secret_link_expiration": 30,
                 }
-
-            comm_slugs = set(communities.get("ids", []))
-            if comm_slugs:
-                permission_flags = {}
-                owner_comm_slugs = {
-                    comm["slug"]
-                    for comm in (
-                        STATE.COMMUNITIES.search("owner_id", owner) if owner else []
-                    )
-                }
-                has_only_managed_communities = comm_slugs < owner_comm_slugs
-                if not has_only_managed_communities:
-                    permission_flags["can_community_manage_record"] = False
-                    if entry["json"].get("access_right") != "open":
-                        permission_flags["can_community_read_files"] = False
-                if permission_flags:
-                    transformed["json"]["permission_flags"] = permission_flags
 
         elif not self.partial:
             raise KeyError("json")
