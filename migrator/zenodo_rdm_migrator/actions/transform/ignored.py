@@ -12,6 +12,8 @@ from invenio_rdm_migrator.actions import TransformAction
 from invenio_rdm_migrator.load.postgresql.transactions.operations import OperationType
 from invenio_rdm_migrator.streams.actions import load
 
+from zenodo_rdm_migrator.transform.records import ZENODO_DATACITE_PREFIXES
+
 
 class IgnoredTransformAction(TransformAction):
     """Transform ignored actions."""
@@ -45,7 +47,7 @@ class UserSessionAction(IgnoredTransformAction):
 
     @classmethod
     def matches_action(cls, tx):
-        """Checks for a single ."""
+        """Checks for a user login."""
         ops = tx.as_ops_tuples()
         user_update_ops = tx.as_ops_tuples(
             include=["accounts_user"],
@@ -86,7 +88,7 @@ class GitHubPingAction(IgnoredTransformAction):
 
     @classmethod
     def matches_action(cls, tx):
-        """Checks for a single ."""
+        """Checks for a single GitHub repo update to the `ping` column."""
         if tx.as_ops_tuples() == [("github_repositories", OperationType.UPDATE)]:
             repo = tx.ops_by("github_repositories")
             changed_keys = repo.keys() - {"id"}
@@ -101,11 +103,35 @@ class OAuthReLoginAction(IgnoredTransformAction):
 
     @classmethod
     def matches_action(cls, tx):
-        """Checks for a single ."""
+        """Checks for an OAuth login."""
         return tx.as_ops_tuples() == [
             ("accounts_user", OperationType.UPDATE),
             ("oauthclient_remotetoken", OperationType.UPDATE),
         ]
+
+
+class DataCiteDOIRegistration(IgnoredTransformAction):
+    """Zenodo DataCite DOI registration."""
+
+    name = "doi-registration"
+
+    @classmethod
+    def matches_action(cls, tx):
+        """Checks for a single Zenodo DOI update to registered status."""
+        ops = tx.as_ops_tuples()
+        new_version = [("pidstore_pid", OperationType.UPDATE)]
+        first_publish = [
+            ("pidstore_pid", OperationType.UPDATE),
+            ("pidstore_pid", OperationType.UPDATE),
+        ]
+        if ops in (new_version, first_publish):
+            pids = tx.ops_by("pidstore_pid", group_key=("pid_type", "pid_value"))
+            return all(
+                pid["pid_type"] == "doi"
+                and pid["pid_value"].startswith(ZENODO_DATACITE_PREFIXES)
+                and pid["status"] == "R"
+                for pid in pids.values()
+            )
 
 
 IGNORED_ACTIONS = [
@@ -114,4 +140,5 @@ IGNORED_ACTIONS = [
     GitHubSyncAction,
     GitHubPingAction,
     OAuthReLoginAction,
+    DataCiteDOIRegistration,
 ]
