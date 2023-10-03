@@ -27,7 +27,9 @@ def calculate_metrics(metric_id, cache=True):
         try:
             metric["value"] = metric["value"]()
         except Exception:
-            current_app.logger.exception("Metric evaluation failed", extra={"metric": metric['name']})
+            current_app.logger.exception(
+                "Metric evaluation failed", extra={"metric": metric["name"]}
+            )
 
     if cache:
         current_cache.set(
