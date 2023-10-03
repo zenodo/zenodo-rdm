@@ -12,4 +12,4 @@ COPY (
       last_check_at,
       last_check
   FROM files_files
-) TO STDOUT WITH (FORMAT csv);
+) TO STDOUT WITH (FORMAT binary);

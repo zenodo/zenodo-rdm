@@ -5,21 +5,9 @@ log_dir: /path/to/log
 db_uri: postgresql://zenodo:zenodo@localhost:5432/zenodo
 old_secret_key: CHANGE_ME
 new_secret_key: CHANGE_ME
-funders:
-  existing_data: True
-awards:
-  existing_data: True
-affiliations:
-  existing_data: True
-names:
-  existing_data: True
-files:
-  existing_data: True
 users:
   extract:
     filepath: /path/to/users.jsonl
-oauthclient:
-  existing_data: True
 oauthserver_clients:
   extract:
     filepath: /path/to/oauthserver_clients.jsonl
@@ -42,10 +30,6 @@ version_state:
 requests:
   extract:
     filepath: /path/to/requests.jsonl
-webhook_events:
-  existing_data: True
-github_repositories:
-  existing_data: True
 github_releases:
   extract:
     filepath: /path/to/github_releases.jsonl

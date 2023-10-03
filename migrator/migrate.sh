@@ -1,44 +1,27 @@
-##############
-#
-# Initial notes, read first.
-#
-# -  To be able to see deposits (with admin user), the owner of records must be hardcoded to the admin user id.
-#
-##############
+#!/bin/bash
 
-# Clear DB
-# Only run if DB has data.
-invenio shell --no-term-title -c "import redis; redis.StrictRedis.from_url(app.config['CACHE_REDIS_URL']).flushall(); print('Cache cleared')"
-
-# NOTE: db destroy is not needed since DB keeps being created
-#       Just need to drop all tables from it.
+# Clear DB, indices, Redis, and RabbitMQ
 invenio db drop --yes-i-know
 invenio index destroy --force --yes-i-know
+invenio shell --no-term-title -c "import redis; redis.StrictRedis.from_url(app.config['CACHE_REDIS_URL']).flushall(); print('Cache cleared')"
+invenio index queue init purge --all-queues
 
-# NOTE: This one doesn't purge all the indexer queues (e.g. `records`)...
-#       We need a new command to do so, using the indexer registry?
-invenio index queue init purge
-
-# Recreate
-# --------
-# NOTE: db init is not needed since DB keeps being created
-#       Just need to create all tables from it.
+# Create DB tables, files locations, and search indices
 invenio db create
+# NOTE: Important that this is the first location (PK: 1), so that bucket FK references work
+invenio files location create 'eos' "root://eosmedia.cern.ch//eos/media/zenodo/prod/data/"
+# NOTE: We set app instance path to allow for upload on test infra. Should be removed and instead use `eos` as default
 invenio files location create --default 'default-location' $(invenio shell --no-term-title -c "print(app.instance_path)")'/data'
 invenio index init --force
 invenio rdm-records custom-fields init
 invenio communities custom-fields init
 
-# Script base path
-script_path=$( cd -- "$(dirname "$0")" && pwd )
-
-LEGACY_DB_URI="service=zenodo-legacy"
-DB_URI="service=zenodo-dev"
+# Migration target database
+DB_URI="service=zenodo-target"
 
 # Backup FK/PK/unique constraints
 psql $DB_URI --tuples-only --quiet -f scripts/gen_create_constraints.sql > scripts/create_constraints.sql
 psql $DB_URI --tuples-only --quiet -f scripts/gen_delete_constraints.sql > scripts/delete_constraints.sql
-
 # Drop constraints
 psql $DB_URI -f scripts/delete_constraints.sql
 
@@ -46,17 +29,29 @@ psql $DB_URI -f scripts/delete_constraints.sql
 psql $DB_URI -f scripts/backup_indices.sql
 psql $DB_URI -f scripts/drop_indices.sql
 
-# Run migration
-python -m zenodo_rdm_migrator "streams.yaml"
+# Import CSV and binary dumps
 
-# TODO: These should be fixed in the legacy/source
-# Apply various consistency fixes
+# Vocabularies
+pv dumps/affiliation_metadata.csv | psql $DB_URI -c 'COPY affiliation_metadata (id, pid, json, created, updated, version_id) FROM STDIN (FORMAT csv);'
+pv dumps/name_metadata.bin | psql $DB_URI -c 'COPY name_metadata (id, created, updated, pid, json, version_id) FROM STDIN (FORMAT binary);'
+pv dumps/funder_metadata.csv | psql $DB_URI -c 'COPY funder_metadata (id, created, updated, pid, json, version_id) FROM STDIN (FORMAT csv);'
+pv dumps/award_metadata.csv | psql $DB_URI -c 'COPY award_metadata (id, pid, json, created, updated, version_id) FROM STDIN (FORMAT csv);'
 
-# Import OAuthclient models
-psql $DB_URI -f scripts/oauthclient_remoteaccount_dump.sql > "dumps/oauthclient_remoteaccount.bin"
-psql $DB_URI -f scripts/oauthclient_remotetoken_dump.sql > "dumps/oauthclient_remotetoken.bin"
+# OAuth
 pv dumps/oauthclient_remoteaccount.bin | psql $DB_URI -c "COPY oauthclient_remoteaccount (id, user_id, client_id, extra_data, created, updated) FROM STDIN (FORMAT binary);"
 pv dumps/oauthclient_remotetoken.bin | psql $DB_URI -c "COPY oauthclient_remotetoken (id_remote_account, token_type, access_token, secret, created, updated) FROM STDIN (FORMAT binary);"
+
+# GitHub-related
+pv dumps/webhook_events.bin.gz | gzip -dc | psql $DB_URI -c "COPY webhook_events (id, created, updated, receiver_id, user_id, payload, payload_headers, response, response_headers, response_code) FROM STDIN (FORMAT binary);"
+pv dumps/github_repositories.bin | psql $DB_URI -c "COPY github_repositories (id, created, updated, github_id, name, user_id, hook) FROM STDIN (FORMAT binary);"
+
+# Files
+pv dumps/files_files.bin | psql $DB_URI -c "COPY files_files (id, created, updated, uri, storage_class, size, checksum, readable, writable, last_check_at, last_check) FROM STDIN (FORMAT binary);"
+pv dumps/files_bucket.bin | psql $DB_URI -c "COPY files_bucket (id, created, updated, default_location, default_storage_class, size, quota_size, max_file_size, locked, deleted) FROM STDIN (FORMAT binary);"
+pv dumps/files_object.bin | psql $DB_URI -c "COPY files_object (version_id, created, updated, key, bucket_id, file_id, _mimetype, is_head) FROM STDIN (FORMAT binary);"
+
+# Run migration
+python -m zenodo_rdm_migrator "streams.yaml"
 
 # Restore FK/PK/unique constraints and indices
 psql $DB_URI -f scripts/create_constraints.sql

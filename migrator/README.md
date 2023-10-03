@@ -191,42 +191,43 @@ directly on the legacy database, in the following manner:
 
 ```shell
 # NOTE: Adjust the connection string as necessary
-DB_URI="postgresql://zenodo@zenodo-legacy-db-host:5432/zenodo"
+DUMP_DB_URI="service=zenodo-clone"
 
 # Users, ~30min
-psql $DB_URI -f scripts/users_dump.sql | sed 's/\\\\/\\/g' > "dumps/users.jsonl"
+psql $DUMP_DB_URI -f scripts/users_dump.sql | sed 's/\\\\/\\/g' > "dumps/users.jsonl"
 # Communities, ~5min
-psql $DB_URI -f scripts/communities_dump.sql | sed 's/\\\\/\\/g' > "dumps/communities.jsonl"
+psql $DUMP_DB_URI -f scripts/communities_dump.sql | sed 's/\\\\/\\/g' > "dumps/communities.jsonl"
 # Community record inclusion requests, ~10min
-psql $DB_URI -f scripts/requests_dump.sql | sed 's/\\\\/\\/g' > "dumps/requests.jsonl"
+psql $DUMP_DB_URI -f scripts/requests_dump.sql | sed 's/\\\\/\\/g' > "dumps/requests.jsonl"
 # Records, ~2-3h
-psql $DB_URI -f scripts/records_dump.sql | sed 's/\\\\/\\/g' > "dumps/records.jsonl"
+psql $DUMP_DB_URI -f scripts/records_dump.sql | sed 's/\\\\/\\/g' > "dumps/records.jsonl"
 # Deposits/drafts, ~30min
-psql $DB_URI -f scripts/deposits_dump.sql | sed 's/\\\\/\\/g' > "dumps/deposits.jsonl"
+psql $DUMP_DB_URI -f scripts/deposits_dump.sql | sed 's/\\\\/\\/g' > "dumps/deposits.jsonl"
 # Deleted records, ~3-4h
-psql $DB_URI -f scripts/deleted_records_dump.sql | sed 's/\\\\/\\/g' > "dumps/deleted-records.jsonl"
+psql $DUMP_DB_URI -f scripts/deleted_records_dump.sql | sed 's/\\\\/\\/g' > "dumps/deleted-records.jsonl"
 
 # Oauth2 server clients
-psql $DB_URI -f scripts/oauth2server_clients_dump.sql | sed 's/\\\\/\\/g' > "dumps/oauth2server-clients.jsonl"
+psql $DUMP_DB_URI -f scripts/oauth2server_clients_dump.sql | sed 's/\\\\/\\/g' > "dumps/oauth2server-clients.jsonl"
 # Oauth2 server tokens
-psql $DB_URI -f scripts/oauth2server_tokens_dump.sql | sed 's/\\\\/\\/g' > "dumps/oauth2server-tokens.jsonl"
-
-# NOTE: For OAuth client and files we use the CSV format, since we're not transforming anything
+psql $DUMP_DB_URI -f scripts/oauth2server_tokens_dump.sql | sed 's/\\\\/\\/g' > "dumps/oauth2server-tokens.jsonl"
+# NOTE: For OAuth client, files, and some GitHub-related tables we use the binary dump
+#       format, since we're not transforming anything.
 # Oauth-Client accounts
-psql $DB_URI -f scripts/oauthclient_remoteaccount_dump.sql > "dumps/oauthclient_remoteaccount.bin"
+psql $DUMP_DB_URI -f scripts/oauthclient_remoteaccount_dump.sql > "dumps/oauthclient_remoteaccount.bin"
 # Oauth-Client tokens
-psql $DB_URI -f scripts/oauthclient_remotetoken_dump.sql > "dumps/oauthclient_remotetoken.bin"
+psql $DUMP_DB_URI -f scripts/oauthclient_remotetoken_dump.sql > "dumps/oauthclient_remotetoken.bin"
+
 # File instances, ~10min
-psql $DB_URI -f scripts/files_files_dump.sql > "dumps/files_files.bin"
+psql $DUMP_DB_URI -f scripts/files_files_dump.sql > "dumps/files_files.bin"
 # Buckets, ~1min
-psql $DB_URI -f scripts/files_bucket_dump.sql > "dumps/files_bucket.bin"
+psql $DUMP_DB_URI -f scripts/files_bucket_dump.sql > "dumps/files_bucket.bin"
 # File object versions, ~3min
-psql $DB_URI -f scripts/files_object_dump.sql > "dumps/files_object.bin"
+psql $DUMP_DB_URI -f scripts/files_object_dump.sql > "dumps/files_object.bin"
 
 # Webhook Events
-psql $DB_URI -f scripts/webhook_events_dump.sql > "dumps/webhook_events.bin"
+psql $DUMP_DB_URI -f scripts/webhook_events_dump.sql | gzip > "dumps/webhook_events.bin.gz"
 # GitHub repositories
-psql $DB_URI -f scripts/github_repositories_dump.sql > "dumps/github_repositories.bin"
+psql $DUMP_DB_URI -f scripts/github_repositories_dump.sql > "dumps/github_repositories.bin"
 # GitHub releases
-psql $DB_URI -f scripts/github_releases_dump.sql | sed 's/\\\\/\\/g' > "dumps/github_releases.jsonl"
+psql $DUMP_DB_URI -f scripts/github_releases_dump.sql | sed 's/\\\\/\\/g' > "dumps/github_releases.jsonl"
 ```

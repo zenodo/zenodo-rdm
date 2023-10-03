@@ -8,4 +8,4 @@ COPY (
     user_id,
     hook
 FROM github_repositories
-) TO STDOUT WITH (FORMAT csv);
+) TO STDOUT WITH (FORMAT binary);
