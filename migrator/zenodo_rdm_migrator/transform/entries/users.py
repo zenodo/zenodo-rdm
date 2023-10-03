@@ -76,7 +76,7 @@ class ZenodoUserEntry(UserEntry):
     def _preferences(self, entry):
         """Returns the preferences."""
         return {
-            "visibility": "restricted",
+            "visibility": "public",
             "email_visibility": "restricted",
         }
 
