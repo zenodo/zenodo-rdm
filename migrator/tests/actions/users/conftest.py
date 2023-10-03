@@ -27,6 +27,7 @@ def register_user_tx():
                     "displayname": "migration_test_again",
                     "full_name": "",
                 },
+                "before": None,
                 "source": {
                     "version": "2.3.0.Final",
                     "connector": "postgresql",
@@ -41,6 +42,7 @@ def register_user_tx():
                     "lsn": 1444875765576,
                     "xmin": None,
                 },
+                "key": {"user_id": 123456},
                 "op": OperationType.INSERT,
             },
             {
@@ -56,6 +58,7 @@ def register_user_tx():
                     "current_login_ip": None,
                     "login_count": None,
                 },
+                "before": None,
                 "source": {
                     "version": "2.3.0.Final",
                     "connector": "postgresql",
@@ -70,6 +73,7 @@ def register_user_tx():
                     "lsn": 1444875751384,
                     "xmin": None,
                 },
+                "key": {"id": 123456},
                 "op": OperationType.INSERT,
             },
         ],
@@ -99,6 +103,18 @@ def login_user_tx():
                     "current_login_ip": "192.0.238.78",
                     "login_count": 1,
                 },
+                "before": {
+                    "id": 123456,
+                    "email": "someaddr@domain.org",
+                    "password": "zmkNzdnG1PXP5C3dmZqlJw==",
+                    "active": True,
+                    "confirmed_at": None,
+                    "last_login_at": None,
+                    "current_login_at": None,
+                    "last_login_ip": None,
+                    "current_login_ip": None,
+                    "login_count": 0,
+                },
                 "source": {
                     "version": "2.3.0.Final",
                     "connector": "postgresql",
@@ -113,6 +129,7 @@ def login_user_tx():
                     "lsn": 1444875783960,
                     "xmin": None,
                 },
+                "key": {"id": 123456},
                 "op": OperationType.UPDATE,
                 "ts_ms": 1690906447715,
                 "transaction": {
@@ -149,6 +166,18 @@ def confirm_user_tx():
                     "current_login_ip": "192.0.238.78",
                     "login_count": 2,
                 },
+                "before": {
+                    "id": 123456,
+                    "email": "someaddr@domain.org",
+                    "password": "zmkNzdnG1PXP5C3dmZqlJw==",
+                    "active": True,
+                    "confirmed_at": None,
+                    "last_login_at": 1690906447550349,
+                    "current_login_at": 1690906459606401,
+                    "last_login_ip": "192.0.238.78",
+                    "current_login_ip": "192.0.238.78",
+                    "login_count": 1,
+                },
                 "source": {
                     "version": "2.3.0.Final",
                     "connector": "postgresql",
@@ -163,6 +192,7 @@ def confirm_user_tx():
                     "lsn": 1444875976096,
                     "xmin": None,
                 },
+                "key": {"id": 123456},
                 "op": OperationType.UPDATE,
                 "ts_ms": 1690906459854,
                 "transaction": {
@@ -198,6 +228,7 @@ def confirm_user_tx():
                     "lsn": 1444875976392,
                     "xmin": None,
                 },
+                "key": {"id": 123456},
                 "op": OperationType.UPDATE,
                 "ts_ms": 1690906459854,
                 "transaction": {
@@ -241,6 +272,13 @@ def change_user_profile_tx():
                     "lsn": 1447963025544,
                     "xmin": None,
                 },
+                "before": {
+                    "user_id": 123456,
+                    "username": "test_mig_ration",
+                    "displayname": "test_mig_ration",
+                    "full_name": "Some full name",
+                },
+                "key": {"user_id": 123456},
                 "op": OperationType.UPDATE,
                 "ts_ms": 1691051405990,
                 "transaction": {
@@ -256,6 +294,12 @@ def change_user_profile_tx():
                     "displayname": "another_mig_username",
                     "full_name": "Some new full name",
                 },
+                "before": {
+                    "user_id": 123456,
+                    "username": "test_mig_ration",
+                    "displayname": "test_mig_ration",
+                    "full_name": "Some full name",
+                },
                 "source": {
                     "version": "2.3.0.Final",
                     "connector": "postgresql",
@@ -270,6 +314,7 @@ def change_user_profile_tx():
                     "lsn": 1447969038888,
                     "xmin": None,
                 },
+                "key": {"user_id": 123456},
                 "op": OperationType.UPDATE,
                 "ts_ms": 1691051420690,
                 "transaction": {
@@ -305,6 +350,18 @@ def change_user_email_tx():
                     "current_login_ip": "192.0.238.78",
                     "login_count": 2,
                 },
+                "before": {
+                    "id": 123456,
+                    "email": "someaddr@domain.org",
+                    "password": "zmkNzdnG1PXP5C3dmZqlJw==",
+                    "active": True,
+                    "confirmed_at": 1691051269040966,
+                    "last_login_at": 1691051258769502,
+                    "current_login_at": 1691051269040966,
+                    "last_login_ip": "192.0.238.78",
+                    "current_login_ip": "192.0.238.78",
+                    "login_count": 2,
+                },
                 "source": {
                     "version": "2.3.0.Final",
                     "connector": "postgresql",
@@ -319,6 +376,7 @@ def change_user_email_tx():
                     "lsn": 1447969540936,
                     "xmin": None,
                 },
+                "key": {"id": 123456},
                 "op": OperationType.UPDATE,
                 "ts_ms": 1691051429304,
                 "transaction": {
@@ -354,6 +412,18 @@ def user_deactivation_tx():
                     "current_login_ip": "192.0.238.78",
                     "login_count": 3,
                 },
+                "before": {
+                    "id": 123456,
+                    "email": "ppanero27+testingmoremore@gmail.com",
+                    "password": "zmkNzdnG1PXP5C3dmZqlJw==",
+                    "active": True,
+                    "confirmed_at": 1691051452717105,
+                    "last_login_at": 1691051269040966,
+                    "current_login_at": 1691051452710434,
+                    "last_login_ip": "192.0.238.78",
+                    "current_login_ip": "192.0.238.78",
+                    "login_count": 3,
+                },
                 "source": {
                     "version": "2.3.0.Final",
                     "connector": "postgresql",
@@ -368,6 +438,7 @@ def user_deactivation_tx():
                     "lsn": 1447988266728,
                     "xmin": None,
                 },
+                "key": {"id": 123456},
                 "op": OperationType.UPDATE,
                 "ts_ms": 1691051494531,
                 "transaction": {
@@ -404,6 +475,7 @@ def user_deactivation_tx():
                     "lsn": 1447988343624,
                     "xmin": None,
                 },
+                "key": {"sid_s": "bc51d8ea3ccc285c_64cb64fa"},
                 "op": OperationType.DELETE,
                 "ts_ms": 1691051494531,
                 "transaction": {
@@ -440,6 +512,7 @@ def user_deactivation_tx():
                     "lsn": 1447988343816,
                     "xmin": None,
                 },
+                "key": {"sid_s": "754493997337aa0a_64cb65bc"},
                 "op": OperationType.DELETE,
                 "ts_ms": 1691051494531,
                 "transaction": {

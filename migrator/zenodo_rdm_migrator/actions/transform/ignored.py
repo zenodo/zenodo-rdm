@@ -31,10 +31,10 @@ class FileChecksumAction(IgnoredTransformAction):
     @classmethod
     def matches_action(cls, tx):
         """Checks for a single file instance update."""
-        ops = [(o["source"]["table"], o["op"]) for o in tx.operations]
-        if ops == [("files_files", OperationType.UPDATE)]:
-            changed_keys = tx.operations[0].get("after", {}).keys() - {"id"}
-            return {"last_check", "last_check_at", "updated"} == changed_keys
+        if tx.as_ops_tuples() == [("files_files", OperationType.UPDATE)]:
+            _, file = tx.ops_by("files_files").popitem()
+            changed_keys = file.keys() - {"id"}
+            return {"last_check", "last_check_at", "updated"} <= changed_keys
         return False
 
 
@@ -46,18 +46,22 @@ class UserSessionAction(IgnoredTransformAction):
     @classmethod
     def matches_action(cls, tx):
         """Checks for a single ."""
-        ops = [(o["source"]["table"], o["op"]) for o in tx.operations]
-        user_updates = [o for o in ops if o == ("accounts_user", OperationType.UPDATE)]
-        session_activity_ops = [
-            o for o in ops if o[0] == "accounts_user_session_activity"
-        ]
+        ops = tx.as_ops_tuples()
+        user_update_ops = tx.as_ops_tuples(
+            include=["accounts_user"],
+            op_types=[OperationType.UPDATE],
+        )
+        session_activity_ops = tx.as_ops_tuples(
+            include=["accounts_user_session_activity"],
+        )
         # Don't accidentally match user deactivations
-        if len(user_updates) == 1:
-            if tx.operations[0].get("after", {}).get("active") is False:
+        if len(user_update_ops) == 1:
+            _, user = tx.ops_by("accounts_user").popitem()
+            if user.get("active") is False:
                 return False
         # there might be one optional user update + multiple session_activirty ops
         return (
-            len(ops) == len(user_updates + session_activity_ops)
+            len(ops) == len(user_update_ops + session_activity_ops)
             and len(session_activity_ops) >= 1
         )
 
@@ -69,9 +73,10 @@ class GitHubSyncAction(IgnoredTransformAction):
 
     @classmethod
     def matches_action(cls, tx):
-        """Checks for a single ."""
-        ops = [(o["source"]["table"], o["op"]) for o in tx.operations]
-        return ops == [("oauthclient_remoteaccount", OperationType.UPDATE)]
+        """Checks for a single OAuth client remote account update op."""
+        return tx.as_ops_tuples() == [
+            ("oauthclient_remoteaccount", OperationType.UPDATE)
+        ]
 
 
 class GitHubPingAction(IgnoredTransformAction):
@@ -82,9 +87,9 @@ class GitHubPingAction(IgnoredTransformAction):
     @classmethod
     def matches_action(cls, tx):
         """Checks for a single ."""
-        ops = [(o["source"]["table"], o["op"]) for o in tx.operations]
-        if ops == [("github_repositories", OperationType.UPDATE)]:
-            changed_keys = tx.operations[0].get("after", {}).keys() - {"id"}
+        if tx.as_ops_tuples() == [("github_repositories", OperationType.UPDATE)]:
+            repo = tx.ops_by("github_repositories")
+            changed_keys = repo.keys() - {"id"}
             return {"ping", "updated"} == changed_keys
         return False
 
@@ -97,8 +102,7 @@ class OAuthReLoginAction(IgnoredTransformAction):
     @classmethod
     def matches_action(cls, tx):
         """Checks for a single ."""
-        ops = [(o["source"]["table"], o["op"]) for o in tx.operations]
-        return ops == [
+        return tx.as_ops_tuples() == [
             ("accounts_user", OperationType.UPDATE),
             ("oauthclient_remotetoken", OperationType.UPDATE),
         ]
