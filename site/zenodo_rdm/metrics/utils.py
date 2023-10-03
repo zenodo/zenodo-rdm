@@ -24,7 +24,10 @@ def calculate_metrics(metric_id, cache=True):
     result = deepcopy(current_app.config["METRICS_DATA"][metric_id])
 
     for metric in result:
-        metric["value"] = metric["value"]()
+        try:
+            metric["value"] = metric["value"]()
+        except:
+            current_app.logger.exception(f"Metric evaluation failed {metric['name']}")
 
     if cache:
         current_cache.set(
