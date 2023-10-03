@@ -39,8 +39,12 @@ from invenio_rdm_migrator.streams.models.oauth import (
 from invenio_rdm_migrator.streams.models.pids import PersistentIdentifier
 from invenio_rdm_migrator.streams.models.records import (
     RDMDraftFile,
+    RDMDraftMediaFile,
     RDMDraftMetadata,
     RDMParentMetadata,
+    RDMRecordFile,
+    RDMRecordMediaFile,
+    RDMRecordMetadata,
     RDMVersionState,
 )
 from invenio_rdm_migrator.streams.models.users import (
@@ -50,6 +54,8 @@ from invenio_rdm_migrator.streams.models.users import (
     UserIdentity,
 )
 from invenio_rdm_migrator.streams.records.state import ParentModelValidator
+
+from zenodo_rdm_migrator.transform.transactions import ZenodoTxTransform
 
 
 # FIXME: deduplicate code allowing invenio-rdm-migrator to define re-usable fixtures
@@ -99,22 +105,8 @@ def test_extract_cls():
     class TestExtract(Extract):
         """Test extractor."""
 
-        def __init__(self, txs, filter_unchanged=True):
+        def __init__(self, txs):
             self.txs = txs if isinstance(txs, list) else [txs]
-            self.filter_unchanged = filter_unchanged
-
-        # NOTE: Copied from KafkaExtract
-        def _filter_unchanged_values(self, op):
-            before = op.get("before")
-            if self.filter_unchanged and op["op"] == OperationType.UPDATE and before:
-                after = op["after"]
-                pk_keys = set(op["key"].keys())
-                diff = dictdiffer.diff(before, after, ignore=pk_keys)
-                changed_keys = {key for diff_op, key, _ in diff if diff_op == "change"}
-                for key in (before.keys() | after.keys()) - (changed_keys | pk_keys):
-                    before.pop(key)
-                    after.pop(key)
-            return op
 
         def run(self):
             """Yield one element at a time."""
@@ -130,17 +122,13 @@ def test_extract_cls():
                                 {"key": op["key"], **op["value"]} for op in tx_ops
                             ]
                         }
-                        # convert "op" to OperationType enum
+                        # convert "op" to OperationType enum and pop Debezium internals
                         for op in tx["operations"]:
                             op["op"] = OperationType(op["op"].upper())
+                            op["key"].pop("__dbz__physicalTableIdentifier", None)
                         # extract the tx_id
                         tx["tx_id"] = tx["operations"][0]["source"]["txId"]
-                yield Tx(
-                    id=tx["tx_id"],
-                    operations=list(
-                        map(self._filter_unchanged_values, tx["operations"])
-                    ),
-                )
+                yield Tx(id=tx["tx_id"], operations=tx["operations"])
 
     return TestExtract
 
@@ -168,6 +156,10 @@ def database(engine):
         PersistentIdentifier,
         RDMDraftMetadata,
         RDMDraftFile,
+        RDMDraftMediaFile,
+        RDMRecordMetadata,
+        RDMRecordFile,
+        RDMRecordMediaFile,
         RDMParentMetadata,
         RDMVersionState,
         RDMParentCommunityMetadata,
@@ -198,3 +190,9 @@ def database(engine):
 def pg_tx_load(db_uri, session):
     """Load instance configured with the DB session fixture."""
     return PostgreSQLTx(db_uri, _session=session, dry=False)
+
+
+@pytest.fixture(scope="function")
+def tx_transform():
+    """Zenodo Tx transform instance that raises on error."""
+    return ZenodoTxTransform(throw=True)
