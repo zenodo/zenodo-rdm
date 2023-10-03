@@ -203,103 +203,128 @@ ZENODO_RECORD_EXPORTERS_LEGACY = {
 
 REDIRECTOR_RULES = {
     "redirect_communities_about_legacy": {
-        "source": "/communities/about/<id>/",
+        "source": "/communities/about/<id>",
+        "rule_options": {"strict_slashes": False},
         "target": communities_detail_view_function,
     },
     "redirect_communities_search_legacy": {
         "source": "/collection/<type>",
+        "rule_options": {"strict_slashes": False},
         "target": search_view_function,
     },
     "redirect_collections_about": {
         "source": "/collection/user-<id>",
+        "rule_options": {"strict_slashes": False},
         "target": communities_detail_view_function,
     },
     "redirect_communities_curate": {
         "source": "/communities/<community_id>/curate",
+        "rule_options": {"strict_slashes": False},
         "target": communities_requests_view_function,
     },
     "redirect_communities_edt": {
         "source": "/communities/<community_id>/edit",
+        "rule_options": {"strict_slashes": False},
         "target": communities_settings_view_function,
     },
     "redirect_communities_search": {
         "source": "/communities/<community_id>/search",
+        "rule_options": {"strict_slashes": False},
         "target": communities_records_search,
     },
     "redirect_dev": {
         "source": "/dev",
+        "rule_options": {"strict_slashes": False},
         "target": "http://developers.zenodo.org",
     },
     "redirect_faq": {
         "source": "/faq",
+        "rule_options": {"strict_slashes": False},
         "target": "http://help.zenodo.org",
     },
     "redirect_features": {
         "source": "/features",
+        "rule_options": {"strict_slashes": False},
         "target": "http://help.zenodo.org/features/",
     },
     "redirect_whatsnew": {
         "source": "/whatsnew",
+        "rule_options": {"strict_slashes": False},
         "target": "http://help.zenodo.org/whatsnew/",
     },
     "redirect_about": {
         "source": "/about",
+        "rule_options": {"strict_slashes": False},
         "target": "http://about.zenodo.org",
     },
     "redirect_contact": {
         "source": "/contact",
+        "rule_options": {"strict_slashes": False},
         "target": "http://about.zenodo.org/contact/",
     },
     "redirect_policies": {
         "source": "/policies",
+        "rule_options": {"strict_slashes": False},
         "target": "http://about.zenodo.org/policies/",
     },
     "redirect_privacy-policy": {
         "source": "/privacy-policy",
+        "rule_options": {"strict_slashes": False},
         "target": "http://about.zenodo.org/privacy-policy/",
     },
     "redirect_terms": {
         "source": "/terms",
+        "rule_options": {"strict_slashes": False},
         "target": "http://about.zenodo.org/terms/",
     },
     "redirect_donate": {
         "source": "/donate",
+        "rule_options": {"strict_slashes": False},
         "target": "https://donate.cernandsocietyfoundation.cern/zenodo/~my-donation?_cv=1",
     },
     "redirect_deposit_id": {
         "source": "/deposit/<pid_value>",
+        "rule_options": {"strict_slashes": False},
         "target": deposit_view_function,
     },
     "redirect_record_detail": {
         "source": "/record/<pid_value>",
+        "rule_options": {"strict_slashes": False},
         "target": record_view_function,
     },
     "redirect_record_export": {
         "source": "/record/<pid_value>/export/<export_format>",
+        "rule_options": {"strict_slashes": False},
         "target": record_export_view,
     },
     "redirect_record_file_download": {
         "source": "/record/<pid_value>/files/<filename>",
+        "rule_options": {"strict_slashes": False},
         "target": record_file_download_view,
     },
     "redirect_deposit_own": {
         "source": "/deposit",
+        "rule_options": {"strict_slashes": False},
         "target": redirect_deposit_own_view,
     },
     "redirect_deposit_new": {
         "source": "/deposit/new",
+        "rule_options": {"strict_slashes": False},
         "target": redirect_deposit_new_view,
     },
     "redirect_record_file_preview": {
         "source": "/record/<pid_value>/preview/<filename>",
+        "rule_options": {"strict_slashes": False},
         "target": redirect_record_file_preview_view,
     },
     "redirect_record_thumbnail": {
         "source": "/record/<pid_value>/thumb<size>",
+        "rule_options": {"strict_slashes": False},
         "target": redirect_record_thumbnail_view,
     },
     "redirect_formats_to_media_files": {
         "source": "/record/<pid_value>/formats",
+        "rule_options": {"strict_slashes": False},
         "target": redirect_formats_to_media_files_view,
     },
 }
@@ -307,6 +332,7 @@ REDIRECTOR_RULES = {
 EXPORT_REDIRECTS = {
     f"redirect_legacy_record_export_view_{key}": {
         "source": f"/records/<pid_value>/export/{key}",
+        "rule_options": {"strict_slashes": False},
         "target": legacy_record_export_view,
     }
     for key in ZENODO_RECORD_EXPORTERS_LEGACY
