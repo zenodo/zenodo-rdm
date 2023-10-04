@@ -654,6 +654,12 @@ def zenodo_draft_data():
         "updated": "2023-01-31 12:00:00.00000",
         "id": "2d6970ea-602d-4e8b-a918-063a59823386",
         "json": {
+            "_deposit": {
+                "id": "10123",
+                "owners": [1234],
+                "status": "draft",
+                "created_by": 1234,
+            },
             "_buckets": {
                 "record": "bur3c0rd-1234-abcd-1ab2-1234abcd56ef",
                 "deposit": "bud3p0s1-1234-abcd-1ab2-1234abcd56ef",
@@ -940,6 +946,7 @@ def expected_rdm_draft_entry():
                 "files": "public",
             },
             "custom_fields": {
+                "legacy:communities": ["migration"],
                 "journal:journal": {
                     "title": "Testing journal",
                     "issue": "10",
@@ -1095,16 +1102,33 @@ def test_legacy_draft_entry(zenodo_draft_data, expected_rdm_draft_entry):
         "id": "7695",
         "pid": {"type": "recid", "value": "111111"},
         "owners": [1234],
-        "status": "published",
+        "status": "draft",
         "created_by": 1234,
     }
-    result = ZenodoDraftEntry().transform(zenodo_draft_data)
+    result = ZenodoRecordTransform()._transform(zenodo_draft_data)
     expected_rdm_draft_entry["json"]["id"] = "111111"
 
     expected_expires_at = expected_rdm_draft_entry.pop("expires_at")
-    expires_at = result.pop("expires_at")
+    expires_at = result["draft"].pop("expires_at")
     assert expires_at >= expected_expires_at
-    assert result == expected_rdm_draft_entry
+    assert result["draft"] == expected_rdm_draft_entry
+
+
+def test_draft_published(
+    zenodo_draft_data,
+    expected_rdm_draft_entry,
+    expected_rdm_draft_parent,
+):
+    """Test the transformation of a published Zenodo draft."""
+    zenodo_draft_data["json"]["_deposit"]["status"] = "published"
+    zenodo_draft_data["json"]["_deposit"]["pid"] = {"type": "recid", "value": "10123"}
+    result = ZenodoRecordTransform()._transform(zenodo_draft_data)
+    expected_rdm_draft_entry["is_published"] = True
+    expected_expires_at = expected_rdm_draft_entry.pop("expires_at")
+    expires_at = result["draft"].pop("expires_at")
+    assert expires_at >= expected_expires_at
+    assert result["draft"] == expected_rdm_draft_entry
+    assert result["parent"] == expected_rdm_draft_parent
 
 
 def test_draft_entry_no_access(zenodo_draft_data):

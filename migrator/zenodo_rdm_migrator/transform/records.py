@@ -42,12 +42,16 @@ class ZenodoRecordTransform(RDMRecordTransform):
         if is_draft:
             draft = self._draft(entry)
             parent = self._parent(entry)
-
             # Draft communities are handled in a special way for legacy drafts
             community_slugs = parent["json"].get("communities", {}).get("ids")
             parent["json"]["communities"] = {}
             if community_slugs:
                 draft["json"]["custom_fields"]["legacy:communities"] = community_slugs
+            # Check if deposit is in edit/draft mode
+            status = (entry.get("json") or {}).get("_deposit", {}).get("status")
+            if status == "published":
+                draft["is_published"] = True
+
             return {
                 "draft": draft,
                 "parent": parent,
