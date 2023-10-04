@@ -26,7 +26,9 @@ psql $DB_URI --tuples-only --quiet -f scripts/gen_delete_constraints.sql > scrip
 psql $DB_URI -f scripts/delete_constraints.sql
 
 # Backup indices
-psql $DB_URI -f scripts/backup_indices.sql
+psql $DB_URI --tuples-only --quiet -f scripts/gen_create_indices.sql > scripts/create_indices.sql
+psql $DB_URI --tuples-only --quiet -f scripts/gen_drop_indices.sql > scripts/drop_indices.sql
+# Drop indices
 psql $DB_URI -f scripts/drop_indices.sql
 
 # Import CSV and binary dumps
@@ -34,7 +36,7 @@ psql $DB_URI -f scripts/drop_indices.sql
 # Vocabularies
 pv dumps/affiliation_metadata.csv | psql $DB_URI -c 'COPY affiliation_metadata (id, pid, json, created, updated, version_id) FROM STDIN (FORMAT csv);'
 pv dumps/name_metadata.bin | psql $DB_URI -c 'COPY name_metadata (id, created, updated, pid, json, version_id) FROM STDIN (FORMAT binary);'
-pv dumps/funder_metadata.csv | psql $DB_URI -c 'COPY funder_metadata (id, created, updated, pid, json, version_id) FROM STDIN (FORMAT csv);'
+pv dumps/funder_metadata.csv | psql $DB_URI -c 'COPY funder_metadata (id, pid, json, created, updated, version_id) FROM STDIN (FORMAT csv);'
 pv dumps/award_metadata.csv | psql $DB_URI -c 'COPY award_metadata (id, pid, json, created, updated, version_id) FROM STDIN (FORMAT csv);'
 
 # OAuth
@@ -42,7 +44,7 @@ pv dumps/oauthclient_remoteaccount.bin | psql $DB_URI -c "COPY oauthclient_remot
 pv dumps/oauthclient_remotetoken.bin | psql $DB_URI -c "COPY oauthclient_remotetoken (id_remote_account, token_type, access_token, secret, created, updated) FROM STDIN (FORMAT binary);"
 
 # GitHub-related
-pv dumps/webhook_events.bin.gz | gzip -dc | psql $DB_URI -c "COPY webhook_events (id, created, updated, receiver_id, user_id, payload, payload_headers, response, response_headers, response_code) FROM STDIN (FORMAT binary);"
+pv dumps/webhooks_events.bin.gz | gzip -dc | psql $DB_URI -c "COPY webhooks_events (id, created, updated, receiver_id, user_id, payload, payload_headers, response, response_headers, response_code) FROM STDIN (FORMAT binary);"
 pv dumps/github_repositories.bin | psql $DB_URI -c "COPY github_repositories (id, created, updated, github_id, name, user_id, hook) FROM STDIN (FORMAT binary);"
 
 # Files
@@ -51,11 +53,11 @@ pv dumps/files_bucket.bin | psql $DB_URI -c "COPY files_bucket (id, created, upd
 pv dumps/files_object.bin | psql $DB_URI -c "COPY files_object (version_id, created, updated, key, bucket_id, file_id, _mimetype, is_head) FROM STDIN (FORMAT binary);"
 
 # Run migration
-python -m zenodo_rdm_migrator "streams.yaml"
+python -m zenodo_rdm_migrator "streams-prod.yaml"
 
 # Restore FK/PK/unique constraints and indices
 psql $DB_URI -f scripts/create_constraints.sql
-psql $DB_URI -f scripts/restore_indices.sql
+psql $DB_URI -f scripts/create_indices.sql
 
 # Update ID sequences in DB
 psql $DB_URI -f scripts/update_sequences.sql
@@ -76,21 +78,21 @@ invenio rdm-records fixtures
 
 from invenio_access.permissions import system_identity
 from invenio_records_resources.proxies import current_service_registry
-from invenio_rdm_recods.proxies import current_rdm_records_service
+from invenio_rdm_records.proxies import current_rdm_records_service
 
 # Commented out but left these here in case of urgent need
-#vocab_service = current_service_registry.get("vocabularies")
-#vocab_service.rebuild_index(identity=system_identity)
-#names_service = current_service_registry.get("names")
-#names_service.rebuild_index(identity=system_identity)
-#funders_service = current_service_registry.get("funders")
-#funders_service.rebuild_index(identity=system_identity)
-#awards_service = current_service_registry.get("awards")
-#awards_service.rebuild_index(identity=system_identity)
-#subj_service = current_service_registry.get("subjects")
-#subj_service.rebuild_index(identity=system_identity)
-#affs_service = current_service_registry.get("affiliations")
-#affs_service.rebuild_index(identity=system_identity)
+# affs_service = current_service_registry.get("affiliations")
+# affs_service.rebuild_index(identity=system_identity)
+# names_service = current_service_registry.get("names")
+# names_service.rebuild_index(identity=system_identity)
+# funders_service = current_service_registry.get("funders")
+# funders_service.rebuild_index(identity=system_identity)
+# awards_service = current_service_registry.get("awards")
+# awards_service.rebuild_index(identity=system_identity)
+# vocab_service = current_service_registry.get("vocabularies")
+# vocab_service.rebuild_index(identity=system_identity)
+# subj_service = current_service_registry.get("subjects")
+# subj_service.rebuild_index(identity=system_identity)
 
 # Re-index record/drafts
 current_rdm_records_service.rebuild_index(identity=system_identity)
@@ -131,22 +133,31 @@ for event_meta in current_events_service.record_cls.model_cls.query.all():
     current_events_service.indexer.index(event)
 com
 
-# For anything above 10K, manually spawn `process_bulk_queue` to put the Celery workers to work
+# Spawn an appropriate number of worker tasks to process bulk indexing queues
 <<com
-from invenio_communities.proxies import current_communities
-from invenio_requests.proxies import current_events_service, current_requests_service
-from invenio_rdm_recods.proxies import current_rdm_records_service
-from invenio_users_resources.proxies import current_users_service, current_groups_service
+import itertools
+from invenio_indexer.proxies import current_indexer_registry
+from invenio_indexer.tasks import process_bulk_queue
+from celery import current_app as current_celery_app
 
-# Records ~3.5M / 10k messages = 350
-for _ in range(350):
-    current_rdm_records_service.indexer.process_bulk_queue()
-# Drafts ~500k / 10k messages = 50
-for _ in range(50):
-    current_rdm_records_service.draft_indexer.process_bulk_queue()
-# Users: ~600k / 10k messages = 60
-for _ in range(60):
-    current_users_service.indexer.process_bulk_queue()
+channel = current_celery_app.connection().channel()
+indexers = current_indexer_registry.all()
+
+queues = {}
+
+for name, indexer in indexers.items():
+    queue = indexer.mq_queue.bind(channel)
+    _, num_messages, _ = queue.queue_declare()
+    queues[name] = num_messages
+
+# We cycle, to make sure there's equally distributed consumption from the queues
+for name in itertools.cycle(queues.keys()):
+    if queues[name] > 0:
+        process_bulk_queue.delay(indexer_name=name)
+        queues[name] -= 10_000
+
+    if all(v <= 0 for v in queues.values()):
+        break
 com
 
 # When finished indexing, refresh the indices

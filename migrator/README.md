@@ -225,7 +225,7 @@ psql $DUMP_DB_URI -f scripts/files_bucket_dump.sql > "dumps/files_bucket.bin"
 psql $DUMP_DB_URI -f scripts/files_object_dump.sql > "dumps/files_object.bin"
 
 # Webhook Events
-psql $DUMP_DB_URI -f scripts/webhook_events_dump.sql | gzip > "dumps/webhook_events.bin.gz"
+psql $DUMP_DB_URI -f scripts/webhooks_events_dump.sql | gzip > "dumps/webhooks_events.bin.gz"
 # GitHub repositories
 psql $DUMP_DB_URI -f scripts/github_repositories_dump.sql > "dumps/github_repositories.bin"
 # GitHub releases
