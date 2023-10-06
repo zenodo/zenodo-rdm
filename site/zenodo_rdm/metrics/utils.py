@@ -21,11 +21,13 @@ def get_metrics(metric_id):
 
 def calculate_metrics(metric_id, cache=True):
     """Calculate a metric's result."""
-    result = deepcopy(current_app.config["METRICS_DATA"][metric_id])
+    metrics = deepcopy(current_app.config["METRICS_DATA"][metric_id])
 
-    for metric in result:
+    result = []
+    for metric in metrics:
         try:
             metric["value"] = metric["value"]()
+            result.append(metric)
         except Exception:
             current_app.logger.exception(
                 "Metric evaluation failed", extra={"metric": metric["name"]}
