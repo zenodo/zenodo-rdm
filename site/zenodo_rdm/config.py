@@ -330,11 +330,11 @@ RDM_LOCK_EDIT_PUBLISHED_FILES = lock_edit_record_published_files
 """Lock editing already published files (enforce record versioning)."""
 
 APP_RDM_RECORD_THUMBNAIL_SIZES = [
-    "10",
-    "50",
-    "100",
-    "250",
-    "750",
-    "1200",
+    10,
+    50,
+    100,
+    250,
+    750,
+    1200,
 ]
 """Thumbnail sizes."""
