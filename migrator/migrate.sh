@@ -109,7 +109,7 @@ invenio communities rebuild-index
 from invenio_access.permissions import system_identity
 from invenio_communities.proxies import current_communities
 from invenio_requests.proxies import current_events_service, current_requests_service
-from invenio_rdm_recods.proxies import current_rdm_records_service
+from invenio_rdm_records.proxies import current_rdm_records_service
 from invenio_users_resources.proxies import current_users_service, current_groups_service
 
 # reindex users
