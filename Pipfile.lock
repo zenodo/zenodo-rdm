@@ -1016,6 +1016,10 @@
             "version": "==1.0.3"
         },
         "invenio-db": {
+            "extras": [
+                "mysql",
+                "postgresql"
+            ],
             "hashes": [
                 "sha256:c02120e22d22498fcd23c3761a1d160c177261c760c38ccfddb4d671fcb7ddef",
                 "sha256:cbbe6d53678a04e21afd8220498a9ddde041bf5c7afd66df00fb46907b109c13"
@@ -1049,11 +1053,11 @@
         },
         "invenio-github": {
             "hashes": [
-                "sha256:7b545f43a1115f463bd1064cb9fb477fbddec3248a6c2112a60e99a80318f4fc",
-                "sha256:9d6a2ba1030d68bc586a4683c7464a4548e85d580d7a461124e391f568d212ef"
+                "sha256:1ffa3751ff5d496013e9f86d89b410ae354a452db554201cb4908415e53a9211",
+                "sha256:86717610e026612d1611441063ff6c4fce0017e8f19088af0be4a1e8805b9f9e"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==1.0.3"
+            "version": "==1.0.4"
         },
         "invenio-i18n": {
             "hashes": [
@@ -1384,11 +1388,11 @@
         },
         "jupyter-client": {
             "hashes": [
-                "sha256:5eb9f55eb0650e81de6b7e34308d8b92d04fe4ec41cd8193a913979e33d8e1a5",
-                "sha256:60294b2d5b869356c893f57b1a877ea6510d60d45cf4b38057f1672d85699ac9"
+                "sha256:6a2a950ec23a8f62f9e4c66acec7f0ea6c7d1f80ba0992e747b10c56ce2e6dbe",
+                "sha256:dc1b857d5d7d76ac101766c6e9b646bf18742721126e72e5d484c75a993cada2"
             ],
             "markers": "python_version >= '3.8'",
-            "version": "==8.3.1"
+            "version": "==8.4.0"
         },
         "jupyter-core": {
             "hashes": [
