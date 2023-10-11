@@ -42,6 +42,7 @@ services:
     extends:
       file: docker-services.yml
       service: app
+    entrypoint: ["bash", "-c"]
     command: ["uwsgi /opt/invenio/var/instance/uwsgi_ui.ini"]
     image: zenodo:latest
     ports:
@@ -64,6 +65,7 @@ services:
     extends:
       file: docker-services.yml
       service: app
+    entrypoint: ["bash", "-c"]
     command: ["uwsgi /opt/invenio/var/instance/uwsgi_rest.ini"]
     image: zenodo:latest
     ports:
@@ -86,6 +88,7 @@ services:
       file: docker-services.yml
       service: app
     restart: "always"
+    entrypoint: ["bash", "-c"]
     command: ["celery -A invenio_app.celery worker --loglevel=INFO"]
     image: zenodo:latest
     depends_on:

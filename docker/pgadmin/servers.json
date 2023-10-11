@@ -1,0 +1,13 @@
+{
+    "Servers": {
+        "1": {
+            "Name": "Zenodo DB",
+            "Group": "Zenodo",
+            "Port": 5432,
+            "Username": "zenodo",
+            "Host": "db",
+            "SSLMode": "prefer",
+            "MaintenanceDB": "postgres"
+        }
+    }
+}
