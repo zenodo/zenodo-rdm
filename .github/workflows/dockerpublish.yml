@@ -49,9 +49,24 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Populate image build timestamp
+        id: date
+        run: echo "IMAGE_BUILD_TIMESTAMP=$(date +'%Y%m%d_%H%M%S')" >> $GITHUB_ENV
+
+      - name: Populate sentry release tag for development
+        run: echo "SENTRY_RELEASE=${{github.sha}} >> $GITHUB_ENV
+        if: ${{steps.meta.outputs.tags == 'latest'}}
+
+      - name: Populate sentry release tag for prod/sandbox
+        run: echo "SENTRY_RELEASE=${{steps.meta.outputs.tags}} >> $GITHUB_ENV
+        if: ${{steps.meta.outputs.tags != 'latest'}}
+
       - name: Build and publish image
         uses: docker/build-push-action@v3
         with:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            IMAGE_BUILD_TIMESTAMP=${{env.IMAGE_BUILD_TIMESTAMP}}
+            SENTRY_RELEASE=${{env.SENTRY_RELEASE}}
