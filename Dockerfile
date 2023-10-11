@@ -22,7 +22,7 @@ RUN if [ ! -z "$xrootd_version" ] ; then XROOTD_V="-$xrootd_version" ; else XROO
 COPY site ./site
 COPY legacy ./legacy
 COPY Pipfile Pipfile.lock ./
-RUN pipenv install --deploy --system --pre
+RUN pipenv install --deploy --system
 RUN pip install invenio-xrootd">=2.0.0a1"
 
 COPY ./docker/uwsgi/ ${INVENIO_INSTANCE_PATH}
