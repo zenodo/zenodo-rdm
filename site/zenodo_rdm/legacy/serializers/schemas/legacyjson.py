@@ -154,7 +154,7 @@ class LegacySchema(common.LegacySchema):
                     "links": links,
                 }
             )
-        return result or missing
+        return result
 
     @pre_dump
     def hook_metadata(self, data, **kwargs):
