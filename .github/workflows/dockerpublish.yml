@@ -54,12 +54,12 @@ jobs:
         run: echo "IMAGE_BUILD_TIMESTAMP=$(date +'%Y%m%d_%H%M%S')" >> $GITHUB_ENV
 
       - name: Populate sentry release tag for development
-        run: echo "SENTRY_RELEASE=${{github.sha}} >> $GITHUB_ENV
-        if: ${{steps.meta.outputs.tags == 'latest'}}
+        run: echo "SENTRY_RELEASE=${{github.sha}}" >> $GITHUB_ENV
+        if: ${{steps.meta.outputs.version == 'latest'}}
 
       - name: Populate sentry release tag for prod/sandbox
-        run: echo "SENTRY_RELEASE=${{steps.meta.outputs.tags}} >> $GITHUB_ENV
-        if: ${{steps.meta.outputs.tags != 'latest'}}
+        run: echo "SENTRY_RELEASE=${{steps.meta.outputs.version}}" >> $GITHUB_ENV
+        if: ${{steps.meta.outputs.version != 'latest'}}
 
       - name: Build and publish image
         uses: docker/build-push-action@v3
