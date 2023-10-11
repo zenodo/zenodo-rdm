@@ -10,10 +10,20 @@
 
 FROM registry.cern.ch/inveniosoftware/almalinux:1
 
+# XRootD
+ARG xrootd_version="5.5.5"
+# Repo required to find all the releases of XRootD
+RUN dnf config-manager --add-repo https://cern.ch/xrootd/xrootd.repo
+RUN if [ ! -z "$xrootd_version" ] ; then XROOTD_V="-$xrootd_version" ; else XROOTD_V="" ; fi && \
+    echo "Will install xrootd version: $XROOTD_V (latest if empty)" && \
+    dnf install -y xrootd"$XROOTD_V" python3-xrootd"$XROOTD_V"
+# /XRootD
+
 COPY site ./site
 COPY legacy ./legacy
 COPY Pipfile Pipfile.lock ./
 RUN pipenv install --deploy --system --pre
+RUN pip install invenio-xrootd">=2.0.0a1"
 
 COPY ./docker/uwsgi/ ${INVENIO_INSTANCE_PATH}
 COPY ./invenio.cfg ${INVENIO_INSTANCE_PATH}
