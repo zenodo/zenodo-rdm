@@ -13,7 +13,7 @@
 {%- block record_files -%}
   {# record has files BUT passed files are empty. This happens when we display are request. #}
   {%- if record.files.enabled -%}
-    <section 
+    <section
       id="record-files" class="rel-mt-2 rel-mb-3"
       aria-label="{{ _('Files') }}"
     >
@@ -37,7 +37,7 @@
         {% endif %}
       {% else %}
         {# record has files BUT user does not have permission to see files #}
-        <div 
+        <div
           class="ui accordion panel mb-10 {{ record.ui.access_status.id }}"
           href="#collapsablePreview"
         >
@@ -81,15 +81,6 @@
     </section>
   {% endif %}
 {%- endblock record_footer -%}
-
-
-{% block record_sidebar %}
-  {{super()}}
-  <!-- migrated records are following the legacy PID minting format which is an autoincrement integer -->
-  {% if record.id|int %}
-  <p>See this record on <a href="https://zenodo.org/record/{{record.id}}" target="_blank">Zenodo</a></p>
-  {% endif %}
-{% endblock record_sidebar %}
 
 {% block javascript %}
   {{super()}}
