@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "18d5b2493e3080ebb95605ce66f9ae104f3f638ef5554712798f790f0f8bc734"
+            "sha256": "164a028e5662119061e628546863e82ceb78ce6ca311b19d345530e0dd804d76"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -1069,6 +1069,10 @@
             "version": "==1.0.3"
         },
         "invenio-db": {
+            "extras": [
+                "mysql",
+                "postgresql"
+            ],
             "hashes": [
                 "sha256:c02120e22d22498fcd23c3761a1d160c177261c760c38ccfddb4d671fcb7ddef",
                 "sha256:cbbe6d53678a04e21afd8220498a9ddde041bf5c7afd66df00fb46907b109c13"
@@ -1133,7 +1137,7 @@
         },
         "invenio-logging": {
             "extras": [
-                "sentry-sdk"
+                "sentry_sdk"
             ],
             "hashes": [
                 "sha256:64f17f803b0f62dea3f4c296e83da9829881a2fa93d68cc206c0d5a9e3809311",
@@ -2603,6 +2607,16 @@
             ],
             "version": "==1.1.0"
         },
+        "sentry-sdk": {
+            "extras": [
+                "flask"
+            ],
+            "hashes": [
+                "sha256:935e8fbd7787a3702457393b74b13d89a5afb67185bc0af85c00cb27cbd42e7c",
+                "sha256:eeb0b3550536f3bbc05bb1c7e0feb3a78d74acb43b607159a606ed2ec0a33a4d"
+            ],
+            "version": "==1.32.0"
+        },
         "setuptools": {
             "hashes": [
                 "sha256:4ac1475276d2f1c48684874089fefcd83bd7162ddaafb81fac866ba0db282a87",
@@ -3079,7 +3093,7 @@
                 "sha256:7a7c7003b000adf9e7ca2a377c9688bbc54ed41b985789ed576570342a375cd2",
                 "sha256:b19e1a85d206b56d7df1d5e683df4a7725252a964e3993648dd0fb5a1c157564"
             ],
-            "markers": "python_version >= '3.7'",
+            "markers": "python_version >= '3.6'",
             "version": "==2.0.6"
         },
         "uwsgi": {
@@ -3894,7 +3908,7 @@
                 "sha256:7a7c7003b000adf9e7ca2a377c9688bbc54ed41b985789ed576570342a375cd2",
                 "sha256:b19e1a85d206b56d7df1d5e683df4a7725252a964e3993648dd0fb5a1c157564"
             ],
-            "markers": "python_version >= '3.7'",
+            "markers": "python_version >= '3.6'",
             "version": "==2.0.6"
         },
         "werkzeug": {
