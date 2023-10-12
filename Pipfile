@@ -11,7 +11,7 @@ isort = "<6.0" # Unpin when isort==6.0.0 is released
 
 [packages]
 invenio-app-rdm = {version = "~=12.0.0b2.dev3", extras = ["opensearch2"]}
-invenio-logging = {extras = ["sentry-sdk"], version = "~=2.0.0"}
+invenio-logging = {extras = ["sentry_sdk"], version = "~=2.0.0"}
 zenodo_rdm = {editable="True", path="./site"}
 zenodo_legacy = {editable="True", path="./legacy"}
 jsonschema = ">=4.17.0,<4.18.0" # due to compatibility issues with alpha
