@@ -10,6 +10,8 @@
 
 FROM registry.cern.ch/inveniosoftware/almalinux:1
 
+RUN dnf install -y epel-release
+RUN dnf update -y
 # XRootD
 ARG xrootd_version="5.5.5"
 # Repo required to find all the releases of XRootD
@@ -19,11 +21,23 @@ RUN if [ ! -z "$xrootd_version" ] ; then XROOTD_V="-$xrootd_version" ; else XROO
     dnf install -y xrootd"$XROOTD_V" python3-xrootd"$XROOTD_V"
 # /XRootD
 
+# Kerberos
+# CRB (Code Ready Builder): equivalent repository to well-known CentOS PowerTools
+RUN dnf install -y yum-utils
+RUN dnf config-manager --set-enabled crb
+# `krb5-devel` required by requests-kerberos
+RUN dnf install -y krb5-workstation krb5-libs krb5-devel
+COPY ./krb5.conf /etc/krb5.conf
+# /Kerberos
+
 COPY site ./site
 COPY legacy ./legacy
 COPY Pipfile Pipfile.lock ./
 RUN pipenv install --deploy --system
-RUN pip install invenio-xrootd">=2.0.0a1"
+# XRootD
+RUN pip install "requests-kerberos==0.14.0"
+RUN pip install "invenio-xrootd==2.0.0a2"
+# /XRootD
 
 COPY ./docker/uwsgi/ ${INVENIO_INSTANCE_PATH}
 COPY ./invenio.cfg ${INVENIO_INSTANCE_PATH}
