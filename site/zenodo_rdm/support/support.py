@@ -49,7 +49,7 @@ class ZenodoSupport(MethodView):
         data = self.validate_form(input_data)
         self.handle_form(data)
 
-        return redirect(url_for("invenio_app_rdm.index"))
+        return redirect(url_for("invenio_app_rdm.frontpage_view_function"))
 
     def handle_form(self, form_data):
         """Form controller."""
