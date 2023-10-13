@@ -1007,11 +1007,11 @@
                 "opensearch2"
             ],
             "hashes": [
-                "sha256:93d76230c4b32a3d24cbb7e795472c5f0763a1c81a8241367ad1d1b23cf2e1c4",
-                "sha256:f5ed91d75c2e67ca53afd786e4ac54ab9ed4b236634fa497a6bf7e1ac943a714"
+                "sha256:302ed2eced59207ea3184ba2247a7af8155495d1b35b212626f4f586407f0893",
+                "sha256:90a5f0e4d907c4e4c854898e2cddff7a45ea2cd969ff056ae759ad8728ef109d"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==12.0.0b2.dev43"
+            "version": "==12.0.0b2.dev44"
         },
         "invenio-assets": {
             "hashes": [
@@ -1106,11 +1106,11 @@
         },
         "invenio-github": {
             "hashes": [
-                "sha256:1ffa3751ff5d496013e9f86d89b410ae354a452db554201cb4908415e53a9211",
-                "sha256:86717610e026612d1611441063ff6c4fce0017e8f19088af0be4a1e8805b9f9e"
+                "sha256:2ed1f57d3d73df877957c05a8365197a5b4d1cfc7459385a96304da9a8be9f8a",
+                "sha256:cf956a18545e2da497255c16c1c4f3d5d9c5505582720b2850eb2b1ba18200d0"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==1.0.4"
+            "version": "==1.0.5"
         },
         "invenio-i18n": {
             "hashes": [
@@ -1220,11 +1220,11 @@
         },
         "invenio-rdm-records": {
             "hashes": [
-                "sha256:1e24192f4d1605725ed1d4e4712305287cc7a32767d4932ae5e8de49ff9c66df",
-                "sha256:ee312ee2c274b09a689fb0ef96cb714c5b173356b1e2c39c4aba98ca48961f1d"
+                "sha256:389aad0a5f4dbf8e542b90b997afa4a2459120fd25420dc24135059476b9de99",
+                "sha256:587e5010958f884824fcca3516b3daa1efa194689c12852fb48c554f41c353a9"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==4.34.0"
+            "version": "==4.35.0"
         },
         "invenio-records": {
             "hashes": [
@@ -3700,11 +3700,11 @@
         },
         "pycodestyle": {
             "hashes": [
-                "sha256:259bcc17857d8a8b3b4a2327324b79e5f020a13c16074670f9c8c8f872ea76d0",
-                "sha256:5d1013ba8dc7895b548be5afb05740ca82454fd899971563d2ef625d090326f8"
+                "sha256:41ba0e7afc9752dfb53ced5489e89f8186be00e599e712660695b7a75ff2663f",
+                "sha256:44fe31000b2d866f2e41841b18528a505fbd7fef9017b04eff4e2648a0fadc67"
             ],
             "markers": "python_version >= '3.8'",
-            "version": "==2.11.0"
+            "version": "==2.11.1"
         },
         "pydocstyle": {
             "hashes": [
