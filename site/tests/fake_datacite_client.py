@@ -83,6 +83,17 @@ class FakeDataCiteRESTClient:
         """
         return Mock()
 
+    def show_doi(self, doi):
+        """Show a previously hidden DOI ... not.
+
+        This DOI will no
+        longer be found in DataCite Search
+
+        :param doi: DOI to hide e.g. 10.12345/1.
+        :return:
+        """
+        return Mock()
+
     def check_doi(self, doi):
         """Check doi structure.
 
