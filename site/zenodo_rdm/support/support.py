@@ -11,7 +11,6 @@ from collections import OrderedDict
 
 from flask import current_app, redirect, render_template, request, url_for
 from flask.views import MethodView
-from flask_login import login_required
 from invenio_accounts.sessions import _extract_info_from_useragent
 from werkzeug.utils import cached_property
 
@@ -29,7 +28,6 @@ class ZenodoSupport(MethodView):
         self.email_service = SupportEmailService()
         self.support_form_schema = SupportFormSchema()
 
-    @login_required
     def get(self):
         """Renders the support template."""
         user_agent = _extract_info_from_useragent(request.headers.get("User-Agent"))
@@ -45,7 +43,6 @@ class ZenodoSupport(MethodView):
             system_info=system_info,
         )
 
-    @login_required
     def post(self):
         """Receives a form, validates its data and handles it."""
         input_data = {**request.form.to_dict(), "files": request.files.getlist("files")}
