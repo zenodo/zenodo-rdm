@@ -799,7 +799,7 @@
             "hashes": [
                 "sha256:34a17436ed1e96697a86f9de3d15a3b0be01d8bc8de9c1dffd59fb8234ed5307"
             ],
-            "markers": "python_version >= '2.6' and python_version not in '3.0, 3.1, 3.2'",
+            "markers": "python_version >= '2.6' and python_version not in '3.0, 3.1, 3.2, 3.3'",
             "version": "==0.18.3"
         },
         "geojson": {
@@ -1007,11 +1007,11 @@
                 "opensearch2"
             ],
             "hashes": [
-                "sha256:440e35de9d503cb550dbabd3bbb05837d0f9852f617ac57c8a689c50222795a7",
-                "sha256:8988e221a8918e7426bee6fc953a89d0a78775a6f0d4f3a7d06f4eef358e6a81"
+                "sha256:005fd53de858ed69f49dd4adced97dfef01995a18cd56a2b5f36fec18a2d7f8b",
+                "sha256:a26388e3d47ced7ba6a8be8ebbcd56ff9652b8213e36ea8438c6ecafc6a5e4f9"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==12.0.0b2.dev45"
+            "version": "==12.0.0b2.dev46"
         },
         "invenio-assets": {
             "hashes": [
@@ -1055,11 +1055,11 @@
         },
         "invenio-communities": {
             "hashes": [
-                "sha256:422ffb618db38ee30b89acaaeb50944cc9afc10c6d4e80d378f089e192e887a4",
-                "sha256:564bdd6d556300df356a7c4188ca900aefa41da6bc506003bf5fa54bd22e8389"
+                "sha256:3080a0a2a26183d3ed800f5d9a33e506847b5df0e2b93a5d866cb2cafaac4778",
+                "sha256:7cab4ca0b3f43abfea75646bf0bc2c6d4237737e2ec6eb07cee3a281e1b55b68"
             ],
             "markers": "python_version >= '3.8'",
-            "version": "==7.15.1"
+            "version": "==7.15.2"
         },
         "invenio-config": {
             "hashes": [
@@ -1069,6 +1069,10 @@
             "version": "==1.0.3"
         },
         "invenio-db": {
+            "extras": [
+                "mysql",
+                "postgresql"
+            ],
             "hashes": [
                 "sha256:c02120e22d22498fcd23c3761a1d160c177261c760c38ccfddb4d671fcb7ddef",
                 "sha256:cbbe6d53678a04e21afd8220498a9ddde041bf5c7afd66df00fb46907b109c13"
@@ -1102,11 +1106,11 @@
         },
         "invenio-github": {
             "hashes": [
-                "sha256:042c251985e2c4c02ddf8aedea75747a1305d1ec51d59b6dfd1340c75f23a581",
-                "sha256:18b1e701520ee55af574259603c40a3cb517c1cb20c45efcb1221cd28e96f082"
+                "sha256:0b3400f3c78d85975eef887ae8d2c3ea51e36cb21905301b6ecb3351eaebf770",
+                "sha256:13c7261db3a5e2cb7f296baeea492259d2acca27a4a6a86dabd10a7c22b6ace0"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==1.0.7"
+            "version": "==1.0.8"
         },
         "invenio-i18n": {
             "hashes": [
@@ -2290,7 +2294,7 @@
                 "sha256:0123cacc1627ae19ddf3c27a5de5bd67ee4586fbdd6440d9748f8abb483d3e86",
                 "sha256:961d03dc3453ebbc59dbdea9e4e11c5651520a876d0f4db161e8674aae935da9"
             ],
-            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2'",
+            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
             "version": "==2.8.2"
         },
         "python-geoip": {
@@ -2722,7 +2726,7 @@
                 "sha256:febffa5b1eda6622d44b245b0685aff6fb555ce0ed734e2d7b1c3acd018a2cff",
                 "sha256:ff836cd4041e16003549449cc0a5e372f6b6f871eb89007ab0ee18fb2800fded"
             ],
-            "markers": "python_version >= '2.5' and python_version not in '3.0, 3.1, 3.2'",
+            "markers": "python_version >= '2.5' and python_version not in '3.0, 3.1, 3.2, 3.3'",
             "version": "==3.19.2"
         },
         "simplekv": {
@@ -2738,7 +2742,7 @@
                 "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926",
                 "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"
             ],
-            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2'",
+            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
             "version": "==1.16.0"
         },
         "snowballstemmer": {
@@ -3880,7 +3884,7 @@
                 "sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b",
                 "sha256:b3bda1d108d5dd99f4a20d24d9c348e91c4db7ab1b749200bded2f839ccbe68f"
             ],
-            "markers": "python_version >= '2.6' and python_version not in '3.0, 3.1, 3.2'",
+            "markers": "python_version >= '2.6' and python_version not in '3.0, 3.1, 3.2, 3.3'",
             "version": "==0.10.2"
         },
         "tomli": {
