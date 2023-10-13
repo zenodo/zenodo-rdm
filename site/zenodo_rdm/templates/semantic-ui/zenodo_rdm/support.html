@@ -4,6 +4,11 @@
     {%- include "zenodo_rdm/header_frontpage.html" %}
 {%- endblock page_header %}
 
+
+{# Remove featured communities #}
+{%- block top_banner %}
+{%- endblock top_banner %}
+
 {%- set user = current_user.is_authenticated and current_user %}
 {%- set userData = user and { 'email': user.email, 'full_name': user.user_profile.full_name }%}
 
@@ -22,14 +27,14 @@
         </div>
         <div class="row">
             <div class="sixteen wide mobile sixteen wide tablet ten wide computer column">
-                {% block root_section %}    
+                {% block root_section %}
                     <div id="zenodo-rdm-support-root" class="panel-body"></div>
                 {% endblock %}
             </div>
         </div>
     </div>
 
-    {% block config %}  
+    {% block config %}
         <div
             id='zenodo-rdm-support-config'
             data-user='{{ userData | tojson }}'
