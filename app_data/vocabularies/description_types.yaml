@@ -30,7 +30,7 @@
     de: Technische Informationen
 - id: notes
   props:
-    datacite: Notes
+    datacite: Other
   title:
     en: Notes
     de: Anmerkungen
