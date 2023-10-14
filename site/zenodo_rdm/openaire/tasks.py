@@ -93,6 +93,7 @@ def openaire_direct_index(record_id, retry=True):
         current_cache.set(
             f"openaire_direct_index:{record_id}", datetime.now(), timeout=-1
         )
+        current_app.logger.error("Openaire index failed.")
         if retry:
             openaire_direct_index.retry(exc=exc)
         else:
@@ -142,6 +143,7 @@ def openaire_delete(record_id=None, retry=True):
         current_cache.set(
             f"openaire_direct_index:{record_id}", datetime.now(), timeout=-1
         )
+        current_app.logger.error("Openaire delete failed.")
         if retry:
             openaire_delete.retry(exc=exc)
         else:
@@ -157,12 +159,16 @@ def retry_openaire_failures():
         cache.key_prefix + "openaire_direct_index:*"
     )
     for key in failed_records:
-        record_id = key.decode().split("openaire_direct_index:")[1]
-        record = records_service.read(system_identity, record_id)
-        is_deleted = record.data["deletion_status"]["is_deleted"]
+        try:
+            record_id = key.decode().split("openaire_direct_index:")[1]
+            record = records_service.read(system_identity, record_id)
+            is_deleted = record.data["deletion_status"]["is_deleted"]
 
-        # If record was deleted, try to remove it from OpenAIRE
-        if is_deleted:
-            openaire_delete.delay(record_id, retry=False)
-        else:
-            openaire_direct_index.delay(record_id, retry=False)
+            # If record was deleted, try to remove it from OpenAIRE
+            if is_deleted:
+                openaire_delete.delay(record_id, retry=False)
+            else:
+                openaire_direct_index.delay(record_id, retry=False)
+        except:
+            # Otherwise it stops processing records when the first one fails.
+            continue
