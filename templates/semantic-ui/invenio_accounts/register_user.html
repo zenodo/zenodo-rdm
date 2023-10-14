@@ -36,12 +36,14 @@
         </i>
         {{_('Sign up with ORCID')}}
       </a>
+      {% if config.OAUTHCLIENT_REMOTE_APPS.get("openaire_aai") %}
       <a href="{{url_for('invenio_oauthclient.login', remote_app='openaire_aai')}}" class="ui button fluid">
         <i class="icon" aria-hidden="true">
           <img id="signup-openaire-logo" src="{{ url_for('static', filename='images/openaire.svg')}}" alt="">
         </i>
         {{_('Sign up with OpenAIRE')}}
       </a>
+      {%- endif %}
       <p class="ui medium inverted header rel-mt-1 rel-mb-1" id="testheader">— OR —</p>
     </div>
     {%- with form = register_user_form %}
