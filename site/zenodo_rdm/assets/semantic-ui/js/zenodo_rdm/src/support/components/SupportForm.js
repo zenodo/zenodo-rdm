@@ -238,7 +238,7 @@ class SupportForm extends Component {
               </div>
 
               <Modal.Actions className="label-padding">
-                <Button type="submit" positive loading={loading}>
+                <Button type="submit" positive loading={loading} disabled={loading}>
                   Send request
                 </Button>
               </Modal.Actions>
