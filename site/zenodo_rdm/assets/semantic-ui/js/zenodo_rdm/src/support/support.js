@@ -14,12 +14,13 @@ const maxFileSize = parseInt(domContainer.dataset.maxFileSize);
 const descriptionMaxLength = parseInt(domContainer.dataset.descriptionMaxLength);
 const descriptionMinLength = parseInt(domContainer.dataset.descriptionMinLength);
 const apiEndpoint = domContainer.dataset.apiEndpoint;
+const isUserAuthenticated = JSON.parse(domContainer.dataset.isAuthenticated);
 
 ReactDOM.render(
   <SupportForm
     userMail={user.email}
     name={user.full_name}
-    isUserAuthenticated={Boolean(user)}
+    isUserAuthenticated={isUserAuthenticated}
     categories={categories}
     userBrowser={browser}
     userPlatform={platform}

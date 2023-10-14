@@ -54,6 +54,7 @@ class SupportForm extends Component {
       fileErrorMessage: null,
       totalFileSize: 0,
       rejectedFiles: [],
+      loading: false,
     };
   }
 
@@ -78,9 +79,11 @@ class SupportForm extends Component {
 
   onSubmit = async (values, formikBag) => {
     const { apiEndpoint } = this.props;
-    const formData = formikToFormData(values);
+    this.setState({ loading: true });
     try {
+      const formData = formikToFormData(values);
       const response = await http.post(apiEndpoint, formData, requestConfig);
+      this.setState({ loading: false });
       window.location = response.request.responseURL;
     } catch (error) {
       let errorMessage = error.message;
@@ -99,6 +102,7 @@ class SupportForm extends Component {
       // TODO show error notification
       console.error(errorMessage);
     }
+    this.setState({ loading: false });
   };
 
   render() {
@@ -123,7 +127,7 @@ class SupportForm extends Component {
     };
 
     const sysInfo = `Browser: ${userBrowser} Operating System: ${userPlatform}`;
-    const { fileErrorMessage, rejectedFiles } = this.state;
+    const { fileErrorMessage, rejectedFiles, loading } = this.state;
 
     return (
       <Formik
@@ -234,7 +238,7 @@ class SupportForm extends Component {
               </div>
 
               <Modal.Actions className="label-padding">
-                <Button type="submit" positive>
+                <Button type="submit" positive loading={loading}>
                   Send request
                 </Button>
               </Modal.Actions>
