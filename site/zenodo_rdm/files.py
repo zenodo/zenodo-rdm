@@ -41,7 +41,11 @@ class EOSFilesOffload(BaseFileStorage):
             allow_redirects=False,
         )
         if eos_resp.status_code != 307:
-            raise Exception("EOS redirect failed")
+            raise Exception(
+                f"EOS redirect failed "
+                f"with response code:{eos_resp.status_code} "
+                f" and error: {eos_resp.text}"
+            )
 
         eos_url = eos_resp.next.url
         eos_url_parts = urlsplit(eos_url)
