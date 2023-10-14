@@ -9,8 +9,13 @@
 {%- block top_banner %}
 {%- endblock top_banner %}
 
-{%- set user = current_user.is_authenticated and current_user %}
-{%- set userData = user and { 'email': user.email, 'full_name': user.user_profile.full_name }%}
+{%- set is_user_authenticated = current_user.is_authenticated %}
+{%- set userData = { 'email': "", 'full_name': "" } %}
+{%- if is_user_authenticated %}
+    <!-- Full name is not required -->
+    {%- set fullName = current_user.user_profile.full_name or "" %}
+    {%- set userData = { 'email': current_user.email, 'full_name': fullName } %}
+{%- endif %}
 
 {% block grid_section %}
     <div id="contact-page" class="ui one column grid container rel-pt-3">
@@ -38,6 +43,7 @@
         <div
             id='zenodo-rdm-support-config'
             data-user='{{ userData | tojson }}'
+            data-is-authenticated='{{ is_user_authenticated | tojson }}'
             data-categories='{{ categories.values() | list | tojson }}'
             data-system-info='{{ system_info | tojson }}'
             data-max-file-size = '{{ config.SUPPORT_ATTACHMENT_MAX_SIZE }}';
