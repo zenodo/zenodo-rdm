@@ -1140,11 +1140,12 @@
                 "sentry_sdk"
             ],
             "hashes": [
-                "sha256:64f17f803b0f62dea3f4c296e83da9829881a2fa93d68cc206c0d5a9e3809311",
-                "sha256:691378761e292b9178b601c7ed3e1c3accfa9e0f7bab64a4a1d778aa7041f9d3"
+                "sha256:0d653f27e602657b79380d23c36e66b4c59d0069dee370e7bd6645eb1dda6fba",
+                "sha256:3998bc7bc171be00edafa3c58b3aaf2fd147abb708d39c2970299be1be2dbfc7"
             ],
-            "markers": "python_version >= '3.8'",
-            "version": "==2.0.0"
+            "index": "pypi",
+            "markers": null,
+            "version": "==2.0.1"
         },
         "invenio-mail": {
             "hashes": [
