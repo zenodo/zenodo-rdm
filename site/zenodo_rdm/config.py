@@ -181,7 +181,7 @@ SUPPORT_EMAIL_CONFIRM_TITLE_TEMPLATE = "zenodo_rdm/email_confirm_title.html"
 
 # Search query of recent uploads
 # Defaults to newest records search
-ZENODO_FRONTPAGE_RECENT_UPLOADS_QUERY = "/api/records?sort=newest&size=10"
+ZENODO_FRONTPAGE_RECENT_UPLOADS_QUERY = "type:(dataset OR software OR poster OR presentation) AND _exists_:parent.communities AND access.files:public"
 
 # Citations
 # =========
