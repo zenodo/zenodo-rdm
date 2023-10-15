@@ -25,7 +25,11 @@ def frontpage_view_function():
     """Zenodo frontpage view."""
     recent_uploads = current_rdm_records.records_service.search(
         identity=g.identity,
-        params={"sort": "newest", "size": 10},
+        params={
+            "sort": "newest",
+            "size": 10,
+            "q": current_app.config["ZENODO_FRONTPAGE_RECENT_UPLOADS_QUERY"],
+        },
         search_preference=search_preference(),
         expand=False,
     )
