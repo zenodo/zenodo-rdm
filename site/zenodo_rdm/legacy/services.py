@@ -318,9 +318,16 @@ class LegacyFileService(FileService):
 
     def get_record_by_bucket_id(self, bucket_id):
         """Get the associated record by its bucket ID."""
-        model_cls = self.record_cls.model_cls
-        obj = model_cls.query.filter(model_cls.bucket_id == bucket_id).one()
-        return self.record_cls(obj.data, model=obj)
+        try:
+            # Try first the draft
+            model_cls = self.record_cls.model_cls
+            obj = model_cls.query.filter(model_cls.bucket_id == bucket_id).one()
+            return self.record_cls(obj.data, model=obj)
+        except NoResultFound:
+            # If it's published try the record
+            model_cls = self.config.published_record_cls.model_cls
+            obj = model_cls.query.filter(model_cls.bucket_id == bucket_id).one()
+            return self.config.published_record_cls(obj.data, model=obj)
 
     def get_file_key_by_id(self, pid_value, file_id):
         """Get the associated record file key by its ID."""
