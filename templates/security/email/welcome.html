@@ -1,5 +1,5 @@
 <table style="max-width:500px;border-collapse:collapse;margin:auto;">
-    <tbody style="background-color:#EAECEE;text-align:center;font-family:'Lato',Helvetica,Arial,sans-serif;">
+    <tbody style="text-align:center;font-family:'Lato',Helvetica,Arial,sans-serif;">
         <tr>
             <td style="padding:15px 15px 10px 15px;">
                 <a href="{{ url_for('security.login', _external=True) }}">
@@ -9,7 +9,7 @@
         </tr>
         <tr>
             <td style="padding:5px 15px 10px 15px;">
-                <p>{{ _('Welcome %(username)s!', username=user.username) }}</p>
+                <p>{{ _('Welcome %(username)s!', username= (user.user_profile.get('full_name') or user.username)) }}</p>
                 <p>{{ _('Your Zenodo account has been created.')}} </p>
                 <p>{{_('We are excited to have you get started!') }} </p>
             </td>
@@ -27,5 +27,10 @@
                 </td>
             </tr>
         {% endif %}
+        <td style="font-size:smaller;padding:5px 15px 10px 15px;">
+            <p>{{ _("To get started, check out our ")}} <a style="text-decoration:none;color:#0576b9" href="https://help.zenodo.org/docs/get-started/">{{ _("documentation.")}}</a><p>
+            <p>{{ _("If you didn't register on Zenodo, please ")}}<a style="text-decoration:none;color:#0576b9" href="https://www.zenodo.org/support/">{{ _("contact us.")}}</a></p>
+        </td>
+    </tr>
     </tbody>
 </table>
