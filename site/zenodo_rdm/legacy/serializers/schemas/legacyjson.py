@@ -7,6 +7,7 @@
 
 """Zenodo legacy format serializer schemas."""
 
+from flask import current_app
 from marshmallow import fields, missing, post_dump, pre_dump
 from marshmallow_utils.fields import SanitizedUnicode
 
@@ -136,14 +137,14 @@ class LegacySchema(common.LegacySchema):
     def dump_files(self, obj):
         """Dump files."""
         result = []
-        bucket_url = obj["links"].get("bucket")
         files_url = obj["links"].get("files")
         for key, f in obj["files"].get("entries", {}).items():
             file_id = f["id"]
             if files_url:
                 links = {"self": f"{files_url}/{file_id}"}
-            if bucket_url:
-                links["download"] = f"{bucket_url}/{key}"
+                links[
+                    "download"
+                ] = f"{current_app.config['SITE_API_URL']}/records/{obj['id']}/draft/files/{key}/content"
             result.append(
                 {
                     "id": f["id"],

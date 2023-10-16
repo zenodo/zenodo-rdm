@@ -281,7 +281,9 @@ class LegacyFileDraftServiceConfig(RDMFileDraftServiceConfig):
         "draft_files.self": LegacyFileLink(
             "{+api}/deposit/depositions/{id}/files/{file_id}"
         ),
-        "draft_files.download": LegacyFileLink("{+api}/files/{bucket_id}/files/{key}"),
+        "draft_files.download": LegacyFileLink(
+            "{+api}/records/{id}/draft/files/{key}/content"
+        ),
         "files_rest.self": LegacyFileLink("{+api}/files/{bucket_id}/files/{key}"),
         "files_rest.version": LegacyFileLink(
             "{+api}/files/{bucket_id}/files/{key}?versionId={version_id}"
@@ -309,6 +311,10 @@ class LegacyFileService(FileService):
             record = self.config.published_record_cls.pid.resolve(
                 id_, registered_only=True
             )
+            # default permission action prefix is set to 'draft_' but we need to set
+            # it to empty so we can apply permission checks to published records
+            self.config.permission_action_prefix = ""
+
         self.require_permission(identity, action, record=record, file_key=file_key)
 
         if file_key and file_key not in record.files:
@@ -331,18 +337,30 @@ class LegacyFileService(FileService):
 
     def get_file_key_by_id(self, pid_value, file_id):
         """Get the associated record file key by its ID."""
-        RDMDraft = self.record_cls.model_cls
-        key = (
-            db.session.query(ObjectVersion.key)
-            .join(FileInstance, ObjectVersion.file_id == FileInstance.id)
-            .join(RDMDraft, ObjectVersion.bucket_id == RDMDraft.bucket_id)
-            .join(PersistentIdentifier, PersistentIdentifier.object_uuid == RDMDraft.id)
-            .filter(
-                FileInstance.id == file_id,
-                PersistentIdentifier.pid_type == "recid",
-                PersistentIdentifier.pid_value == pid_value,
-                PersistentIdentifier.object_type == "rec",
+
+        def query_file_id_by_model_cls(model_cls):
+            """Query for file based on passed model cls."""
+            key = (
+                db.session.query(ObjectVersion.key)
+                .join(FileInstance, ObjectVersion.file_id == FileInstance.id)
+                .join(model_cls, ObjectVersion.bucket_id == model_cls.bucket_id)
+                .join(
+                    PersistentIdentifier,
+                    PersistentIdentifier.object_uuid == model_cls.id,
+                )
+                .filter(
+                    FileInstance.id == file_id,
+                    PersistentIdentifier.pid_type == "recid",
+                    PersistentIdentifier.pid_value == pid_value,
+                    PersistentIdentifier.object_type == "rec",
+                )
+                .scalar()
             )
-            .scalar()
-        )
+            return key
+
+        RDMDraft = self.record_cls.model_cls
+        key = query_file_id_by_model_cls(RDMDraft)
+        if key is None:
+            RDMRecord = self.config.published_record_cls.model_cls
+            key = query_file_id_by_model_cls(RDMRecord)
         return key
