@@ -7,7 +7,7 @@
 
 """Zenodo serializer schemas."""
 
-from marshmallow import Schema, fields, missing
+from marshmallow import Schema, fields, missing, post_dump
 from marshmallow_utils.fields import SanitizedUnicode
 
 from . import common
@@ -19,6 +19,17 @@ class ResourceTypeSchema(Schema):
     type = fields.Str()
     subtype = fields.Str()
     title = fields.Str(attribute="title.en")
+
+    @post_dump(pass_original=True)
+    def dump_resource_type(self, result, original, **kwargs):
+        """Dump resource type."""
+        resource_type_id = original.get("id")
+        if resource_type_id:
+            _type = resource_type_id.split("-")[0]
+            result["type"] = _type
+            if "-" in resource_type_id:
+                result["subtype"] = resource_type_id.split("-")[-1]
+        return result
 
 
 class JournalSchema(Schema):
@@ -65,28 +76,10 @@ class ThesisSchema(Schema):
     supervisors = fields.Nested(common.CreatorSchema, many=True)
 
 
-class FilesSchema(Schema):
-    """Files metadata schema."""
-
-    type = fields.String()
-    checksum = fields.String()
-    size = fields.Integer()
-    bucket = fields.String()
-    key = fields.String()
-    links = fields.Method("get_links")
-
-    def get_links(self, obj):
-        """Get links."""
-        return {
-            "self": common.api_link_for("object", bucket=obj["bucket"], key=obj["key"])
-        }
-
-
 class MetadataSchema(common.MetadataSchema):
     """Metadata schema for a record."""
 
     resource_type = fields.Nested(ResourceTypeSchema)
-    access_right_category = fields.Method("dump_access_right_category", dump_only=True)
 
     journal = fields.Nested(JournalSchema, attribute="custom_fields.journal:journal")
     meeting = fields.Nested(MeetingSchema, attribute="custom_fields.meeting:meeting")
@@ -140,17 +133,6 @@ class MetadataSchema(common.MetadataSchema):
             )
         return result or missing
 
-    def dump_access_right_category(self, obj):
-        """Get access right category."""
-        ACCESS_RIGHT_CATEGORY = {
-            "open": "success",
-            "embargoed": "warning",
-            "restricted": "danger",
-            "closed": "danger",
-        }
-        # TODO: Fix
-        return ACCESS_RIGHT_CATEGORY["open"]
-
     def dump_relations(self, obj):
         """Dump the relations to a dictionary."""
         # TODO: Figure out
@@ -159,9 +141,10 @@ class MetadataSchema(common.MetadataSchema):
                 {
                     "index": obj["versions"]["index"] - 1,
                     "is_last": obj["versions"]["is_latest"],
+                    # Cannot be generated because there is no relevant information in RDM
                     # "count": 1,
                     # "last_child": {"pid_type": "recid", "pid_value": "1235426"},
-                    # "parent": {"pid_type": "recid", "pid_value": "1235425"},
+                    "parent": {"pid_type": "recid", "pid_value": obj["parent"]["id"]},
                 }
             ]
         }
@@ -191,7 +174,7 @@ class ZenodoSchema(common.LegacySchema):
     recid = SanitizedUnicode(attribute="id", dump_only=True)
     revision = fields.Integer(attribute="revision_id")
 
-    files = fields.Nested(FilesSchema, many=True, dump_only=True, attribute="files")
+    files = fields.Method("dump_files", dump_only=True)
     metadata = fields.Nested(MetadataSchema)
 
     owners = fields.Method("dump_owners")
@@ -211,3 +194,23 @@ class ZenodoSchema(common.LegacySchema):
         return "published"
 
     stats = fields.Nested(StatsSchema)
+
+    def dump_files(self, obj):
+        """Dump files."""
+        result = []
+        files_url = obj["links"].get("files")
+        for key, f in obj["files"].get("entries", {}).items():
+            if files_url:
+                links = {"self": f"{files_url}/{key}"}
+                links["download"] = f"{links['self']}/content"
+            result.append(
+                {
+                    "id": f["id"],
+                    "filename": f["key"],
+                    "filesize": f["size"],
+                    # skip the checksum algorithm prefix
+                    "checksum": f["checksum"].split(":", 1)[1],
+                    "links": links,
+                }
+            )
+        return result

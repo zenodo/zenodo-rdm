@@ -50,7 +50,7 @@ record_serializers = copy.deepcopy(default_record_serializers)
 record_serializers.update(
     {
         "application/json": ResponseHandler(
-            LegacyJSONSerializer(), headers=etag_headers
+            ZenodoJSONSerializer(), headers=etag_headers
         ),
         "application/vnd.zenodo.v1+json": ResponseHandler(
             ZenodoJSONSerializer(), headers=etag_headers
@@ -219,6 +219,8 @@ class LegacyDraftFilesResource(FileResource):
         pid_value = resource_requestctx.view_args["pid_value"]
         file_id = resource_requestctx.view_args["file_id"]
         key = self.service.get_file_key_by_id(pid_value, file_id)
+        if key is None:
+            abort(404)
         item = self.service.read_file_metadata(g.identity, pid_value, key)
         return item.to_dict(), 200
 
@@ -228,6 +230,8 @@ class LegacyDraftFilesResource(FileResource):
         pid_value = resource_requestctx.view_args["pid_value"]
         file_id = resource_requestctx.view_args["file_id"]
         key = self.service.get_file_key_by_id(pid_value, file_id)
+        if key is None:
+            abort(404)
         self.service.delete_file(g.identity, pid_value, key)
         return "", 204
 
