@@ -22,7 +22,12 @@ from invenio_rdm_records.services.generators import (
     SubmissionReviewer,
 )
 from invenio_rdm_records.services.permissions import RDMRecordPermissionPolicy
-from invenio_records_permissions.generators import Disable, IfConfig, SystemProcess
+from invenio_records_permissions.generators import (
+    Disable,
+    Generator,
+    IfConfig,
+    SystemProcess,
+)
 from invenio_users_resources.services.permissions import UserManager
 
 from .generators import (
@@ -30,6 +35,17 @@ from .generators import (
     IfRecordManagementAllowedForCommunity,
     MediaFilesManager,
 )
+from .legacy.tokens import LegacySecretLinkNeed
+
+
+class LegacySecretLinks(Generator):
+    """Legacy secret Links for records."""
+
+    def needs(self, record=None, **kwargs):
+        """Set of Needs granting permission."""
+        if record is None:
+            return []
+        return [LegacySecretLinkNeed(record["id"])]
 
 
 class ZenodoRDMRecordPermissionPolicy(RDMRecordPermissionPolicy):
@@ -49,6 +65,7 @@ class ZenodoRDMRecordPermissionPolicy(RDMRecordPermissionPolicy):
     can_preview = can_curate + [
         AccessGrant("preview"),
         SecretLinks("preview"),
+        LegacySecretLinks(),
         SubmissionReviewer(),
     ]
     can_view = can_preview + [

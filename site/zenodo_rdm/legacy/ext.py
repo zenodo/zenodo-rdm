@@ -7,6 +7,7 @@
 
 """Zenodo legacy API."""
 
+from flask_principal import identity_loaded
 from invenio_rdm_records.services.pids import PIDManager, PIDsService
 from invenio_rdm_records.services.review.service import ReviewService
 
@@ -24,6 +25,13 @@ from .services import (
     LegacyRecordService,
     LegacyRecordServiceConfig,
 )
+from .tokens import verify_legacy_secret_link
+
+
+@identity_loaded.connect
+def on_identity_loaded(_, identity):
+    """Add legacy secret link token to the freshly loaded Identity."""
+    verify_legacy_secret_link(identity)
 
 
 class ZenodoLegacy:
