@@ -331,18 +331,33 @@ class LegacyFileService(FileService):
 
     def get_file_key_by_id(self, pid_value, file_id):
         """Get the associated record file key by its ID."""
-        RDMDraft = self.record_cls.model_cls
-        key = (
-            db.session.query(ObjectVersion.key)
-            .join(FileInstance, ObjectVersion.file_id == FileInstance.id)
-            .join(RDMDraft, ObjectVersion.bucket_id == RDMDraft.bucket_id)
-            .join(PersistentIdentifier, PersistentIdentifier.object_uuid == RDMDraft.id)
-            .filter(
-                FileInstance.id == file_id,
-                PersistentIdentifier.pid_type == "recid",
-                PersistentIdentifier.pid_value == pid_value,
-                PersistentIdentifier.object_type == "rec",
+
+        def query_file_id_by_model_cls(model_cls):
+            """Query for file based on passed model cls."""
+            key = (
+                db.session.query(ObjectVersion.key)
+                .join(FileInstance, ObjectVersion.file_id == FileInstance.id)
+                .join(model_cls, ObjectVersion.bucket_id == model_cls.bucket_id)
+                .join(
+                    PersistentIdentifier,
+                    PersistentIdentifier.object_uuid == model_cls.id,
+                )
+                .filter(
+                    FileInstance.id == file_id,
+                    PersistentIdentifier.pid_type == "recid",
+                    PersistentIdentifier.pid_value == pid_value,
+                    PersistentIdentifier.object_type == "rec",
+                )
+                .scalar()
             )
-            .scalar()
-        )
+            return key
+
+        try:
+            # Try first the draft
+            RDMDraft = self.record_cls.model_cls
+            key = query_file_id_by_model_cls(RDMDraft)
+        except NoResultFound:
+            # If it's published try the record
+            RDMRecord = self.config.published_record_cls.model_cls
+            key = query_file_id_by_model_cls(RDMRecord)
         return key
