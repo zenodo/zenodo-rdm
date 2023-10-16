@@ -71,7 +71,7 @@ class CreatorSchema(Schema):
     def dump_affiliation(self, obj):
         """Dump affiliation."""
         if obj.get("affiliations"):
-            return obj["affiliations"][0]["name"]
+            return obj["affiliations"][0].get("name")
 
     @post_dump(pass_original=True)
     def dump_identifiers(self, result, original, **kwargs):
