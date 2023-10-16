@@ -82,6 +82,7 @@ def create_blueprint(app):
     blueprint.add_url_rule(
         support_endpoint,
         view_func=ZenodoSupport.as_view("support_form"),
+        strict_slashes=False,
     )
 
     app.register_error_handler(400, handle_validation_errors)
