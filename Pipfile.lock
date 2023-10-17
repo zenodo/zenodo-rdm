@@ -1106,11 +1106,11 @@
         },
         "invenio-github": {
             "hashes": [
-                "sha256:17dc2766326ff6f9283f57172f3ab0341c84350889fe01d77b3a5dc092480a1c",
-                "sha256:4ba614fbdc3d89585ebbd87cd42c799bd0cbb5c05108c82776710bfed9a56d13"
+                "sha256:7706c0b3d4a94e18e2de4c655d1cc784ec2817b19cca9f75b0d93d3f0e0ff97d",
+                "sha256:b6ef0d9b29a9f146c445e21d66dd9cea83adca1f6b02e86f10d8e564e0480e35"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==1.0.12"
+            "version": "==1.0.13"
         },
         "invenio-i18n": {
             "hashes": [
