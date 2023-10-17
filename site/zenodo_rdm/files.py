@@ -67,7 +67,7 @@ class EOSFilesOffload(BaseFileStorage):
             try:
                 response.headers["X-Accel-Redirect"] = self._get_eos_redirect_path()
             except Exception as ex:
-                current_app.logger.error(ex)
+                current_app.logger.exception(ex)
                 # fallback to normal file download
                 return super().send_file(filename, **kwargs)
 
