@@ -301,6 +301,7 @@ class LegacyFileService(FileService):
         Adds support for getting a draft or a record instead of only draft.
         Needed for legacy API compatibility.
         """
+
         try:
             # Try first the draft
             record = self.record_cls.pid.resolve(id_, registered_only=False)
@@ -309,6 +310,10 @@ class LegacyFileService(FileService):
             record = self.config.published_record_cls.pid.resolve(
                 id_, registered_only=True
             )
+            # default permission action prefix is set to 'draft_' but we need to set
+            # it to empty so we can apply permission checks to published records
+            self.config.permission_action_prefix = ""
+
         self.require_permission(identity, action, record=record, file_key=file_key)
 
         if file_key and file_key not in record.files:
@@ -352,12 +357,6 @@ class LegacyFileService(FileService):
             )
             return key
 
-        try:
-            # Try first the draft
-            RDMDraft = self.record_cls.model_cls
-            key = query_file_id_by_model_cls(RDMDraft)
-        except NoResultFound:
-            # If it's published try the record
-            RDMRecord = self.config.published_record_cls.model_cls
-            key = query_file_id_by_model_cls(RDMRecord)
+        RDMDraft = self.record_cls.model_cls
+        key = query_file_id_by_model_cls(RDMDraft)
         return key

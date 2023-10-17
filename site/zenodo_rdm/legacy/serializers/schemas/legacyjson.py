@@ -136,14 +136,12 @@ class LegacySchema(common.LegacySchema):
     def dump_files(self, obj):
         """Dump files."""
         result = []
-        bucket_url = obj["links"].get("bucket")
         files_url = obj["links"].get("files")
         for key, f in obj["files"].get("entries", {}).items():
-            file_id = f["id"]
             if files_url:
-                links = {"self": f"{files_url}/{file_id}"}
-            if bucket_url:
-                links["download"] = f"{bucket_url}/{key}"
+                self_html = obj["links"]["self_html"]
+                links = {"self": f"{files_url}/{key}"}
+                links["download"] = f"{self_html}/files/{key}"
             result.append(
                 {
                     "id": f["id"],

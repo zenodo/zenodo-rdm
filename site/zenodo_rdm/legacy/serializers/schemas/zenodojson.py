@@ -65,23 +65,6 @@ class ThesisSchema(Schema):
     supervisors = fields.Nested(common.CreatorSchema, many=True)
 
 
-class FilesSchema(Schema):
-    """Files metadata schema."""
-
-    type = fields.String()
-    checksum = fields.String()
-    size = fields.Integer()
-    bucket = fields.String()
-    key = fields.String()
-    links = fields.Method("get_links")
-
-    def get_links(self, obj):
-        """Get links."""
-        return {
-            "self": common.api_link_for("object", bucket=obj["bucket"], key=obj["key"])
-        }
-
-
 class MetadataSchema(common.MetadataSchema):
     """Metadata schema for a record."""
 
@@ -191,7 +174,7 @@ class ZenodoSchema(common.LegacySchema):
     recid = SanitizedUnicode(attribute="id", dump_only=True)
     revision = fields.Integer(attribute="revision_id")
 
-    files = fields.Nested(FilesSchema, many=True, dump_only=True, attribute="files")
+    files = fields.Method("dump_files", dump_only=True)
     metadata = fields.Nested(MetadataSchema)
 
     owners = fields.Method("dump_owners")
@@ -211,3 +194,24 @@ class ZenodoSchema(common.LegacySchema):
         return "published"
 
     stats = fields.Nested(StatsSchema)
+
+    def dump_files(self, obj):
+        """Dump files."""
+        result = []
+        files_url = obj["links"].get("files")
+        for key, f in obj["files"].get("entries", {}).items():
+            if files_url:
+                self_html = obj["links"]["self_html"]
+                links = {"self": f"{files_url}/{key}"}
+                links["download"] = f"{self_html}/files/{key}"
+            result.append(
+                {
+                    "id": f["id"],
+                    "filename": f["key"],
+                    "filesize": f["size"],
+                    # skip the checksum algorithm prefix
+                    "checksum": f["checksum"].split(":", 1)[1],
+                    "links": links,
+                }
+            )
+        return result
