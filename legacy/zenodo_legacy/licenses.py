@@ -80,6 +80,10 @@ def legacy_to_rdm(license):
     """Returns an RDM license given a zenodo legacy license."""
     if not license:
         return
+
+    if isinstance(license, dict):
+        license = license["id"]
+
     normalized = license.lower().strip()
     _license = LEGACY_ALIASES.get(normalized, normalized).lower()
 
