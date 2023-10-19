@@ -6,7 +6,7 @@
 # it under the terms of the MIT License; see LICENSE file for more details.
 
 """Zenodo permissions."""
-
+from invenio_administration.generators import Administration
 from invenio_communities.permissions import CommunityPermissionPolicy
 from invenio_rdm_records.services.generators import (
     AccessGrant,
@@ -226,6 +226,9 @@ class ZenodoRDMRecordPermissionPolicy(RDMRecordPermissionPolicy):
         UserManager,
         SystemProcess(),
     ]
+
+    can_modify_locked_files = [Administration(), UserManager,
+                               SystemProcess()]
 
 
 class ZenodoCommunityPermissionPolicy(CommunityPermissionPolicy):
