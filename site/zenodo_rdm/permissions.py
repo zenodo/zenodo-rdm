@@ -227,8 +227,7 @@ class ZenodoRDMRecordPermissionPolicy(RDMRecordPermissionPolicy):
         SystemProcess(),
     ]
 
-    can_modify_locked_files = [Administration(), UserManager,
-                               SystemProcess()]
+    can_modify_locked_files = [Administration(), UserManager, SystemProcess()]
 
 
 class ZenodoCommunityPermissionPolicy(CommunityPermissionPolicy):
