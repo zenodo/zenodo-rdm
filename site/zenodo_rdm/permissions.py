@@ -43,7 +43,7 @@ class LegacySecretLinks(Generator):
 
     def needs(self, record=None, **kwargs):
         """Set of Needs granting permission."""
-        if record is None:
+        if not record:
             return []
         return [LegacySecretLinkNeed(record["id"])]
 
