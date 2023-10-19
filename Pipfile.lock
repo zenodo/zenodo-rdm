@@ -1069,6 +1069,10 @@
             "version": "==1.0.3"
         },
         "invenio-db": {
+            "extras": [
+                "mysql",
+                "postgresql"
+            ],
             "hashes": [
                 "sha256:c02120e22d22498fcd23c3761a1d160c177261c760c38ccfddb4d671fcb7ddef",
                 "sha256:cbbe6d53678a04e21afd8220498a9ddde041bf5c7afd66df00fb46907b109c13"
@@ -1078,11 +1082,11 @@
         },
         "invenio-drafts-resources": {
             "hashes": [
-                "sha256:35d940da172747b73f80bda2e01cd0c22a90eb55fb4764b28e32e00ef5dce846",
-                "sha256:fef53a230b2870856624b8289509f34666a06fc7b927edc141382bccb96c34fe"
+                "sha256:07a378e2cea951836862c18ea77ad64665ecb3ac3da880023cf5d49fd65591a2",
+                "sha256:c7d49880ef018a3a121a9f9cfcb47db3a23e5ddd9d67661eb49cb1a75cda52ba"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==1.13.0"
+            "version": "==1.13.1"
         },
         "invenio-files-rest": {
             "hashes": [
@@ -1216,11 +1220,11 @@
         },
         "invenio-rdm-records": {
             "hashes": [
-                "sha256:78e04f8ef6e44c60a172d19cd6efb39c3427f95672be5e6025ac6c79f0fe1fad",
-                "sha256:f7e4ab806343d28575c2e70641d521f56b3dcd6c6eced62b34ddfe1f180edb92"
+                "sha256:497d98b5cd1b3cc5ff722923fd23764ba2009513c476bf5f13c184c7f9a646cc",
+                "sha256:68ec75065644560e3647e1692b2260ee1c2041138ce888676a73dcced218b813"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==4.36.9"
+            "version": "==4.36.10"
         },
         "invenio-records": {
             "hashes": [
@@ -1247,11 +1251,11 @@
         },
         "invenio-records-resources": {
             "hashes": [
-                "sha256:707e6ca21ba07febb5b6582e5db0ed34517f4c69b192b15c8295ad24e9c6a9aa",
-                "sha256:cec84a3e008dbe87cbe1c3a5fb3621fd98e0d7d26026bd51f9c18a96520386b5"
+                "sha256:b289a1ec9b9a2cc85250a91986d68c80c5541aaf03ec1ad5ac9a6caec2ddd4a0",
+                "sha256:f64deda4053e351f784066f8e3a60b05f60f3ca142dfd901b5ce786fb7fca838"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==4.12.0"
+            "version": "==4.13.0"
         },
         "invenio-records-rest": {
             "hashes": [
