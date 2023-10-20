@@ -8,10 +8,11 @@
 """Zenodo search params."""
 
 from functools import partial
-from marshmallow import fields, post_load
-from invenio_rdm_records.services.config import RDMSearchOptions
+
 from invenio_rdm_records.resources.config import RDMSearchRequestArgsSchema
+from invenio_rdm_records.services.config import RDMSearchOptions
 from invenio_records_resources.services.records.params.base import ParamInterpreter
+from marshmallow import fields, pre_load
 
 
 class LegacyAllVersionsParam(ParamInterpreter):
@@ -44,7 +45,7 @@ class LegacyCommunitiesParam(ParamInterpreter):
         """Evaluate the allversions parameter on the search."""
         from invenio_communities.communities.records.api import Community
 
-        community_slug_names = params.get("communities")
+        community_slug_names = params.get("communities", [])
         community_ids = []
         for slug in community_slug_names:
             try:
@@ -82,6 +83,11 @@ class LegacyTypeSubtypeParam(ParamInterpreter):
 
 
 class ZenodoSearchOptions(RDMSearchOptions):
+    """Zenodo search options class.
+
+    We override to add legacy search parameters.
+    """
+
     params_interpreters_cls = RDMSearchOptions.params_interpreters_cls + [
         LegacyCommunitiesParam,
         LegacyTypeSubtypeParam,
@@ -89,15 +95,22 @@ class ZenodoSearchOptions(RDMSearchOptions):
 
 
 class ZenodoArgsSchema(RDMSearchRequestArgsSchema):
+    """Zenodo search schema."""
+
     all_versions = fields.Boolean()
     communities = fields.List(fields.String())
     status = fields.String()
     type = fields.String()
     subtype = fields.String()
 
-    @post_load
-    def dump_all_versions(self, data, **kwargs):
+    @pre_load
+    def load_all_versions(self, data, **kwargs):
+        """Load legacy `all_versions` param and feed the new `allversions` one."""
         if "all_versions" in data:
-            data["allversions"] = data["all_versions"]
+            if not data["all_versions"]:
+                # allow ?all_versions without explicit value
+                data["allversions"] = True
+            else:
+                data["allversions"] = data["all_versions"]
             data.pop("all_versions", None)
         return data

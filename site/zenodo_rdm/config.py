@@ -6,6 +6,8 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 """Custom code config."""
 
+from flask import request, url_for
+
 from .params import ZenodoArgsSchema, ZenodoSearchOptions
 from .redirector import (
     communities_detail_view_function,
@@ -20,8 +22,10 @@ from .redirector import (
     redirect_deposit_new_view,
     redirect_deposit_own_view,
     redirect_formats_to_media_files_view,
+    redirect_licenses,
     redirect_record_file_preview_view,
     redirect_record_thumbnail_view,
+    redirect_records_search_slash,
     search_view_function,
 )
 
@@ -327,6 +331,19 @@ REDIRECTOR_RULES = {
         "source": "/record/<pid_value>/formats",
         "rule_options": {"strict_slashes": False},
         "target": redirect_formats_to_media_files_view,
+    },
+}
+
+
+API_REDIRECTOR_RULES = {
+    "redirect_records_search_slash": {
+        "source": "/records/",
+        "target": redirect_records_search_slash,
+    },
+    "redirect_licenses": {
+        "source": "/licenses",
+        "rule_options": {"strict_slashes": False},
+        "target": redirect_licenses,
     },
 }
 
