@@ -5,6 +5,8 @@
 # ZenodoRDM is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 """Custom code config."""
+
+from .params import ZenodoArgsSchema, ZenodoSearchOptions
 from .redirector import (
     communities_detail_view_function,
     communities_records_search,
@@ -369,3 +371,11 @@ APP_RDM_RECORD_THUMBNAIL_SIZES = [
     1200,
 ]
 """Thumbnail sizes."""
+
+
+RDM_SEARCH_OPTIONS_CLS = ZenodoSearchOptions
+"""Zenodo search options class to support legacy search parameters."""
+
+
+RDM_SEARCH_ARGS_SCHEMA = ZenodoArgsSchema
+"""Zenodo search args schema to support legacy search parameters."""
