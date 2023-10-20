@@ -8,6 +8,8 @@
 """Redirector functions and rules."""
 
 from flask import current_app, request, url_for
+from invenio_app_rdm.redirector.resource import RedirectorConfig, RedirectorResource
+from invenio_records_resources.services.base.config import FromConfig
 
 ZENODO_TYPE_SUBTYPE_LEGACY = {
     "publications": "publication",
@@ -266,3 +268,36 @@ def redirect_formats_to_media_files_view():
 
     target = url_for("invenio_app_rdm_records.record_media_file_download", **values)
     return target
+
+
+####### Zenodo REST API redirections #######################
+
+
+def redirect_records_search_slash():
+    """Redirect /api/records/ to /api/records retaining search args."""
+    values = request.args
+    target = url_for("records.search", **values)
+    return target
+
+
+def redirect_licenses():
+    """Redirect /api/licenses/ to /api/vocabularies/licenses retaining search args."""
+    values = request.args
+    target = url_for("vocabularies.search", type="licenses", **values)
+    return target
+
+
+class ZenodoRedirectorConfig(RedirectorConfig):
+    """Zenodo REST API redirector config."""
+
+    # Blueprint configuration
+    blueprint_name = "zenodo_api_redirector"
+
+    rules = FromConfig("API_REDIRECTOR_RULES", {})
+
+
+def create_blueprint(app):
+    """Creates a blueprint for the redirector resource."""
+    resource = RedirectorResource(ZenodoRedirectorConfig.build(app))
+    blueprint = resource.as_blueprint()
+    return blueprint
