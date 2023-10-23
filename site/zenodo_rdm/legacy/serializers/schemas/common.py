@@ -268,6 +268,9 @@ class MetadataSchema(Schema):
 
     def _grant(self, award, funder):
         """Serialize an RDM award and funder into a legacy Zenodo grant."""
+        # RDM allows specifying only funder
+        if not award:
+            return
         funder_id = funder.get("id")
         funder_id = FUNDER_ROR_TO_DOI.get(funder_id, funder_id)
         award_number = award.get("number")
