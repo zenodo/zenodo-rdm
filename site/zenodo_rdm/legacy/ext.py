@@ -75,7 +75,7 @@ class ZenodoLegacy:
     def init_resource(self, app):
         """Initialize resources."""
         self.legacy_records_resource = LegacyRecordResource(
-            LegacyRecordResourceConfig,
+            LegacyRecordResourceConfig.build(app),
             self.legacy_records_service,
         )
 
