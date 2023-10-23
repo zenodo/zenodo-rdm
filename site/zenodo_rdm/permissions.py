@@ -14,6 +14,7 @@ from invenio_rdm_records.services.generators import (
     IfExternalDOIRecord,
     IfFileIsLocal,
     IfNewRecord,
+    IfRecordDeleted,
     IfRestricted,
     RecordCommunitiesAction,
     RecordOwners,
