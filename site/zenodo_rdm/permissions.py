@@ -83,6 +83,18 @@ class ZenodoRDMRecordPermissionPolicy(RDMRecordPermissionPolicy):
         IfRestricted("record", then_=can_view, else_=RDMRecordPermissionPolicy.can_all),
     ]
 
+    # Used for search filtering of deleted records
+    # cannot be implemented inside can_read - otherwise permission will
+    # kick in before tombstone renders
+    can_read_deleted = [
+        IfRecordDeleted(
+            then_=[UserManager, SystemProcess()],
+            else_=can_read,
+        )
+    ]
+    can_read_deleted_files = can_read_deleted
+    can_media_read_deleted_files = can_read_deleted_files
+
     #
     # Drafts
     #
