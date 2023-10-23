@@ -79,4 +79,24 @@ class ZenodoGithubRelease(RDMGithubRelease):
             if citation_metadata:
                 output.update(citation_metadata)
 
+        if not output.get("creators"):
+            # Get owner from Github API
+            owner = self.get_owner()
+            if owner:
+                output.update({"creators": [owner]})
+
+        # Default to "Unkwnown"
+        if not output.get("creators"):
+            output.update(
+                {
+                    "creators": [
+                        {
+                            "person_or_org": {
+                                "type": "personal",
+                                "family_name": "Unknown",
+                            },
+                        }
+                    ]
+                }
+            )
         return output
