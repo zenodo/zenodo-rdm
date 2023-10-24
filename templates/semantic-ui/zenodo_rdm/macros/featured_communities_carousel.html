@@ -28,7 +28,8 @@
     communities,
     title=_("Featured communities"),
     interval_delay="10000",
-    animation_speed="300"
+    animation_speed="300",
+    showUploadBtn=True
   )
 %}
   <div
@@ -54,7 +55,7 @@
           </i>
         </div>
         <div class="twelve wide column">
-          {{ communities_carousel_slides(communities) }}
+          {{ communities_carousel_slides(communities, showUploadBtn=showUploadBtn) }}
         </div>
         <div class="right aligned middle aligned two wide column pl-0">
           <i

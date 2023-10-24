@@ -21,7 +21,7 @@
       <div class="one column row">
         <div class="sixteen wide center aligned column mt-auto mb-auto">
           <h1 class="ui header mr-10">{{ _('Communities') }}</h1>
-          <p class="text-muted">Created and curated by Zenodo users. 
+          <p class="text-muted">Created and curated by Zenodo users.
             {% if not current_user.is_authenticated %}
               <a href="#community-info">Read more</a>
             {% endif %}
@@ -56,8 +56,8 @@
     </div>
   </div>
 
-  {{ communities_carousel() }}
-  
+  {{ communities_carousel(showUploadBtn=False) }}
+
   <div class="ui container communities-frontpage rel-pt-3 rel-pb-2">
     <div class="flex align-items-center rel-mb-2">
       <h2 class="ui header mb-0">{{ _('New communities') }}</h2>
@@ -76,7 +76,7 @@
         <!-- <div class="eight wide column">
           <h2 class="ui medium header text-muted">What is a community?</h2>
           <p class="text-muted">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam sapien lacus, luctus vel ornare vitae, cursus ac libero. Interdum et malesuada fames ac ante ipsum primis in faucibus. 
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam sapien lacus, luctus vel ornare vitae, cursus ac libero. Interdum et malesuada fames ac ante ipsum primis in faucibus.
             <br><br>
             Etiam eu lectus purus. Mauris sed diam ullamcorper, hendrerit est nec, finibus leo. Pellentesque bibendum elit sed nunc efficitur congue. Nullam ipsum lacus, aliquam quis tempus et, hendrerit eget ligula. Nam ipsum urna, luctus dapibus velit at, vestibulum auctor lacus.
           </p>
