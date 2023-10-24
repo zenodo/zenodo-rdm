@@ -32,7 +32,7 @@
 
 {%- block top_banner %}
   {% if featured_communities %}
-    {{ featured_communities_carousel(communities=featured_communities) }}
+    {{ featured_communities_carousel(communities=featured_communities, showUploadBtn=False) }}
   {% endif %}
 {%- endblock top_banner %}
 

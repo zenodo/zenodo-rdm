@@ -22,7 +22,7 @@
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 -#}
 
-{% macro carousel_item(community=None, index=0) %}
+{% macro carousel_item(community=None, index=0, showUploadBtn=True) %}
 <div class="item slide flex align-items-center {{ 'visible' if index == 1 else 'hidden' }}">
     <img class="ui small image has-placeholder" src="{{ community.links.logo }}" alt="" />
     <div class="content">
@@ -41,6 +41,7 @@
           >
             {{ _("Browse") }}
           </a>
+          {% if showUploadBtn %}
           <a
             class="ui mini icon positive left labeled button"
             href="/uploads/new?community={{community.slug}}"
@@ -49,6 +50,7 @@
             <i class="upload icon" aria-hidden="true"></i>
             {{ _("New upload") }}
           </a>
+          {% endif %}
         </div>
       </div>
 

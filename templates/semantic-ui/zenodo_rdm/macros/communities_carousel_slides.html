@@ -24,11 +24,11 @@
 
 {% from "zenodo_rdm/macros/carousel_item.html" import carousel_item %}
 
-{% macro communities_carousel_slides(communities) %}
+{% macro communities_carousel_slides(communities, showUploadBtn=True) %}
     <div id="carousel-container">
         <div id="carousel-slides" class="ui items flex align-items-center">
           {% for community in communities|list %}
-            {{ carousel_item(community=community, index=loop.index) }}
+            {{ carousel_item(community=community, index=loop.index, showUploadBtn=showUploadBtn) }}
           {% endfor %}
         </div>
     </div>
