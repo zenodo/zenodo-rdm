@@ -70,7 +70,7 @@
 
 
 {%- block record_footer -%}
-  {% if citations_enabled %}
+  {% if citations_enabled and not is_preview %}
     <section
       id="citations-search"
       data-record-pids='{{ record.pids | tojson }}'
