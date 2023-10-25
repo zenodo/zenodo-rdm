@@ -213,7 +213,8 @@ class MetadataSchema(Schema):
         if license:
             # Zenodo legacy only accepts one license.
             license = license[0]
-            data["license"] = rdm_to_legacy(license["id"])
+            if license.get("id"):
+                data["license"] = rdm_to_legacy(license["id"])
         return data
 
     def dump_keywords(self, obj):
