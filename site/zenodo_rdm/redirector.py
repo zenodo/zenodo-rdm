@@ -281,12 +281,13 @@ def redirect_access_request():
     """
     number = request.view_args["number"]
     RequestModel = current_requests_service.record_cls.model_cls
-    request = RequestModel.query.filter_by(number=number).one_or_none()
-    if not request:
+
+    request_model = RequestModel.query.filter_by(number=number).one_or_none()
+    if not request_model:
         abort(404)
     return url_for(
         "invenio_app_rdm_requests.read_request",
-        request_pid_value=str(request.id),
+        request_pid_value=str(request_model.id),
     )
 
 
