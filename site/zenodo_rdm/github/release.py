@@ -34,7 +34,7 @@ class ZenodoReleaseMetadata(RDMReleaseMetadata):
         except Exception as exc:
             current_app.logger.exception(str(exc))
             raise CustomGitHubMetadataError(
-                f"Extra metadata failed for file {zenodo_json_file_name}"
+                file=zenodo_json_file_name, message="Extra metadata load failed."
             )
 
     def load_citation_metadata(self, data):
@@ -46,13 +46,19 @@ class ZenodoReleaseMetadata(RDMReleaseMetadata):
         if not data:
             return {}
 
+        citation_file_name = current_app.config.get(
+            "GITHUB_CITATION_FILE", "CITATION.cff"
+        )
+
         try:
             legacy_data = {"metadata": CitationMetadataSchema().load(data)}
             rdm_data = LegacySchema().load(legacy_data)
             return rdm_data["metadata"]
         except Exception as exc:
             current_app.logger.exception(str(exc))
-            raise CustomGitHubMetadataError(f"Citation metadata serialization failed")
+            raise CustomGitHubMetadataError(
+                file=citation_file_name, message="Citation metadata load failed"
+            )
 
 
 class ZenodoGithubRelease(RDMGithubRelease):
