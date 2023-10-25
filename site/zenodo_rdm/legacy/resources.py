@@ -206,11 +206,21 @@ class LegacyDraftFilesResource(FileResource):
 
         with UnitOfWork() as uow:
             self.service.init_files(g.identity, pid_value, [{"key": key}], uow=uow)
-            self.service.set_file_content(g.identity, pid_value, key, file, uow=uow)
-            item = self.service.commit_file(g.identity, pid_value, key, uow=uow)
+            set_content_result = self.service.set_file_content(
+                g.identity, pid_value, key, file, uow=uow
+            )
+            if set_content_result.to_dict().get("errors"):
+                raise FailedFileUploadException(
+                    file_key=set_content_result.file_id,
+                    set_content_result=item.id,
+                    file=set_content_result.to_dict(),
+                )
+            commit_file_result = self.service.commit_file(
+                g.identity, pid_value, key, uow=uow
+            )
             uow.commit()
 
-        return item.to_dict(), 201
+        return commit_file_result.to_dict(), 201
 
     @request_draft_files_view_args
     @response_handler()
@@ -221,7 +231,7 @@ class LegacyDraftFilesResource(FileResource):
         key = self.service.get_file_key_by_id(pid_value, file_id)
         if key is None:
             abort(404)
-        item = self.service.read_file_metadata(g.identity, pid_value, key)
+        item = self.service.get_file_content(g.identity, pid_value, key)
         return item.to_dict(), 200
 
     @request_draft_files_view_args
@@ -313,14 +323,16 @@ class LegacyFilesRESTResource(FileResource):
         with UnitOfWork() as uow:
             # If the file exists already, delete first
             try:
-                item = self.service.read_file_metadata(g.identity, record["id"], key)
-                if item:
+                read_file_result = self.service.read_file_metadata(
+                    g.identity, record["id"], key
+                )
+                if read_file_result:
                     self.service.delete_file(g.identity, record["id"], key, uow=uow)
             except FileKeyNotFoundError:
                 pass
 
             self.service.init_files(g.identity, record["id"], [{"key": key}], uow=uow)
-            self.service.set_file_content(
+            set_content_result = self.service.set_file_content(
                 g.identity,
                 record["id"],
                 key,
@@ -328,10 +340,18 @@ class LegacyFilesRESTResource(FileResource):
                 content_length=content_length,
                 uow=uow,
             )
-            item = self.service.commit_file(g.identity, record["id"], key, uow=uow)
+            if set_content_result.to_dict().get("errors"):
+                raise FailedFileUploadException(
+                    file_key=set_content_result.file_id,
+                    recid=set_content_result.id,
+                    file=set_content_result.to_dict(),
+                )
+            commit_file_result = self.service.commit_file(
+                g.identity, record["id"], key, uow=uow
+            )
             uow.commit()
 
-        return item.to_dict(), 201
+        return commit_file_result.to_dict(), 201
 
     @request_files_view_args
     @response_handler()

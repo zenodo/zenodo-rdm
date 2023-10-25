@@ -269,7 +269,7 @@ class LegacyFileLink(FileLink):
                 "key": file_record.key,
                 "bucket_id": file_record.record.bucket_id,
                 "version_id": file_record.object_version_id,
-                "file_id": file_record.file.id,
+                "file_id": file_record.file.id if file_record.file else None,
             }
         )
 
