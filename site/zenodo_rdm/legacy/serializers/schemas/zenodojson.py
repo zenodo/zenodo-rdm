@@ -201,15 +201,14 @@ class ZenodoSchema(common.LegacySchema):
         files_url = obj["links"].get("files")
         for key, f in obj["files"].get("entries", {}).items():
             if files_url:
-                links = {"self": f"{files_url}/{key}"}
-                links["download"] = f"{links['self']}/content"
+                links = {"self": f"{files_url}/{key}/content"}
             result.append(
                 {
                     "id": f["id"],
-                    "filename": f["key"],
-                    "filesize": f["size"],
+                    "key": f["key"],
+                    "size": f["size"],
                     # skip the checksum algorithm prefix
-                    "checksum": f["checksum"].split(":", 1)[1],
+                    "checksum": f["checksum"],
                     "links": links,
                 }
             )

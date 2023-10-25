@@ -5,10 +5,12 @@
 # Zenodo-RDM is free software; you can redistribute it and/or modify
 # it under the terms of the MIT License; see LICENSE file for more details.
 """Metadata schemas."""
+
 from datetime import date
 
 import pycountry
 from flask import current_app
+from idutils import normalize_gnd, normalize_orcid
 from marshmallow import (
     EXCLUDE,
     Schema,
@@ -68,9 +70,11 @@ class PersonSchema(Schema):
         gnd = original.get("gnd")
 
         if orcid:
-            identifiers.append({"scheme": "orcid", "identifier": orcid})
+            identifiers.append(
+                {"scheme": "orcid", "identifier": normalize_orcid(orcid)}
+            )
         if gnd:
-            identifiers.append({"scheme": "gnd", "identifier": gnd})
+            identifiers.append({"scheme": "gnd", "identifier": normalize_gnd(gnd)})
 
         if identifiers:
             result["identifiers"] = identifiers
@@ -319,8 +323,16 @@ class MetadataSchema(Schema):
             end_date = legacy_date.get("end")
             description = legacy_date.get("description")
             rdm_date = None
+
             if start_date and end_date:
-                rdm_date = f"{start_date}/{end_date}"
+                if start_date == end_date:
+                    rdm_date = start_date
+                else:
+                    rdm_date = f"{start_date}/{end_date}"
+            elif start_date:
+                rdm_date = start_date
+            elif end_date:
+                rdm_date = end_date
             else:
                 # RDM implements EDTF Level 0. Open intervals are not allowed
                 raise ValidationError("Invalid date provided.")

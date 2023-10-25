@@ -98,6 +98,14 @@ def is_iiif_compatible(record, ctx):
     return False
 
 
+def has_bucket_id(record, ctx):
+    """Check if record has bucket_id.
+
+    This is needed because we don't index the bucket_id information.
+    """
+    return getattr(record, "bucket_id") is not None
+
+
 class RecordPIDLink(RecordLink):
     """Record PID links."""
 
@@ -155,7 +163,7 @@ class LegacyRecordServiceConfig(RDMRecordServiceConfig):
             if_=RecordLink("{+api}/records/{id}/files"),
             else_=RecordLink("{+api}/deposit/depositions/{id}/files"),
         ),
-        "bucket": LegacyRecordLink("{+api}/files/{bucket_id}"),
+        "bucket": LegacyRecordLink("{+api}/files/{bucket_id}", when=has_bucket_id),
         #
         # Thumbnails
         #
@@ -284,13 +292,11 @@ class LegacyFileDraftServiceConfig(RDMFileDraftServiceConfig):
         "draft_files.download": LegacyFileLink(
             "{+api}/records/{id}/draft/files/{key}/content"
         ),
-        "files_rest.self": LegacyFileLink("{+api}/files/{bucket_id}/files/{key}"),
+        "files_rest.self": LegacyFileLink("{+api}/files/{bucket_id}/{key}"),
         "files_rest.version": LegacyFileLink(
-            "{+api}/files/{bucket_id}/files/{key}?versionId={version_id}"
+            "{+api}/files/{bucket_id}/{key}?versionId={version_id}"
         ),
-        "files_rest.uploads": LegacyFileLink(
-            "{+api}/files/{bucket_id}/files/{key}?uploads"
-        ),
+        "files_rest.uploads": LegacyFileLink("{+api}/files/{bucket_id}/{key}?uploads"),
     }
 
 

@@ -313,7 +313,7 @@ class LegacyFilesRESTResource(FileResource):
         with UnitOfWork() as uow:
             # If the file exists already, delete first
             try:
-                item = self.service.get_file_content(g.identity, record["id"], key)
+                item = self.service.read_file_metadata(g.identity, record["id"], key)
                 if item:
                     self.service.delete_file(g.identity, record["id"], key, uow=uow)
             except FileKeyNotFoundError:
