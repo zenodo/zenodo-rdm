@@ -7,9 +7,10 @@
 
 """Redirector functions and rules."""
 
-from flask import current_app, request, url_for
+from flask import abort, current_app, request, url_for
 from invenio_app_rdm.redirector.resource import RedirectorConfig, RedirectorResource
 from invenio_records_resources.services.base.config import FromConfig
+from invenio_requests.proxies import current_requests_service
 
 ZENODO_TYPE_SUBTYPE_LEGACY = {
     "publications": "publication",
@@ -268,6 +269,25 @@ def redirect_formats_to_media_files_view():
 
     target = url_for("invenio_app_rdm_records.record_media_file_download", **values)
     return target
+
+
+def redirect_access_request():
+    """Redirect formats to media files URLs.
+
+    /account/settings/sharedlinks/accessrequest/<number>/ -> GET /access/requests/<request_pid_value>
+
+    :return: url for the view 'invenio_app_rdm_requests.read_request'
+    :rtype: str
+    """
+    number = request.view_args["number"]
+    RequestModel = current_requests_service.record_cls.model_cls
+    request = RequestModel.query.filter_by(number=number).one_or_none()
+    if not request:
+        abort(404)
+    return url_for(
+        "invenio_app_rdm_requests.read_request",
+        request_pid_value=str(request.id),
+    )
 
 
 ####### Zenodo REST API redirections #######################

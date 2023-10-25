@@ -19,6 +19,7 @@ from .redirector import (
     record_export_view,
     record_file_download_view,
     record_view_function,
+    redirect_access_request,
     redirect_deposit_new_view,
     redirect_deposit_own_view,
     redirect_formats_to_media_files_view,
@@ -331,6 +332,11 @@ REDIRECTOR_RULES = {
         "source": "/record/<pid_value>/formats",
         "rule_options": {"strict_slashes": False},
         "target": redirect_formats_to_media_files_view,
+    },
+    "redirect_access_request": {
+        "source": "/account/settings/sharedlinks/accessrequest/<number>",
+        "rule_options": {"strict_slashes": False},
+        "target": redirect_access_request,
     },
 }
 
