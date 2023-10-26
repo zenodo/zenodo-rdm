@@ -7,6 +7,5 @@ Disallow: /uploads
 Disallow: /me
 Disallow: /login
 Disallow: /logout
-Disallow: /records/*/files
 Disallow: /records/*/preview
 Crawl-delay: 10
