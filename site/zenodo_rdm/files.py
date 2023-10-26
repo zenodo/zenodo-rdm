@@ -8,12 +8,14 @@
 """Zenodo files utilities."""
 
 import mimetypes
+import unicodedata
 from urllib.parse import urlsplit, urlunsplit
 
 import requests
 from flask import current_app, make_response, request
 from invenio_files_rest.helpers import sanitize_mimetype
 from invenio_files_rest.storage.pyfs import pyfs_storage_factory
+from werkzeug.urls import url_quote
 
 try:
     from invenio_xrootd.storage import EOSFileStorage as BaseFileStorage
@@ -52,9 +54,20 @@ class EOSFilesOffload(BaseFileStorage):
         redirect_path = f"{redirect_base_path}/{eos_url_parts.scheme}/{eos_url_parts.hostname}/{eos_url_parts.port}/{eos_url_parts.path}"
         return urlunsplit(("", "", redirect_path, eos_url_parts.query, ""))
 
-    def send_file(self, filename, **kwargs):
+    def send_file(
+        self,
+        filename,
+        mimetype=None,
+        restricted=True,
+        checksum=None,
+        trusted=False,
+        chunk_size=None,
+        as_attachment=False,
+        **kwargs,
+    ):
         """Send file."""
         # No need to proxy HEAD requests to EOS
+
         should_offload = (
             request.method != "HEAD"
             and current_app.config["ZENODO_EOS_OFFLOAD_ENABLED"]
@@ -83,10 +96,23 @@ class EOSFilesOffload(BaseFileStorage):
 
             response.mimetype = mimetype
 
-            # make the browser use the file download dialogue for the file
-            response.headers[
-                "Content-Disposition"
-            ] = f'attachment; filename="{filename}"'
+            # Force Content-Disposition for application/octet-stream to prevent
+            # Content-Type sniffing.
+            # (from invenio-files-rest)
+            if as_attachment or mimetype == "application/octet-stream":
+                # See https://github.com/pallets/flask/commit/0049922f2e690a6d
+                try:
+                    filenames = {"filename": filename.encode("latin-1")}
+                except UnicodeEncodeError:
+                    filenames = {"filename*": "UTF-8''%s" % url_quote(filename)}
+                    encoded_filename = unicodedata.normalize("NFKD", filename).encode(
+                        "latin-1", "ignore"
+                    )
+                    if encoded_filename:
+                        filenames["filename"] = encoded_filename
+                response.headers.add("Content-Disposition", "attachment", **filenames)
+            else:
+                response.headers.add("Content-Disposition", "inline")
 
             # Security-related headers for the download (from invenio-files-rest)
             response.headers["Content-Security-Policy"] = "default-src 'none';"
