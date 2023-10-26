@@ -68,6 +68,7 @@ class ZenodoRDMRecordPermissionPolicy(RDMRecordPermissionPolicy):
         SecretLinks("preview"),
         LegacySecretLinks(),
         SubmissionReviewer(),
+        UserManager,
     ]
     can_view = can_preview + [
         AccessGrant("view"),
