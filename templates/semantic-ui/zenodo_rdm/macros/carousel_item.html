@@ -24,7 +24,7 @@
 
 {% macro carousel_item(community=None, index=0, showUploadBtn=True) %}
 <div class="item slide flex align-items-center {{ 'visible' if index == 1 else 'hidden' }}">
-    <img class="ui small image has-placeholder" src="{{ community.links.logo }}" alt="" />
+    <img class="ui small image" src="{{ community.links.logo | resolve_community_logo(community.id) }}" alt="" />
     <div class="content">
       <div class="ui middle aligned grid rel-pb-1">
         <div class="ten wide computer sixteen wide tablet column">
