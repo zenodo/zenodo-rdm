@@ -1002,11 +1002,11 @@
                 "opensearch2"
             ],
             "hashes": [
-                "sha256:ab5059c6456ebaae1c279b05787ce01d7eb4d886a7e1645ac799e6ccb85ea28b",
-                "sha256:b6f2d180f5a5d9631f9e2015c4254b859907904eea8749ec9e84e27998a635f1"
+                "sha256:76bdd0796c4c30e9ae13a6d89375f89338dd6c0c138e215cf5573050e3f8e67b",
+                "sha256:a0bc4daeb5a19475836616d64000b388e58cee69a12b7e5f716fe1a25f32d7bb"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==12.0.0b2.dev57"
+            "version": "==12.0.0b2.dev58"
         },
         "invenio-assets": {
             "hashes": [
@@ -1050,11 +1050,11 @@
         },
         "invenio-communities": {
             "hashes": [
-                "sha256:39325ab2a86813d0f158c538547b19a093504ff2948a9cfc107ad24ccd275243",
-                "sha256:ce66f7e94f20d4f59dfaab79ce2800c70116f15c5902965e0ee2724d875e2211"
+                "sha256:3ffd487f4018b67bfe2ca5bd2f649ef2ffe26d0eb2f07171a01cdae91648ab66",
+                "sha256:79293125fff0dcb40d19214b8cf7b23acb9062c263df34cc738dadf35caa83b7"
             ],
             "markers": "python_version >= '3.8'",
-            "version": "==7.16.2"
+            "version": "==7.16.3"
         },
         "invenio-config": {
             "hashes": [
@@ -1064,10 +1064,6 @@
             "version": "==1.0.3"
         },
         "invenio-db": {
-            "extras": [
-                "mysql",
-                "postgresql"
-            ],
             "hashes": [
                 "sha256:c02120e22d22498fcd23c3761a1d160c177261c760c38ccfddb4d671fcb7ddef",
                 "sha256:cbbe6d53678a04e21afd8220498a9ddde041bf5c7afd66df00fb46907b109c13"
@@ -2980,10 +2976,11 @@
         },
         "types-beautifulsoup4": {
             "hashes": [
-                "sha256:045ab285d3e540186e16133612f43f67e31f910e6d7578906b43a0ad8f811347",
-                "sha256:3da00d754e73afae0ec2793253af0cb9aa1ff2c730e34b31c60313da781b4f6f"
+                "sha256:59980028d29bf55d0db359efa305b75bacf0cb92e3f3f6b3fd408f2531df274c",
+                "sha256:8b03b054cb2e62abf82bbbeda57a07257026f4ed9010ef17d8f8eff43bb1f9b7"
             ],
-            "version": "==4.12.0.6"
+            "markers": "python_version >= '3.7'",
+            "version": "==4.12.0.7"
         },
         "types-bleach": {
             "hashes": [
