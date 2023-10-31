@@ -16,7 +16,7 @@ services:
       - "INVENIO_CELERY_RESULT_BACKEND=redis://cache:6379/2"
       - "INVENIO_SEARCH_HOSTS=['search:9200']"
       - "INVENIO_SECRET_KEY=CHANGE_ME"
-      - "INVENIO_SQLALCHEMY_DATABASE_URI=postgresql+psycopg2://zenodo:zenodo@db/zenodo"
+      - "INVENIO_SQLALCHEMY_DATABASE_URI=postgresql+psycopg2://zenodo:zenodo@pgbouncer:6432/zenodo"
       - "INVENIO_WSGI_PROXIES=2"
       - "INVENIO_RATELIMIT_STORAGE_URL=redis://cache:6379/3"
       - "INVENIO_SITE_UI_URL=https://127.0.0.1"
@@ -54,6 +54,14 @@ services:
       PGADMIN_DEFAULT_PASSWORD: "zenodo"
     volumes:
       - ./docker/pgadmin/servers.json:/pgadmin4/servers.json
+  pgbouncer:
+    image: registry.cern.ch/pgbouncer/pgbouncer:1.19.1
+    restart: "unless-stopped"
+    ports:
+      - "6432:6432"
+    volumes:
+      - ./docker/pgbouncer/pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini
+      - ./docker/pgbouncer/userlist.txt:/etc/pgbouncer/userlist.txt
   mq:
     image: registry.cern.ch/docker.io/library/rabbitmq:3-management
     restart: "unless-stopped"

@@ -8,6 +8,10 @@ services:
     extends:
       file: docker-services.yml
       service: db
+  pgbouncer:
+    extends:
+      file: docker-services.yml
+      service: pgbouncer
   mq:
     extends:
       file: docker-services.yml
