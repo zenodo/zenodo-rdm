@@ -18,7 +18,6 @@ from invenio_administration.permissions import administration_access_action
 from invenio_app import factory as app_factory
 from invenio_communities import current_communities
 from invenio_communities.communities.records.api import Community
-from invenio_communities.generators import CommunityRoleNeed
 from invenio_pidstore.errors import PIDDoesNotExistError
 from invenio_rdm_records.cli import create_records_custom_field
 from invenio_rdm_records.services.pids import providers
@@ -30,6 +29,7 @@ from invenio_vocabularies.records.api import Vocabulary
 
 from zenodo_rdm.api import ZenodoRDMDraft, ZenodoRDMRecord
 from zenodo_rdm.custom_fields import CUSTOM_FIELDS, CUSTOM_FIELDS_UI, NAMESPACES
+from zenodo_rdm.generators import media_files_management_action
 from zenodo_rdm.legacy.requests.record_upgrade import LegacyRecordUpgrade
 from zenodo_rdm.legacy.resources import record_serializers
 from zenodo_rdm.permissions import ZenodoRDMRecordPermissionPolicy
@@ -81,6 +81,15 @@ def app_config(app_config):
     app_config["OPENAIRE_PORTAL_URL"] = "https://explore.openaire.eu"
 
     return app_config
+
+
+@pytest.fixture(scope="function")
+def db_session_options():
+    """Database session options."""
+    # TODO: Look into having this be the default in ``pytest-invenio``
+    # This helps with ``sqlalchemy.orm.exc.DetachedInstanceError`` when models are not
+    # bound to the session between transactions/requests/service-calls.
+    return {"expire_on_commit": False}
 
 
 @pytest.fixture(scope="module")
@@ -737,13 +746,17 @@ def test_user(UserFixture, app, db):
 
 
 @pytest.fixture()
-def uploader(UserFixture, app, db):
+def uploader(UserFixture, app, db, media_files_role):
     """Uploader."""
     u = UserFixture(
         email="uploader@inveniosoftware.org",
         password="uploader",
     )
     u.create(app, db)
+
+    datastore = app.extensions["security"].datastore
+    datastore.add_role_to_user(u.user, media_files_role)
+    db.session.commit()
     return u
 
 
@@ -775,6 +788,19 @@ def superuser_role_need(db):
     db.session.commit()
 
     return action_role.need
+
+
+@pytest.fixture()
+def media_files_role(db):
+    """Store 1 role with 'manage-media-files' ActionNeed."""
+    role = Role(name="media-files-uploader")
+    db.session.add(role)
+
+    action_role = ActionRoles.create(action=media_files_management_action, role=role)
+    db.session.add(action_role)
+    db.session.commit()
+
+    return role
 
 
 @pytest.fixture()

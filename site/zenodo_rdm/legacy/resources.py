@@ -8,10 +8,10 @@
 """Zenodo legacy resources."""
 
 import copy
-from functools import wraps
+from functools import partial, wraps
 
 import marshmallow as ma
-from flask import abort, g, request
+from flask import abort, g, jsonify, request
 from flask_resources import (
     RequestBodyParser,
     ResponseHandler,
@@ -20,8 +20,11 @@ from flask_resources import (
     response_handler,
     route,
 )
+from invenio_access.permissions import system_identity
+from invenio_pidstore.errors import PIDDoesNotExistError
 from invenio_rdm_records.resources.config import (
     RDMDraftFilesResourceConfig,
+    RDMRecordMediaFilesResourceConfig,
     RDMRecordResourceConfig,
 )
 from invenio_rdm_records.resources.config import (
@@ -34,8 +37,12 @@ from invenio_records_resources.resources.files.resource import (
     request_view_args,
 )
 from invenio_records_resources.resources.records.headers import etag_headers
-from invenio_records_resources.services.errors import FileKeyNotFoundError
+from invenio_records_resources.services.errors import (
+    FailedFileUploadException,
+    FileKeyNotFoundError,
+)
 from invenio_records_resources.services.uow import UnitOfWork
+from sqlalchemy.orm.exc import NoResultFound
 from werkzeug.utils import secure_filename
 
 from .deserializers import LegacyJSONDeserializer
@@ -211,9 +218,9 @@ class LegacyDraftFilesResource(FileResource):
             )
             if set_content_result.to_dict().get("errors"):
                 raise FailedFileUploadException(
-                    file_key=set_content_result.file_id,
-                    set_content_result=item.id,
+                    recid=pid_value,
                     file=set_content_result.to_dict(),
+                    file_key=key,
                 )
             commit_file_result = self.service.commit_file(
                 g.identity, pid_value, key, uow=uow
@@ -250,6 +257,49 @@ request_files_view_args = request_parser(
     {"bucket_id": ma.fields.Str(required=True), "key": ma.fields.Str()},
     location="view_args",
 )
+
+
+def _create_or_update_file(
+    files_service,
+    key,
+    stream,
+    content_length,
+    pid_value,
+    identity=None,
+):
+    """Create or update a draft/record file."""
+    identity = identity or g.identity
+    with UnitOfWork() as uow:
+        # If the file exists already, delete first
+        try:
+            read_file_result = files_service.read_file_metadata(
+                identity, pid_value, key
+            )
+            if read_file_result:
+                files_service.delete_file(identity, pid_value, key, uow=uow)
+        except FileKeyNotFoundError:
+            pass
+
+        files_service.init_files(identity, pid_value, [{"key": key}], uow=uow)
+        set_content_result = files_service.set_file_content(
+            identity,
+            pid_value,
+            key,
+            stream,
+            content_length=content_length,
+            uow=uow,
+        )
+        if set_content_result.to_dict().get("errors"):
+            raise FailedFileUploadException(
+                recid=pid_value,
+                file=set_content_result.to_dict(),
+                file_key=key,
+            )
+        commit_file_result = files_service.commit_file(
+            identity, pid_value, key, uow=uow
+        )
+        uow.commit()
+    return commit_file_result
 
 
 class LegacyFilesRESTResourceConfig(RDMDraftFilesResourceConfig):
@@ -319,37 +369,9 @@ class LegacyFilesRESTResource(FileResource):
         content_length = resource_requestctx.data["request_content_length"]
         record = self.service.get_record_by_bucket_id(bucket_id)
 
-        # TODO: Maybe move this to the service?
-        with UnitOfWork() as uow:
-            # If the file exists already, delete first
-            try:
-                read_file_result = self.service.read_file_metadata(
-                    g.identity, record["id"], key
-                )
-                if read_file_result:
-                    self.service.delete_file(g.identity, record["id"], key, uow=uow)
-            except FileKeyNotFoundError:
-                pass
-
-            self.service.init_files(g.identity, record["id"], [{"key": key}], uow=uow)
-            set_content_result = self.service.set_file_content(
-                g.identity,
-                record["id"],
-                key,
-                stream,
-                content_length=content_length,
-                uow=uow,
-            )
-            if set_content_result.to_dict().get("errors"):
-                raise FailedFileUploadException(
-                    file_key=set_content_result.file_id,
-                    recid=set_content_result.id,
-                    file=set_content_result.to_dict(),
-                )
-            commit_file_result = self.service.commit_file(
-                g.identity, record["id"], key, uow=uow
-            )
-            uow.commit()
+        commit_file_result = _create_or_update_file(
+            self.service, key, stream, content_length, record["id"]
+        )
 
         return commit_file_result.to_dict(), 201
 
@@ -361,5 +383,196 @@ class LegacyFilesRESTResource(FileResource):
         key = resource_requestctx.view_args["key"]
         record = self.service.get_record_by_bucket_id(bucket_id)
 
-        item = self.service.delete_file(g.identity, record["id"], key)
-        return item.to_dict(), 204
+        self.service.delete_file(g.identity, record["id"], key)
+        return "", 204
+
+
+def parse_extra_formats_mimetype(
+    from_query_string=None,
+    from_content_type=None,
+    from_accept=None,
+):
+    """Decorator to parse the request's extra formats MIMEType."""
+    assert from_content_type or from_accept or from_query_string
+
+    mimetype = None
+    if from_query_string:
+        mimetype = request.args.get("mimetype")
+    if not mimetype and from_content_type:
+        mimetype = request.headers.get("Content-Type")
+    if not mimetype and from_accept:
+        mimetype = next((m for m, _ in request.accept_mimetypes), None)
+    if not mimetype:
+        return abort(400, "Invalid extra format MIMEType.")
+    return mimetype
+
+
+class DraftExtraFormatsResourceConfig(RDMDraftFilesResourceConfig):
+    """Draft extra formats resource config."""
+
+    allow_upload = True
+    allow_archive_download = False
+    blueprint_name = "legacy_draft_extra_formats"
+    url_prefix = "/deposit/depositions"
+    routes = {
+        "list": "/<pid_value>/formats",
+    }
+
+
+class DraftExtraFormatsResource(FileResource):
+    """Draft extra formats resource."""
+
+    decorators = []  # disable content negotiation
+
+    def create_url_rules(self):
+        """Routing for the views."""
+        routes = self.config.routes
+        _route = partial(route, rule_options=dict(provide_automatic_options=False))
+        url_rules = [
+            _route("GET", routes["list"], self.get),
+            _route("PUT", routes["list"], self.put),
+            _route("DELETE", routes["list"], self.delete),
+            _route("OPTIONS", routes["list"], self.search),
+        ]
+        return url_rules
+
+    def _get_draft_or_record(self, identity, id_, action):
+        try:
+            # If the draft is being edited, add the file to the draft
+            record = self.service.read_draft(identity, id_)._record
+        except (NoResultFound, PIDDoesNotExistError):
+            # Else add it to the record directly
+            record = self.service.read(identity, id_)._record
+
+        # NOTE: We check the permission here as a "draft", so that we can later use
+        # ``system_identity`` for potentially deleting a file from a published record.
+        self.service.draft_files.require_permission(g.identity, action, record=record)
+        return record
+
+    @request_view_args
+    def get(self):
+        """Get an extra format."""
+        pid_value = resource_requestctx.view_args["pid_value"]
+        mimetype = parse_extra_formats_mimetype(
+            from_query_string=True,
+            from_accept=True,
+        )
+        record = self._get_draft_or_record(g.identity, pid_value, "read_files")
+        if record.files.enabled is False:
+            abort(404)
+        if record.is_draft:
+            service = self.service.draft_files
+        else:
+            service = self.service.files
+        item = service.get_file_content(g.identity, pid_value, mimetype)
+        return item.send_file(), 200
+
+    @request_view_args
+    def put(self):
+        """Create or replace an extra format file."""
+        pid_value = resource_requestctx.view_args["pid_value"]
+        key = parse_extra_formats_mimetype(from_content_type=True)
+        stream = request.stream
+        content_length = request.content_length
+        record = self._get_draft_or_record(g.identity, pid_value, "create_files")
+        if record.files.enabled is False:
+            record.files.enabled = True
+            record.files.create_bucket()
+            record.commit()
+
+        if record.is_draft:
+            media_files_service = self.service.draft_files
+        else:
+            media_files_service = self.service.files
+
+        _create_or_update_file(
+            media_files_service,
+            key,
+            stream,
+            content_length,
+            pid_value,
+            identity=system_identity,
+        )
+        return {"message": f'Extra format "{key}" updated.'}, 200
+
+    @request_view_args
+    def delete(self):
+        """Delete an extra format file."""
+        pid_value = resource_requestctx.view_args["pid_value"]
+        key = parse_extra_formats_mimetype(from_content_type=True)
+
+        record = self._get_draft_or_record(g.identity, pid_value, "delete_files")
+        if record.is_draft:
+            media_files_service = self.service.draft_files
+        else:
+            media_files_service = self.service.files
+        media_files_service.delete_file(system_identity, pid_value, key)
+        return {"message": f'Extra format "{key}" deleted.'}, 200
+
+    @request_view_args
+    def search(self):
+        """Get a list of all extra formats files."""
+        pid_value = resource_requestctx.view_args["pid_value"]
+        record = self._get_draft_or_record(g.identity, pid_value, "read_files")
+        if record.is_draft:
+            files = self.service.draft_files.list_files(g.identity, pid_value)
+        else:
+            files = self.service.files.list_files(g.identity, pid_value)
+        res = files.to_dict()
+        if res.get("entries"):
+            return res["entries"], 200
+        return jsonify([]), 200
+
+
+class RecordExtraFormatsResourceConfig(RDMRecordMediaFilesResourceConfig):
+    """Record extra formats resource config."""
+
+    allow_upload = False
+    allow_archive_download = False
+    blueprint_name = "legacy_record_extra_formats"
+    url_prefix = "/records"
+    routes = {
+        "list": "/<pid_value>/formats",
+    }
+
+
+class RecordExtraFormatsResource(FileResource):
+    """Record extra formats resource."""
+
+    decorators = []  # disable content negotiation
+
+    def create_url_rules(self):
+        """Routing for the views."""
+        routes = self.config.routes
+
+        _route = partial(route, rule_options=dict(provide_automatic_options=False))
+        url_rules = [
+            _route("GET", routes["list"], self.get),
+            _route("OPTIONS", routes["list"], self.search),
+        ]
+        return url_rules
+
+    @request_view_args
+    def get(self):
+        """Get extra format file."""
+        pid_value = resource_requestctx.view_args["pid_value"]
+        key = parse_extra_formats_mimetype(from_query_string=True, from_accept=True)
+
+        record = self.service.read(g.identity, pid_value)._record
+        if record.files.enabled is False:
+            abort(404)
+        item = self.service.files.get_file_content(g.identity, pid_value, key)
+        return item.send_file(), 200
+
+    @request_view_args
+    def search(self):
+        """Get available extra formats files."""
+        pid_value = resource_requestctx.view_args["pid_value"]
+        record = self.service.read(g.identity, pid_value)._record
+        if record.files.enabled is False:
+            return jsonify([]), 200
+        files = self.service.files.list_files(g.identity, pid_value)
+        res = files.to_dict()
+        if res.get("entries"):
+            return res["entries"], 200
+        return jsonify([]), 200
