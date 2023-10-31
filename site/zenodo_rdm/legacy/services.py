@@ -309,6 +309,9 @@ class LegacyFileService(FileService):
         Adds support for getting a draft or a record instead of only draft.
         Needed for legacy API compatibility.
         """
+        # FIXME: This is to undo the horrible hack we do below in case we don't find a
+        # draft, and resort to using the record for permission checks.
+        self.config.permission_action_prefix = "draft_"
         try:
             # Try first the draft
             record = self.record_cls.pid.resolve(id_, registered_only=False)
@@ -317,8 +320,9 @@ class LegacyFileService(FileService):
             record = self.config.published_record_cls.pid.resolve(
                 id_, registered_only=True
             )
-            # default permission action prefix is set to 'draft_' but we need to set
-            # it to empty so we can apply permission checks to published records
+            # FIXME: This is a horrible hack to make sure that we can check permissions
+            # based on the published record. We "unset" this everytime at the top of
+            # this method.
             self.config.permission_action_prefix = ""
 
         self.require_permission(identity, action, record=record, file_key=file_key)
