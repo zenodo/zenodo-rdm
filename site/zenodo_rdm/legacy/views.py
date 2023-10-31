@@ -7,10 +7,14 @@
 
 """Zenodo legacy views."""
 
-from functools import wraps
+from flask import Blueprint
 
-from flask import Blueprint, abort, jsonify, request
-from flask.views import MethodView
+from .resources import (
+    DraftExtraFormatsResource,
+    DraftExtraFormatsResourceConfig,
+    RecordExtraFormatsResource,
+    RecordExtraFormatsResourceConfig,
+)
 
 blueprint = Blueprint("zenodo_rdm_legacy", __name__)
 
@@ -45,79 +49,25 @@ def create_files_rest_bp(app):
     return ext.legacy_files_rest_resource.as_blueprint()
 
 
-#
-# Legacy REST API Stubs
-#
-stub_blueprint = Blueprint("zenodo_rdm_legacy_stub", __name__)
+def create_legacy_draft_extra_formats_bp(app):
+    """Create legacy draft extra formats blueprint."""
+    records_ext = app.extensions["invenio-rdm-records"]
+
+    legacy_draft_extra_formats_resource = DraftExtraFormatsResource(
+        # NOTE: We pass the top-level record service, since we need to handle cases when
+        # extra formats are modified on a published draft.
+        service=records_ext.records_media_files_service,
+        config=DraftExtraFormatsResourceConfig.build(app),
+    )
+    return legacy_draft_extra_formats_resource.as_blueprint()
 
 
-def pass_extra_formats_mimetype(
-    from_query_string=None, from_content_type=None, from_accept=None
-):
-    """Decorator to validate the request's extra formats MIMEType."""
-    assert from_content_type or from_accept or from_query_string
+def create_legacy_record_extra_formats_bp(app):
+    """Create legacy record extra formats blueprint."""
+    records_ext = app.extensions["invenio-rdm-records"]
 
-    def decorator(f):
-        @wraps(f)
-        def inner(*args, **kwargs):
-            mimetype = None
-            if from_query_string:
-                mimetype = request.args.get("mimetype")
-            if not mimetype and from_content_type:
-                mimetype = request.headers.get("Content-Type")
-            if not mimetype and from_accept:
-                mimetype = next((m for m, _ in request.accept_mimetypes), None)
-            if not mimetype:
-                return abort(400, "Invalid extra format MIMEType.")
-            return f(*args, mimetype=mimetype, **kwargs)
-
-        return inner
-
-    return decorator
-
-
-class StubDepositExtraFormatsResource(MethodView):
-    """Deposit extra formats resource."""
-
-    @pass_extra_formats_mimetype(from_query_string=True, from_accept=True)
-    def get(self, pid_value, mimetype=None):
-        """Get an extra format."""
-        return {"message": f'Dummy content for "{mimetype}".'}
-
-    @pass_extra_formats_mimetype(from_content_type=True)
-    def put(self, pid_value, mimetype=None):
-        """Create or replace an extra format."""
-        return {"message": f'Extra format "{mimetype}" updated.'}
-
-    @pass_extra_formats_mimetype(from_content_type=True)
-    def delete(self, pid_value, mimetype=None):
-        """Delete an extra format."""
-        return {"message": f'Extra format "{mimetype}" deleted.'}
-
-    def options(self, pid_value):
-        """Get a list of all extra formats."""
-        return jsonify([])
-
-
-class StubRecordExtraFormatsResource(MethodView):
-    """Record extra formats resource."""
-
-    @pass_extra_formats_mimetype(from_query_string=True, from_accept=True)
-    def get(self, pid_value, mimetype=None):
-        """Get extra format."""
-        return {"message": f'Dummy content for "{mimetype}".'}
-
-    def options(self, pid_value):
-        """Get available extra formats."""
-        return jsonify([])
-
-
-stub_blueprint.add_url_rule(
-    "/deposit/depositions/<pid_value>/formats",
-    view_func=StubDepositExtraFormatsResource.as_view("draft_extra_formats_stub"),
-)
-
-stub_blueprint.add_url_rule(
-    "/records/<pid_value>/formats",
-    view_func=StubRecordExtraFormatsResource.as_view("record_extra_formats_stub"),
-)
+    legacy_record_extra_formats_resource = RecordExtraFormatsResource(
+        service=records_ext.records_media_files_service,
+        config=RecordExtraFormatsResourceConfig.build(app),
+    )
+    return legacy_record_extra_formats_resource.as_blueprint()
