@@ -240,6 +240,11 @@ class ZenodoRDMRecordPermissionPolicy(RDMRecordPermissionPolicy):
         UserManager,
         SystemProcess(),
     ]
+    can_media_create_files = [SystemProcess()]
+    can_media_set_content_files = [SystemProcess()]
+    can_media_commit_files = [SystemProcess()]
+    can_media_update_files = [SystemProcess()]
+    can_media_delete_files = [SystemProcess()]
 
     can_modify_locked_files = [Administration(), UserManager, SystemProcess()]
 
