@@ -180,6 +180,8 @@ class MetadataSchema(Schema):
     references = fields.Method("dump_reference")
     language = fields.Method("dump_languages")
 
+    custom = fields.Method("dump_custom_fields")
+
     @pre_dump
     def resolve_communities(self, data, **kwargs):
         """Resolve communities for the draft/record."""
@@ -378,6 +380,24 @@ class MetadataSchema(Schema):
         # Legacy Zenodo accepts either ISO-639-1 or ISO-639-2 codes.
         # Zenodo-RDM implements ISO-639-2 so no mapping is needed.
         return languages[0]["id"]
+
+    def dump_custom_fields(self, obj):
+        """Dump custom fields."""
+        custom_fields = obj.get("custom_fields", {})
+        return {
+            k: v
+            for k, v in custom_fields.items()
+            if not k.startswith(
+                (
+                    "legacy:",
+                    "thesis:",
+                    "imprint:",
+                    "meeting:",
+                    "journal:",
+                    "part_of:",
+                )
+            )
+        } or missing
 
 
 class LegacySchema(Schema):

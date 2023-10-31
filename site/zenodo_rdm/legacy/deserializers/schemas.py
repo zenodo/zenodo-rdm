@@ -129,6 +129,9 @@ class LegacySchema(Schema):
             "thesis:university": university,
         }
 
+        # Add the legacy custom fields
+        custom_fields.update(metadata.get("custom", {}))
+
         clear_none(custom_fields)
 
         if custom_fields:
