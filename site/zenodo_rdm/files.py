@@ -9,7 +9,7 @@
 
 import mimetypes
 import unicodedata
-from urllib.parse import urlsplit, urlunsplit
+from urllib.parse import quote, urlsplit, urlunsplit
 
 import requests
 from flask import current_app, make_response, request
@@ -104,15 +104,18 @@ class EOSFilesOffload(BaseFileStorage):
                 try:
                     filenames = {"filename": filename.encode("latin-1")}
                 except UnicodeEncodeError:
-                    filenames = {"filename*": "UTF-8''%s" % url_quote(filename)}
+                    # safe = RFC 5987 attr-char
+                    quoted = quote(filename, safe="!#$&+-.^_`|~")
+
+                    filenames = {"filename*": "UTF-8''%s" % quoted}
                     encoded_filename = unicodedata.normalize("NFKD", filename).encode(
                         "latin-1", "ignore"
                     )
                     if encoded_filename:
                         filenames["filename"] = encoded_filename
-                response.headers.add("Content-Disposition", "attachment", **filenames)
+                response.headers.set("Content-Disposition", "attachment", **filenames)
             else:
-                response.headers.add("Content-Disposition", "inline")
+                response.headers.set("Content-Disposition", "inline")
 
             # Security-related headers for the download (from invenio-files-rest)
             response.headers["Content-Security-Policy"] = "default-src 'none';"
