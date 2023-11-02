@@ -1,0 +1,57 @@
+{#
+    Copyright (C) 2023 CERN.
+  
+    Invenio RDM Records is free software; you can redistribute it and/or modify
+    it under the terms of the MIT License; see LICENSE file for more details.
+#}
+
+{%- from "zenodo_rdm/records/macros.html" import show_legacy_subjects %}
+{%- extends "invenio_app_rdm/records/details/details.html" %}
+  
+{% block extras %}
+  {% if record.custom_fields["legacy:subjects"] %}
+    {% set subjects = record.custom_fields["legacy:subjects"] %}
+    
+    {% if not hasContent.value %}
+      <h2 id="record-details-heading">{{ _('Additional details') }}</h2>
+      <div class="ui divider"></div>
+    {% endif %}
+
+    {% if subjects|length > 5 %}
+      <div class="ui fluid accordion padded grid rel-mb-1">
+        <div class="active title sixteen wide mobile four wide tablet three wide computer column">
+          <h3 class="ui header">
+              <div
+              id="legacy-subjects-accordion-trigger"
+              role="button"
+              tabindex="0"
+              aria-expanded="true"
+              aria-controls="legacy-subjects-panel"
+              class="trigger"
+              >
+              <i class="caret right icon" aria-hidden="true"></i>{{ _('Subjects') }}
+              </div>
+          </h3>
+        </div>
+        <div
+          id="legacy-subjects-panel"
+          role="region"
+          aria-labelledby="legacy-subjects-accordion-trigger"
+          class="active content sixteen wide mobile twelve wide tablet thirteen wide computer column"
+        >
+          {{ show_legacy_subjects(subjects) }}
+        </div>
+      </div>
+    {% else %}
+      <div class="ui grid">
+        <div class="sixteen wide mobile four wide tablet three wide computer column">
+          <h3 class="ui header">{{ _('Subjects') }}</h3>
+        </div>
+        <div class="sixteen wide mobile twelve wide tablet thirteen wide computer column">
+          {{ show_legacy_subjects(subjects) }}
+        </div>
+      </div>
+    {% endif %}
+    <div class="ui divider"></div>
+  {% endif %}
+{% endblock extras %}
