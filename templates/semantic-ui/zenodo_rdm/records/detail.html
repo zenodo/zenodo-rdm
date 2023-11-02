@@ -69,6 +69,14 @@
 {%- endblock record_files -%}
 
 
+{# Additional details #}
+{%- block record_details -%}
+  <section id="additional-details" class="rel-mt-2" aria-label="{{ _('Additional record details') }}">
+    {%- include "zenodo_rdm/records/details/details.html" %}
+  </section>
+{%- endblock record_details -%}
+
+
 {%- block record_footer -%}
   {% if citations_enabled and not is_preview %}
     <section

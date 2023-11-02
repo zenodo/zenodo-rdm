@@ -1,0 +1,25 @@
+{#
+  Copyright (C) 2023 CERN.
+
+  Invenio RDM Records is free software; you can redistribute it and/or modify
+  it under the terms of the MIT License; see LICENSE file for more details.
+#}
+
+{% macro show_legacy_subjects(subjects) %}
+  <dl class="details-list">
+    {% for subject in subjects %}
+      <dt class="ui tiny header">
+        {{ subject.term }}
+      </dt>
+      <dd>
+        {%- if subject.scheme == "url" %}
+          <a href="{{ subject.identifier }}">
+            {{ subject.identifier }}
+          </a>
+        {%- else %}
+         {{ subject.identifier }}
+        {%- endif %}
+      </dd>
+    {% endfor %}
+  </dl>
+{% endmacro %}
