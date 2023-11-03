@@ -197,13 +197,16 @@ class LegacySchema(Schema):
         """Transform legacy doi in RDM pid with external provider."""
         metadata = original.get("metadata")
         if metadata:
-            doi = metadata.get("doi")
-            if doi:
-                provider = "external"
+            doi_value = metadata.get("doi")
+            if doi_value:
+                doi = {"identifier": doi_value}
                 # TODO: Fetch prefix from config (or pass via schema context)
-                if doi.startswith("10.5281/"):
-                    provider = "datacite"
-                result["pids"] = {"doi": {"identifier": doi, "provider": provider}}
+                if doi_value.startswith("10.5281/"):
+                    doi["provider"] = "datacite"
+                    doi["client"] = "datacite"
+                else:
+                    doi["provider"] = "external"
+                result["pids"] = {"doi": doi}
         return result
 
     @post_load(pass_original=True)
