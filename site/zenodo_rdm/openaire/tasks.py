@@ -93,7 +93,7 @@ def openaire_direct_index(record_id, retry=True):
         current_cache.set(
             f"openaire_direct_index:{record_id}", datetime.now(), timeout=-1
         )
-        current_app.logger.error("Openaire index failed.")
+        current_app.logger.exception("Openaire index failed.")
         if retry:
             openaire_direct_index.retry(exc=exc)
         else:
@@ -143,7 +143,7 @@ def openaire_delete(record_id=None, retry=True):
         current_cache.set(
             f"openaire_direct_index:{record_id}", datetime.now(), timeout=-1
         )
-        current_app.logger.error("Openaire delete failed.")
+        current_app.logger.exception("Openaire delete failed.")
         if retry:
             openaire_delete.retry(exc=exc)
         else:
