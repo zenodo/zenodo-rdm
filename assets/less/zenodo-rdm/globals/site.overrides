@@ -22,6 +22,19 @@ body {
   }
 }
 
+.mce-content {
+  table, td, th {
+      border: 1px dashed #bbb;
+      border-collapse: collapse;
+      padding: 1rem;
+  }
+  blockquote{
+      border-left: 4px solid #ccc;
+      margin-left: 1.5rem;
+      padding-left: 1rem;
+  }
+}
+
 #invenio-nav {
   min-height: 96px;
 }
