@@ -328,7 +328,7 @@ class MetadataSchema(Schema):
         notes = None
         for ad in additional_descriptions:
             ad_type = ad["type"]["id"]
-            if ad_type == "other":
+            if not notes and ad_type == "notes":
                 notes = ad.get("description", "")
             if ad_type == "methods":
                 methods = ad.get("description", "")
