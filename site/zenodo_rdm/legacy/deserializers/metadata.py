@@ -269,7 +269,7 @@ class MetadataSchema(Schema):
         notes = original.get("notes")
         if notes:
             rdm_additional_descriptions.append(
-                {"description": notes, "type": {"id": "other"}}
+                {"description": notes, "type": {"id": "notes"}}
             )
 
         method = original.get("method")
