@@ -19,16 +19,9 @@
     >
       {%- if permissions.can_read_files -%}
         {# record has files AND user has permission to see files #}
-        <h2 id="files-heading">{{ _('Files') }}</h2>
         {%- set files = files|order_entries %}
-        {%- if record.files.enabled and (files is not defined or files|length == 0) -%}
-          <div class="ui message warning">
-            <div class="header">
-              Looking for files of this record?
-            </div>
-            They are currently under migration process and will be available soon!
-          </div>
-        {% else %}
+        {%- if files|length > 0 -%}
+          <h2 id="files-heading">{{ _('Files') }}</h2>
           {%- if files|has_previewable_files -%}
             {%-set preview_file = files|select_preview_file(default_preview=record.files.default_preview) %}
             {{ preview_file_box(preview_file, record.id, is_preview, record, include_deleted) }}
