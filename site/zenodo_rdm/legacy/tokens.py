@@ -90,7 +90,7 @@ class TimedSecretLinkSerializer(TimedJSONWebSignatureSerializer, TokenMixin):
             current_app.config["SECRET_KEY"],
             expires_in=int(dt.total_seconds()) if dt else None,
             salt="accessrequests-timedlink",
-            **kwargs
+            **kwargs,
         )
 
 
@@ -133,15 +133,26 @@ class SecretLinkFactory:
 
 def verify_legacy_secret_link(identity):
     """Verify the legacy secret linlk token."""
-    token_arg = "token"
-    session_arg = "_legacy_secret_link_token"
-    token = request.args.get(token_arg, session.get(session_arg, None))
+    token = None
+    token_source = None
+    arg_key = "token"
+    session_key = "_legacy_secret_link_token"
+    arg_token = request.args.get(arg_key, None)
+    session_token = session.get(session_key, None)
+    if arg_token:
+        token = arg_token
+        token_source = "arg"
+    elif session_token:
+        token = session_token
+        token_source = "session"
 
     if token:
         try:
             data = SecretLinkFactory.load_token(token)
             if data:
                 identity.provides.add(LegacySecretLinkNeed(str(data["data"]["recid"])))
-                session[session_arg] = token
+                session[session_key] = token
         except SignatureExpired:
-            flash(_("Your shared link has expired."))
+            if token_source == "arg":
+                flash(_("Your shared link has expired."))
+            session.pop(session_key, None)
