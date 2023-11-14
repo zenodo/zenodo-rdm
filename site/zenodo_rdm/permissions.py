@@ -10,6 +10,7 @@ from invenio_administration.generators import Administration
 from invenio_communities.permissions import CommunityPermissionPolicy
 from invenio_rdm_records.services.generators import (
     AccessGrant,
+    CommunityInclusionReviewers,
     IfDeleted,
     IfExternalDOIRecord,
     IfFileIsLocal,
@@ -74,6 +75,7 @@ class ZenodoRDMRecordPermissionPolicy(RDMRecordPermissionPolicy):
         AccessGrant("view"),
         SecretLinks("view"),
         SubmissionReviewer(),
+        CommunityInclusionReviewers(),
         RecordCommunitiesAction("view"),
     ]
 
