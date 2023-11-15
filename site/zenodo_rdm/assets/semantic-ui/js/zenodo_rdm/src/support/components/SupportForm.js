@@ -165,7 +165,6 @@ class SupportForm extends Component {
               });
             },
             maxSize: maxFileSize,
-            accept: ".jpeg,.jpg,.png",
           };
           return (
             <SemanticForm as={Form} onSubmit={handleSubmit}>

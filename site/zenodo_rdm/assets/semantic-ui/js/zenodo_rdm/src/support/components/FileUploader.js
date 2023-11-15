@@ -29,7 +29,6 @@ const FileUploader = ({
 
       <label className="helptext mt-5 mb-0">
         Optional. Max attachments size: {humanReadableBytes(maxFileSize, false)}.
-        Accepted file formats: {dropzoneParams.accept}.
       </label>
 
       {errorMessage && (
