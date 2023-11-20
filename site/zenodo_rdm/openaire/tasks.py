@@ -155,8 +155,9 @@ def openaire_delete(record_id=None, retry=True):
 def retry_openaire_failures():
     """Retries failed OpenAIRE indexing/deletion operations."""
     cache = current_cache.cache
-    failed_records = cache._write_client.keys(
-        cache.key_prefix + "openaire_direct_index:*"
+    failed_records = cache._write_client.scan_iter(
+        cache.key_prefix + "openaire_direct_index:*",
+        count=1000,
     )
     for key in failed_records:
         try:
