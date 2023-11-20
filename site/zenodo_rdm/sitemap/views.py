@@ -7,7 +7,7 @@
 
 """Redirects for legacy URLs."""
 
-from flask import Blueprint, abort, current_app
+from flask import Blueprint, abort, current_app, render_template
 from invenio_cache import current_cache
 
 blueprint = Blueprint(
@@ -21,6 +21,8 @@ blueprint = Blueprint(
 
 def _get_cached_or_404(page):
     data = current_cache.get("sitemap:" + str(page))
+    if page != 0:
+        data = render_template("zenodo_sitemap/sitemap.xml", urlset=filter(None, data))
     if data:
         return current_app.response_class(data, mimetype="text/xml")
     else:
