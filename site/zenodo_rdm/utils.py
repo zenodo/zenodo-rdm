@@ -164,3 +164,67 @@ def swh_link_render(record):
             )
         )
     return ret
+
+
+def blr_link_render(record):
+    """Entry for BLR."""
+    ret = []
+
+    treatmentbank_link = None
+    gbif_link = None
+    sibls_link = None
+
+    for identifier in record["metadata"]["identifiers"]:
+        if re.match(
+            "(http|https)://(publication|treatment).plazi.org/id/",
+            identifier["identifier"],
+            re.I,
+        ):
+            treatmentbank_link = identifier["identifier"]
+
+    for identifier in record["metadata"]["related_identifiers"]:
+        if (
+            re.match("(http|https)://www.gbif.org", identifier["identifier"], re.I)
+            and identifier["relation_type"]["id"] == "issourceof"
+        ):
+            gbif_link = identifier["identifier"]
+        elif (
+            re.match(
+                "(http|https)://sibils.text-analytics.ch",
+                identifier["identifier"],
+                re.I,
+            )
+            and identifier["relation_type"]["id"] == "issourceof"
+        ):
+            sibls_link = identifier["identifier"]
+
+    if treatmentbank_link:
+        ret.append(
+            dump_external_resource(
+                treatmentbank_link,
+                title="TreatmentBank",
+                section=_("Indexed in"),
+                icon=url_for("static", filename="images/treatment-bank.png"),
+            )
+        )
+
+    if gbif_link:
+        ret.append(
+            dump_external_resource(
+                gbif_link,
+                title="GBIF",
+                section=_("Indexed in"),
+                icon=url_for("static", filename="images/gbif.png"),
+            )
+        )
+
+    if sibls_link:
+        ret.append(
+            dump_external_resource(
+                sibls_link,
+                title="SIBLS",
+                section=_("Indexed in"),
+                icon=url_for("static", filename="images/sib.png"),
+            )
+        )
+    return ret
