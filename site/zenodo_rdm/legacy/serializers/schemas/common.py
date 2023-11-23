@@ -10,7 +10,7 @@
 from invenio_communities.communities.services.service import get_cached_community_slug
 from invenio_communities.proxies import current_communities
 from marshmallow import Schema, fields, missing, post_dump, pre_dump
-from marshmallow_utils.fields import EDTFDateString, SanitizedHTML, SanitizedUnicode
+from marshmallow_utils.fields import EDTFDateTimeString, SanitizedHTML, SanitizedUnicode
 from zenodo_legacy.funders import FUNDER_ACRONYMS, FUNDER_ROR_TO_DOI
 from zenodo_legacy.licenses import rdm_to_legacy
 
@@ -122,8 +122,8 @@ class ContributorSchema(CreatorSchema):
 class DateSchema(Schema):
     """Date schema."""
 
-    start = EDTFDateString()
-    end = EDTFDateString()
+    start = EDTFDateTimeString()
+    end = EDTFDateTimeString()
     type = SanitizedUnicode(attribute="type.id")
     description = SanitizedUnicode()
 
