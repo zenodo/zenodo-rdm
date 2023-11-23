@@ -304,7 +304,7 @@ REDIRECTOR_RULES = {
         "target": record_export_view,
     },
     "redirect_record_file_download": {
-        "source": "/record/<pid_value>/files/<filename>",
+        "source": "/record/<pid_value>/files/<path:filename>",
         "rule_options": {"strict_slashes": False},
         "target": record_file_download_view,
     },
