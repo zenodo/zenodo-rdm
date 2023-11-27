@@ -13,6 +13,7 @@ import orjson
 from invenio_rdm_migrator.utils import ts
 
 DATA_PATHS = [
+    "awards-2023-11.jsonl.gz",  # https://zenodo.org/record/10053009
     "awards-2023-08.jsonl.gz",  # https://zenodo.org/record/8224080
     "awards-2023-04.jsonl.gz",  # https://zenodo.org/record/7870151
     "awards-2023-03.jsonl.gz",  # https://zenodo.org/record/7803150
@@ -46,6 +47,7 @@ VOCABULARIES_AWARDS_OPENAIRE_FUNDERS = {
     "snsf________": "00yjd3n13",
     "sshrc_______": "006cvnv84",
     "tubitakf____": "04w9kkr77",
+    "twcf________": "00x0z1472",
     "ukri________": "001aqnf71",
     "wt__________": "029chgv08",
 }
