@@ -319,7 +319,7 @@ REDIRECTOR_RULES = {
         "target": redirect_deposit_new_view,
     },
     "redirect_record_file_preview": {
-        "source": "/record/<pid_value>/preview/<filename>",
+        "source": "/record/<pid_value>/preview/<path:filename>",
         "rule_options": {"strict_slashes": False},
         "target": redirect_record_file_preview_view,
     },
