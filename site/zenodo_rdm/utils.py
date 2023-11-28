@@ -12,6 +12,9 @@ from urllib.parse import parse_qs, urlencode, urlsplit, urlunsplit
 import idutils
 from flask import current_app, url_for
 from invenio_app_rdm.records_ui.utils import dump_external_resource
+from invenio_rdm_records.proxies import current_rdm_records_service as service
+from invenio_swh.proxies import current_swh_service as service_swh
+
 from invenio_i18n import _
 
 from zenodo_rdm.openaire.utils import openaire_link
@@ -127,6 +130,39 @@ def openaire_link_render(record):
                 title="OpenAIRE",
                 section=_("Indexed in"),
                 icon=url_for("static", filename="images/openaire.svg"),
+            )
+        )
+    return ret
+
+
+def swh_link_render(record):
+    """Render the swh link."""
+
+    if not current_app.config.get("SWH_ENABLED"):
+        return None
+
+    ret = []
+
+    pid = service.record_cls.pid.resolve(record["id"])
+    d_res = service_swh.get_record_deposit(pid.id)
+    if not d_res.deposit:
+        return None
+
+    swhid = d_res.deposit.swhid
+    if not swhid:
+        return None
+
+    base_url = current_app.config.get("SWH_UI_BASE_URL")
+    swh_stripped = swhid.split(":")[3]
+    swh_link = f"{base_url}/browse/directory/{swh_stripped}/"
+    if swh_link:
+        ret.append(
+            dump_external_resource(
+                swh_link,
+                title=f"Software Heritage",
+                subtitle=swhid,
+                section=_("Archived in"),
+                icon=url_for("static", filename="images/swh.png"),
             )
         )
     return ret
