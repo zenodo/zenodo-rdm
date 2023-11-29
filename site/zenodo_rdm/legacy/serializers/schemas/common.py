@@ -14,12 +14,6 @@ from marshmallow_utils.fields import EDTFDateString, SanitizedHTML, SanitizedUni
 from zenodo_legacy.funders import FUNDER_ACRONYMS, FUNDER_ROR_TO_DOI
 from zenodo_legacy.licenses import rdm_to_legacy
 
-
-def to_camel_case(string, split_char=" "):
-    """Returns a camel cased string."""
-    return "".join(word.title() for word in string.split(split_char))
-
-
 # Maps RDM relation_type to legacy relation
 RELATION_TYPE_MAPPING = {
     "iscitedby": "isCitedBy",
@@ -59,6 +53,31 @@ RELATION_TYPE_MAPPING = {
     "isalternateidentifier": "isAlternateIdentifier",
 }
 
+# Maps RDM creator/contributor roles to legacy roles
+ROLE_TYPE_MAPPING = {
+    "contactperson": "ContactPerson",
+    "datacollector": "DataCollector",
+    "datacurator": "DataCurator",
+    "datamanager": "DataManager",
+    "distributor": "Distributor",
+    "editor": "Editor",
+    "hostinginstitution": "HostingInstitution",
+    "producer": "Producer",
+    "projectleader": "ProjectLeader",
+    "projectmanager": "ProjectManager",
+    "projectmember": "ProjectMember",
+    "registrationagency": "RegistrationAgency",
+    "registrationauthority": "RegistrationAuthority",
+    "relatedperson": "RelatedPerson",
+    "researcher": "Researcher",
+    "researchgroup": "ResearchGroup",
+    "rightsholder": "RightsHolder",
+    "sponsor": "Sponsor",
+    "supervisor": "Supervisor",
+    "workpackageleader": "WorkPackageLeader",
+    "other": "Other",
+}
+
 
 class CreatorSchema(Schema):
     """Creator schema."""
@@ -96,9 +115,8 @@ class ContributorSchema(CreatorSchema):
         """Loads role field."""
         # English title matches DataCite prop, used in legacy Zenodo
         role = obj.get("role", {})
-        if role:
-            title_en = role.get("title", {}).get("en")
-            return to_camel_case(title_en, " ")
+        if role and role.get("id") in ROLE_TYPE_MAPPING:
+            return ROLE_TYPE_MAPPING[role["id"]]
 
 
 class DateSchema(Schema):
