@@ -977,11 +977,11 @@
         },
         "invenio-administration": {
             "hashes": [
-                "sha256:11f212c14ac3c62c328539eac951711b2ebbfbf1d58c6b705711670a9ff6097d",
-                "sha256:86d15e44e07264f567c978c7ba6fefb41a4037c0dd048bcaca6498d619c46fba"
+                "sha256:64c7cd87b3757c7f9b91154ee1fa350867755791bfb1bc4ed48bec9fe1634fea",
+                "sha256:ac4c5efe30ece961c5c0be41bf799d4895bb78cf5f2ac0e8dd0aff31769ed715"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==1.9.3"
+            "version": "==1.10.0"
         },
         "invenio-app": {
             "hashes": [
