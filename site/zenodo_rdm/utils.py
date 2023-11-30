@@ -12,10 +12,9 @@ from urllib.parse import parse_qs, urlencode, urlsplit, urlunsplit
 import idutils
 from flask import current_app, url_for
 from invenio_app_rdm.records_ui.utils import dump_external_resource
+from invenio_i18n import _
 from invenio_rdm_records.proxies import current_rdm_records_service as service
 from invenio_swh.proxies import current_swh_service as service_swh
-
-from invenio_i18n import _
 
 from zenodo_rdm.openaire.utils import openaire_link
 
@@ -137,7 +136,6 @@ def openaire_link_render(record):
 
 def swh_link_render(record):
     """Render the swh link."""
-
     if not current_app.config.get("SWH_ENABLED"):
         return None
 
