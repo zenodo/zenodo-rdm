@@ -161,6 +161,7 @@ def swh_link_render(record):
                 subtitle=swhid,
                 section=_("Archived in"),
                 icon=url_for("static", filename="images/swh.png"),
+                template="invenio_swh/swh_link.html",
             )
         )
     return ret
