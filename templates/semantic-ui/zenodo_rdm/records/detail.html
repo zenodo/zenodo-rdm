@@ -64,6 +64,20 @@
 
 {# Additional details #}
 {%- block record_details -%}
+
+  {% if record.expanded.parent.communities.default.slug == "biosyslit" %}
+    {# BLR Related works #}
+    <section
+      id="blr-search"
+      class="rel-mt-2"
+      data-blr-endpoint="/api/records"
+      data-record-doi='{{ record.pids.doi.identifier | tojson }}'
+      data-resource-type='{{ record.metadata.resource_type.title.en | tojson }}'
+      data-communities='{{ record.expanded.parent.communities | tojson }}'
+    >
+    </section>
+  {% endif %}
+
   <section id="additional-details" class="rel-mt-2" aria-label="{{ _('Additional record details') }}">
     {%- include "zenodo_rdm/records/details/details.html" %}
   </section>
@@ -77,7 +91,8 @@
       id="citations-search"
       data-record-pids='{{ record.pids | tojson }}'
       data-record-parent-pids='{{ parent_pids | tojson }}'
-      data-citations-endpoint="{{config.ZENODO_RECORDS_UI_CITATIONS_ENDPOINT}}" aria-label="{{ _('Record citations')}}"
+      data-citations-endpoint="{{config.ZENODO_RECORDS_UI_CITATIONS_ENDPOINT}}"
+      aria-label="{{ _('Record citations')}}"
       class="rel-mb-1"
     >
     </section>
@@ -87,4 +102,8 @@
 {% block javascript %}
   {{super()}}
   {{ webpack['zenodo-rdm-citations.js'] }}
+
+  {% if record.expanded.parent.communities.default.slug == "biosyslit" %}
+    {{ webpack['zenodo-rdm-blr-search.js'] }}
+  {% endif %}
 {% endblock javascript %}
