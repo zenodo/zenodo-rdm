@@ -74,4 +74,31 @@
       </ul>
     </div>
   </section>
+
+  <section class="sidebar-container">
+    <h2 class="ui medium top attached header mt-0">Newsletter</h2>
+    <div class="ui segment bottom attached rdm-sidebar">
+      <p>Receive updates on our latest developments, projects and upcoming webinars sent quarterly.</p>
+
+      <form method="post" action="https://newsletters.zenodo.org/subscription/form">
+        <input type="hidden" name="nonce">
+        <label class="ui tiny header" for="newsletter-email">
+          <small>E-mail *</small>
+        </label>
+        <div class="ui fluid input mb-10">
+          <input id="newsletter-email" type="email" name="email" required="" placeholder="your-email@example.com">
+        </div>
+
+        <label class="ui tiny header" for="newsletter-name">
+          <small>Name</small>
+        </label>
+        <div class="ui fluid input mb-10">
+          <input id="newsletter-name" type="text" name="name" placeholder="Your name">
+        </div>
+
+        <input id="e7755" type="hidden" name="l" checked="" value="e775524d-5cce-4885-b559-ef0f6214f24b">
+        <input type="submit" value="Subscribe" class="ui primary button fluid">
+      </form>
+    </div>
+  </section>
 {% endblock side_column_content %}
