@@ -72,10 +72,11 @@
 
 {%- block record_footer -%}
   {% if citations_enabled and not is_preview %}
+    {% set parent_pids = record.parent.pids or record.pids %}
     <section
       id="citations-search"
       data-record-pids='{{ record.pids | tojson }}'
-      data-record-parent-pids='{{ record.parent.pids or record.pids | tojson }}'
+      data-record-parent-pids='{{ parent_pids | tojson }}'
       data-citations-endpoint="{{config.ZENODO_RECORDS_UI_CITATIONS_ENDPOINT}}" aria-label="{{ _('Record citations')}}"
       class="rel-mb-1"
     >
