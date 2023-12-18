@@ -24,8 +24,11 @@
 
 {%- extends "invenio_app_rdm/footer.html" %}
 
+  <div class="footer-top">
+    <div class="ui container app-rdm-footer">
+{% block footer_content %}
 {%- block footer_top_left %}
-<div class="ui equal width stackable grid">
+<div class="ui equal width stackable grid zenodo-footer">
   <div class="column">
     <h2 class="ui inverted tiny header">{{_('About')}}</h2>
     <ul class="ui inverted link list">
@@ -128,34 +131,5 @@
   </ul>
   {%- endblock footer_top_right %}
 </div>
-
-{%- block footer_bottom %}
-<div class="row footer-bottom">
-  <div class="ui inverted container">
-    <div class="ui grid">
-      <div class="eight wide column left middle aligned">
-        <p class="m-0">
-          Powered by
-          <a href="http://information-technology.web.cern.ch/about/computer-centre">CERN Data Centre</a> & <a href="https://inveniordm.docs.cern.ch/">InvenioRDM</a>
-        </p>
-      </div>
-      <div class="eight wide column right aligned">
-        <ul class="ui inverted horizontal link list">
-          <li class="item">
-            <a href="https://stats.uptimerobot.com/vlYOVuWgM/">{{_('Status')}}</a>
-          </li>
-          <li class="item">
-            <a href="https://about.zenodo.org/privacy-policy">{{_('Privacy policy')}}</a>
-          </li>
-          <li class="item">
-            <a href="https://about.zenodo.org/terms">{{_('Terms of Use')}}</a>
-          </li>
-          <li class="item">
-            <a href="/support">{{_('Support')}}</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
-{%- endblock footer_bottom %}
+{% endblock footer_content %}
+    </div></div>
