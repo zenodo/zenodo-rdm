@@ -23,7 +23,7 @@ body {
 }
 
 #invenio-nav {
-  min-height: 96px;
+  height: 96px;
 }
 
 .logo {

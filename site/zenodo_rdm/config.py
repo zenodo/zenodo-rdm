@@ -6,7 +6,6 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 """Custom code config."""
 
-from flask import request, url_for
 
 from .params import ZenodoArgsSchema, ZenodoSearchOptions
 from .redirector import (
