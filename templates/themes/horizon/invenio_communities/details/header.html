@@ -1,0 +1,152 @@
+{# -*- coding: utf-8 -*-
+
+This file is part of Invenio.
+Copyright (C) 2016-2020 CERN.
+
+Invenio is free software; you can redistribute it and/or modify it
+under the terms of the MIT License; see LICENSE file for more details.
+#}
+
+{%- from "invenio_theme/macros/truncate.html" import truncate_text %}
+{%- from "invenio_communities/details/macros/access-status-label.html" import access_status_label -%}
+
+<div
+  class="ui container fluid page-subheader-outer with-submenu rel-pt-2 ml-0-mobile mr-0-mobile">
+  <div class="ui container fluid mr-0-mobile ml-0-mobile">
+    <div class="ui relaxed container grid">
+      <div class="row pb-0">
+        <div
+          class="sixteen wide mobile sixteen wide tablet thirteen wide computer column">
+          <div
+            class="community-header flex align-items-center column-mobile align-items-start-mobile">
+            <div class="flex align-items-center">
+              <div class="ui rounded image community-image mt-5 rel-mr-2">
+                <img
+                  src="{{ community.links.logo | resolve_community_logo(community.id) }}"
+                  alt=""
+                  class="rel-mb-1"
+                />
+              </div>
+
+              <div class="mobile only">
+                <h1 class="ui medium header mb-5">
+                  {{ community.metadata.title }}
+                </h1>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex align-items-center mb-5 tablet computer only">
+                <h1 class="ui medium header mb-0">{{ community.metadata.title }} TEST </h1>
+
+                {% if community.access.visibility == 'restricted' %}
+                  <div class="rel-ml-1">
+                    {{ access_status_label() }}
+                  </div>
+                {% endif %}
+              </div>
+
+              <div>
+                {% if community.access.visibility == 'restricted' %}
+                  <div class="mobile only rel-mb-1">
+                    {{ access_status_label() }}
+                  </div>
+                {% endif %}
+
+                {% if community.metadata.website %}
+                  <div class="inline-computer mt-5 rel-mr-1">
+                    <i class="linkify icon" aria-hidden="true"></i>
+                    <a href="{{ community.metadata.website }}">
+                      {{ community.metadata.website }}
+                    </a>
+                  </div>
+                {% endif %}
+
+                {% if community.metadata.type is defined %}
+                  <div class="inline-computer mt-5 rel-mr-1">
+                    <i class="tag icon" aria-hidden="true"></i>
+                    <span class="label label-keyword">
+                    {{ community.ui.type.title_l10n }}
+                  </span>
+                  </div>
+                {% endif %}
+
+                {% if community.metadata.organizations %}
+                  {% for org in community.metadata.organizations %}
+                    {% set ror_id = org.id %}
+                    {% set name = org.name %}
+
+                    <div class="inline-computer mt-5">
+                      {% if loop.index == 1 %}
+                        <i class="building outline icon" aria-hidden="true"></i>
+                      {% endif %}
+
+                      {{ name }}
+
+                      {% if ror_id %}
+                        <a
+                          href="https://ror.org/{{ ror_id }}"
+                          aria-label="{{ name }}'s ROR {{ _('profile') }}"
+                          title="{{ name }}'s ROR {{ _('profile') }}"
+                          target="_blank"
+                        >
+                          <img
+                            class="inline-id-icon"
+                            src="{{ url_for('static', filename='images/ror-icon.svg') }}"
+                            alt=""
+                          />
+                        </a>
+                      {% endif %}
+                      {{ ", " if not loop.last }}
+                    </div>
+                  {% endfor %}
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="sixteen wide mobile sixteen wide tablet three wide computer right aligned middle aligned column">
+          <a href="/uploads/new?community={{ community.slug }}"
+             class="ui positive button labeled icon rel-mt-1 theme-secondary">
+            <i class="upload icon" aria-hidden="true"></i>
+            {{ _("New upload") }}
+          </a>
+          {% if permissions.can_moderate %}
+            <a
+              href="{{ url_for('administration.communities', q='slug:'+community.slug) }}"
+              class="ui button labeled icon rel-mt-1">
+              <i class="cog icon" aria-hidden="true"></i>
+              {{ _("Manage community") }}
+            </a>
+          {% endif %}
+
+        </div>
+      </div>
+    </div>
+    <div class="ui divider mobile only"></div>
+    <div class="ui container fluid theme-tertiary page-subheader rel-mt-2 p-10 mr-0-mobile ml-0-mobile">
+      <div class="ui container">
+        Research and innovation
+      </div>
+    </div>
+    <div
+      class="ui container fluid secondary pointing stackable menu pl-0 pr-0 theme-primary mt-0 mr-0-mobile ml-0-mobile">
+      {% if community_menu_active %}
+      <div class="ui container">
+        {% for item in current_menu.submenu('communities').children
+        if (item.permissions == True or permissions[item.permissions]) and item.visible %}
+          <a
+            class="item {{ 'active' if active_community_header_menu_item == item.name }} {{ 'disabled' if not item.url }}"
+            href="{{ item.url }}"
+          >
+            <i aria-hidden="true" class="{{ item.icon }} icon"></i>
+            {{ item.text }}
+          </a>
+        {% endfor %}
+      </div>
+    {% endif %}
+    </div>
+  </div>
+</div>
