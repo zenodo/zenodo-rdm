@@ -1,0 +1,74 @@
+{#
+
+  Copyright (C) 2019-2020 CERN.
+  Copyright (C) 2019-2020 Northwestern University.
+  Copyright (C)      2021 Graz University of Technology.
+
+  Invenio App RDM is free software; you can redistribute it and/or modify it
+  under the terms of the MIT License; see LICENSE file for more details.
+#}
+  <div class="footer-top theme-primary horizon-footer">
+    <div class="ui container">
+
+      <div class="ui grid divided relaxed">
+        <div class="row">
+
+            <div
+              class="rdm-footer five wide tablet three wide computer sixteen wide mobile column rel-mb-2">
+
+
+              <h2 class="ui small header">{{ _("Managed by") }}</h2>
+              {% trans invenio_rdm="https://open-research-europe.ec.europa.eu/" %}
+                <a href="{{ invenio_rdm }}">European Commission</a>
+                <i class="green check circle outline icon"></i>
+              {% endtrans %}
+              <h2 class="ui small header">{{ _("Contact") }}</h2>
+              <a href="mailto:openscience@ec.europe.eu">openscience@ec.europe.eu</a>
+
+
+            </div>
+            <div
+              class="rdm-footer eleven wide tablet thirteen wide computer sixteen wide mobile column">
+              <div class="ui grid">
+                <div class="three wide five wide tablet column">
+                  <h2 class="ui small header">{{ _("About") }}</h2>
+                  {% trans invenio_rdm_chatroom="https://discord.gg/8qatqBC" %}
+                    <p><a href="{{ invenio_rdm_chatroom }}">How it works?</a></p>
+                  {% endtrans %}
+                  {% trans invenio_rdm_talk="https://invenio-talk.web.cern.ch/c/projects/invenio-rdm" %}
+                    <p><a href="{{ invenio_rdm_talk }}">FAQ</a></p>
+                  {% endtrans %}
+                  {% trans invenio_events="https://inveniosoftware.org/events/" %}
+                    <p><a href="{{ invenio_events }}">Contact</a></p>
+                  {% endtrans %}
+                </div>
+                <div class="three wide computer five wide tablet column">
+                  <h2 class="ui small header">{{ _("FAIR publishing") }}</h2>
+                  {% trans invenio_rdm_chatroom="https://discord.gg/8qatqBC" %}
+                    <p><a href="{{ invenio_rdm_chatroom }}">Getting started </a></p>
+                  {% endtrans %}
+                  {% trans invenio_rdm_talk="https://invenio-talk.web.cern.ch/c/projects/invenio-rdm" %}
+                    <p><a href="{{ invenio_rdm_talk }}">Submit your research</a></p>
+                  {% endtrans %}
+                </div>
+                <div class="three wide computer five wide tablet column">
+                  <h2 class="ui small header">{{ _("Integrations") }}</h2>
+                  {% trans invenio_rdm_chatroom="https://discord.gg/8qatqBC" %}
+                    <p><a href="{{ invenio_rdm_chatroom }}">REST API</a></p>
+                  {% endtrans %}
+                  {% trans invenio_rdm_talk="https://invenio-talk.web.cern.ch/c/projects/invenio-rdm" %}
+                    <p><a href="{{ invenio_rdm_talk }}">OAI-PMH</a></p>
+                  {% endtrans %}
+                  {% trans invenio_events="https://inveniosoftware.org/events/" %}
+                    <p><a href="{{ invenio_events }}">FAIR Evaluation tools</a></p>
+                  {% endtrans %}
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
