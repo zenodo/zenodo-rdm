@@ -9,6 +9,7 @@
 {%- extends "invenio_app_rdm/records/detail.html" %}
 
 {%- set citations_enabled = config.ZENODO_RECORDS_UI_CITATIONS_ENABLE %}
+{%- set isBlrRecord = record | is_blr_related_record %}
 
 {%- block record_files -%}
   {# record has files BUT passed files are empty. This happens when we display are request. #}
@@ -65,16 +66,28 @@
 {# Additional details #}
 {%- block record_details -%}
 
-  {% if record.expanded.parent.communities.default.slug == "biosyslit" %}
+  {% if isBlrRecord %}
     {# BLR Related works #}
+    <h2>Linked records</h2>
     <section
       id="blr-search"
-      class="rel-mt-2"
       data-blr-endpoint="/api/records"
       data-record-doi='{{ record.pids.doi.identifier | tojson }}'
       data-resource-type='{{ record.metadata.resource_type.title.en | tojson }}'
-      data-communities='{{ record.expanded.parent.communities | tojson }}'
+      data-blr-id='{{ record.expanded.parent.communities.default.id | tojson }}'
     >
+      <div class="ui segment">
+        <div class="ui fluid placeholder">
+          <div class="image header">
+            <div class="long line"></div>
+            <div class="line"></div>
+          </div>
+          <div class="image header">
+            <div class="long line"></div>
+            <div class="line"></div>
+          </div>
+        </div>
+      </div>
     </section>
   {% endif %}
 
@@ -103,7 +116,7 @@
   {{super()}}
   {{ webpack['zenodo-rdm-citations.js'] }}
 
-  {% if record.expanded.parent.communities.default.slug == "biosyslit" %}
+  {% if isBlrRecord %}
     {{ webpack['zenodo-rdm-blr-search.js'] }}
   {% endif %}
 {% endblock javascript %}
