@@ -14,6 +14,7 @@ from invenio_records_resources.resources.records.utils import search_preference
 from marshmallow import ValidationError
 
 from .decorators import cached_unless_authenticated_or_flashes
+from .filters import is_blr_related_record
 from .support.support import ZenodoSupport
 
 
@@ -86,5 +87,8 @@ def create_blueprint(app):
     )
 
     app.register_error_handler(400, handle_validation_errors)
+
+    # Register template filters
+    blueprint.add_app_template_filter(is_blr_related_record)
 
     return blueprint

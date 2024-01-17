@@ -28,23 +28,15 @@ const blrContainer = document.getElementById("blr-search");
 const endpoint = blrContainer.dataset.blrEndpoint;
 const recordDOI = JSON.parse(blrContainer.dataset.recordDoi);
 const resourceType = JSON.parse(blrContainer.dataset.resourceType);
+const blrId = JSON.parse(blrContainer.dataset.blrId);
 
-const validTypes = [
-  "Figure",
-  "Taxonomic treatment",
-  "Book chapter",
-  "Journal article",
-  "Drawing",
-];
-
-if (validTypes.includes(resourceType)) {
-  blrContainer &&
-    ReactDOM.render(
-      <BlrSearch
-        endpoint={endpoint}
-        recordDOI={recordDOI}
-        resourceType={resourceType}
-      />,
-      blrContainer
-    );
-}
+blrContainer &&
+  ReactDOM.render(
+    <BlrSearch
+      endpoint={endpoint}
+      recordDOI={recordDOI}
+      resourceType={resourceType}
+      blrId={blrId}
+    />,
+    blrContainer
+  );

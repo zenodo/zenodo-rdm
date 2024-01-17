@@ -21,33 +21,14 @@
 // as an Intergovernmental Organization or submit itself to any jurisdiction.
 
 import React from "react";
-import { PropTypes } from "prop-types";
-import { Container, Icon } from "semantic-ui-react";
+import { Container } from "semantic-ui-react";
 
-export const NoResults = ({ queryString }) => {
+export const NoResults = () => {
   return (
-    <Container align={(!queryString && "left") || "center"}>
-      {(queryString && (
-        <div className="text-muted rel-p-1">
-          <Icon name="search" size="huge" />
-          <p className="rel-mt-1">
-            <strong>No results found for '{queryString}'</strong>
-          </p>
-        </div>
-      )) || (
-        <p>
-          <Icon name="folder open outline" />
-          <em>No related content for this record.</em>
-        </p>
-      )}
+    <Container align="left">
+      <p>
+        <em>No related content for this record</em>
+      </p>
     </Container>
   );
-};
-
-NoResults.propTypes = {
-  queryString: PropTypes.string,
-};
-
-NoResults.defaultProps = {
-  queryString: "",
 };
