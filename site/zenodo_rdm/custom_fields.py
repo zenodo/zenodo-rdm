@@ -197,233 +197,264 @@ CUSTOM_FIELDS = [
 
 ZENODO_CUSTOM_FIELDS_UI = {
     "section": _("Biodiversity"),
-    "hide_from_upload_form": True,
+    "hide_from_upload_form": False,
     "fields": [
         # dwc
         dict(
             field="dwc:basisOfRecord",
+            ui_widget="MultiInput",
             props=dict(
                 label="Basis of record",
             ),
         ),
         dict(
             field="dwc:catalogNumber",
+            ui_widget="MultiInput",
             props=dict(
                 label="Catalog number",
             ),
         ),
         dict(
             field="dwc:class",
+            ui_widget="MultiInput",
             props=dict(
                 label="Class",
             ),
         ),
         dict(
             field="dwc:collectionCode",
+            ui_widget="MultiInput",
             props=dict(
                 label="Collection code",
             ),
         ),
         dict(
             field="dwc:country",
+            ui_widget="MultiInput",
             props=dict(
                 label="Country",
             ),
         ),
         dict(
             field="dwc:county",
+            ui_widget="MultiInput",
             props=dict(
                 label="County",
             ),
         ),
         dict(
             field="dwc:dateIdentified",
+            ui_widget="MultiInput",
             props=dict(
                 label="Date identified",
             ),
         ),
         dict(
             field="dwc:decimalLatitude",
+            ui_widget="MultiInput",
             props=dict(
                 label="Decimal latitude",
             ),
         ),
         dict(
             field="dwc:decimalLongitude",
+            ui_widget="MultiInput",
             props=dict(
                 label="Decimal longitude",
             ),
         ),
         dict(
             field="dwc:eventDate",
+            ui_widget="MultiInput",
             props=dict(
                 label="Event date",
             ),
         ),
         dict(
             field="dwc:family",
+            ui_widget="MultiInput",
             props=dict(
                 label="Family",
             ),
         ),
         dict(
             field="dwc:genus",
+            ui_widget="MultiInput",
             props=dict(
                 label="Genus",
             ),
         ),
         dict(
             field="dwc:identifiedBy",
+            ui_widget="MultiInput",
             props=dict(
                 label="Identified by",
             ),
         ),
         dict(
             field="dwc:individualCount",
+            ui_widget="MultiInput",
             props=dict(
                 label="Individual count",
             ),
         ),
         dict(
             field="dwc:institutionCode",
+            ui_widget="MultiInput",
             props=dict(
                 label="Institution code",
             ),
         ),
         dict(
             field="dwc:kingdom",
+            ui_widget="MultiInput",
             props=dict(
                 label="Kingdom",
             ),
         ),
         dict(
             field="dwc:lifeStage",
+            ui_widget="MultiInput",
             props=dict(
                 label="Life stage",
             ),
         ),
         dict(
             field="dwc:locality",
+            ui_widget="MultiInput",
             props=dict(
                 label="Locality",
             ),
         ),
         dict(
             field="dwc:materialSampleID",
+            ui_widget="MultiInput",
             props=dict(
                 label="Material sample ID",
             ),
         ),
         dict(
             field="dwc:namePublishedInID",
+            ui_widget="MultiInput",
             props=dict(
                 label="Name published in ID",
             ),
         ),
         dict(
             field="dwc:namePublishedInYear",
+            ui_widget="MultiInput",
             props=dict(
                 label="Name published in year",
             ),
         ),
         dict(
             field="dwc:order",
+            ui_widget="MultiInput",
             props=dict(
                 label="Order",
             ),
         ),
         dict(
-            field="dwc:class",
-            props=dict(
-                label="Class",
-            ),
-        ),
-        dict(
             field="dwc:otherCatalogNumbers",
+            ui_widget="MultiInput",
             props=dict(
                 label="Other catalog numbers",
             ),
         ),
         dict(
             field="dwc:phylum",
+            ui_widget="MultiInput",
             props=dict(
                 label="Phylum",
             ),
         ),
         dict(
             field="dwc:preparations",
+            ui_widget="MultiInput",
             props=dict(
                 label="Preparations",
             ),
         ),
         dict(
             field="dwc:recordedBy",
+            ui_widget="MultiInput",
             props=dict(
                 label="Recorded by",
             ),
         ),
         dict(
             field="dwc:scientificName",
+            ui_widget="MultiInput",
             props=dict(
                 label="Scientific name",
             ),
         ),
         dict(
             field="dwc:scientificNameAuthorship",
+            ui_widget="MultiInput",
             props=dict(
                 label="Scientific name authorship",
             ),
         ),
         dict(
             field="dwc:scientificNameID",
+            ui_widget="MultiInput",
             props=dict(
                 label="Scientific name ID",
             ),
         ),
         dict(
             field="dwc:sex",
+            ui_widget="MultiInput",
             props=dict(
                 label="Sex",
             ),
         ),
         dict(
             field="dwc:specificEpithet",
+            ui_widget="MultiInput",
             props=dict(
                 label="Species",
             ),
         ),
         dict(
             field="dwc:taxonID",
+            ui_widget="MultiInput",
             props=dict(
                 label="Taxon ID",
             ),
         ),
         dict(
             field="dwc:taxonomicStatus",
+            ui_widget="MultiInput",
             props=dict(
                 label="Taxonomic status",
             ),
         ),
         dict(
             field="dwc:taxonRank",
+            ui_widget="MultiInput",
             props=dict(
                 label="Taxon rank",
             ),
         ),
         dict(
             field="dwc:typeStatus",
+            ui_widget="MultiInput",
             props=dict(
                 label="Type status",
             ),
         ),
         dict(
             field="dwc:verbatimElevation",
+            ui_widget="MultiInput",
             props=dict(
                 label="Verbatim elevation",
             ),
         ),
         dict(
             field="dwc:verbatimEventDate",
+            ui_widget="MultiInput",
             props=dict(
                 label="Verbatim event date",
             ),
@@ -431,54 +462,63 @@ ZENODO_CUSTOM_FIELDS_UI = {
         # gbif-dwc
         dict(
             field="gbif-dwc:recordedByID",
+            ui_widget="MultiInput",
             props=dict(
                 label="Recorded by ID",
             ),
         ),
         dict(
             field="gbif-dwc:identifiedByID",
+            ui_widget="MultiInput",
             props=dict(
                 label="Identified by ID",
             ),
         ),
         dict(
             field="ac:associatedSpecimenReference",
+            ui_widget="MultiInput",
             props=dict(
                 label="Associated specimen reference",
             ),
         ),
         dict(
             field="ac:physicalSetting",
+            ui_widget="MultiInput",
             props=dict(
                 label="Physical setting",
             ),
         ),
         dict(
             field="ac:associatedSpecimenReference",
+            ui_widget="MultiInput",
             props=dict(
                 label="Associated specimen reference",
             ),
         ),
         dict(
             field="ac:captureDevice",
+            ui_widget="MultiInput",
             props=dict(
                 label="Capture device",
             ),
         ),
         dict(
             field="ac:resourceCreationTechnique",
+            ui_widget="MultiInput",
             props=dict(
                 label="Resource creation technique",
             ),
         ),
         dict(
             field="ac:subjectOrientation",
+            ui_widget="MultiInput",
             props=dict(
                 label="Subject orientation",
             ),
         ),
         dict(
             field="ac:subjectPart",
+            ui_widget="MultiInput",
             props=dict(
                 label="Subject part",
             ),
@@ -486,12 +526,14 @@ ZENODO_CUSTOM_FIELDS_UI = {
         # dc
         dict(
             field="dc:creator",
+            ui_widget="MultiInput",
             props=dict(
                 label="Creator",
             ),
         ),
         dict(
             field="dc:rightsHolder",
+            ui_widget="MultiInput",
             props=dict(
                 label="Rights holder",
             ),
@@ -499,6 +541,7 @@ ZENODO_CUSTOM_FIELDS_UI = {
         # openbiodiv
         dict(
             field="openbiodiv:TaxonomicConceptLabel",
+            ui_widget="MultiInput",
             props=dict(
                 label="Taxonomic concept label",
             ),
@@ -507,6 +550,7 @@ ZENODO_CUSTOM_FIELDS_UI = {
         dict(
             field="obo:RO_0002453",
             template="zenodo_rdm/obo.html",
+            ui_widget="MultiInput",
             props=dict(
                 label="Host of",
             ),
