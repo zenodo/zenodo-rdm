@@ -173,7 +173,7 @@ def blr_link_render(record):
 
     treatmentbank_link = None
     gbif_link = None
-    sibls_link = None
+    sibils_link = None
 
     for identifier in record["metadata"]["identifiers"]:
         if re.match(
@@ -197,7 +197,7 @@ def blr_link_render(record):
             )
             and identifier["relation_type"]["id"] == "issourceof"
         ):
-            sibls_link = identifier["identifier"]
+            sibils_link = identifier["identifier"]
 
     if treatmentbank_link:
         ret.append(
@@ -219,11 +219,11 @@ def blr_link_render(record):
             )
         )
 
-    if sibls_link:
+    if sibils_link:
         ret.append(
             dump_external_resource(
-                sibls_link,
-                title="SIBLS",
+                sibils_link,
+                title="SIBiLS",
                 section=_("Indexed in"),
                 icon=url_for("static", filename="images/sib.png"),
             )
