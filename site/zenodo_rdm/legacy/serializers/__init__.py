@@ -8,7 +8,7 @@
 """Zenodo legacy serializers."""
 
 from flask_resources import BaseListSchema, JSONSerializer, MarshmallowSerializer
-from marshmallow import fields, post_dump
+from marshmallow import fields, missing, post_dump
 
 from .schemas import (
     LegacyFileListSchema,
@@ -33,6 +33,12 @@ class LegacyListSchema(BaseListSchema):
         return data.get("hits", {}).get("hits", [])
 
 
+class ZenodoListSchema(BaseListSchema):
+    """Zenodo top-level List schema."""
+
+    sortBy = fields.Field(load_only=True)
+
+
 class LegacyJSONSerializer(MarshmallowSerializer):
     """Legacy metadata serializer."""
 
@@ -53,7 +59,7 @@ class ZenodoJSONSerializer(MarshmallowSerializer):
         super().__init__(
             format_serializer_cls=JSONSerializer,
             object_schema_cls=ZenodoSchema,
-            list_schema_cls=BaseListSchema,
+            list_schema_cls=ZenodoListSchema,
         )
 
 
