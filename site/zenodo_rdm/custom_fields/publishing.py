@@ -1,0 +1,37 @@
+# -*- coding: utf-8 -*-
+#
+# Copyright (C) 2023 CERN.
+#
+# ZenodoRDM is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+
+"""Custom fields."""
+from invenio_i18n import lazy_gettext as _
+from invenio_rdm_records.contrib.imprint import (
+    IMPRINT_CUSTOM_FIELDS,
+    IMPRINT_CUSTOM_FIELDS_UI,
+    IMPRINT_NAMESPACE,
+)
+from invenio_rdm_records.contrib.journal import (
+    JOURNAL_CUSTOM_FIELDS,
+    JOURNAL_CUSTOM_FIELDS_UI,
+    JOURNAL_NAMESPACE,
+)
+from invenio_rdm_records.contrib.thesis import (
+    THESIS_CUSTOM_FIELDS,
+    THESIS_CUSTOM_FIELDS_UI,
+    THESIS_NAMESPACE,
+)
+
+PUBLISHING_FIELDS_UI = {
+        "section": _("Publishing information"),
+        "hide_from_landing_page": True,  # hide meeting section from Additional details in landing page
+        "fields": [
+            # journal
+            *JOURNAL_CUSTOM_FIELDS_UI["fields"],
+            # imprint
+            *IMPRINT_CUSTOM_FIELDS_UI["fields"],
+            # thesis
+            *THESIS_CUSTOM_FIELDS_UI["fields"],
+        ],
+    }
