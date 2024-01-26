@@ -7,32 +7,6 @@
 
 """Custom fields."""
 from invenio_i18n import lazy_gettext as _
-from invenio_rdm_records.contrib.codemeta import (
-    CODEMETA_CUSTOM_FIELDS,
-    CODEMETA_CUSTOM_FIELDS_UI,
-    CODEMETA_FACETS,
-    CODEMETA_NAMESPACE,
-)
-from invenio_rdm_records.contrib.imprint import (
-    IMPRINT_CUSTOM_FIELDS,
-    IMPRINT_CUSTOM_FIELDS_UI,
-    IMPRINT_NAMESPACE,
-)
-from invenio_rdm_records.contrib.journal import (
-    JOURNAL_CUSTOM_FIELDS,
-    JOURNAL_CUSTOM_FIELDS_UI,
-    JOURNAL_NAMESPACE,
-)
-from invenio_rdm_records.contrib.meeting import (
-    MEETING_CUSTOM_FIELDS,
-    MEETING_CUSTOM_FIELDS_UI,
-    MEETING_NAMESPACE,
-)
-from invenio_rdm_records.contrib.thesis import (
-    THESIS_CUSTOM_FIELDS,
-    THESIS_CUSTOM_FIELDS_UI,
-    THESIS_NAMESPACE,
-)
 from invenio_records_resources.services.custom_fields import (
     BaseCF,
     DoubleCF,
@@ -42,42 +16,6 @@ from invenio_records_resources.services.custom_fields import (
 )
 from marshmallow import fields
 from marshmallow_utils.fields import SanitizedUnicode
-
-
-class SubjectListCF(BaseCF):
-    """Subject list custom field."""
-
-    @property
-    def mapping(self):
-        """Search mapping."""
-        return {
-            "type": "object",
-            "properties": {
-                "term": {"type": "keyword"},
-                "identifier": {"type": "keyword"},
-                "scheme": {"type": "keyword"},
-            },
-        }
-
-    @property
-    def field(self):
-        """Marshmallow field."""
-        return fields.List(
-            fields.Nested(
-                {
-                    "term": SanitizedUnicode(),
-                    "identifier": SanitizedUnicode(),
-                    "scheme": SanitizedUnicode(),
-                }
-            )
-        )
-
-
-LEGACY_CUSTOM_FIELDS = [
-    KeywordCF(name="legacy:communities", multiple=True),
-    SubjectListCF(name="legacy:subjects"),
-]
-"""Legacy compatibility custom fields."""
 
 
 class RelationshipListCF(BaseCF):
@@ -109,23 +47,9 @@ class RelationshipListCF(BaseCF):
         )
 
 
-NAMESPACES = {
-    "dwc": "http://rs.tdwg.org/dwc/terms/",
-    "gbif-dwc": "http://rs.gbif.org/terms/1.0/",
-    "ac": "http://rs.tdwg.org/ac/terms/",
-    "openbiodiv": "http://openbiodiv.net/ontology#",
-    "obo": "http://purl.obolibrary.org/obo/",
-    "dc": "http://purl.org/dc/terms/",
-    "legacy": "",
-    **CODEMETA_NAMESPACE,  # TODO enable when fixed (see https://github.com/zenodo/rdm-project/issues/217)
-    **JOURNAL_NAMESPACE,
-    **MEETING_NAMESPACE,
-    **IMPRINT_NAMESPACE,
-    **THESIS_NAMESPACE,
-}
-
-CUSTOM_FIELDS = [
+BIODIV_FIELDS = [
     # dwc
+
     KeywordCF(name="dwc:basisOfRecord", multiple=True),
     KeywordCF(name="dwc:catalogNumber", multiple=True),
     KeywordCF(name="dwc:class", multiple=True),
@@ -167,13 +91,6 @@ CUSTOM_FIELDS = [
     # gbif-dwc
     KeywordCF(name="gbif-dwc:identifiedByID", multiple=True),
     KeywordCF(name="gbif-dwc:recordedByID", multiple=True),
-    # ac
-    KeywordCF(name="ac:associatedSpecimenReference", multiple=True),
-    KeywordCF(name="ac:captureDevice", multiple=True),
-    KeywordCF(name="ac:physicalSetting", multiple=True),
-    KeywordCF(name="ac:resourceCreationTechnique", multiple=True),
-    KeywordCF(name="ac:subjectOrientation", multiple=True),
-    KeywordCF(name="ac:subjectPart", multiple=True),
     # dc
     KeywordCF(name="dc:creator", multiple=True),
     KeywordCF(name="dc:rightsHolder", multiple=True),
@@ -181,282 +98,284 @@ CUSTOM_FIELDS = [
     KeywordCF(name="openbiodiv:TaxonomicConceptLabel", multiple=True),
     # obo
     RelationshipListCF(name="obo:RO_0002453"),
-    # codemeta,
-    *CODEMETA_CUSTOM_FIELDS,  # TODO enable when fixed (see https://github.com/zenodo/rdm-project/issues/217)
-    # journal
-    *JOURNAL_CUSTOM_FIELDS,
-    # meeting
-    *MEETING_CUSTOM_FIELDS,
-    # imprint
-    *IMPRINT_CUSTOM_FIELDS,
-    # thesis
-    *THESIS_CUSTOM_FIELDS,
-    # legacy
-    *LEGACY_CUSTOM_FIELDS,
 ]
 
-ZENODO_CUSTOM_FIELDS_UI = {
+AUDIOVIS_FIELDS = [
+    # ac
+    KeywordCF(name="ac:associatedSpecimenReference", multiple=True),
+    KeywordCF(name="ac:captureDevice", multiple=True),
+    KeywordCF(name="ac:physicalSetting", multiple=True),
+    KeywordCF(name="ac:resourceCreationTechnique", multiple=True),
+    KeywordCF(name="ac:subjectOrientation", multiple=True),
+    KeywordCF(name="ac:subjectPart", multiple=True),
+]
+
+BIODIVERSITY_FIELDS_UI = {
     "section": _("Biodiversity"),
+    "icon": "leaf",
     "hide_from_upload_form": False,
+    "compose_fields": True,  # marks the group as dynamic
     "fields": [
-        # dwc
         dict(
             field="dwc:basisOfRecord",
             ui_widget="MultiInput",
             props=dict(
-                label="Basis of record",
+                label=_("Basis of record"),
+                type="text",
+                multiple_values=True
             ),
         ),
         dict(
             field="dwc:catalogNumber",
             ui_widget="MultiInput",
             props=dict(
-                label="Catalog number",
+                label=_("Catalog number"),
             ),
         ),
         dict(
             field="dwc:class",
             ui_widget="MultiInput",
             props=dict(
-                label="Class",
+                label=_("Class"),
             ),
         ),
         dict(
             field="dwc:collectionCode",
             ui_widget="MultiInput",
             props=dict(
-                label="Collection code",
+                label=_("Collection code"),
             ),
         ),
         dict(
             field="dwc:country",
             ui_widget="MultiInput",
             props=dict(
-                label="Country",
+                label=_("Country"),
             ),
         ),
         dict(
             field="dwc:county",
             ui_widget="MultiInput",
             props=dict(
-                label="County",
+                label=_("County"),
             ),
         ),
         dict(
             field="dwc:dateIdentified",
             ui_widget="MultiInput",
             props=dict(
-                label="Date identified",
+                label=_("Date identified"),
             ),
         ),
         dict(
             field="dwc:decimalLatitude",
             ui_widget="MultiInput",
             props=dict(
-                label="Decimal latitude",
+                label=_("Decimal latitude"),
             ),
         ),
         dict(
             field="dwc:decimalLongitude",
             ui_widget="MultiInput",
             props=dict(
-                label="Decimal longitude",
+                label=_("Decimal longitude"),
             ),
         ),
         dict(
             field="dwc:eventDate",
             ui_widget="MultiInput",
             props=dict(
-                label="Event date",
+                label=_("Event date"),
+                description=_("Insert date in YYYY-MM-DD format")
             ),
         ),
         dict(
             field="dwc:family",
             ui_widget="MultiInput",
             props=dict(
-                label="Family",
+                label=_("Family"),
             ),
         ),
         dict(
             field="dwc:genus",
             ui_widget="MultiInput",
             props=dict(
-                label="Genus",
+                label=_("Genus"),
             ),
         ),
         dict(
             field="dwc:identifiedBy",
             ui_widget="MultiInput",
             props=dict(
-                label="Identified by",
+                label=_("Identified by"),
             ),
         ),
         dict(
             field="dwc:individualCount",
             ui_widget="MultiInput",
             props=dict(
-                label="Individual count",
+                label=_("Individual count"),
             ),
         ),
         dict(
             field="dwc:institutionCode",
             ui_widget="MultiInput",
             props=dict(
-                label="Institution code",
+                label=_("Institution code"),
             ),
         ),
         dict(
             field="dwc:kingdom",
             ui_widget="MultiInput",
             props=dict(
-                label="Kingdom",
+                label=_("Kingdom"),
             ),
         ),
         dict(
             field="dwc:lifeStage",
             ui_widget="MultiInput",
             props=dict(
-                label="Life stage",
+                label=_("Life stage"),
             ),
         ),
         dict(
             field="dwc:locality",
             ui_widget="MultiInput",
             props=dict(
-                label="Locality",
+                label=_("Locality"),
             ),
         ),
         dict(
             field="dwc:materialSampleID",
             ui_widget="MultiInput",
             props=dict(
-                label="Material sample ID",
+                label=_("Material sample ID"),
             ),
         ),
         dict(
             field="dwc:namePublishedInID",
             ui_widget="MultiInput",
             props=dict(
-                label="Name published in ID",
+                label=_("Name published in ID"),
             ),
         ),
         dict(
             field="dwc:namePublishedInYear",
             ui_widget="MultiInput",
             props=dict(
-                label="Name published in year",
+                label=_("Name published in year"),
             ),
         ),
         dict(
             field="dwc:order",
             ui_widget="MultiInput",
             props=dict(
-                label="Order",
+                label=_("Order"),
             ),
         ),
         dict(
             field="dwc:otherCatalogNumbers",
             ui_widget="MultiInput",
             props=dict(
-                label="Other catalog numbers",
+                label=_("Other catalogue numbers"),
             ),
         ),
         dict(
             field="dwc:phylum",
             ui_widget="MultiInput",
             props=dict(
-                label="Phylum",
+                label=_("Phylum"),
             ),
         ),
         dict(
             field="dwc:preparations",
             ui_widget="MultiInput",
             props=dict(
-                label="Preparations",
+                label=_("Preparations"),
             ),
         ),
         dict(
             field="dwc:recordedBy",
             ui_widget="MultiInput",
             props=dict(
-                label="Recorded by",
+                label=_("Recorded by"),
             ),
         ),
         dict(
             field="dwc:scientificName",
             ui_widget="MultiInput",
             props=dict(
-                label="Scientific name",
+                label=_("Scientific name"),
             ),
         ),
         dict(
             field="dwc:scientificNameAuthorship",
             ui_widget="MultiInput",
             props=dict(
-                label="Scientific name authorship",
+                label=_("Scientific name authorship"),
             ),
         ),
         dict(
             field="dwc:scientificNameID",
             ui_widget="MultiInput",
             props=dict(
-                label="Scientific name ID",
+                label=_("Scientific name ID"),
             ),
         ),
         dict(
             field="dwc:sex",
             ui_widget="MultiInput",
             props=dict(
-                label="Sex",
+                label=_("Sex"),
             ),
         ),
         dict(
             field="dwc:specificEpithet",
             ui_widget="MultiInput",
             props=dict(
-                label="Species",
+                label=_("Species"),
             ),
         ),
         dict(
             field="dwc:taxonID",
             ui_widget="MultiInput",
             props=dict(
-                label="Taxon ID",
+                label=_("Taxon ID"),
             ),
         ),
         dict(
             field="dwc:taxonomicStatus",
             ui_widget="MultiInput",
             props=dict(
-                label="Taxonomic status",
+                label=_("Taxonomic status"),
             ),
         ),
         dict(
             field="dwc:taxonRank",
             ui_widget="MultiInput",
             props=dict(
-                label="Taxon rank",
+                label=_("Taxon rank"),
             ),
         ),
         dict(
             field="dwc:typeStatus",
             ui_widget="MultiInput",
             props=dict(
-                label="Type status",
+                label=_("Type status"),
             ),
         ),
         dict(
             field="dwc:verbatimElevation",
             ui_widget="MultiInput",
             props=dict(
-                label="Verbatim elevation",
+                label=_("Verbatim elevation"),
             ),
         ),
         dict(
             field="dwc:verbatimEventDate",
             ui_widget="MultiInput",
             props=dict(
-                label="Verbatim event date",
+                label=_("Verbatim event date"),
             ),
         ),
         # gbif-dwc
@@ -464,78 +383,14 @@ ZENODO_CUSTOM_FIELDS_UI = {
             field="gbif-dwc:recordedByID",
             ui_widget="MultiInput",
             props=dict(
-                label="Recorded by ID",
+                label=_("Recorded by ID"),
             ),
         ),
         dict(
             field="gbif-dwc:identifiedByID",
             ui_widget="MultiInput",
             props=dict(
-                label="Identified by ID",
-            ),
-        ),
-        dict(
-            field="ac:associatedSpecimenReference",
-            ui_widget="MultiInput",
-            props=dict(
-                label="Associated specimen reference",
-            ),
-        ),
-        dict(
-            field="ac:physicalSetting",
-            ui_widget="MultiInput",
-            props=dict(
-                label="Physical setting",
-            ),
-        ),
-        dict(
-            field="ac:associatedSpecimenReference",
-            ui_widget="MultiInput",
-            props=dict(
-                label="Associated specimen reference",
-            ),
-        ),
-        dict(
-            field="ac:captureDevice",
-            ui_widget="MultiInput",
-            props=dict(
-                label="Capture device",
-            ),
-        ),
-        dict(
-            field="ac:resourceCreationTechnique",
-            ui_widget="MultiInput",
-            props=dict(
-                label="Resource creation technique",
-            ),
-        ),
-        dict(
-            field="ac:subjectOrientation",
-            ui_widget="MultiInput",
-            props=dict(
-                label="Subject orientation",
-            ),
-        ),
-        dict(
-            field="ac:subjectPart",
-            ui_widget="MultiInput",
-            props=dict(
-                label="Subject part",
-            ),
-        ),
-        # dc
-        dict(
-            field="dc:creator",
-            ui_widget="MultiInput",
-            props=dict(
-                label="Creator",
-            ),
-        ),
-        dict(
-            field="dc:rightsHolder",
-            ui_widget="MultiInput",
-            props=dict(
-                label="Rights holder",
+                label=_("Identified by ID"),
             ),
         ),
         # openbiodiv
@@ -543,7 +398,21 @@ ZENODO_CUSTOM_FIELDS_UI = {
             field="openbiodiv:TaxonomicConceptLabel",
             ui_widget="MultiInput",
             props=dict(
-                label="Taxonomic concept label",
+                label=_("Taxonomic concept label"),
+            ),
+        ),
+        dict(
+            field="dc:creator",
+            ui_widget="MultiInput",
+            props=dict(
+                label=_("Creator"),
+            ),
+        ),
+        dict(
+            field="dc:rightsHolder",
+            ui_widget="MultiInput",
+            props=dict(
+                label=_("Rights holder"),
             ),
         ),
         # obo
@@ -558,34 +427,49 @@ ZENODO_CUSTOM_FIELDS_UI = {
     ],
 }
 
-# hide meeting section from Additional details in landing page
-MEETING_CUSTOM_FIELDS_UI["hide_from_landing_page"] = True
-
-# Custom fields UI components
-CUSTOM_FIELDS_UI = [
-    # zenodo custom fields
-    ZENODO_CUSTOM_FIELDS_UI,
-    # codemeta
-    # CODEMETA_CUSTOM_FIELDS_UI,  # TODO enable when fixed (see https://github.com/zenodo/rdm-project/issues/217)
-    # publishing information
-    {
-        "section": _("Publishing information"),
-        "hide_from_landing_page": True,  # hide meeting section from Additional details in landing page
-        "fields": [
-            # journal
-            *JOURNAL_CUSTOM_FIELDS_UI["fields"],
-            # imprint
-            *IMPRINT_CUSTOM_FIELDS_UI["fields"],
-            # thesis
-            *THESIS_CUSTOM_FIELDS_UI["fields"],
-        ],
-    },
-    # meeting
-    MEETING_CUSTOM_FIELDS_UI,
-]
-
-# Custom fields facets
-
-CUSTOM_FIELDS_FACETS = {
-    # **CODEMETA_FACETS,  # TODO enable when fixed (see https://github.com/zenodo/rdm-project/issues/217)
+AUDIOVIS_FIELDS_UI = {
+    "section": _("Audiovisual core"),
+    "icon": "camera",
+    "hide_from_upload_form": False,
+    "compose_fields": True,  # marks the group as dynamic
+    "fields": [
+        dict(
+            field="ac:associatedSpecimenReference",
+            ui_widget="MultiInput",
+            props=dict(
+                label=_("Associated specimen reference"),
+            ),
+        ),
+        dict(
+            field="ac:physicalSetting",
+            ui_widget="MultiInput",
+            props=dict(
+                label=_("Physical setting"),
+            ),
+        ),
+        dict(
+            field="ac:captureDevice",
+            ui_widget="MultiInput",
+            props=dict(
+                label=_("Capture device"),
+            ),
+        ),
+        dict(
+            field="ac:resourceCreationTechnique",
+            ui_widget="MultiInput",
+            props=dict(
+                label=_("Resource creation technique"),
+                note="""Information about technical aspects of the creation and 
+                digitization process of the resource. This includes modification 
+                steps (\"retouching\") after the initial resource capture."""
+            ),
+        ),
+        dict(
+            field="ac:subjectPart",
+            ui_widget="MultiInput",
+            props=dict(
+                label=_("Subject part"),
+            ),
+        ),
+    ],
 }
