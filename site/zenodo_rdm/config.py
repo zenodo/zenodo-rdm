@@ -31,132 +31,116 @@ from .redirector import (
 
 # I18N_TRANSLATIONS_PATHS = [os.path.abspath("./site/zenodo_rdm/translations")]
 
-# Email address of sender.
-SUPPORT_SENDER_EMAIL = "info@zenodo.org"
+# API endpoint to Zammad instance
+SUPPORT_ZAMMAD_ENDPOINT = "http://localhost:8080/api/v1"
 
-# Name of the sender
-SUPPORT_SENDER_NAME = "Zenodo Support"
-
-# Support emails
-SUPPORT_EMAILS = ["info@zenodo.org"]
-
-# Support signature
-SUPPORT_SIGNATURE = "https://zenodo-rdm.web.cern.ch/"
+# Zammad token
+SUPPORT_ZAMMAD_HTTPTOKEN = ""
 
 # Support form categories
 SUPPORT_ISSUE_CATEGORIES = [
     {
+        "key": "general-inquiry",
+        "title": "General inquiry",
+        "description": "",
+    },
+    {
+        "key": "problem-report",
+        "title": "Bug or problem",
+        "description": "Please provide direct links to pages and screenshots if possible. Include the <strong>error identifier</strong> if shown.",
+    },
+    {
         "key": "file-modification",
         "title": "File modification",
         "description": (
-            "All requests related to updating files in already published "
-            "record(s). This includes new file addition, file removal or "
-            "file replacement. "
-            "Before sending a request, please consider creating a "
-            '<a href="http://help.zenodo.org/faq/#versioning">new version</a> '
-            "of your upload. Please first consult our "
-            '<a href="http://help.zenodo.org/faq/#general">FAQ</a> to get familiar'
-            " with the file update conditions, to see if your case is "
-            "eligible.<br /><br />"
-            "You request has to contain <u>all</u> of the points below:"
-            "<ol>"
-            "<li>Provide a justification for the file change in the "
-            "description.</li>"
-            "<li>Mention any use of the record(s) DOI in publications or "
-            "online, e.g.: list papers that cite your record and "
-            "provide links to posts on blogs and social media. "
-            "Otherwise, state that to the best of your knowledge the DOI has "
-            "not been used anywhere.</li>"
-            "<li>Specify the record(s) you want to update <u>by the Zenodo"
-            ' URL</u>, e.g.: "https://zenodo.org/record/8428".<br />'
-            "<u>Providing only the record's title, publication date or a "
-            "screenshot with search result is not explicit enough</u>.</li>"
-            "<li>If you want to delete or update a file, specify it "
-            "<u>by its filename</u>, and mention if you want the name to "
-            "remain as is or changed (by default the filename of the new "
-            "file will be used).</li>"
-            "<li>Upload the new files below or provide a publicly-accessible "
-            "URL(s) with the files in the description.</li>"
-            "</ol>"
-            "<b><u>Not providing full information on any of the points above "
-            "will significantly slow down your request resolution</u></b>, "
-            "since our support staff will have to reply back with a request "
-            "for missing information."
+            "File modifications are possible within a short grace period after publishing:"
+            "<ul>"
+            "<li><strong>Published <=30 days (accepted):</strong> File modifications are accepted within a 30 days grace period after publishing your record.</li>"
+            '<li><strong>Published >30 days (declined):</strong> Please use our <a href="https://help.zenodo.org/docs/deposit/manage-versions/">versioning feature</a> for records published >30 days ago. File modification requests made after the 30-day grace period are declined.</li>'
+            "</ul>"
+            "Please provide the following information:"
+            "<ul>"
+            "<li><strong>Justification:</strong> Short justification for the file change.</li>"
+            "<li><strong>Record URL:</strong> Please provide a direct link to the record you would like to modify (e.g. https://zenodo.org/records/1234).</li>"
+            "<li><strong>Actions:</strong> Please specify all changes you would like to perform (add/replace/delete/rename). Please specify the exact <strong>filename</strong> for each action.</li>"
+            "<li><strong>Files:</strong> Please provide the files on a publicly-accessible URL(s) or for smaller files attach them on the form.</li>"
+            "</ul>"
         ),
     },
     {
-        "key": "upload-quota",
-        "title": "File upload quota increase",
+        "key": "quota-increase",
+        "title": "Quota increase",
         "description": (
-            "All requests for a quota increase beyond the 50GB limit. "
-            "Please include the following information with your request:"
-            "<ol>"
-            "<li>The total size of your dataset, number of files and the "
-            "largest file in the dataset. When referring to file sizes"
-            ' use <a href="https://en.wikipedia.org/wiki/IEEE_1541-2002">'
-            "SI units</a></li>"
-            "<li>Information related to the organization, project or grant "
-            "which was involved in the research, which produced the "
-            "dataset.</li>"
-            "<li>Information on the currently in-review or future papers that "
-            "will cite this dataset (if applicable). If possible specify the "
-            "journal or conference.</li>"
-            "</ol>"
+            "<p>We exceptionally grant a <strong>one-time quota increase up to 200GB</strong>. Requests beyond the 200GB are declined. Zenodo allows maximum 100 files in a record (this limit cannot be increased).</p>"
+            '<p><strong>Before you send the request</strong>, please follow the actions described on <a href="https://help.zenodo.org/docs/deposit/manage-files/quota-increase/">https://help.zenodo.org/docs/deposit/manage-files/quota-increase/</a>.</p>'
         ),
     },
     {
-        "key": "record-inactivation",
-        "title": "Record inactivation",
+        "key": "record-deletion",
+        "title": "Record deletion",
         "description": (
-            "Requests related to record inactivation, either by the record "
-            "owner or a third party. Please specify the record(s) in question "
-            "by the URL(s), and reason for the inactivation."
+            "<p>The request must be made by the uploader (if you're not the uploader, choose <em>take-down notice</em> instead).</p>"
+            "<p>Record deletion is possible within a short grace period after publishing:</p>"
+            "<ul>"
+            "<li><strong>Published <=30 days (accepted):</strong> Record deletions are accepted within a 30 days grace period after publishing your record.</li>"
+            '<li><strong>Published >30 days (declined):</strong> Please use our <a href="https://help.zenodo.org/docs/deposit/manage-versions/">versioning feature</a> for records published >30 days ago. File modification requests made after the 30-day grace period are declined.</li>'
+            "</ul>"
+            "<p>Please provide:</p>"
+            "<ul>"
+            "<li><strong>Record URL:</strong> A direct link to the record you would like to delete (e.g. https://zenodo.org/records/1234). If multiple versions should be deleted, please include one link per version.</li>"
+            "</ul>"
         ),
     },
     {
-        "key": "openaire",
-        "title": "OpenAIRE",
+        "key": "user-deletion",
+        "title": "User deletion",
         "description": (
-            "All questions related to OpenAIRE reporting and grants. "
-            "Before sending a request, make sure your problem was not "
-            "already resolved, see OpenAIRE "
-            '<a href="https://www.openaire.eu/faqs">FAQ</a>. '
-            "For questions unrelated to Zenodo, you should contact OpenAIRE "
-            '<a href="https://www.openaire.eu/support/helpdesk">'
-            "helpdesk</a> directly."
+            "Please make sure you <strong>log in before you send the request</strong>. If you have uploaded any records or created any communities, please specify to who these should be transferred."
         ),
     },
     {
-        "key": "partnership",
-        "title": "Partnership, outreach and media",
+        "key": "ownership-transfer",
+        "title": "Ownership transfer",
+        "description": "",
+    },
+    {
+        "key": "personal-data-report",
+        "title": "Report personal data exposure",
         "description": (
-            "All questions related to possible partnerships, outreach, "
-            "invited talks and other official inquiries by media."
-            "If you are a journal, organization or conference organizer "
-            "interested in using Zenodo as archive for your papers, software "
-            "or data, please provide details for your usecase."
+            "<p>Please provide the following information:</p>"
+            "<ul>"
+            "<li><strong>Link:</strong> A direct link to the record containing personal data.</li>"
+            "<li><strong>Reason:</strong> A description of where the personal data appears.</li>"
+            "</ul>"
         ),
     },
     {
-        "key": "tech-support",
-        "title": "Security issue, bug or spam report",
+        "key": "security-report",
+        "title": "Report a security issue",
+        "description": "Please provide as detailed information as possible.",
+    },
+    {
+        "key": "spam-report",
+        "title": "Report spam",
         "description": (
-            "Report a technical issue or a spam content on Zenodo."
-            "Please provide details on how to reproduce the bug. "
-            "Upload any screenshots or files which are relevant to the issue "
-            "or to means of reproducing it. Include error messages and "
-            "error codes you might be getting in the description.<br /> "
-            "For REST API errors, provide a minimal code which produces the "
-            "issues. Use external services for scripts and long text"
-            ', e.g.: <a href="https://gist.github.com/">GitHub Gist</a>. '
-            "<strong>Do not disclose your password or REST API access tokens."
-            "</strong>"
+            "<p>Please provide the following information:</p>"
+            "<ul>"
+            "<li><strong>Link:</strong> A direct link to the spam record/community.</li>"
+            "<li><strong>Reason:</strong> A short description of why the record is spam.</li>"
+            "</ul>"
         ),
     },
     {
-        "key": "other",
-        "title": "Other",
-        "description": ("Questions which do not fit into any other category."),
+        "key": "feature-request",
+        "title": "Feedback/Feature request",
+        "description": "",
+    },
+    {
+        "key": "take-down",
+        "title": "Take-down notice",
+        "description": (
+            "Please provide a direct link to the record or community to request us to take down. Please specify the reason for the take-down (e.g. copyright infringement, plagiarism, fraud, or similar)."
+        ),
     },
 ]
 
@@ -171,18 +155,6 @@ SUPPORT_DESCRIPTION_MIN_LENGTH = 20
 
 # Support url endpoint
 SUPPORT_ENDPOINT = "/support"
-
-#: Email body template.
-SUPPORT_EMAIL_BODY_TEMPLATE = "zenodo_rdm/email_body.html"
-
-#: Email title template.
-SUPPORT_EMAIL_TITLE_TEMPLATE = "zenodo_rdm/email_title.html"
-
-#: Email body template.
-SUPPORT_EMAIL_CONFIRM_BODY_TEMPLATE = "zenodo_rdm/email_confirm_body.html"
-
-#: Email title template.
-SUPPORT_EMAIL_CONFIRM_TITLE_TEMPLATE = "zenodo_rdm/email_confirm_title.html"
 
 # Search query of recent uploads
 # Defaults to newest records search
