@@ -25,7 +25,7 @@ export const apiConfig = (endpoint) => ({
     url: endpoint,
     timeout: 5000,
     headers: {
-      Accept: "application/json",
+      Accept: "application/vnd.inveniordm.v1+json",
     },
   },
 });

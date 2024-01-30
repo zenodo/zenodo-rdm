@@ -29,11 +29,7 @@ export class UpgradeLegacyRecordButton extends Component {
     const { record } = this.props;
     try {
       const cancellableFetch = withCancel(
-        http.get(`${record.links.requests}?q=type:legacy-record-upgrade&is_open=true`, {
-          headers: {
-            Accept: "application/json",
-          },
-        })
+        http.get(`${record.links.requests}?q=type:legacy-record-upgrade&is_open=true`)
       );
 
       const response = await cancellableFetch.promise;
