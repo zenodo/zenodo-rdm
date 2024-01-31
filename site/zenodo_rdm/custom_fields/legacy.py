@@ -6,10 +6,7 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Custom fields."""
-from invenio_records_resources.services.custom_fields import (
-    BaseCF,
-    KeywordCF,
-)
+from invenio_records_resources.services.custom_fields import BaseCF, KeywordCF
 from marshmallow import fields
 from marshmallow_utils.fields import SanitizedUnicode
 

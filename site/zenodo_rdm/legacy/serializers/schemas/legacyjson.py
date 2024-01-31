@@ -142,9 +142,9 @@ class LegacySchema(common.LegacySchema):
             file_id = f["id"]
             if files_url:
                 links = {"self": f"{files_url}/{file_id}"}
-                links[
-                    "download"
-                ] = f"{current_app.config['SITE_API_URL']}/records/{obj['id']}/draft/files/{key}/content"
+                links["download"] = (
+                    f"{current_app.config['SITE_API_URL']}/records/{obj['id']}/draft/files/{key}/content"
+                )
             result.append(
                 {
                     "id": f["id"],
