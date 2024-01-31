@@ -113,7 +113,7 @@ BIODIVERSITY_FIELDS_UI = {
     "section": _("Biodiversity"),
     "icon": "leaf",
     "hide_from_upload_form": False,
-    "compose_fields": True,  # marks the section with discoverable fields
+    "discoverable_fields": True,  # marks the section with discoverable fields
     "fields": [
         dict(
             field="dwc:basisOfRecord",
@@ -512,7 +512,7 @@ AUDIOVIS_FIELDS_UI = {
     "section": _("Audiovisual core"),
     "icon": "camera",
     "hide_from_upload_form": False,
-    "compose_fields": True,  # marks the group as dynamic
+    "discoverable_fields": True,  # marks the section with discoverable fields
     "fields": [
         dict(
             field="ac:associatedSpecimenReference",
