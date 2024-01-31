@@ -24,14 +24,14 @@ from invenio_rdm_records.contrib.thesis import (
 )
 
 PUBLISHING_FIELDS_UI = {
-        "section": _("Publishing information"),
-        "hide_from_landing_page": True,  # hide meeting section from Additional details in landing page
-        "fields": [
-            # journal
-            *JOURNAL_CUSTOM_FIELDS_UI["fields"],
-            # imprint
-            *IMPRINT_CUSTOM_FIELDS_UI["fields"],
-            # thesis
-            *THESIS_CUSTOM_FIELDS_UI["fields"],
-        ],
-    }
+    "section": _("Publishing information"),
+    "hide_from_landing_page": True,  # hide meeting section from Additional details in landing page
+    "fields": [
+        # journal
+        *JOURNAL_CUSTOM_FIELDS_UI["fields"],
+        # imprint
+        *IMPRINT_CUSTOM_FIELDS_UI["fields"],
+        # thesis
+        *THESIS_CUSTOM_FIELDS_UI["fields"],
+    ],
+}

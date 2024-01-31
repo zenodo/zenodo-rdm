@@ -34,8 +34,12 @@ from invenio_rdm_records.contrib.thesis import (
     THESIS_NAMESPACE,
 )
 
-from .domain_fields import BIODIV_FIELDS, AUDIOVIS_FIELDS,\
-    BIODIVERSITY_FIELDS_UI, AUDIOVIS_FIELDS_UI
+from .domain_fields import (
+    AUDIOVIS_FIELDS,
+    AUDIOVIS_FIELDS_UI,
+    BIODIV_FIELDS,
+    BIODIVERSITY_FIELDS_UI,
+)
 from .legacy import LEGACY_CUSTOM_FIELDS
 from .publishing import PUBLISHING_FIELDS_UI
 
@@ -58,7 +62,6 @@ NAMESPACES = {
 CUSTOM_FIELDS = [
     *BIODIV_FIELDS,
     *AUDIOVIS_FIELDS,
-
     # codemeta,
     *CODEMETA_CUSTOM_FIELDS,
     # TODO enable when fixed (see https://github.com/zenodo/rdm-project/issues/217)
@@ -73,7 +76,6 @@ CUSTOM_FIELDS = [
     # legacy
     *LEGACY_CUSTOM_FIELDS,
 ]
-
 
 
 # hide meeting section from Additional details in landing page

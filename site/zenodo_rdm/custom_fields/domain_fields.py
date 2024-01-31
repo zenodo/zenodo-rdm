@@ -49,7 +49,6 @@ class RelationshipListCF(BaseCF):
 
 BIODIV_FIELDS = [
     # dwc
-
     KeywordCF(name="dwc:basisOfRecord", multiple=True),
     KeywordCF(name="dwc:catalogNumber", multiple=True),
     KeywordCF(name="dwc:class", multiple=True),
@@ -114,7 +113,7 @@ BIODIVERSITY_FIELDS_UI = {
     "section": _("Biodiversity"),
     "icon": "leaf",
     "hide_from_upload_form": False,
-    "compose_fields": True,  # marks the group as dynamic
+    "compose_fields": True,  # marks the section with discoverable fields
     "fields": [
         dict(
             field="dwc:basisOfRecord",
@@ -124,7 +123,8 @@ BIODIVERSITY_FIELDS_UI = {
                 type="text",
                 multiple_values=True,
                 note=_(
-                    "The specific nature of the data record, e.g., PreservedSpecimen, Observation.")
+                    "The specific nature of the data record, e.g., PreservedSpecimen, Observation."
+                ),
             ),
         ),
         dict(
@@ -133,15 +133,15 @@ BIODIVERSITY_FIELDS_UI = {
             props=dict(
                 label=_("Catalog number"),
                 note=_(
-                    "An identifier for the record within the catalog or collection.")
+                    "An identifier for the record within the catalog or collection."
+                ),
             ),
         ),
         dict(
             field="dwc:class",
             ui_widget="MultiInput",
             props=dict(
-                label=_("Class"),
-                note=_("The taxonomic class of the organism.")
+                label=_("Class"), note=_("The taxonomic class of the organism.")
             ),
         ),
         dict(
@@ -150,7 +150,8 @@ BIODIVERSITY_FIELDS_UI = {
             props=dict(
                 label=_("Collection code"),
                 note=_(
-                    "A unique identifier assigned to the collection from which the record was obtained.")
+                    "A unique identifier assigned to the collection from which the record was obtained."
+                ),
             ),
         ),
         dict(
@@ -159,7 +160,8 @@ BIODIVERSITY_FIELDS_UI = {
             props=dict(
                 label=_("Country"),
                 note=_(
-                    "The name of the country or major administrative unit where the specimen was collected.")
+                    "The name of the country or major administrative unit where the specimen was collected."
+                ),
             ),
         ),
         dict(
@@ -168,7 +170,8 @@ BIODIVERSITY_FIELDS_UI = {
             props=dict(
                 label=_("County"),
                 note=_(
-                    "The name of the county, shire, or equivalent where the specimen was collected.")
+                    "The name of the county, shire, or equivalent where the specimen was collected."
+                ),
             ),
         ),
         dict(
@@ -177,7 +180,8 @@ BIODIVERSITY_FIELDS_UI = {
             props=dict(
                 label=_("Date identified"),
                 note=_(
-                    "The date when the specimen was identified or determined to a taxon.")
+                    "The date when the specimen was identified or determined to a taxon."
+                ),
             ),
         ),
         dict(
@@ -185,7 +189,7 @@ BIODIVERSITY_FIELDS_UI = {
             ui_widget="MultiInput",
             props=dict(
                 label=_("Decimal latitude"),
-                note=_("The geographic latitude in decimal degrees.")
+                note=_("The geographic latitude in decimal degrees."),
             ),
         ),
         dict(
@@ -193,7 +197,7 @@ BIODIVERSITY_FIELDS_UI = {
             ui_widget="MultiInput",
             props=dict(
                 label=_("Decimal longitude"),
-                note=_("The geographic longitude in decimal degrees.")
+                note=_("The geographic longitude in decimal degrees."),
             ),
         ),
         dict(
@@ -203,7 +207,8 @@ BIODIVERSITY_FIELDS_UI = {
                 label=_("Event date"),
                 description=_("Insert date in YYYY-MM-DD format."),
                 note=_(
-                    "The date on which the event (e.g., collection, observation) occurred. Insert date in YYYY-MM-DD format.")
+                    "The date on which the event (e.g., collection, observation) occurred. Insert date in YYYY-MM-DD format."
+                ),
             ),
         ),
         dict(
@@ -211,7 +216,7 @@ BIODIVERSITY_FIELDS_UI = {
             ui_widget="MultiInput",
             props=dict(
                 label=_("Family"),
-                note=_("The name of the family to which the taxon belongs.")
+                note=_("The name of the family to which the taxon belongs."),
             ),
         ),
         dict(
@@ -219,7 +224,7 @@ BIODIVERSITY_FIELDS_UI = {
             ui_widget="MultiInput",
             props=dict(
                 label=_("Genus"),
-                note=_("The name of the genus to which the taxon belongs.")
+                note=_("The name of the genus to which the taxon belongs."),
             ),
         ),
         dict(
@@ -227,7 +232,7 @@ BIODIVERSITY_FIELDS_UI = {
             ui_widget="MultiInput",
             props=dict(
                 label=_("Identified by"),
-                note=_("The person who identified the specimen or taxon.")
+                note=_("The person who identified the specimen or taxon."),
             ),
         ),
         dict(
@@ -235,8 +240,7 @@ BIODIVERSITY_FIELDS_UI = {
             ui_widget="MultiInput",
             props=dict(
                 label=_("Individual count"),
-                note=_(
-                    "The number of individuals represented in the occurrence.")
+                note=_("The number of individuals represented in the occurrence."),
             ),
         ),
         dict(
@@ -245,25 +249,25 @@ BIODIVERSITY_FIELDS_UI = {
             props=dict(
                 label=_("Institution code"),
                 note=_(
-                    "The code assigned to the institution where the specimen is housed.")
+                    "The code assigned to the institution where the specimen is housed."
+                ),
             ),
         ),
         dict(
             field="dwc:kingdom",
             ui_widget="MultiInput",
             props=dict(
-                label=_("Kingdom"),
-                note=_("The taxonomic kingdom of the organism.")
+                label=_("Kingdom"), note=_("The taxonomic kingdom of the organism.")
             ),
         ),
-
         dict(
             field="dwc:lifeStage",
             ui_widget="MultiInput",
             props=dict(
                 label=_("Life stage"),
                 note=_(
-                    "The developmental stage or life history status of the organism, such as 'Adult' or 'Juvenile'.")
+                    "The developmental stage or life history status of the organism, such as 'Adult' or 'Juvenile'."
+                ),
             ),
         ),
         dict(
@@ -272,7 +276,8 @@ BIODIVERSITY_FIELDS_UI = {
             props=dict(
                 label=_("Locality"),
                 note=_(
-                    "The specific place or named location where the specimen was collected.")
+                    "The specific place or named location where the specimen was collected."
+                ),
             ),
         ),
         dict(
@@ -281,7 +286,8 @@ BIODIVERSITY_FIELDS_UI = {
             props=dict(
                 label=_("Material sample ID"),
                 note=_(
-                    "An identifier for the material sample from which the occurrence was derived.")
+                    "An identifier for the material sample from which the occurrence was derived."
+                ),
             ),
         ),
         dict(
@@ -290,7 +296,8 @@ BIODIVERSITY_FIELDS_UI = {
             props=dict(
                 label=_("Name published in ID"),
                 note=_(
-                    "An identifier for the publication in which the scientific name is published.")
+                    "An identifier for the publication in which the scientific name is published."
+                ),
             ),
         ),
         dict(
@@ -298,15 +305,14 @@ BIODIVERSITY_FIELDS_UI = {
             ui_widget="MultiInput",
             props=dict(
                 label=_("Name published in year"),
-                note=_("The year the scientific name was published.")
+                note=_("The year the scientific name was published."),
             ),
         ),
         dict(
             field="dwc:order",
             ui_widget="MultiInput",
             props=dict(
-                label=_("Order"),
-                note=_("The taxonomic order of the organism.")
+                label=_("Order"), note=_("The taxonomic order of the organism.")
             ),
         ),
         dict(
@@ -315,16 +321,15 @@ BIODIVERSITY_FIELDS_UI = {
             props=dict(
                 label=_("Other catalogue numbers"),
                 note=_(
-                    "Other identifiers or catalog numbers associated with the specimen.")
+                    "Other identifiers or catalog numbers associated with the specimen."
+                ),
             ),
         ),
-
         dict(
             field="dwc:phylum",
             ui_widget="MultiInput",
             props=dict(
-                label=_("Phylum"),
-                note=_("The taxonomic phylum of the organism.")
+                label=_("Phylum"), note=_("The taxonomic phylum of the organism.")
             ),
         ),
         dict(
@@ -332,8 +337,7 @@ BIODIVERSITY_FIELDS_UI = {
             ui_widget="MultiInput",
             props=dict(
                 label=_("Preparations"),
-                note=_(
-                    "The physical state or type of preparation of the specimen.")
+                note=_("The physical state or type of preparation of the specimen."),
             ),
         ),
         dict(
@@ -341,8 +345,7 @@ BIODIVERSITY_FIELDS_UI = {
             ui_widget="MultiInput",
             props=dict(
                 label=_("Recorded by"),
-                note=_(
-                    "The person or party responsible for recording the occurrence.")
+                note=_("The person or party responsible for recording the occurrence."),
             ),
         ),
         dict(
@@ -350,8 +353,7 @@ BIODIVERSITY_FIELDS_UI = {
             ui_widget="MultiInput",
             props=dict(
                 label=_("Scientific name"),
-                note=_(
-                    "The full scientific name, with genus and specific epithet.")
+                note=_("The full scientific name, with genus and specific epithet."),
             ),
         ),
         dict(
@@ -359,7 +361,7 @@ BIODIVERSITY_FIELDS_UI = {
             ui_widget="MultiInput",
             props=dict(
                 label=_("Scientific name authorship"),
-                note=_("The authorship information for the scientific name.")
+                note=_("The authorship information for the scientific name."),
             ),
         ),
         dict(
@@ -367,23 +369,20 @@ BIODIVERSITY_FIELDS_UI = {
             ui_widget="MultiInput",
             props=dict(
                 label=_("Scientific name ID"),
-                note=_("An identifier for the scientific name.")
+                note=_("An identifier for the scientific name."),
             ),
         ),
         dict(
             field="dwc:sex",
             ui_widget="MultiInput",
-            props=dict(
-                label=_("Sex"),
-                note=_("The gender or sex of the organism.")
-            ),
+            props=dict(label=_("Sex"), note=_("The gender or sex of the organism.")),
         ),
         dict(
             field="dwc:specificEpithet",
             ui_widget="MultiInput",
             props=dict(
                 label=_("Species"),
-                note=_("The species epithet in the scientific name.")
+                note=_("The species epithet in the scientific name."),
             ),
         ),
         dict(
@@ -391,8 +390,7 @@ BIODIVERSITY_FIELDS_UI = {
             ui_widget="MultiInput",
             props=dict(
                 label=_("Taxon ID"),
-                note=_(
-                    "An identifier for the taxonomic concept, often a numeric key.")
+                note=_("An identifier for the taxonomic concept, often a numeric key."),
             ),
         ),
         dict(
@@ -401,7 +399,8 @@ BIODIVERSITY_FIELDS_UI = {
             props=dict(
                 label=_("Taxonomic status"),
                 note=_(
-                    "The taxonomic status of the organism, e.g., 'accepted' or 'synonymized'.")
+                    "The taxonomic status of the organism, e.g., 'accepted' or 'synonymized'."
+                ),
             ),
         ),
         dict(
@@ -410,7 +409,8 @@ BIODIVERSITY_FIELDS_UI = {
             props=dict(
                 label=_("Taxon rank"),
                 note=_(
-                    "The taxonomic rank of the organism, e.g., 'species' or 'subspecies'.")
+                    "The taxonomic rank of the organism, e.g., 'species' or 'subspecies'."
+                ),
             ),
         ),
         dict(
@@ -419,7 +419,8 @@ BIODIVERSITY_FIELDS_UI = {
             props=dict(
                 label=_("Type status"),
                 note=_(
-                    "The status of the specimen in relation to a type designation, e.g., 'holotype' or 'paratype'.")
+                    "The status of the specimen in relation to a type designation, e.g., 'holotype' or 'paratype'."
+                ),
             ),
         ),
         dict(
@@ -428,7 +429,8 @@ BIODIVERSITY_FIELDS_UI = {
             props=dict(
                 label=_("Verbatim elevation"),
                 note=_(
-                    "The original description of the elevation as provided in the source material.")
+                    "The original description of the elevation as provided in the source material."
+                ),
             ),
         ),
         dict(
@@ -437,10 +439,10 @@ BIODIVERSITY_FIELDS_UI = {
             props=dict(
                 label=_("Verbatim event date"),
                 note=_(
-                    "The original description of the date of the event as provided in the source material.")
+                    "The original description of the date of the event as provided in the source material."
+                ),
             ),
         ),
-
         # gbif-dwc
         dict(
             field="gbif-dwc:recordedByID",
@@ -448,7 +450,8 @@ BIODIVERSITY_FIELDS_UI = {
             props=dict(
                 label=_("Recorded by ID"),
                 note=_(
-                    "An identifier for the person who recorded the occurrence, sourced from GBIF.")
+                    "An identifier for the person who recorded the occurrence, sourced from GBIF."
+                ),
             ),
         ),
         dict(
@@ -457,7 +460,8 @@ BIODIVERSITY_FIELDS_UI = {
             props=dict(
                 label=_("Identified by ID"),
                 note=_(
-                    "An identifier for the person who identified the occurrence, sourced from GBIF.")
+                    "An identifier for the person who identified the occurrence, sourced from GBIF."
+                ),
             ),
         ),
         # openbiodiv
@@ -467,7 +471,8 @@ BIODIVERSITY_FIELDS_UI = {
             props=dict(
                 label=_("Taxonomic concept label"),
                 note=_(
-                    "A human-readable label for the taxonomic concept, sourced from OpenBiodiv.")
+                    "A human-readable label for the taxonomic concept, sourced from OpenBiodiv."
+                ),
             ),
         ),
         dict(
@@ -476,7 +481,8 @@ BIODIVERSITY_FIELDS_UI = {
             props=dict(
                 label=_("Creator"),
                 note=_(
-                    "The person or organization responsible for creating the record, sourced from Dublin Core.")
+                    "The person or organization responsible for creating the record, sourced from Dublin Core."
+                ),
             ),
         ),
         dict(
@@ -485,11 +491,11 @@ BIODIVERSITY_FIELDS_UI = {
             props=dict(
                 label=_("Rights holder"),
                 note=_(
-                    "The person or organization holding rights over the record, sourced from Dublin Core.")
+                    "The person or organization holding rights over the record, sourced from Dublin Core."
+                ),
             ),
         ),
-
-        # TODO
+        # TODO - needs dedicated UI widget
         # obo
         # dict(
         #     field="obo:RO_0002453",
@@ -513,7 +519,7 @@ AUDIOVIS_FIELDS_UI = {
             ui_widget="MultiInput",
             props=dict(
                 label=_("Associated specimen reference"),
-                note=_("A reference to the associated specimen, if applicable.")
+                note=_("A reference to the associated specimen, if applicable."),
             ),
         ),
         dict(
@@ -522,7 +528,8 @@ AUDIOVIS_FIELDS_UI = {
             props=dict(
                 label=_("Physical setting"),
                 note=_(
-                    "The physical environment or setting in which the resource was created or observed.")
+                    "The physical environment or setting in which the resource was created or observed."
+                ),
             ),
         ),
         dict(
@@ -531,7 +538,8 @@ AUDIOVIS_FIELDS_UI = {
             props=dict(
                 label=_("Capture device"),
                 note=_(
-                    "The device or equipment used to capture or create the resource.")
+                    "The device or equipment used to capture or create the resource."
+                ),
             ),
         ),
         dict(
@@ -541,7 +549,7 @@ AUDIOVIS_FIELDS_UI = {
                 label=_("Resource creation technique"),
                 note="""Information about technical aspects of the creation and 
                 digitization process of the resource. This includes modification 
-                steps (\"retouching\") after the initial resource capture."""
+                steps (\"retouching\") after the initial resource capture.""",
             ),
         ),
         dict(
@@ -550,9 +558,9 @@ AUDIOVIS_FIELDS_UI = {
             props=dict(
                 label=_("Subject part"),
                 note=_(
-                    "The specific part or region of the subject that is the primary focus of the resource.")
+                    "The specific part or region of the subject that is the primary focus of the resource."
+                ),
             ),
         ),
-
     ],
 }
