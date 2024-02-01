@@ -139,22 +139,24 @@ class LegacySchema(common.LegacySchema):
         result = []
         files_url = obj["links"].get("files")
         for key, f in obj["files"].get("entries", {}).items():
-            file_id = f["id"]
-            if files_url:
+            file_id = f.get("id")
+            if (
+                file_id is not None
+            ):  # Check if 'id' is present in case of pending/failed file upload
                 links = {"self": f"{files_url}/{file_id}"}
                 links["download"] = (
                     f"{current_app.config['SITE_API_URL']}/records/{obj['id']}/draft/files/{key}/content"
                 )
-            result.append(
-                {
-                    "id": f["id"],
-                    "filename": f["key"],
-                    "filesize": f["size"],
-                    # skip the checksum algorithm prefix
-                    "checksum": f["checksum"].split(":", 1)[1],
-                    "links": links,
-                }
-            )
+                result.append(
+                    {
+                        "id": file_id,
+                        "filename": f["key"],
+                        "filesize": f["size"],
+                        # skip the checksum algorithm prefix
+                        "checksum": f["checksum"].split(":", 1)[1],
+                        "links": links,
+                    }
+                )
         return result
 
     @pre_dump
