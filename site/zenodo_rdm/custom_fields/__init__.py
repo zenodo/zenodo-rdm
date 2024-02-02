@@ -84,7 +84,7 @@ MEETING_CUSTOM_FIELDS_UI["hide_from_landing_page"] = True
 # Custom fields UI components
 CUSTOM_FIELDS_UI = [
     # codemeta
-    # CODEMETA_CUSTOM_FIELDS_UI,  # TODO enable when fixed (see https://github.com/zenodo/rdm-project/issues/217)
+    CODEMETA_CUSTOM_FIELDS_UI,  # TODO enable when fixed (see https://github.com/zenodo/rdm-project/issues/217)
     # publishing information
     PUBLISHING_FIELDS_UI,
     # meeting
