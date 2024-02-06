@@ -196,10 +196,15 @@ class OpenAIRESchema(Schema):
                 funder_acronym = _reverse_funder_acronym(funder_ror)
                 award_program = award.get("program", "")
                 award_number = award.get("number", "")
+                award_title = award.get("title", {}).get("en")
+                award_acronym = award.get("acronym", "")
                 if funder_acronym and award_program and award_number:
-                    links.append(
-                        f"info:eu-repo/grantAgreement/{funder_acronym}/{award_program}/{award_number}"
-                    )
+                    b_link = f"info:eu-repo/grantAgreement/{funder_acronym}/{award_program}/{award_number}"
+                    if award_title:
+                        b_link += f"/{award_title}"
+                    if award_acronym:
+                        b_link += f"/{award_acronym}"
+                    links.append(b_link)
         return links or missing
 
     def get_pids(self, obj):
