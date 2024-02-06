@@ -16,7 +16,7 @@ under the terms of the MIT License; see LICENSE file for more details.
     <div class="ui relaxed container grid">
       <div class="row pb-0">
         <div
-          class="sixteen wide mobile sixteen wide tablet thirteen wide computer column">
+          class="sixteen wide mobile sixteen wide tablet twelve wide computer column">
           <div
             class="community-header flex align-items-center column-mobile align-items-start-mobile">
             <div class="flex align-items-center">
@@ -107,12 +107,18 @@ under the terms of the MIT License; see LICENSE file for more details.
         </div>
 
         <div
-          class="sixteen wide mobile sixteen wide tablet three wide computer right aligned middle aligned column">
-          <a href="/uploads/new?community={{ community.slug }}"
-             class="ui positive button labeled icon rel-mt-1 theme-secondary">
-            <i class="upload icon" aria-hidden="true"></i>
-            {{ _("New upload") }}
-          </a>
+        class="sixteen wide mobile sixteen wide tablet four wide computer right aligned middle aligned column">
+        <a href="/uploads/new?community={{ community.slug }}"
+            class="ui positive button labeled icon rel-mt-1 theme-secondary">
+          <i class="upload icon" aria-hidden="true"></i>
+          {{ _("New upload") }}
+        </a>
+          <a href="{{'/support/'}}"
+          target="_blank"
+          class="ui positive item button labeled theme-primary icon rel-mt-1">
+          <i class="users icon" aria-hidden="true"></i>
+          {{ _("Join waiting list") }}
+        </a>
           {% if permissions.can_moderate %}
             <a
               href="{{ url_for('administration.communities', q='slug:'+community.slug) }}"
