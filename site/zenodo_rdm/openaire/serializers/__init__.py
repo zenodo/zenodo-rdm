@@ -21,5 +21,5 @@ class OpenAIREV1Serializer(MarshmallowSerializer):
             format_serializer_cls=JSONSerializer,
             object_schema_cls=OpenAIRESchema,
             list_schema_cls=BaseListSchema,
-            **options
+            **options,
         )

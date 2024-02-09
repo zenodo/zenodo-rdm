@@ -6,6 +6,8 @@
 # it under the terms of the MIT License; see LICENSE file for more details.
 """OpenAire schema."""
 
+from urllib.parse import quote_plus
+
 from invenio_access.permissions import system_identity
 from invenio_communities.proxies import current_communities
 from marshmallow import Schema, fields, missing, pre_dump
@@ -193,17 +195,14 @@ class OpenAIRESchema(Schema):
             funder = grant.get("funder", {})
             if funder and award:
                 funder_ror = funder.get("id")
-                funder_acronym = _reverse_funder_acronym(funder_ror)
-                award_program = award.get("program", "")
-                award_number = award.get("number", "")
-                award_title = award.get("title", {}).get("en")
-                award_acronym = award.get("acronym", "")
+                # url-encode the fields
+                funder_acronym = quote_plus(_reverse_funder_acronym(funder_ror))
+                award_program = quote_plus(award.get("program", ""))
+                award_number = quote_plus(award.get("number", ""))
+                award_title = quote_plus(award.get("title", {}).get("en", ""))
+                award_acronym = quote_plus(award.get("acronym", ""))
                 if funder_acronym and award_program and award_number:
-                    b_link = f"info:eu-repo/grantAgreement/{funder_acronym}/{award_program}/{award_number}"
-                    if award_title:
-                        b_link += f"/{award_title}"
-                    if award_acronym:
-                        b_link += f"/{award_acronym}"
+                    b_link = f"info:eu-repo/grantAgreement/{funder_acronym}/{award_program}/{award_number}{award_title}{award_acronym}"
                     links.append(b_link)
         return links or missing
 
