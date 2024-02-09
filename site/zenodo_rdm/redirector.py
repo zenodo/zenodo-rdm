@@ -103,7 +103,7 @@ def communities_home_view_function():
         return target
     elif community.theme and community.theme.get("enabled", False):
         # If theme is enabled, redirect to the home page of the community
-        return url_for("invenio_communities.communities_home", **values)
+        return url_for("invenio_app_rdm_communities.communities_home", **values)
     else:
         # If theme is not enabled and no query parameters, redirect to records page of the community
         return url_for("invenio_app_rdm_communities.communities_detail", **values)
