@@ -1,0 +1,100 @@
+{# -*- coding: utf-8 -*-
+
+  This file is part of Invenio.
+  Copyright (C) 2024 CERN.
+
+  Invenio is free software; you can redistribute it and/or modify it
+  under the terms of the MIT License; see LICENSE file for more details.
+#}
+
+{% extends "invenio_communities/details/base.html" %}
+{% from "zenodo_rdm/macros/record_item.html" import record_item %}
+
+{%- set title = community.metadata.title -%}
+{% set active_community_header_menu_item= 'home' %}
+
+{%- block page_body %}
+  {{ super() }}
+  <div class="ui rel-m-2 rel-pt-1">
+    <div class="ui centered stackable theme-font grid container rel-mt-2 rel-mb-4">
+      <div class="thirteen wide column">
+        <div class="row item">
+          <h1 class="ui large header">Trusted repository for European research
+            projects</h1>
+          <h1 class="ui text-muted small header">Builtin compliance with EU open science
+            policy</h1>
+        </div>
+        <div class="ui rel-mt-2 rel-mb-4">
+          <div class="ui fluid container row rel-mb-2">
+            <a href="/uploads/new?community={{ community.slug }}"
+               target="_blank"
+               class="ui positive button labeled theme-secondary icon rel-mt-1">
+              <i class="upload icon" aria-hidden="true"></i>
+              {{ _("New upload") }}
+            </a>
+            <a href="{{ '/support/' }}"
+               target="_blank"
+               class="ui positive button labeled theme-primary icon rel-mt-1">
+              <i class="users icon" aria-hidden="true"></i>
+              {{ _("Join waiting list") }}
+            </a>
+            <a href="https://open-research-europe.ec.europa.eu/"
+               target="_blank"
+               class="ui button labeled icon rel-mt-1">
+              <i class="info icon" aria-hidden="true"></i>
+              {{ _("Learn more") }}
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% if records %}
+      <div class="ui container">
+        <h2>{{ title }}</h2>
+        <div class="ui divider"></div>
+
+        <div class="ui fluid stackable three column grid">
+          {% for record in records %}
+            <ul class="ui column items m-0">
+              {{ record_item(record=record) }}
+            </ul>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+
+    <div class="ui stackable theme-font grid container rel-mt-2">
+      <div class="column">
+        <div class="row item">
+          <h1 class="ui large header">{{ _('How it works?') }}</h1>
+        </div>
+        <div class="ui divider"></div>
+        <div class="center aligned ui equal width stackable grid rel-mt-4 rel-mb-2">
+          <div class="row rel-mb-2">
+            <div class="column">
+              <h1 class="text-muted ui medium header">{{ _('1. Request Community') }}</h1>
+            </div>
+            <div class="column">
+              <h1 class="text-muted ui medium header">{{ _('2. Invite Partners') }}</h1>
+            </div>
+            <div class="column">
+              <h1 class="text-muted ui medium header">{{ _('3. Publish FAIR') }}</h1>
+            </div>
+          </div>
+          <div class="row">
+            <div class="center aligned">
+              <a href="https://open-research-europe.ec.europa.eu/"
+                 target="_blank"
+                 class="ui button labeled icon rel-mt-1">
+                <i class="info icon" aria-hidden="true"></i>
+                {{ _("Learn More") }}
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+{%- endblock page_body -%}
