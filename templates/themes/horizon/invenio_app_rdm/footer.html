@@ -5,6 +5,8 @@
   Invenio App RDM is free software; you can redistribute it and/or modify it
   under the terms of the MIT License; see LICENSE file for more details.
 #}
+
+{% set horizon_url="https://about.zenodo.org/projects/horizon-zen/" %}
   <div class="footer-top theme-primary horizon-footer">
     <div class="ui container">
 
@@ -30,36 +32,20 @@
               <div class="ui grid">
                 <div class="three wide five wide tablet column">
                   <h2 class="ui small header">{{ _("About") }}</h2>
-                  {% trans invenio_rdm_chatroom="https://discord.gg/8qatqBC" %}
-                    <p><a href="{{ invenio_rdm_chatroom }}">How it works?</a></p>
-                  {% endtrans %}
-                  {% trans invenio_rdm_talk="https://invenio-talk.web.cern.ch/c/projects/invenio-rdm" %}
-                    <p><a href="{{ invenio_rdm_talk }}">FAQ</a></p>
-                  {% endtrans %}
-                  {% trans invenio_events="https://inveniosoftware.org/events/" %}
-                    <p><a href="{{ invenio_events }}">Contact</a></p>
-                  {% endtrans %}
+                    <p><a href="{{ horizon_url }}">How it works?</a></p>
+                    <p><a href="{{ horizon_url }}">FAQ</a></p>
+                    <p><a href="https://about.zenodo.org/contact">Contact</a></p>
                 </div>
                 <div class="three wide computer five wide tablet column">
                   <h2 class="ui small header">{{ _("FAIR publishing") }}</h2>
-                  {% trans invenio_rdm_chatroom="https://discord.gg/8qatqBC" %}
-                    <p><a href="{{ invenio_rdm_chatroom }}">Getting started </a></p>
-                  {% endtrans %}
-                  {% trans invenio_rdm_talk="https://invenio-talk.web.cern.ch/c/projects/invenio-rdm" %}
-                    <p><a href="{{ invenio_rdm_talk }}">Submit your research</a></p>
-                  {% endtrans %}
-                </div>
-                <div class="three wide computer five wide tablet column">
-                  <h2 class="ui small header">{{ _("Integrations") }}</h2>
-                  {% trans invenio_rdm_chatroom="https://discord.gg/8qatqBC" %}
-                    <p><a href="{{ invenio_rdm_chatroom }}">REST API</a></p>
-                  {% endtrans %}
-                  {% trans invenio_rdm_talk="https://invenio-talk.web.cern.ch/c/projects/invenio-rdm" %}
-                    <p><a href="{{ invenio_rdm_talk }}">OAI-PMH</a></p>
-                  {% endtrans %}
-                  {% trans invenio_events="https://inveniosoftware.org/events/" %}
-                    <p><a href="{{ invenio_events }}">FAIR Evaluation tools</a></p>
-                  {% endtrans %}
+                    <p><a href="{{ horizon_url }}">Getting started </a></p>
+                    <p><a href="{{community.slug}}/upload">Submit your research</a></p>
+                  </div>
+                  <div class="three wide computer five wide tablet column">
+                    <h2 class="ui small header">{{ _("Integrations") }}</h2>
+                    <p><a href="https://developers.zenodo.org/">REST API</a></p>
+                    <p><a href="https://developers.zenodo.org/#oai-pmh/">OAI-PMH</a></p>
+                    <p><a href="{{ horizon_url }}">FAIR Evaluation tools</a></p>
                 </div>
               </div>
             </div>
@@ -68,4 +54,4 @@
     </div>
 
   </div>
-
+  
