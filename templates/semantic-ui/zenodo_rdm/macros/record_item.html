@@ -31,8 +31,8 @@
 
       {# Top labels #}
       <div class="extra labels-actions">
-        <div class="ui small horizontal primary label">
-          {{ record.ui.publication_date_l10n_long }} ({{ record.ui.version }})
+        <div class="ui small horizontal theme-primary label">
+          <p>{{ record.ui.publication_date_l10n_long }} ({{ record.ui.version }})</p>
         </div>
         <div class="ui small horizontal neutral label">
           {{ record.ui.resource_type.title_l10n }}
@@ -49,7 +49,7 @@
       </div>
 
       {# Title #}
-      <div class="header">
+      <div class="header theme-primary-text">
         <a href="/records/{{ record.id }}">{{ record.metadata.title }}</a>
       </div>
 
