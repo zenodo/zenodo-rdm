@@ -31,15 +31,32 @@ except ImportError:
 class EOSFilesOffload(BaseFileStorage):
     """Offload file downloads to another server."""
 
+    def _get_auth_session(self):
+        """Get a requests session with authentication configured.
+
+        If X.509 is enabled, it will be used, otherwise kerberos will be used.
+        """
+        s = requests.Session()
+        x509_enabled = current_app.config.get("ZENODO_EOS_OFFLOAD_AUTH_X509", False)
+        cert = current_app.config.get("ZENODO_EOS_OFFLOAD_X509_CERT_PATH")
+        key = current_app.config.get("ZENODO_EOS_OFFLOAD_X509_KEY_PATH")
+        if x509_enabled and cert and key:
+            s.cert = (cert, key)
+            s.verify = False
+        else:
+            # Default to kerberos
+            s.auth = HTTPKerberosAuth(DISABLED)
+            s.verify = False
+        return s
+
     def _get_eos_redirect_path(self):
         """Get the real path of the file streamed from another server."""
         host = current_app.config["ZENODO_EOS_OFFLOAD_HTTPHOST"]
         redirect_base_path = current_app.config["ZENODO_EOS_OFFLOAD_REDIRECT_BASE_PATH"]
         base_path = urlsplit(self.fileurl).path
-        eos_resp = requests.get(
+        session = self._get_auth_session()
+        eos_resp = session.get(
             f"{host}/{base_path}",
-            auth=HTTPKerberosAuth(DISABLED),
-            verify=False,
             allow_redirects=False,
         )
         if eos_resp.status_code != 307:
