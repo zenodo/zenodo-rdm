@@ -80,35 +80,6 @@ def communities_settings_view_function():
     return target
 
 
-def communities_home_view_function():
-    """Implements redirector view function for community landing page.
-
-    The following routes are redirected as follows:
-        - /communities/<community_id>/ -> GET /communities/<community_id>/records
-        - /communities/<community_id>?q=<query> -> GET /communities/<community_id>/records?q=<query>
-
-    :return: url for the view 'invenio_app_rdm_communities.communities_detail'
-    :rtype: str
-    """
-    _id = request.view_args["community_id"]
-    community = current_communities.service.record_cls.pid.resolve(_id)
-    values = {"pid_value": _id}
-    query_params = request.args
-
-    if query_params:
-        # If there are query parameters, redirect to records page
-        query_string = urlencode(query_params)
-        url = url_for("invenio_app_rdm_communities.communities_detail", **values)
-        target = f"{url}?{query_string}"
-        return target
-    elif community.theme and community.theme.get("enabled", False):
-        # If theme is enabled, redirect to the home page of the community
-        return url_for("invenio_app_rdm_communities.communities_home", **values)
-    else:
-        # If theme is not enabled and no query parameters, redirect to records page of the community
-        return url_for("invenio_app_rdm_communities.communities_detail", **values)
-
-
 def communities_requests_view_function():
     """Implements redirector view function for communities requests.
 

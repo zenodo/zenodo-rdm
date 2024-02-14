@@ -10,7 +10,6 @@
 from .params import ZenodoArgsSchema, ZenodoSearchOptions
 from .redirector import (
     communities_detail_view_function,
-    communities_home_view_function,
     communities_records_search,
     communities_requests_view_function,
     communities_settings_view_function,
@@ -232,11 +231,6 @@ REDIRECTOR_RULES = {
         "source": "/communities/<community_id>/edit",
         "rule_options": {"strict_slashes": False},
         "target": communities_settings_view_function,
-    },
-    "redirect_communities_home": {
-        "source": "/communities/<community_id>",
-        "rule_options": {"strict_slashes": False},
-        "target": communities_home_view_function,
     },
     "redirect_communities_search": {
         "source": "/communities/<community_id>/search",
