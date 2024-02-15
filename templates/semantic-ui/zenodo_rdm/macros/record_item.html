@@ -23,6 +23,7 @@
 -#}
 
 {% from "zenodo_rdm/macros/creators.html" import creators %}
+{% from "zenodo_rdm/macros/communities_list.html" import communities_list %}
 
 {% macro record_item(record=None) %}
   <li class="item">
@@ -66,6 +67,12 @@
 
         {{ description | truncate(length=350, end='...') }}
       </p>
+
+      {# Communities list #}
+      <h5>
+        {% set communities_entries = record.parent.communities.entries %}
+        <b>{{ _("Part of:")}} {{ communities_list(communities=communities_entries) }}</b>
+      </h5>
 
       <div class="extra">
         <div class="flex justify-space-between align-items-end">
