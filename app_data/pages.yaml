@@ -1,0 +1,4 @@
+- url: /communities/<pid_value>/info
+  title: HorizonZen - Information 
+  description: Horizon
+  template: "/invenio_app_rdm/default_static_page.html"
