@@ -1,4 +1,4 @@
-- url: /communities/<pid_value>/info
+- url: /communities/horizen/info  # The pid_value i.e. (horizen) to be replaced according to the respective branded community
   title: HorizonZen - Information 
   description: Horizon
   template: "/invenio_app_rdm/default_static_page.html"
