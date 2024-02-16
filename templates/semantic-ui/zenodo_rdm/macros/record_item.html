@@ -62,7 +62,7 @@
 
       {# Description #}
       <p class="description">
-        {% set description = record.ui.get("description_stripped", "No description") %}
+        {% set description = record.ui.get("description_stripped", "") %}
 
         {{ description | truncate(length=350, end='...') }}
       </p>
