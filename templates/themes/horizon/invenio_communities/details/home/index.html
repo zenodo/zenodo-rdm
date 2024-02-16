@@ -27,7 +27,6 @@
         <div class="ui rel-mt-2 rel-mb-4">
           <div class="ui fluid container row rel-mb-2">
             <a href="/uploads/new?community={{ community.slug }}"
-               target="_blank"
                class="ui positive button labeled theme-secondary icon rel-mt-1">
               <i class="upload icon" aria-hidden="true"></i>
               {{ _("New upload") }}
@@ -51,7 +50,7 @@
 
     {% if records %}
       <div class="ui container">
-        <h2>{{ title }}</h2>
+        <h2>{{ _("Recent uploads") }}</h2>
         <div class="ui divider"></div>
 
         <div class="ui fluid stackable three column grid">
@@ -67,7 +66,7 @@
     <div class="ui stackable theme-font grid container rel-mt-2">
       <div class="column">
         <div class="row item">
-          <h1 class="ui large header">{{ _('How it works?') }}</h1>
+          <h1 class="ui large header">{{ _('How it works') }}</h1>
         </div>
         <div class="ui divider"></div>
         <div class="center aligned ui equal width stackable grid rel-mt-4 rel-mb-2">

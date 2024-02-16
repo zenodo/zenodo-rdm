@@ -29,15 +29,22 @@ under the terms of the MIT License; see LICENSE file for more details.
               </div>
 
               <div class="mobile only">
-                <h1 class="ui medium header mb-5">
-                  {{ community.metadata.title }}
-                </h1>
+                <a class="remove-default-style" href="{{ community.links.self_html }}">
+                  <h1 class="ui medium header mb-5">
+                    {{ community.metadata.title }}
+                  </h1>
+                </a>
               </div>
             </div>
 
             <div>
               <div class="flex align-items-center mb-5 tablet computer only">
-                <h1 class="ui medium header mb-0">{{ community.metadata.title }} </h1>
+
+                <a class="remove-default-style" href="{{ community.links.self_html }}">
+                  <h1 class="ui medium header mb-0">
+                    {{ community.metadata.title }}
+                  </h1>
+                </a>
 
                 {% if community.access.visibility == 'restricted' %}
                   <div class="rel-ml-1">
@@ -108,19 +115,17 @@ under the terms of the MIT License; see LICENSE file for more details.
 
       <div
         class="sixteen wide mobile sixteen wide tablet four wide computer right aligned middle aligned column">
-          {%- if not community_use_jinja_header %}
-            <a href="/uploads/new?community={{ community.slug }}"
-              class="ui positive button labeled icon rel-mt-1 theme-secondary">
-              <i class="upload icon" aria-hidden="true"></i>
-              {{ _("New upload") }}
-            </a>
-        {% endif %}
+          <a href="/uploads/new?community={{ community.slug }}"
+            class="ui positive button labeled icon rel-mt-1 theme-secondary">
+            <i class="upload icon" aria-hidden="true"></i>
+            {{ _("New upload") }}
+          </a>
           <a href="{{'/support/'}}"
-          target="_blank"
-          class="ui positive item button labeled theme-primary icon rel-mt-1">
-          <i class="users icon" aria-hidden="true"></i>
-          {{ _("Join waiting list") }}
-        </a>
+            target="_blank"
+            class="ui positive item button labeled theme-primary icon rel-mt-1">
+            <i class="users icon" aria-hidden="true"></i>
+            {{ _("Join waiting list") }}
+          </a>
           {% if permissions.can_moderate %}
             <a
                     href="{{ url_for('administration.communities', q='slug:'+community.slug) }}"
