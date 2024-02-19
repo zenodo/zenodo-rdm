@@ -3,3 +3,9 @@
   description: Horizon
   template: "invenio_app_rdm/default_static_page.html"
   has_custom_view: True
+
+- url: /communities/horizen/join-waiting-list # The pid_value i.e. (horizen) to be replaced according to the respective branded community
+  title: Join Waiting List
+  description: Join Waiting List
+  template: "invenio_app_rdm/default_static_page.html"
+  has_custom_view: True
