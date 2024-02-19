@@ -59,7 +59,7 @@
           <div class="ui fluid stackable three column grid">
             {% for record in records %}
               <ul class="ui column items m-0">
-                {{ record_item(record=record) }}
+                {{ record_item(record=record, highlightCommunity=False) }}
               </ul>
             {% endfor %}
           </div>

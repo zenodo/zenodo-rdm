@@ -25,7 +25,7 @@
 {% from "zenodo_rdm/macros/creators.html" import creators %}
 {% from "zenodo_rdm/macros/communities_list.html" import communities_list %}
 
-{% macro record_item(record=None) %}
+{% macro record_item(record=None, highlightCommunity=True) %}
   <li class="item">
     <div class="content">
 
@@ -46,7 +46,7 @@
             <i class="icon {{ access_status_icon }}" aria-hidden="true"></i>
             {{ access_status }}
         </div>
-      </div>
+    </div>
 
       {# Title #}
       <div class="header theme-primary-text">
@@ -68,12 +68,6 @@
         {{ description | truncate(length=350, end='...') }}
       </p>
 
-      {# Communities list #}
-      <h5>
-        {% set communities_entries = record.parent.communities.entries %}
-        <b>{{ _("Part of:")}} {{ communities_list(communities=communities_entries) }}</b>
-      </h5>
-
       <div class="extra">
         <div class="flex justify-space-between align-items-end">
           {# Publishing details #}
@@ -84,6 +78,16 @@
               <small>
                 {% if created_date %}
                   {{ _("Uploaded on")}} {{ created_date }}
+                {% endif %}
+              </small>
+            </p>
+
+            {# Communities list #}
+            <p>
+              <small>
+                {% set communities_entries = record.parent.communities.entries %}
+                {% if communities_entries %}
+                  <b>{{ _("Part of")}} {{ communities_list(communities=communities_entries, branded=record.parent.communities.default) }}</b>
                 {% endif %}
               </small>
             </p>
@@ -134,6 +138,25 @@
             {% endif %}
           </small>
         </div>
+        {% if highlightCommunity %}
+          {% set communities = record.parent.communities.entries %}
+          {% set branded_community_id = record.parent.communities.default %}
+
+          {% if communities and branded_community_id %}
+            {% for community in communities %}
+              {% if community.id == branded_community_id and community.theme %}
+                {% set primaryColor = community.theme.get('style').get('primaryColor') %}
+                <a href="/communities/{{ branded_community_id }}"
+                   class="ui label themed-community-label"
+                   style="background-color: {{ primaryColor }};"
+                >
+                  {{ community.metadata.title }}
+                  <img src="/api/communities/{{ branded_community_id }}/logo" alt class="ui image themed-community-logo right-floated">
+                </a>
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+        {% endif %}
       </div>
     </div>
   </li>

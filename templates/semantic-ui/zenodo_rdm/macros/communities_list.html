@@ -22,16 +22,18 @@
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 -#}
 
-{% macro communities_list(communities=None) %}
+{% macro communities_list(communities=None, branded=None) %}
   {% for community in communities %}
     {% set community_title = community.metadata.get("title", "No title") if community.metadata %}
-    <span class="display-inline-flex comma-separated">
-      <a
-        href="/communities/{{ community.slug }}"
-        title="{{ community_title }}: {{_('Search')}}"
-      >
-        {{ community_title }}
-      </a>
-    </span>
+    {% if not (community.id == branded and community.theme) %}
+      <span class="display-inline-flex comma-separated">
+        <a
+          href="/communities/{{ community.slug }}"
+          title="{{ community_title }}: {{_('Search')}}"
+        >
+          {{ community_title }}
+        </a>
+      </span>
+    {% endif %}
   {% endfor%}
 {% endmacro %}
