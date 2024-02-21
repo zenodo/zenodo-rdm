@@ -13,9 +13,10 @@
         <div
         class="four wide computer six wide tablet sixteen wide mobile column left middle aligned"
         >
-        {% trans cern_data_centre="http://information-technology.web.cern.ch/about/computer-centre" %}Powered by
-          <a href="{{ cern_data_centre }}">CERN Data Centre</a>
-        {% endtrans %}
+          {% trans %}
+            Powered by
+            <a href="http://information-technology.web.cern.ch/about/computer-centre">CERN Data Centre</a> & <a href="https://inveniordm.docs.cern.ch/">InvenioRDM</a>
+          {% endtrans %}
         </div>
       {%- endblock footer_bottom_left %}
 
