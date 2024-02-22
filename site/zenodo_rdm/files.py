@@ -58,6 +58,7 @@ class EOSFilesOffload(BaseFileStorage):
         eos_resp = session.get(
             f"{host}/{base_path}",
             allow_redirects=False,
+            timeout=5,
         )
         if eos_resp.status_code != 307:
             raise Exception(
