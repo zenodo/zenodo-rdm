@@ -34,6 +34,11 @@ from invenio_rdm_records.contrib.thesis import (
     THESIS_NAMESPACE,
 )
 
+from .community_fields import (
+    COMMUNITY_FIELDS,
+    COMMUNITY_FIELDS_UI,
+    COMMUNITY_NAMESPACES,
+)
 from .domain_fields import (
     AUDIOVIS_FIELDS,
     AUDIOVIS_FIELDS_UI,
