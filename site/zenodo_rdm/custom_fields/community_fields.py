@@ -14,14 +14,14 @@ COMMUNITY_FIELDS_UI = [
         "section": _("Subjects"),
         "fields": [
             dict(
-                field="es:subjects",
-                ui_widget="AutocompleteDropdown",
+                field="subjects",
+                ui_widget="SubjectAutocompleteDropdown",
                 props=dict(
                     label="Keywords and subjects",
                     icon="tag",
                     description="The subjects related to the community",
                     placeholder="Search for a subject by name e.g. Psychology ...",
-                    autocompleteFrom="/api/vocabularies/languages",
+                    autocompleteFrom="api/vocabularies/subjects",
                     autocompleteFromAcceptHeader="application/vnd.inveniordm.v1+json",
                     required=False,
                     multiple=True,
@@ -35,8 +35,8 @@ COMMUNITY_FIELDS_UI = [
 
 COMMUNITY_FIELDS = {
     VocabularyCF(
-        name="es:subjects",
-        vocabulary_id="es:subjects",
+        name="subjects",
+        vocabulary_id="subjects",
         multiple=True,
         dump_options=False,
     )
