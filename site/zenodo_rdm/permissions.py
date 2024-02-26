@@ -59,7 +59,11 @@ class ZenodoRDMRecordPermissionPolicy(RDMRecordPermissionPolicy):
     can_manage = [
         IfRecordManagementAllowedForCommunity(
             then_=RDMRecordPermissionPolicy.can_manage,
-            else_=[RecordOwners(), SystemProcess()],  # hide from community curators
+            else_=[
+                RecordOwners(),
+                AccessGrant("manage"),
+                SystemProcess(),
+            ],  # hide from community curators
         )
     ]
     can_curate = can_manage + [AccessGrant("edit"), SecretLinks("edit")]
