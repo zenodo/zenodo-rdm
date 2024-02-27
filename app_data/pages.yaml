@@ -1,11 +1,37 @@
-- url: /communities/horizen/pages/info # The pid_value i.e. (horizen) to be replaced according to the respective branded community
-  title: HorizonZen - Information 
-  description: Horizon
+# The pid_value i.e. (eu) to be replaced according to the respective branded community
+
+- url: /communities/eu/pages/join
+  title: EU Open Research Repository - Join Community
+  description: Join the EU Open Research Repository Community
   template: invenio_app_rdm/default_static_page.html
   has_custom_view: True
 
-- url: /communities/horizen/pages/join-waiting-list # The pid_value i.e. (horizen) to be replaced according to the respective branded community
-  title: Join Waiting List
-  description: Join Waiting List
+- url: /communities/eu/pages/how-to-submit
+  title: EU Open Research Repository - How to Submit
+  description: Learn how to submit to the EU Open Research Repository community
+  template: invenio_app_rdm/default_static_page.html
+  has_custom_view: True
+
+- url: /communities/eu/pages/roadmap
+  title: EU Open Research Repository - Roadmap
+  description: Explore the roadmap of the EU Open Research Repository community
+  template: invenio_app_rdm/default_static_page.html
+  has_custom_view: True
+
+- url: /communities/eu/pages/faq
+  title: EU Open Research Repository - FAQ
+  description: Frequently Asked Questions about the EU Open Research Repository community
+  template: invenio_app_rdm/default_static_page.html
+  has_custom_view: True
+
+- url: /communities/eu/pages/contact
+  title: EU Open Research Repository - Contact
+  description: Get in touch with the EU Open Research Repository community
+  template: invenio_app_rdm/default_static_page.html
+  has_custom_view: True
+
+- url: /communities/eu/pages/early-adopters
+  title: EU Open Research Repository - Early Adopters
+  description: Join the early adopters of the EU Open Research Repository community
   template: invenio_app_rdm/default_static_page.html
   has_custom_view: True
