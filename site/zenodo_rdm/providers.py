@@ -27,11 +27,6 @@ class NoParentDOIPID:
         return None
 
     @property
-    def pid_type(self):
-        """Return pid_type."""
-        return None
-
-    @property
     def pid_value(self):
         """Return pid_value."""
         return None
