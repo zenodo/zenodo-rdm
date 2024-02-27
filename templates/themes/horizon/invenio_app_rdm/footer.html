@@ -6,7 +6,6 @@
   under the terms of the MIT License; see LICENSE file for more details.
 #}
 
-{% set horizon_url="https://about.zenodo.org/projects/horizon-zen/" %}
   <div class="footer-top theme-primary horizon-footer">
     <div class="ui container">
 
@@ -15,27 +14,40 @@
 
             <div
               class="rdm-footer five wide tablet three wide computer sixteen wide mobile column rel-mb-2">
-
-
               <h2 class="ui small header">{{ _("Managed by") }}</h2>
-              {% trans invenio_rdm="https://open-research-europe.ec.europa.eu/" %}
-                <a href="{{ invenio_rdm }}">European Commission</a>
+              {% trans ec_open_research="https://open-research-europe.ec.europa.eu/" %}
+                <a href="{{ ec_open_research }}">CERN on behalf of European Commission (Directorate-General for Reserach and Innovation)</a>
                 <i class="green check circle outline icon"></i>
               {% endtrans %}
               <h2 class="ui small header">{{ _("Contact") }}</h2>
               <a href="mailto:openscience@ec.europe.eu">openscience@ec.europe.eu</a>
-
-
             </div>
             <div
               class="rdm-footer eleven wide tablet thirteen wide computer sixteen wide mobile column">
-              <div class="ui grid">
-                <div class="three wide five wide tablet column">
-                  <h2 class="ui small header">{{ _("About") }}</h2>
-                    <p><a href="https://open-research-europe.ec.europa.eu/">Learn more</a></p>
+              <div class="ui equal width stackable grid">
+                <div class="column">
+
+                  <h2 class="ui small header">{{ _("About") }}</h2>                
+                     <p><a href="/communities/{{ community.slug }}/about">About the EU Open Research Repository</a></p>
+                     <p><a href="/communities/{{ community.slug }}/curation-policy">Curation policy</a></p>
+                     <p><a href="/communities/{{ community.slug }}/pages/roadmap">Roadmap for pilot</a></p>
+                     <p><a href="/communities/{{ community.slug }}/pages/faq">FAQ</a></p>
+                     <p><a href="/communities/{{ community.slug }}/pages/contact">Contact</a></p>
                 </div>
+                <div class="column">
+                  <h2 class="ui small header">{{ _("Submission") }}</h2>                
+                     <p><a href="/communities/{{ community.slug }}/pages/how-to-submit">How to submit</a></p>
+                     <p><a href="/communities/{{ community.slug }}/pages/join">Join with your EC project</a></p>
+                     <p><a href="/communities/{{ community.slug }}/pages/early-adopters">Early adopters</a></p>
+                     <p><a href="https://help.zenodo.org">Help documentation</a></p>
+                </div>
+                <div class="right aligned column">
+                    <a href="https://open-research-europe.ec.europa.eu/" aria-label="CERN">
+                      <img src="{{ url_for('static', filename='images/eufunded.png') }}" width="100" height="100" alt="" />
+                    </a>
+                  </div>
               </div>
-            </div>
+            </div>          
         </div>
       </div>
     </div>
