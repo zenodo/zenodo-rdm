@@ -11,12 +11,12 @@ under the terms of the MIT License; see LICENSE file for more details.
 {%- from "invenio_communities/details/macros/access-status-label.html" import access_status_label -%}
 
 <div
-        class="ui container fluid page-subheader-outer with-submenu rel-pt-2 ml-0-mobile mr-0-mobile">
+        class="ui container fluid with-submenu rel-pt-2 ml-0-mobile mr-0-mobile">
   <div class="ui container fluid mr-0-mobile ml-0-mobile">
     <div class="ui relaxed container grid">
       <div class="row pb-0">
         <div
-                class="sixteen wide mobile sixteen wide tablet twelve wide computer column">
+                class="sixteen wide mobile sixteen wide tablet ten wide computer column">
           <div
                   class="community-header flex align-items-center column-mobile align-items-start-mobile">
             <div class="flex align-items-center">
@@ -53,12 +53,30 @@ under the terms of the MIT License; see LICENSE file for more details.
                 {% endif %}
               </div>
 
-              <div>
+              <div class="text-muted">
                 {% if community.access.visibility == 'restricted' %}
                   <div class="mobile only rel-mb-1">
                     {{ access_status_label() }}
                   </div>
                 {% endif %}
+
+                {% if community.metadata.organizations %}
+                {% for org in community.metadata.organizations %}
+                  {% set ror_id = org.id %}
+                  {% set name = org.name %}
+
+                  <div class="inline-computer mt-5 rel-mr-1">
+                    {% if loop.index == 1 %}
+                      by
+                    {% endif %}
+
+                    {{ name }}
+
+                    <i class="green check circle outline icon"></i>
+                    {{ ", " if not loop.last }}
+                  </div>
+                {% endfor %}
+              {% endif %}
 
                 {% if community.metadata.website %}
                   <div class="inline-computer mt-5 rel-mr-1">
@@ -69,80 +87,32 @@ under the terms of the MIT License; see LICENSE file for more details.
                   </div>
                 {% endif %}
 
-                {% if community.metadata.type is defined %}
-                  <div class="inline-computer mt-5 rel-mr-1">
-                    <i class="tag icon" aria-hidden="true"></i>
-                    <span class="label label-keyword">
-                    {{ community.ui.type.title_l10n }}
-                  </span>
-                  </div>
-                {% endif %}
-
-                {% if community.metadata.organizations %}
-                  {% for org in community.metadata.organizations %}
-                    {% set ror_id = org.id %}
-                    {% set name = org.name %}
-
-                    <div class="inline-computer mt-5">
-                      {% if loop.index == 1 %}
-                        <i class="building outline icon" aria-hidden="true"></i>
-                      {% endif %}
-
-                      {{ name }}
-
-                      {% if ror_id %}
-                        <a
-                                href="https://ror.org/{{ ror_id }}"
-                                aria-label="{{ name }}'s ROR {{ _('profile') }}"
-                                title="{{ name }}'s ROR {{ _('profile') }}"
-                                target="_blank"
-                        >
-                          <img
-                                  class="inline-id-icon"
-                                  src="{{ url_for('static', filename='images/ror-icon.svg') }}"
-                                  alt=""
-                          />
-                        </a>
-                      {% endif %}
-                      {{ ", " if not loop.last }}
-                    </div>
-                  {% endfor %}
-                {% endif %}
               </div>
             </div>
           </div>
         </div>
 
       <div
-        class="sixteen wide mobile sixteen wide tablet four wide computer right aligned middle aligned column">
-          <a href="/uploads/new?community={{ community.slug }}"
+        class="sixteen wide mobile sixteen wide tablet six wide computer right aligned middle aligned column">
+          <a href="/communities/{{ community.slug }}/pages/how-to-submit"
             class="ui positive button labeled icon rel-mt-1 theme-secondary">
             <i class="upload icon" aria-hidden="true"></i>
-            {{ _("New upload") }}
+            {{ _("How to submit") }}
           </a>
-          <a href="{{'/support/'}}"
+          <a href="/communities/{{ community.slug }}/pages/join"
             target="_blank"
             class="ui positive item button labeled theme-primary icon rel-mt-1">
             <i class="users icon" aria-hidden="true"></i>
-            {{ _("Join waiting list") }}
+            {{ _("Join with your EC project") }}
           </a>
-          {% if permissions.can_moderate %}
-            <a
-                    href="{{ url_for('administration.communities', q='slug:'+community.slug) }}"
-                    class="ui button labeled icon rel-mt-1">
-              <i class="cog icon" aria-hidden="true"></i>
-              {{ _("Manage community") }}
-            </a>
-          {% endif %}
-
         </div>
       </div>
     </div>
     <div class="ui divider mobile only"></div>
     <div class="ui container fluid theme-tertiary page-subheader rel-mt-2 p-10 mr-0-mobile ml-0-mobile">
-      <div class="ui container">
-        Research and innovation
-      </div>
+      <h5 class="ui container">
+        Research and Innovation
+      </h5>
     </div>
     <div
             class="ui container fluid secondary pointing stackable menu pl-0 pr-0 theme-primary mt-0 mr-0-mobile ml-0-mobile">
