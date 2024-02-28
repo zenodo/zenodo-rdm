@@ -2,6 +2,7 @@
 
 See https://developers.zenodo.org/#quickstart-upload.
 """
+
 from io import BytesIO
 
 import requests
