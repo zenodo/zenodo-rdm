@@ -17,34 +17,34 @@
   {{ super() }}
   <div class="ui rel-m-2 rel-pt-1">
     <div class="ui centered stackable theme-font grid container rel-mt-2 rel-mb-4">
-      <div class="thirteen wide column">
-        <div class="row item">
-          <h1 class="ui large header">Trusted repository for European research
-            projects</h1>
-          <h1 class="ui text-muted small header">Builtin compliance with EU open science
-            policy</h1>
+      <div class="thirteen centered wide column">
+        <div class=" rel-mt-2 rel-mb-2">
+          <h1 class="ui large header">Open repository for EU-funded research (Pilot)</h1>
+          <p class="text-muted ui small header">Research outputs from Horizon Europe, Euratom and earlier framework programmes</p>
         </div>
-        <div class="ui rel-mt-2 rel-mb-4">
-          <div class="ui fluid container row rel-mb-2">
-            <a href="/uploads/new?community={{ community.slug }}"
-               class="ui positive button labeled theme-secondary icon rel-mt-1">
-              <i class="upload icon" aria-hidden="true"></i>
-              {{ _("New upload") }}
-            </a>
-            <a href="{{ '/support/' }}"
-               target="_blank"
-               class="ui positive button labeled theme-primary icon rel-mt-1">
-              <i class="users icon" aria-hidden="true"></i>
-              {{ _("Join waiting list") }}
-            </a>
-            <a href="https://open-research-europe.ec.europa.eu/"
-               target="_blank"
-               class="ui button labeled icon rel-mt-1">
-              <i class="info icon" aria-hidden="true"></i>
-              {{ _("Learn more") }}
-            </a>
+        <div class="ui grid centered rel-mt-2 rel-mb-4">
+        <div class="row">
+        <div class="column eight wide">
+          <div class="ui fluid action input">
+            <input
+              type="text"
+              name="q"
+              class="form-control"
+              placeholder="{{ _('Search...') }}"
+              aria-label="{{ _('Search') }}"
+            >
+            <button
+              type="submit"
+              class="ui icon search button"
+              aria-label="{{ _('Search') }}"
+            >
+            {{ _('Search') }}
+            </button>
+          </div>
+          </div>
           </div>
         </div>
+      </div>
       </div>
     </div>
 
@@ -67,37 +67,105 @@
       </div>
     {% endif %}
 
-    <div class="ui stackable theme-font grid container rel-mt-2">
+    <div class="ui stackable theme-font grid container rel-mt-2 rel-mb-5">
       <div class="column">
         <div class="row item">
           <h1 class="ui large header">{{ _('How it works') }}</h1>
         </div>
-        <div class="ui divider"></div>
-        <div class="center aligned ui equal width stackable grid rel-mt-4 rel-mb-2">
-          <div class="row rel-mb-2">
-            <div class="column">
-              <h1 class="text-muted ui medium header">{{ _('1. Request Community') }}</h1>
+        <div class="ui divider"></div> 
+        <div class="sixteen wide stretched column rel-m-2">
+          <div class="ui equal width grid">
+            <div class="five wide computer sixteen wide mobile  sidebar-container column rel-m-1">
+              <section>
+                <h1 class="center aligned ui medium header rel-m-1">{{ _("Submit your research") }} </h1>
+                <div class="ui  bottom attached">
+                  <ul>
+                    <li>
+                      <strong>Eligibility</strong> — Any research output (data, software, posters, presentation, deliverables, ...) stemming from Horizon Europe (including ERC, MCSA, and earlier Framework Programmes) and/or Euratom across all subject areas
+                    </li>
+                    <li>
+                      <strong>Curation</strong> — All submissions are curated. Submissions are NOT peer- reviewed (for preprints/papers please consider to publish through Open Research Europe platform).
+                    </li>
+                    <li>
+                      <strong>Compliance</strong> — the EU Open Research Repository makes it easy comply with the open science requirements of the Horizon Europe grant agreement.
+                    </li>
+                    <li>
+                      <strong>Zenodo</strong> — EU Open Research Repository is community inside Zenodo which is managed and hosted by CERN.
+                    </li>
+                  </ul>
+                  <div class="ui container center aligned rel-mb-1">
+                    <a href="/communities/{{ community.slug }}/pages/how-to-submit"
+                    class="ui positive button labeled theme-secondary icon rel-mt-2">
+                   <i class="upload icon" aria-hidden="true"></i>
+                   {{ _("How to submit") }}
+                 </a>
+                  </div>
+                </div>
+              </section>
             </div>
-            <div class="column">
-              <h1 class="text-muted ui medium header">{{ _('2. Invite Partners') }}</h1>
+            <div class="five wide computer sixteen wide mobile  sidebar-container column rel-m-1">
+              <section>
+                <h1 class=" center aligned ui medium header rel-m-1">{{ _("Get an EC project community") }} </h1>
+                <div class="ui  bottom attached">
+                  <ul>
+                    <li>
+                      <strong>Manage your project's research outputs</strong> — An EC project community provides you with a common space to manage research outputs from your project and from all your partners.
+                    </li>
+                    <li>
+                      <strong>Eligibility</strong> — Any EU-funded project stemming from Horizon Europe and/or Euratom can get a project community. Request must be made by a beneficiary of a grant.
+                    </li>
+                    <li>
+                      <strong>Members</strong> — Allows you to manage members from across all the project's partners and determine who can submit, who can review and who can manage.
+                    </li>
+                    <li>
+                      <strong>200GB</strong> — Uploads are made available online as soon as you hit publish, and your DOI is registered within seconds.
+                    </li>
+                    <li>
+                      <strong>Compliance</strong> — EC project communities gets a default quota per record of 200GB instead of the normal 50GB.
+                    </li>
+                  </ul>
+                  <div class="ui container center aligned rel-mb-1">
+                    <a href="/communities/{{ community.slug }}/pages/join"
+                    class="ui positive button labeled theme-primary icon rel-mt-1">
+                   <i class="users icon" aria-hidden="true"></i>
+                   {{ _("Join with your EC project") }}
+                 </a>
+                  </div>
+                </div>
+              </section>
             </div>
-            <div class="column">
-              <h1 class="text-muted ui medium header">{{ _('3. Publish FAIR') }}</h1>
+            <div class="five wide computer sixteen wide mobile  sidebar-container column rel-m-1">
+              <section>
+                <h1 class="center aligned ui medium header rel-m-1">{{ _("About") }} </h1>
+                <div class="ui  bottom attached ">
+                  <ul>
+                    <li>
+                      <strong>Pilot</strong> — EU Open Research Repository is in a pilot phase and expected to be fully operational in autumn 2024.
+                    </li>
+                    <li>
+                      <strong>European Commission & CERN</strong> — the EU Open Research Community is managed by CERN on behalf of the European Commission (Directorate-General for Research and Innovation).
+                    </li>
+                    <li>
+                      <strong>Become an early adopter</strong> — every upload is assigned a Digital Object Identifier (DOI), to make them citable and trackable.
+                    </li>
+                    <li>
+                      <strong>Upcoming</strong> — We're working on integrating automated basic curation checks and FAIR assistance directly into the submission workflow. Subscribe to the Zenodo newsletter to learn about the new features as soon as they are out.
+                    <li>
+                      <strong>Funded by</strong> — the work is funded by the European Union under grant agreement no. 101122956 (HORIZON-ZEN).
+                    </li>
+                  </ul>
+                      <div class="ui container center aligned rel-mb-1">
+                        <a href="about"
+                           class="ui button labeled icon rel-mt-1">
+                          <i class="info icon" aria-hidden="true"></i>
+                          {{ _("Learn More") }}
+                        </a>
+                      </div>
+                </div>
+              </section>
             </div>
           </div>
-          <div class="row">
-            <div class="center aligned">
-              <a href="https://open-research-europe.ec.europa.eu/"
-                 target="_blank"
-                 class="ui button labeled icon rel-mt-1">
-                <i class="info icon" aria-hidden="true"></i>
-                {{ _("Learn More") }}
-              </a>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
-
   </div>
 {%- endblock page_body -%}
