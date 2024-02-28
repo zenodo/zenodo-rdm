@@ -4,7 +4,6 @@ WARNING: these should be used with care as they are actions to be done from user
 with superuser access! They should be deleted once they are integrated via UI options
 """
 
-
 from invenio_access.permissions import system_identity
 from invenio_rdm_records.proxies import current_rdm_records_service
 

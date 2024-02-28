@@ -5,6 +5,7 @@ for the purpose of producing an easy to load CSV dump of the awards into an Inve
 
 To use call ``load_files(DATA_PATHS, "awards.csv")``.
 """
+
 import csv
 import gzip
 import uuid
