@@ -26,7 +26,7 @@ import _truncate from "lodash/truncate";
 import { PropTypes } from "prop-types";
 
 export const CitationRow = ({ citation }) => {
-  const citationInfo = `Citation procided by ${citation.providerNames}`;
+  const citationInfo = `Citation provided by ${citation.providerNames}`;
 
   return (
     <Table.Row>
