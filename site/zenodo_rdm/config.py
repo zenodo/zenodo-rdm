@@ -53,9 +53,9 @@ SUPPORT_ISSUE_CATEGORIES = [
             "record(s). This includes new file addition, file removal or "
             "file replacement. "
             "Before sending a request, please consider creating a "
-            '<a href="http://help.zenodo.org/#versioning">new version</a> '
+            '<a href="http://help.zenodo.org/faq/#versioning">new version</a> '
             "of your upload. Please first consult our "
-            '<a href="http://help.zenodo.org/#general">FAQ</a> to get familiar'
+            '<a href="http://help.zenodo.org/faq/#general">FAQ</a> to get familiar'
             " with the file update conditions, to see if your case is "
             "eligible.<br /><br />"
             "You request has to contain <u>all</u> of the points below:"

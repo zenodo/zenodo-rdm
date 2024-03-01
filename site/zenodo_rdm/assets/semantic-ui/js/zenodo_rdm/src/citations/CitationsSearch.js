@@ -118,7 +118,7 @@ export class CitationsSearch extends React.Component {
             >
               Citations
               <a
-                href="https://help.zenodo.org/#citations"
+                href="https://help.zenodo.org/faq/#citations"
                 target="_blank"
                 className="ml-5 mr-5"
                 rel="noreferrer"
