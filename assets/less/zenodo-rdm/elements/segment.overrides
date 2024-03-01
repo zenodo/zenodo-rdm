@@ -24,7 +24,8 @@
   }
 }
 
-.sidebar-container, 
+.sidebar-container,
+.segment-container,
 .ui.segment.sidebar-container {
   background-color: @rdmSidebarSegmentColor;
   border: 1px solid @rdmSidebarSegmentBorderColor;
