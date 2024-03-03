@@ -79,7 +79,6 @@ def app_config(app_config):
     }
     # OpenAIRE configs
     app_config["OPENAIRE_PORTAL_URL"] = "https://explore.openaire.eu"
-    app_config["SUPPORT_ZAMMAD_HTTPTOKEN"] = "changeme"
 
     return app_config
 

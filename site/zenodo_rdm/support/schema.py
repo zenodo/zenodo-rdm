@@ -8,7 +8,7 @@
 
 from flask import current_app
 from marshmallow import RAISE, Schema, ValidationError, fields, validate, validates
-from marshmallow_utils.fields import SanitizedUnicode
+from marshmallow_utils.fields import SanitizedHTML
 from werkzeug.local import LocalProxy
 from werkzeug.utils import cached_property
 
@@ -33,7 +33,7 @@ class SupportFormSchema(Schema):
 
     name = fields.String(required=True)
     email = fields.String(required=True, validate=validate.Email())
-    description = SanitizedUnicode(required=True)
+    description = SanitizedHTML(required=True)
     subject = fields.String(required=True)
     category = fields.String(required=True)
     sysInfo = fields.Boolean()

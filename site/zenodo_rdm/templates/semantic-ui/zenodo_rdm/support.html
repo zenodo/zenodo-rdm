@@ -22,93 +22,16 @@
         <div class="row">
             <div class="sixteen wide mobile sixteen wide tablet ten wide computer column">
                 <div class="panel-body mt-5">
-                    <h2 class="ui header mb-10">Support</h2>
-
-<div class="ui icon message">
-  <i class="info circle icon"></i>
-  <div class="content">
-    <div class="header">
-      Before you contact us
-    </div>
-    <p>We appreciate that you search for answers to your questions in below linked documentation before you reach out to us.</p>
-  </div>
-</div>
-
-<div class="ui two stackable cards">
-  <div class="card">
-    <div class="content">
-      <div class="header"><a href="https://support.zenodo.org/help/en-gb">FAQ</a></div>
-      <div class="description">
-        Answers to all of the most <strong>frequently asked questions</strong> on our support line including e.g.
-        <ul>
-        <li>Account management</li>
-        <li>Creating and managing records</li>
-        <li>Review processes</li>
-        <li>Safe listing and usage statistics</li>
-        <li>Policy questions</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-  <div class="card">
-    <div class="content">
-      <div class="header"><a href="https://help.zenodo.org/">Help pages</a></div>
-      <div class="description">
-        Easy to follow <strong>step-by-step instructions</strong> for how to get started and use both easy and advanced Zenodo features including:
-        <ul>
-        <li>Uploading and managing records</li>
-        <li>Collaborating and sharing</li>
-        <li>Communities and membership management</li>
-        <li>Account and profiles</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-  <div class="card">
-    <div class="content">
-      <div class="header"><a href="https://about.zenodo.org/">About</a></div>
-      <div class="description">
-        General information about Zenodo, our infrastructure, projects, and policies including:
-        <ul>
-        <li><a href="https://about.zenodo.org/">About</a> Zenodo and our <a href="https://about.zenodo.org/infrastructure">infrastructure</a>.</li>
-        <li><a href="https://about.zenodo.org/policies/">General policies</a> and <a href="https://about.zenodo.org/terms/">terms of use</a>.</li>
-        <li><a href="https://about.zenodo.org/projects/">Projects</a> we participate in.</li>
-        <li><a href="https://developers.zenodo.org">Developer documentation</a> and detailed <a href="https://help.zenodo.org/guides/">guides</a> on NIH DMSPs and searching Zenodo.</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-  <div class="card">
-    <div class="content">
-      <div class="header"><a href="https://openaire.eu/">Open science <i class="external alternate icon"></i></a> (by OpenAIRE)</div>
-      <div class="description">
-        OpenAIRE provides general guides/training on open science, Horizon Europe, research data management (RDM) and legal issues for researchers.
-        <ul>
-        <li><a href="https://www.openaire.eu/guides">Guides</a></li>
-        <li><a href="https://www.openaire.eu/support/webinars">Webinars</a></li>
-        <li><a href="https://www.openaire.eu/open-science-europe-overview">Open science in Europe</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
-
-
+                    <h2 class="ui header mb-10">Contact us</h2>
+                    <p>Before making a request, you can have a look at our <a href="http://help.zenodo.org">FAQ</a> and <a href="http://about.zenodo.org">other resources</a> for more detailed information about the operation, features and goals of Zenodo.</p>
+                    {%- if not user %}
+                        <p>It is recommended to <a href="{{url_for_security('login')}}">login</a> before sending a request, so we can automatically fill-in your contact information. It is especially important for quicker resolution of all technical issues and requests concerning your Zenodo account.</p>
+                    {%- endif %}
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="sixteen wide mobile sixteen wide tablet ten wide computer column">
-                <h3>Contact us</h3>
-                {%- if not is_user_authenticated %}
-                <div class="ui clearing info message">
-                <div class="ui header">
-                Log in
-                </div>
-                <a class="ui right floated button" href="{{url_for_security('login')}}"><i class="sign-in icon"></i> Log in</a>
-                <p>Please log into Zenodo if you have already have an account by clicking the button. This helps us resolve your requests faster and is required for certain types of requests.</p>
-                </div>
-                {%- endif %}
                 {% block root_section %}
                     <div id="zenodo-rdm-support-root" class="panel-body"></div>
                 {% endblock %}
