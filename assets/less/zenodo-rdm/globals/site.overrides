@@ -150,5 +150,9 @@ a.inverted {
     left: 0;
     right: 0;
     bottom: 0;
-    z-index: 9999;
+    z-index: 1;
+    padding: 0.5em 2em 0.5em 1em !important;
+    display: flex !important;
+    justify-content: space-between;
+    align-items: center;
 }
