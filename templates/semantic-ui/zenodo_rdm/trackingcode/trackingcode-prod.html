@@ -13,3 +13,19 @@
   })();
 </script>
 <!-- End Matomo Code -->
+
+<div class="ui container info message cookie-banner">
+  <i aria-hidden="true" class="info icon"></i>
+  <i class="close icon"></i>
+  <p class="inline m-0">This site uses cookies. Find out more on <a href="{{ _(config.COOKIE_POLICY) }}">how we use cookies</a></p>
+  <button class="ui button right floated small primary">Accept all cookies</button>
+  <button class="ui button right floated small">Accept only essential cookies</button>
+</div>
+<script>
+  $('.cookie-banner .close')
+    .on('click', function () {
+      $(this)
+        .closest('.message')
+        .transition('fade');
+    });
+</script>
