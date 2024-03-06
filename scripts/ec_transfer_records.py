@@ -108,7 +108,7 @@ def transfer_communities(
 
     with UnitOfWork() as uow:
         # Step 1 -  move communities to new target using communities service
-        community_service.bulk_add_to_parent(identity, communities, new_parent, uow=uow)
+        community_service.bulk_update_parent(identity, communities, new_parent, uow=uow)
 
         # Step 2 - move records to new parent using community records service
         record_ids = _search_records(identity, records_q)
