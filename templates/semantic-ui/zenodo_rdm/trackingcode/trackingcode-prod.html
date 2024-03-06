@@ -1,35 +1,74 @@
-<!-- Matomo -->
-<script>
-  var _paq = window._paq = window._paq || [];
-  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
-  _paq.push(['trackPageView']);
-  _paq.push(['enableLinkTracking']);
-  (function() {
-    var u="https://webanalytics.web.cern.ch/";
-    _paq.push(['setTrackerUrl', u+'matomo.php']);
-    _paq.push(['setSiteId', '366']);
-    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-    g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
-  })();
-</script>
-<!-- End Matomo Code -->
-
-<div class="ui container info message cookie-banner">
+<div class="ui container info message cookie-banner hidden">
   <i class="close icon"></i>
   <div>
     <i aria-hidden="true" class="info icon"></i>
     <p class="inline">This site uses cookies. Find out more on <a href="{{ _(config.COOKIE_POLICY) }}">how we use cookies</a></p>
   </div>
   <div>
-    <button class="ui button small primary">Accept all cookies</button>
-    <button class="ui button small">Accept only essential cookies</button>
+    <button class="ui button small primary" id="cookies-all">Accept all cookies</button>
+    <button class="ui button small" id="cookies-essential">Accept only essential cookies</button>
   </div>
 </div>
+
 <script>
+  const cookieConsent = document.cookie
+    .split("; ")
+    .find((row) => row.startsWith("cookie_consent="))
+    ?.split("=")[1];
+
+  if (cookieConsent) {    
+    if (cookieConsent === "all") {
+      matomo();
+    }
+  } else {
+    document.querySelector(".cookie-banner").classList.remove("hidden")
+  }
+
   $('.cookie-banner .close')
     .on('click', function () {
       $(this)
         .closest('.message')
         .transition('fade');
+      setCookie("cookie_consent","essential");
     });
+
+  $('#cookies-essential')
+    .on('click', function () {
+      $(this)
+        .closest('.message')
+        .transition('fade');
+      setCookie("cookie_consent","essential");
+    });
+
+  $('#cookies-all')
+    .on('click', function () {
+      $(this)
+        .closest('.message')
+        .transition('fade');
+      setCookie("cookie_consent","all");
+      matomo();
+    });
+
+  function matomo() {
+    var _paq = window._paq = window._paq || [];
+    /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+    _paq.push(['trackPageView']);
+    _paq.push(['enableLinkTracking']);
+    (function() {
+      var u="https://webanalytics.web.cern.ch/";
+      _paq.push(['setTrackerUrl', u+'matomo.php']);
+      _paq.push(['setSiteId', '366']);
+      var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+      g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+    })();
+  }
+
+  function setCookie(cname, cvalue) {
+    var d = new Date();
+    d.setTime(d.getTime() + (365 * 24 * 60 * 60 * 1000)); // one year
+    var expires = "expires=" + d.toUTCString();
+    var cookie = cname + "=" + cvalue + ";" + expires + ";"
+    cookie += "path=/;SameSite=None; Secure"; // so that it works across subdomains
+    document.cookie = cookie;
+  }
 </script>
