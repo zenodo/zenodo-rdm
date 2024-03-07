@@ -4,13 +4,16 @@
     <i aria-hidden="true" class="info icon"></i>
     <p class="inline">This site uses cookies. Find out more on <a href="{{ _(config.COOKIE_POLICY) }}">how we use cookies</a></p>
   </div>
-  <div>
+  <div class="buttons">
     <button class="ui button small primary" id="cookies-all">Accept all cookies</button>
     <button class="ui button small" id="cookies-essential">Accept only essential cookies</button>
   </div>
 </div>
 
 <script>
+  const _paq = window._paq = window._paq || [];
+  _paq.push(['requireCookieConsent']);
+
   const cookieConsent = document.cookie
     .split("; ")
     .find((row) => row.startsWith("cookie_consent="))
@@ -46,11 +49,11 @@
         .closest('.message')
         .transition('fade');
       setCookie("cookie_consent","all");
+      _paq.push(['rememberCookieConsentGiven']);
       matomo();
     });
 
   function matomo() {
-    var _paq = window._paq = window._paq || [];
     /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
     _paq.push(['trackPageView']);
     _paq.push(['enableLinkTracking']);
