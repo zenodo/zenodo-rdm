@@ -9,7 +9,7 @@
 - url: /communities/eu/pages/how-to-submit
   title: EU Open Research Repository - How to Submit
   description: Learn how to submit to the EU Open Research Repository community
-  template: invenio_app_rdm/default_static_page.html
+  template: horizon/how-to-submit.html
   has_custom_view: True
 
 - url: /communities/eu/pages/roadmap

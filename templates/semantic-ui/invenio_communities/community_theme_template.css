@@ -1,3 +1,14 @@
+/* Custom to zenodo-rdm */
+
+.theme-segment-container-primary-light {
+  background-color: #e7f0fd !important;
+  border: 1px solid #cfe2fb !important;
+}
+
+.theme-primary-white-background {
+  background-color: #ffffff !important;
+}
+
 /* Copied from invenio-communities's community_theme_template.css */
 
 .page-subheader-outer {
