@@ -11,6 +11,9 @@
 </div>
 
 <script>
+  const _paq = window._paq = window._paq || [];
+  _paq.push(['requireCookieConsent']);
+
   const cookieConsent = document.cookie
     .split("; ")
     .find((row) => row.startsWith("cookie_consent="))
@@ -19,11 +22,8 @@
   if (cookieConsent) {    
     if (cookieConsent === "all") {
       matomo();
-    } else {
-      unsetMatomoCookies();
     }
   } else {
-    unsetMatomoCookies();
     document.querySelector(".cookie-banner").classList.remove("hidden")
   }
 
@@ -49,11 +49,11 @@
         .closest('.message')
         .transition('fade');
       setCookie("cookie_consent","all");
+      _paq.push(['rememberCookieConsentGiven']);
       matomo();
     });
 
   function matomo() {
-    var _paq = window._paq = window._paq || [];
     /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
     _paq.push(['trackPageView']);
     _paq.push(['enableLinkTracking']);
@@ -73,15 +73,5 @@
     var cookie = cname + "=" + cvalue + ";" + expires + ";"
     cookie += "path=/;SameSite=None; Secure"; // so that it works across subdomains
     document.cookie = cookie;
-  }
-
-  function unsetMatomoCookies() {
-    document.cookie.split(';').forEach(cookie => {
-      if (cookie.trim().startsWith("_pk_")) {
-        const cookieName = cookie.split('=')[0];
-        // Remove the cookie by setting its expiry date to the past
-        document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-      }
-    });
   }
 </script>
