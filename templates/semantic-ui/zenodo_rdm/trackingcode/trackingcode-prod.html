@@ -19,8 +19,11 @@
   if (cookieConsent) {    
     if (cookieConsent === "all") {
       matomo();
+    } else {
+      unsetMatomoCookies();
     }
   } else {
+    unsetMatomoCookies();
     document.querySelector(".cookie-banner").classList.remove("hidden")
   }
 
@@ -70,5 +73,15 @@
     var cookie = cname + "=" + cvalue + ";" + expires + ";"
     cookie += "path=/;SameSite=None; Secure"; // so that it works across subdomains
     document.cookie = cookie;
+  }
+
+  function unsetMatomoCookies() {
+    document.cookie.split(';').forEach(cookie => {
+      if (cookie.trim().startsWith("_pk_")) {
+        const cookieName = cookie.split('=')[0];
+        // Remove the cookie by setting its expiry date to the past
+        document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+      }
+    });
   }
 </script>
