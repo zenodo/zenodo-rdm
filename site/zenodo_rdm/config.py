@@ -35,7 +35,7 @@ from .redirector import (
 SUPPORT_ZAMMAD_ENDPOINT = "http://localhost:8080/api/v1"
 
 # Zammad token
-SUPPORT_ZAMMAD_HTTPTOKEN = ""
+SUPPORT_ZAMMAD_HTTPTOKEN = "changeme"
 
 # Support form categories
 SUPPORT_ISSUE_CATEGORIES = [
