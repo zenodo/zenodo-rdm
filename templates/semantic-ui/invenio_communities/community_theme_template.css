@@ -1,0 +1,56 @@
+/* Copied from invenio-communities's community_theme_template.css */
+
+.page-subheader-outer {
+    background-color: {{ theme.mainHeaderBackgroundColor }} !important;
+}
+
+.theme-secondary, .ui.secondary.button {
+  background-color: {{ theme.secondaryColor }} !important;
+  color: {{ theme.secondaryTextColor }} !important;
+}
+
+.invenio-page-body .ui.search.button {
+  background-color: {{ theme.secondaryColor }} !important;
+  color: {{ theme.secondaryTextColor }} !important;
+}
+
+.theme-primary a, .theme-primary h1, .theme-primary h2, .theme-primary p {
+  color: {{ theme.primaryTextColor }} !important;
+}
+
+.theme-primary.pointing.menu .item.active {
+  border-color: {{ theme.secondaryColor }} !important;
+}
+
+.theme-primary-menu .item.active {
+  background-color: {{ theme.primaryColor }} !important;
+}
+
+.theme-primary .item, .theme-primary-menu, .page-subheader-outer{
+  font-family: {{ theme.font.family }} !important;
+  font-weight: {{ theme.font.weight }} !important;
+  font-size: {{ theme.font.size }};
+}
+
+.theme-primary {
+  background-color: {{ theme.primaryColor }} !important;
+}
+
+.theme-primary-text a,
+.theme-primary-text h1 {
+  color: {{ theme.primaryColor }} !important;
+}
+
+.theme-tertiary, .ui.tertiary.button {
+  background-color: {{ theme.tertiaryColor }} !important;
+  color: {{ theme.tertiaryTextColor }};
+}
+
+.invenio-accordion-field .title, .ui.primary.button{
+  background-color: {{ theme.primaryColor }} !important;
+  color: {{ theme.primaryTextColor }} !important;
+}
+
+.theme-font h1 {
+  font-weight: {{theme.font.weight}} !important;
+}
