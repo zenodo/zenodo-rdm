@@ -155,6 +155,10 @@ a.inverted {
     display: flex !important;
     justify-content: space-between;
     align-items: center;
+
+    .buttons {
+      display: flex;
+    }
 }
 
 .cookie-banner.hidden {
