@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "eaacdf0e3fd9552d699778edccc1f8d32dc0a54b5848de43eb2a375cdc2b630f"
+            "sha256": "4c0e72b3db291d6719a2ebcdd969070447e010c9c5c8c63ed538d11a4ded525e"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -932,11 +932,11 @@
         },
         "importlib-resources": {
             "hashes": [
-                "sha256:308abf8474e2dba5f867d279237cd4076482c3de7104a40b41426370e891549b",
-                "sha256:9a0a862501dc38b68adebc82970140c9e4209fc99601782925178f8386339938"
+                "sha256:4c0269e3580fe2634d364b39b38b961540a7738c02cb984e98add8b4221d793d",
+                "sha256:56fb4525197b78544a3354ea27793952ab93f935bb4bf746b846bb1015020f2b"
             ],
             "markers": "python_version >= '3.8'",
-            "version": "==6.1.2"
+            "version": "==6.1.3"
         },
         "infinity": {
             "hashes": [
@@ -996,11 +996,11 @@
                 "opensearch2"
             ],
             "hashes": [
-                "sha256:1b0a3d2073e9d434cb5608bd1950520482874539263faeeb33c33ad7cbfa1798",
-                "sha256:abaf2612050106147a3864c9c43615375832b57644e8261f4b9af31aabadf5af"
+                "sha256:a578043d28feed18a59a9802f4a1ffd2049d005f3999fa05aaa5acdcf936d6cd",
+                "sha256:ee8432165fe06ef1687f238fabaef687c8bd4f4f44599cf429329e813dd517d3"
             ],
-            "markers": "python_version >= '3.7'",
-            "version": "==12.0.0b3.dev4"
+            "index": "pypi",
+            "version": "==12.0.0b3.dev5"
         },
         "invenio-assets": {
             "hashes": [
@@ -1129,7 +1129,7 @@
                 "sha256:2b3d849f32f9bfd1aa636d951d952b6df2fa2b85a350080dd5a90e3ff7e56592",
                 "sha256:7537b9902171517208552893eea3efb76fb3b55558671ea4ea6fd218d4fbc89b"
             ],
-            "markers": "python_version >= '3.8'",
+            "index": "pypi",
             "version": "==2.1.0"
         },
         "invenio-mail": {
@@ -1350,7 +1350,6 @@
                 "sha256:e8267419d72d81955ec1177f8a29aaa90ac80ad647499201119e2f05e99aa397"
             ],
             "index": "pypi",
-            "markers": "python_version >= '3.9'",
             "version": "==8.18.1"
         },
         "isbnlib": {
@@ -1428,7 +1427,6 @@
                 "sha256:a870ad254da1a8ca84b6a2905cac29d265f805acc57af304784962a2aa6508f6"
             ],
             "index": "pypi",
-            "markers": "python_version >= '3.7'",
             "version": "==4.17.3"
         },
         "jupyter-client": {
@@ -2686,10 +2684,10 @@
                 "flask"
             ],
             "hashes": [
-                "sha256:becda09660df63e55f307570e9817c664392655a7328bbc414b507e9cb874c67",
-                "sha256:f143f3fb4bb57c90abef6e2ad06b5f6f02b2ca13e4060ec5c0549c7a9ccce3fa"
+                "sha256:4f2d6c43c07925d8cd10dfbd0970ea7cb784f70e79523cca9dbcd72df38e5a46",
+                "sha256:be4f8f4b29a80b6a3b71f0f31487beb9e296391da20af8504498a328befed53f"
             ],
-            "version": "==1.40.6"
+            "version": "==1.41.0"
         },
         "setuptools": {
             "hashes": [
@@ -3185,7 +3183,7 @@
                 "sha256:450b20ec296a467077128bff42b73080516e71b56ff59a60a02bef2232c4fa9d",
                 "sha256:d0570876c61ab9e520d776c38acbbb5b05a776d3f9ff98a5c8fd5162a444cf19"
             ],
-            "markers": "python_version >= '3.6'",
+            "markers": "python_version >= '3.8'",
             "version": "==2.2.1"
         },
         "uwsgi": {
@@ -3409,11 +3407,11 @@
             "version": "==3.0.0"
         },
         "zenodo-legacy": {
-            "editable": "True",
+            "editable": true,
             "path": "./legacy"
         },
         "zenodo-rdm": {
-            "editable": "True",
+            "editable": true,
             "path": "./site"
         },
         "zipp": {
@@ -3483,7 +3481,7 @@
                 "sha256:e8a6ae970537e67830776488bca52000eaa37fa63b9988e8c487458d9cd5ace6",
                 "sha256:faf2ee02e6612577ba0181f4347bcbcf591eb122f7841ae5ba233d12c39dcb4d"
             ],
-            "markers": "python_version >= '3.8'",
+            "markers": "python_version >= '3.6'",
             "version": "==24.2.0"
         },
         "build": {
@@ -3722,11 +3720,11 @@
         },
         "importlib-resources": {
             "hashes": [
-                "sha256:308abf8474e2dba5f867d279237cd4076482c3de7104a40b41426370e891549b",
-                "sha256:9a0a862501dc38b68adebc82970140c9e4209fc99601782925178f8386339938"
+                "sha256:4c0269e3580fe2634d364b39b38b961540a7738c02cb984e98add8b4221d793d",
+                "sha256:56fb4525197b78544a3354ea27793952ab93f935bb4bf746b846bb1015020f2b"
             ],
             "markers": "python_version >= '3.8'",
-            "version": "==6.1.2"
+            "version": "==6.1.3"
         },
         "iniconfig": {
             "hashes": [
@@ -3742,7 +3740,6 @@
                 "sha256:8ca5e72a8d85860d5a3fa69b8745237f2939afe12dbf656afbcb47fe72d947a6"
             ],
             "index": "pypi",
-            "markers": "python_full_version >= '3.8.0'",
             "version": "==5.13.2"
         },
         "itsdangerous": {
@@ -3920,7 +3917,6 @@
                 "sha256:1d339b004f764d6cd0f06e690f6dd748df3d62e6fe1a692d6a5500ac2c5b75a5"
             ],
             "index": "pypi",
-            "markers": "python_version >= '2.7'",
             "version": "==0.3.12"
         },
         "pytest-cov": {
@@ -3953,7 +3949,6 @@
                 "sha256:4b896567ef67234331e794168fee12d13e4d4d1743ad912cd099772977aa0e98"
             ],
             "index": "pypi",
-            "markers": "python_version >= '3.7'",
             "version": "==2.2.0"
         },
         "pytest-isort": {
@@ -4093,7 +4088,7 @@
                 "sha256:450b20ec296a467077128bff42b73080516e71b56ff59a60a02bef2232c4fa9d",
                 "sha256:d0570876c61ab9e520d776c38acbbb5b05a776d3f9ff98a5c8fd5162a444cf19"
             ],
-            "markers": "python_version >= '3.6'",
+            "markers": "python_version >= '3.8'",
             "version": "==2.2.1"
         },
         "werkzeug": {
