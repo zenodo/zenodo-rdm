@@ -3,7 +3,7 @@
 - url: /communities/eu/pages/join
   title: EU Open Research Repository - Join Community
   description: Join the EU Open Research Repository Community
-  template: invenio_app_rdm/default_static_page.html
+  template: horizon/join.html
   has_custom_view: True
 
 - url: /communities/eu/pages/how-to-submit
