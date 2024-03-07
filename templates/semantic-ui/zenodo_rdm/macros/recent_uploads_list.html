@@ -32,7 +32,7 @@
     <div class="ui container rel-mb-2 ml-0-mobile mr-0-mobile">
       <ul class="ui divided link relaxed items pl-0">
         {% for record in records %}
-          {{ record_item(record=record) }}
+          {{ record_item(record=record, use_theme_banner=True) }}
         {% endfor %}
       </ul>
     </div>

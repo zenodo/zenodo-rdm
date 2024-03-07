@@ -11,7 +11,7 @@
 {% from "zenodo_rdm/macros/record_item.html" import record_item %}
 
 {%- set title = community.metadata.title -%}
-{% set active_community_header_menu_item= 'home' %}
+{% set active_community_header_menu_item = 'home' %}
 
 {%- block page_body %}
   {{ super() }}
@@ -104,14 +104,14 @@
       <div class="ui stackable theme-font grid container ">
         <div class="column rel-mb-4">
           <div class="row item">
-            <h1 class="ui large header">{{ title }}</h1>
+            <h1 class="ui large header">{{ _("Recent uploads") }}</h1>
           </div>
           <div class="ui divider"></div>
 
           <div class="ui fluid stackable three column grid">
             {% for record in records %}
               <ul class="ui column items m-0">
-                {{ record_item(record=record, highlightCommunity=False) }}
+                {{ record_item(record=record, themed_community=community) }}
               </ul>
             {% endfor %}
           </div>

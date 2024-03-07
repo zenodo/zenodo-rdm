@@ -25,14 +25,41 @@
 {% from "zenodo_rdm/macros/creators.html" import creators %}
 {% from "zenodo_rdm/macros/communities_list.html" import communities_list %}
 
-{% macro record_item(record=None, highlightCommunity=True) %}
+{% macro record_item(record=None, themed_community=None, use_theme_banner=False) %}
   <li class="item">
     <div class="content">
 
+      {# Compute community theme styling #}
+      {% set themed_community = themed_community or (
+        (record.parent.communities.entries or [])
+        | selectattr("id", "==", record.parent.communities.default)
+        | first
+      ) %}
+
+      {% set bg_style = "" %}
+      {% set font_style = "" %}
+      {% if themed_community %}
+        {% set style = themed_community.get("theme", {}).get("style") %}
+        {% if style.primaryColor %}
+          {% set bg_style = "background-color: " ~ style.primaryColor ~ ";" %}
+          {% set font_style = "color: " ~ style.primaryColor ~ ";" %}
+        {% endif %}
+      {% endif %}
+
+      {# Themed community banner #}
+      {% if use_theme_banner and themed_community.theme %}
+        <a href="/communities/{{ themed_community.slug }}"
+            class="ui label themed-community-label"
+            style="{{ bg_style }}"
+        >
+          {{ themed_community.metadata.title }}
+          <img src="/api/communities/{{ themed_community.slug }}/logo" alt class="ui image themed-community-logo right-floated">
+        </a>
+      {% endif %}
       {# Top labels #}
       <div class="extra labels-actions">
-        <div class="ui small horizontal primary theme-primary label">
-          <p>{{ record.ui.publication_date_l10n_long }} ({{ record.ui.version }})</p>
+        <div class="ui small horizontal primary theme-primary label" style="{{ bg_style }}">
+          {{ record.ui.publication_date_l10n_long }} ({{ record.ui.version }})
         </div>
         <div class="ui small horizontal neutral label">
           {{ record.ui.resource_type.title_l10n }}
@@ -50,7 +77,9 @@
 
       {# Title #}
       <div class="header theme-primary-text">
-        <a href="/records/{{ record.id }}">{{ record.metadata.title }}</a>
+        <a href="/records/{{ record.id }}" style="{{ font_style }}">
+          {{ record.metadata.title }}
+        </a>
       </div>
 
       {# Creators #}
@@ -86,8 +115,13 @@
             <p>
               <small>
                 {% set communities_entries = record.parent.communities.entries %}
+                {# Filter out the themed community #}
+                {% if themed_community and themed_community.theme %}
+                  {% set communities_entries = communities_entries | rejectattr("id", "==", themed_community.id) | list %}
+                {% endif %}
+
                 {% if communities_entries %}
-                  <b>{{ _("Part of")}} {{ communities_list(communities=communities_entries, branded=record.parent.communities.default) }}</b>
+                  <b>{{ _("Part of")}} {{ communities_list(communities=communities_entries) }}</b>
                 {% endif %}
               </small>
             </p>
@@ -138,25 +172,6 @@
             {% endif %}
           </small>
         </div>
-        {% if highlightCommunity %}
-          {% set communities = record.parent.communities.entries %}
-          {% set branded_community_id = record.parent.communities.default %}
-
-          {% if communities and branded_community_id %}
-            {% for community in communities %}
-              {% if community.id == branded_community_id and community.theme %}
-                {% set primaryColor = community.theme.get('style').get('primaryColor') %}
-                <a href="/communities/{{ branded_community_id }}"
-                   class="ui label themed-community-label"
-                   style="background-color: {{ primaryColor }};"
-                >
-                  {{ community.metadata.title }}
-                  <img src="/api/communities/{{ branded_community_id }}/logo" alt class="ui image themed-community-logo right-floated">
-                </a>
-              {% endif %}
-            {% endfor %}
-          {% endif %}
-        {% endif %}
       </div>
     </div>
   </li>
