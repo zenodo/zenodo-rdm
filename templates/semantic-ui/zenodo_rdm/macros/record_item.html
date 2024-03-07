@@ -28,17 +28,17 @@
 {% macro record_item(record=None, themed_community=None, use_theme_banner=False) %}
   <li class="item">
     <div class="content">
-
       {# Compute community theme styling #}
-      {% set themed_community = themed_community or (
+      {# FIXME: Uncomment to enable themed banner #}
+      {# {% set themed_community = themed_community or (
         (record.parent.communities.entries or [])
         | selectattr("id", "==", record.parent.communities.default)
         | first
-      ) %}
+      ) %} #}
 
       {% set bg_style = "" %}
       {% set font_style = "" %}
-      {% if themed_community %}
+      {% if use_theme_banner and themed_community %}
         {% set style = themed_community.get("theme", {}).get("style") %}
         {% if style.primaryColor %}
           {% set bg_style = "background-color: " ~ style.primaryColor ~ ";" %}
@@ -116,7 +116,7 @@
               <small>
                 {% set communities_entries = record.parent.communities.entries %}
                 {# Filter out the themed community #}
-                {% if themed_community and themed_community.theme %}
+                {% if themed_community %}
                   {% set communities_entries = communities_entries | rejectattr("id", "==", themed_community.id) | list %}
                 {% endif %}
 
