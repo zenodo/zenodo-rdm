@@ -14,6 +14,14 @@
   var _paq = window._paq = window._paq || [];
   _paq.push(['requireCookieConsent']);
 
+  (function() {
+    var u="https://webanalytics.web.cern.ch/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '366']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+
   const cookieConsent = document.cookie
     .split("; ")
     .find((row) => row.startsWith("cookie_consent="))
@@ -25,6 +33,7 @@
     }
   } else {
     document.querySelector(".cookie-banner").classList.remove("hidden")
+    _paq.push(['forgetConsentGiven']);
   }
 
   $('.cookie-banner .close')
@@ -57,13 +66,6 @@
     /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
     _paq.push(['trackPageView']);
     _paq.push(['enableLinkTracking']);
-    (function() {
-      var u="https://webanalytics.web.cern.ch/";
-      _paq.push(['setTrackerUrl', u+'matomo.php']);
-      _paq.push(['setSiteId', '366']);
-      var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-      g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
-    })();
   }
 
   function setCookie(cname, cvalue) {
