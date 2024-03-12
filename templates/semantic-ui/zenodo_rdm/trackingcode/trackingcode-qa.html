@@ -2,7 +2,7 @@
   <i class="close icon"></i>
   <div>
     <i aria-hidden="true" class="info icon"></i>
-    <p class="inline">This site uses cookies. Find out more on <a href="{{ _(config.COOKIE_POLICY) }}">how we use cookies</a></p>
+    <p class="inline">This site uses cookies. Find out more on <a href="{{ _(config.COOKIE_POLICY_URL) }}">how we use cookies</a></p>
   </div>
   <div class="buttons">
     <button class="ui button small primary" id="cookies-all">Accept all cookies</button>
@@ -27,7 +27,7 @@
     .find((row) => row.startsWith("cookie_consent="))
     ?.split("=")[1];
 
-  if (cookieConsent) {    
+  if (cookieConsent) {
     if (cookieConsent === "all") {
       matomo();
     }
