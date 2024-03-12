@@ -144,3 +144,23 @@ a.inverted {
   height: 150px;
   object-fit: cover;
 }
+
+.cookie-banner {
+  position: fixed !important;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  padding: 0.5em 1.75em 0.5em 1em !important;
+  display: flex !important;
+  justify-content: space-between;
+  align-items: center;
+
+  .buttons {
+    display: flex;
+  }
+}
+
+.cookie-banner.hidden {
+  display: none !important;
+}
