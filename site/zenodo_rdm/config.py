@@ -173,7 +173,6 @@ ZENODO_RECORD_EXPORTERS_LEGACY = {
     "hx": "bibtex",
     "dcite4": "datacite-xml",
     "xd": "dublincore",
-    "geojson": "GeoJSON",
     "xm": "marcxml",
     "dcat": "DCAT-AP",
 }
