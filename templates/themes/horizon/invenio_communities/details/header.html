@@ -21,11 +21,13 @@ under the terms of the MIT License; see LICENSE file for more details.
                   class="community-header flex align-items-center column-mobile align-items-start-mobile">
             <div class="flex align-items-center">
               <div class="ui rounded image community-image mt-5 rel-mr-2">
-                <img
-                        src="{{ community.links.logo | resolve_community_logo(community.id) }}"
-                        alt=""
-                        class="rel-mb-1"
-                />
+                <a href="{{ community.links.self_html }}">
+                  <img
+                          src="{{ community.links.logo | resolve_community_logo(community.id) }}"
+                          alt=""
+                          class="rel-mb-1"
+                  />
+                </a>
               </div>
 
               <div class="mobile only">
