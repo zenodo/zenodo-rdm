@@ -1,7 +1,13 @@
 import { PropTypes } from "prop-types";
 import React, { Component } from "react";
 import { Formik, Form } from "formik";
-import { Form as SemanticForm, Button, Modal } from "semantic-ui-react";
+import {
+  Form as SemanticForm,
+  Button,
+  Message,
+  MessageHeader,
+  Modal,
+} from "semantic-ui-react";
 import { http, TextField, TextAreaField, ToggleField } from "react-invenio-forms";
 import _remove from "lodash/remove";
 import _set from "lodash/set";
@@ -55,6 +61,7 @@ class SupportForm extends Component {
       totalFileSize: 0,
       rejectedFiles: [],
       loading: false,
+      errorMessage: null,
     };
   }
 
@@ -79,7 +86,10 @@ class SupportForm extends Component {
 
   onSubmit = async (values, formikBag) => {
     const { apiEndpoint } = this.props;
-    this.setState({ loading: true });
+    this.setState({
+      loading: true,
+      errorMessage: null,
+    });
     try {
       const formData = formikToFormData(values);
       const response = await http.post(apiEndpoint, formData, requestConfig);
@@ -99,8 +109,8 @@ class SupportForm extends Component {
         errorMessage = apiResponse.message || errorMessage;
       }
 
-      // TODO show error notification
       console.error(errorMessage);
+      this.setState({ errorMessage: errorMessage });
     }
     this.setState({ loading: false });
   };
@@ -127,7 +137,7 @@ class SupportForm extends Component {
     };
 
     const sysInfo = `Browser: ${userBrowser} Operating System: ${userPlatform}`;
-    const { fileErrorMessage, rejectedFiles, loading } = this.state;
+    const { fileErrorMessage, rejectedFiles, loading, errorMessage } = this.state;
 
     return (
       <Formik
@@ -241,6 +251,19 @@ class SupportForm extends Component {
                   Send request
                 </Button>
               </Modal.Actions>
+
+              {errorMessage && (
+                <Message negative>
+                  <MessageHeader>
+                    Sorry, an error prevented the support ticket from being created
+                  </MessageHeader>
+                  <p>
+                    We kindly ask you to send an email to{" "}
+                    <a href="mailto:support@zenodo.org">support@zenodo.org</a> with the
+                    same information as in the form above.
+                  </p>
+                </Message>
+              )}
             </SemanticForm>
           );
         }}
