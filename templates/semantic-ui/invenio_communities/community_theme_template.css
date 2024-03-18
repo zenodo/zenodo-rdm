@@ -5,8 +5,16 @@
   border: 1px solid #cfe2fb !important;
 }
 
-.theme-primary-white-background {
+.theme-segment-container-rounded {
+  border-radius: 20px 20px 20px 80px !important;
+}
+
+.theme-white-background {
   background-color: #ffffff !important;
+}
+
+.theme-primary-text-direct {
+  color: {{ theme.primaryColor }} !important;
 }
 
 /* Copied from invenio-communities's community_theme_template.css */
