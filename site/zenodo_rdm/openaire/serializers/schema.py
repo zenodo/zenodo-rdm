@@ -156,7 +156,7 @@ class OpenAIRESchema(Schema):
         public_record = access["record"] == "public"
         public_files = access["files"] == "public"
 
-        access_settings = obj.get("parent").get("access").get("settings")
+        access_settings = obj.get("parent", {}).get("access", {}).get("settings", {})
         allow_user_requests = access_settings.get("allow_user_requests")
         allow_guest_requests = access_settings.get("allow_guest_requests")
         allows_any = allow_user_requests or allow_guest_requests
