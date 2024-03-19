@@ -141,6 +141,7 @@ class ZenodoSupport(MethodView):
         """Create a customer."""
         params = {
             "email": email,
+            "login": email,
             "roles": ["Customer"],
         }
         if name:
