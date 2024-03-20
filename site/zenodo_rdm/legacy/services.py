@@ -55,9 +55,11 @@ def is_record_and_has_parent_doi(record, ctx):
     """Determine if record has parent doi."""
     return is_record(record, ctx) and has_doi(record.parent, ctx)
 
+
 def is_published_file(file, ctx):
     """Determine if file belongs to a record/draft."""
     return not file.record.is_draft
+
 
 class LegacyRecordLink(RecordLink):
     """Legacy record links with bucket information."""
