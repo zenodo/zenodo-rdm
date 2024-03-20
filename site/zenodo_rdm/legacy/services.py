@@ -55,6 +55,9 @@ def is_record_and_has_parent_doi(record, ctx):
     """Determine if record has parent doi."""
     return is_record(record, ctx) and has_doi(record.parent, ctx)
 
+def is_published_file(file, ctx):
+    """Determine if file belongs to a record/draft."""
+    return not file.record.is_draft
 
 class LegacyRecordLink(RecordLink):
     """Legacy record links with bucket information."""
@@ -289,8 +292,10 @@ class LegacyFileDraftServiceConfig(RDMFileDraftServiceConfig):
         "draft_files.self": LegacyFileLink(
             "{+api}/deposit/depositions/{id}/files/{file_id}"
         ),
-        "draft_files.download": LegacyFileLink(
-            "{+api}/records/{id}/draft/files/{key}/content"
+        "draft_files.download": ConditionalLink(
+            cond=is_published_file,
+            if_=LegacyFileLink("{+api}/records/{id}/files/{key}/content"),
+            else_=LegacyFileLink("{+api}/records/{id}/draft/files/{key}/content"),
         ),
         "files_rest.self": LegacyFileLink("{+api}/files/{bucket_id}/{key}"),
         "files_rest.version": LegacyFileLink(
