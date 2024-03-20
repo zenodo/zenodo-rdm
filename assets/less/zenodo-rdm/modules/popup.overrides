@@ -42,3 +42,9 @@
     }
   }
 }
+
+[data-tooltip]::after {
+  width: max-content;
+  max-width: 80vw;
+  white-space: break-spaces;
+}
