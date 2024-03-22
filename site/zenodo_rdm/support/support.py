@@ -38,8 +38,8 @@ class ZenodoSupport(MethodView):
     def get(self):
         """Renders the support template."""
         user_agent = _extract_info_from_useragent(request.headers.get("User-Agent"))
-        browser_client = user_agent.get("browser", "")
-        browser_version = user_agent.get("browser_version", "")
+        browser_client = user_agent.get("browser", "") or "Unknown client"
+        browser_version = user_agent.get("browser_version", "") or "Unknown version"
         browser_string = browser_client + " " + browser_version
         platform = user_agent.get("os", "")
         system_info = {"browser": browser_string, "platform": platform}
