@@ -8,6 +8,7 @@ import { UpgradeLegacyRecordButton } from "../../components/landing_page/overrid
 import { FileUploaderNewVersion } from "../../components/landing_page/overrides/FileUploaderNewVersion";
 
 export const overriddenComponents = {
-  "InvenioAppRdm.RecordLandingPage.RecordManagement.container": UpgradeLegacyRecordButton,
+  "InvenioAppRdm.RecordLandingPage.RecordManagement.container":
+    UpgradeLegacyRecordButton,
   "ReactInvenioDeposit.FileUploader.NewVersionButton.container": FileUploaderNewVersion,
 };
