@@ -12,10 +12,10 @@ Usage:
 
     _to = "ec_community"
     _from = ["one_eu_project", "another_maybe"]
-    
+
     # option 1 - move communities to new parent (including records)
     transfer_communities(identity, _from, _to, set_default=False)
-    
+
     # option 2 - move records in bulk
     records = ["1234561", "1234321"]
     transfer_records(identity, records, _to, set_default=False)
@@ -108,12 +108,14 @@ def transfer_communities(
 
     with UnitOfWork() as uow:
         # Step 1 -  move communities to new target using communities service
-        community_service.bulk_update_parent(identity, communities, new_parent, uow=uow)
+        community_service.bulk_update_parent(
+            identity, communities, new_parent.id, uow=uow
+        )
 
         # Step 2 - move records to new parent using community records service
         record_ids = _search_records(identity, records_q)
         records_communities_service.bulk_add(
-            identity, new_parent, record_ids, set_default=set_default, uow=uow
+            identity, new_parent.id, record_ids, set_default=set_default, uow=uow
         )
         uow.commit()
 
