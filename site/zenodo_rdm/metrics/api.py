@@ -8,7 +8,7 @@
 """ZenodoRDM Metrics API."""
 
 import calendar
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import requests
 from flask import current_app
@@ -87,26 +87,27 @@ class ZenodoMetric(object):
         url = current_app.config["METRICS_UPTIME_ROBOT_URL"]
         api_key = current_app.config["METRICS_UPTIME_ROBOT_API_KEY"]
 
-        end = datetime.utcnow().replace(
-            day=1, hour=0, minute=0, second=0, microsecond=0
-        )
-        start = (end - timedelta(days=1)).replace(day=1)
-        end_ts = calendar.timegm(end.utctimetuple())
-        start_ts = calendar.timegm(start.utctimetuple())
+        if api_key:
+            end = datetime.now(timezone.utc).replace(
+                day=1, hour=0, minute=0, second=0, microsecond=0
+            )
+            start = (end - timedelta(days=1)).replace(day=1)
+            end_ts = calendar.timegm(end.utctimetuple())
+            start_ts = calendar.timegm(start.utctimetuple())
 
-        res = requests.post(
-            url,
-            json={
-                "api_key": api_key,
-                "custom_uptime_ranges": f"{start_ts}_{end_ts}",
-            },
-        )
+            res = requests.post(
+                url,
+                json={
+                    "api_key": api_key,
+                    "custom_uptime_ranges": f"{start_ts}_{end_ts}",
+                },
+            )
 
-        return sum(
-            float(d["custom_uptime_ranges"])
-            for d in res.json()["monitors"]
-            if d["id"] in metrics
-        ) / len(metrics)
+            return sum(
+                float(d["custom_uptime_ranges"])
+                for d in res.json()["monitors"]
+                if d["id"] in metrics
+            ) / len(metrics)
 
     @staticmethod
     def get_researchers():
