@@ -73,7 +73,7 @@
     d.setTime(d.getTime() + (365 * 24 * 60 * 60 * 1000)); // one year
     var expires = "expires=" + d.toUTCString();
     var cookie = cname + "=" + cvalue + ";" + expires + ";"
-    cookie += "path=/;SameSite=None; Secure"; // so that it works across subdomains
+    cookie += "Domain=zenodo.org;Path=/;SameSite=None; Secure";
     document.cookie = cookie;
   }
 </script>
