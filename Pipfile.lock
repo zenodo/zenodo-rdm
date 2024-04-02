@@ -1084,11 +1084,11 @@
         },
         "invenio-formatter": {
             "hashes": [
-                "sha256:04b48cf12c6336eba2aae8c6c9fc5fe2345376417990f9012824cce231f9e20c",
-                "sha256:8cabe6a2425ac810d953dc16e6f6c15c5c4c2c14128a184c89e88e12a55ca753"
+                "sha256:17aee69fb74f369971d2f30401bef2b94045c4eac8d01db04f2b113711d2f1f0",
+                "sha256:e3ac8f121df9af570845f544d7ac034c75fcfa7e47854b2ec40043cb0f5e32df"
             ],
             "markers": "python_version >= '3.8'",
-            "version": "==2.0.2"
+            "version": "==2.0.3"
         },
         "invenio-github": {
             "hashes": [
