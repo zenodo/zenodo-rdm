@@ -1,22 +1,21 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2022 CERN.
+# Copyright (C) 2022-2024 CERN.
 #
 # Zenodo is free software; you can redistribute it and/or modify
 # it under the terms of the MIT License; see LICENSE file for more details.
 
 """Zenodo legacy serializers."""
 
-from flask_resources import BaseListSchema, JSONSerializer, MarshmallowSerializer
+from flask_resources import (BaseListSchema, JSONSerializer,
+                             MarshmallowSerializer)
+from invenio_rdm_records.resources.serializers.marcxml import \
+    MARCXMLSerializer as BaseMARCXMLSerializer
 from marshmallow import fields, missing, post_dump
 
-from .schemas import (
-    LegacyFileListSchema,
-    LegacyFileSchema,
-    LegacyFilesRESTSchema,
-    LegacySchema,
-    ZenodoSchema,
-)
+from .schemas import (LegacyFileListSchema, LegacyFileSchema,
+                      LegacyFilesRESTSchema, LegacySchema, MARCXMLSchema,
+                      ZenodoSchema)
 
 
 class LegacyListSchema(BaseListSchema):
@@ -85,3 +84,11 @@ class LegacyFilesRESTJSONSerializer(MarshmallowSerializer):
             object_schema_cls=LegacyFilesRESTSchema,
             list_schema_cls=BaseListSchema,
         )
+
+
+class MARCXMLSerializer(BaseMARCXMLSerializer):
+    """Marshmallow based MARCXML serializer for records."""
+
+    def __init__(self, **options):
+        """Constructor."""
+        super().__init__(object_schema_cls=MARCXMLSchema)
