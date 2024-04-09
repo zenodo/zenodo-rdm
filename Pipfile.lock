@@ -2377,6 +2377,12 @@
             ],
             "version": "==2024.1"
         },
+        "pyvips": {
+            "hashes": [
+                "sha256:2aa169f2130e8f9d9b0d442fad10a70ff1c3d1bb6add099ce058987faa1f6829"
+            ],
+            "version": "==2.2.2"
+        },
         "pywebpack": {
             "hashes": [
                 "sha256:676542a37ee29771e9930b9b44632c246d10635c0466ef2f7bf37ade5ed54198",
