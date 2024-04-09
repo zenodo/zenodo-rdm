@@ -100,6 +100,25 @@ services:
         condition: service_started
       mq:
         condition: service_started
+  worker-beat:
+    extends:
+      file: docker-services.yml
+      service: app
+    restart: "always"
+    entrypoint: ["bash", "-c"]
+    command: ["celery -A invenio_app.celery beat -l ERROR"]
+    image: zenodo:latest
+    depends_on:
+      search:
+        condition: service_started
+      cache:
+        condition: service_started
+      db:
+        condition: service_started
+      mq:
+        condition: service_started
+      worker:
+        condition: service_started
 volumes:
   static_data:
   uploaded_data:
