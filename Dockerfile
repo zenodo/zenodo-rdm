@@ -30,6 +30,16 @@ RUN dnf install -y krb5-workstation krb5-libs krb5-devel
 COPY ./krb5.conf /etc/krb5.conf
 # /Kerberos
 
+# VIPS
+# libvips is not available in EPEL so we install the Remi repository configuration package
+# See: https://github.com/libvips/libvips/issues/1184
+RUN dnf install -y http://rpms.remirepo.net/enterprise/remi-release-9.rpm
+# Command to enable the repository (this does not seem to be needed)
+#RUN dnf config-manager --set-enable remi
+# Install libvips
+RUN dnf install -y vips
+# /VIPS
+
 COPY site ./site
 COPY legacy ./legacy
 COPY Pipfile Pipfile.lock ./
