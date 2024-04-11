@@ -132,7 +132,7 @@ class LegacySchema(common.LegacySchema):
 
     def dump_owner(self, obj):
         """Dump owner."""
-        return obj["parent"]["access"]["owned_by"]["user"]
+        return int(obj["parent"]["access"]["owned_by"]["user"])
 
     def dump_files(self, obj):
         """Dump files."""
