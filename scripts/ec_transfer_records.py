@@ -4,7 +4,7 @@
 #
 # Zenodo-RDM is free software; you can redistribute it and/or modify
 # it under the terms of the MIT License; see LICENSE file for more details.
-"""Script to transfer communities and records to new parent.
+"""Script to transfer communities and records under a new community.
 
 Usage:
 
@@ -67,7 +67,11 @@ def _search_records(identity, records_q):
 
 
 def transfer_communities(
-    identity, communities, new_parent, records_q=None, set_default=False
+    identity,
+    community_ids,
+    parent_community_id,
+    records_q=None,
+    set_default=False,
 ):
     """Transfer communities and records to new parent.
 
@@ -76,17 +80,17 @@ def transfer_communities(
     .. code-block:: python
 
         identity = ...
-        communities = ["a_small_eu_project", "test_eu_project"]
-        new_parent = "the_eu_community"
-        transfer_communities(identity, communities, new_parent)
+        community_ids = ["a_small_eu_project", "test_eu_project"]
+        parent_community_id = "the_eu_community"
+        transfer_communities(identity, community_ids, parent_community_id)
 
     Usage 2 - transfer only the records that match a specific query and set the new parent as default:
 
     .. code-block:: python
 
         identity = ...
-        communities = ["a_small_eu_project", "test_eu_project"]
-        new_parent = "the_eu_community"
+        community_ids = ["a_small_eu_project", "test_eu_project"]
+        parent_community_id = "the_eu_community"
         records_q = dsl.query.Bool(
             "must",
             must=[
@@ -94,51 +98,53 @@ def transfer_communities(
                 dsa.Q("term", **{"metadata.publication_date": ""})
             ],
         )
-        transfer_communities(identity, communities, new_parent, records_q, set_default=True)
+        transfer_communities(
+            identity, community_ids, parent_community_id, records_q, set_default=True
+        )
 
-    :param identity: The identity of the user performing the action.
-    :param communities: The list of communities to transfer.
-    :param new_parent: The new parent community to transfer the communities to.
+    :param identity: Identity of the user performing the action.
+    :param community_ids: List of community IDs to transfer.
+    :param parent_community_id: New parent community ID to transfer the communities to.
     :param records_q: The query to filter the records to transfer. If not provided, all the records will be transferred.
-    :param set_default: Whether to set the new parent as the default community of the records. Default is False.
+    :param set_default: Whether to set the parent as the default community of the records. Default is False.
     """
     if not records_q:
-        c_ids = [community_service.record_cls.pid.resolve(x).id for x in communities]
+        c_ids = [community_service.record_cls.pid.resolve(x).id for x in community_ids]
         records_q = _all_records_q(c_ids)
 
     with UnitOfWork() as uow:
         # Step 1 -  move communities to new target using communities service
         community_service.bulk_update_parent(
-            identity, communities, new_parent.id, uow=uow
+            identity, community_ids, parent_community_id, uow=uow
         )
 
         # Step 2 - move records to new parent using community records service
         record_ids = _search_records(identity, records_q)
         records_communities_service.bulk_add(
-            identity, new_parent.id, record_ids, set_default=set_default, uow=uow
+            identity, parent_community_id, record_ids, set_default=set_default, uow=uow
         )
         uow.commit()
 
 
-def transfer_records(identity, records, new_parent, set_default=False):
-    """Transfer records to new parent.
+def transfer_records(identity, record_ids, community_id, set_default=False):
+    """Transfer records to a community.
 
     Usage:
 
     .. code-block:: python
 
             identity = ...
-            records = ["1234561", "1234321"]
-            new_parent = "the_eu_community"
-            transfer_records(identity, records, new_parent)
+            record_ids = ["1234561", "1234321"]
+            community_id = "the_eu_community"
+            transfer_records(identity, record_ids, community_id)
 
-    :param identity: The identity of the user performing the action.
-    :param records: The list of records to transfer.
-    :param new_parent: The new parent community to transfer the records to.
-    :param set_default: Whether to set the new parent as the default community of the records. Default is False.
+    :param identity: Identity of the user performing the action.
+    :param record_ids: List of record IDs to transfer.
+    :param community_id: Community ID to transfer the records to.
+    :param set_default: Whether to set the community as the default community of the records. Default is False.
     """
     with UnitOfWork() as uow:
         records_communities_service.bulk_add(
-            identity, new_parent, records, set_default=set_default, uow=uow
+            identity, community_id, record_ids, set_default=set_default, uow=uow
         )
         uow.commit()
