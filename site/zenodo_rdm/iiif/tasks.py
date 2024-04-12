@@ -28,16 +28,19 @@ except OSError:
 def pyvips_process():
     """Process an image with pyvips."""
     if HAS_VIPS:
-        source_image = pyvips.Image.new_from_file("./app_data/img/covid-19.png")
-        source_image.tiffsave(
-            "dst.tif",
-            tile=True,
-            pyramid=True,
-            compression="jpeg",
-            Q=90,
-            tile_width=256,
-            tile_height=256,
-        )
+        try:
+            source_image = pyvips.Image.new_from_file("./app_data/img/covid-19.png")
+            source_image.tiffsave(
+                "dst.tif",
+                tile=True,
+                pyramid=True,
+                compression="jpeg",
+                Q=90,
+                tile_width=256,
+                tile_height=256,
+            )
+        except pyvips.Error:
+            current_app.logger.exception("Image processing with pyvips failed")
     else:
         current_app.logger.warning(
             "Skipping pyvips_process since either pyvips or libvips are not installed"
