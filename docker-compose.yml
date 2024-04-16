@@ -28,3 +28,7 @@ services:
     extends:
       file: docker-services.yml
       service: pgadmin
+  iipserver:
+    extends:
+      file: docker-services.yml
+      service: iipserver
