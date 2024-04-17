@@ -107,11 +107,11 @@ services:
       - "DISABLE_SECURITY_DASHBOARDS_PLUGIN=true"
   iipserver:
     image: registry.cern.ch/docker.io/iipsrv/iipsrv:latest
-    ports: 
+    ports:
       - "8080:80"
     expose:
       - "8080"
     environment:
       - "CORS=*"
     volumes:
-      - ${INSTANCE_PATH}/iiif/images:/images # INSTANCE_PATH must be defined in the environment (or .env file)
+      - ${INSTANCE_PATH}/iiif/images/public:/images # INSTANCE_PATH must be defined in the environment (or .env file)
