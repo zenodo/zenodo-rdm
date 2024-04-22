@@ -11,7 +11,7 @@
 <div id="m3-dist"
 data-canvas='{{file.data.links.iiif_canvas}}'
 data-config='{{ ui_config | tojson }}'
-data-manifest='{{manifest_url}}'
+data-manifest='{{file.record.links["self_iiif_manifest"]}}'
 ><p>{{ _("Loading...") }}</p></div>
 {% endblock %}
 
