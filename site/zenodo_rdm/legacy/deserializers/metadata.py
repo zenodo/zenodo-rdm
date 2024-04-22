@@ -257,8 +257,9 @@ class MetadataSchema(Schema):
         else:
             # If license does not exist in RDM, it is added as custom
             legacy_license = LEGACY_LICENSES.get(obj)
-            if legacy_license:
-                ret = {"title": {"en": legacy_license["title"]}}
+            if not legacy_license:
+                raise ValidationError(f"Invalid license provided: {obj}")
+            ret = {"title": {"en": legacy_license["title"]}}
 
         return [ret]
 
