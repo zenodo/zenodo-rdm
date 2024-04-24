@@ -6,7 +6,6 @@
 # it under the terms of the MIT License; see LICENSE file for more details.
 """Test OpenAIRE components."""
 
-import json
 from unittest.mock import call
 
 from invenio_access.permissions import system_identity
@@ -44,7 +43,7 @@ def test_on_publish(
     post_endpoint = f"{openaire_api_endpoint}/feedObject"
     mocked_session.post.assert_called_once_with(
         post_endpoint,
-        data=json.dumps(serialized_record),
+        json=serialized_record,
         timeout=10,
     )
 
@@ -79,17 +78,15 @@ def test_on_delete(
 
     post_endpoint = f"{openaire_api_endpoint}/feedObject"
     mocked_session.post.assert_called_once_with(
-        post_endpoint, data=json.dumps(serialized_record), timeout=10
+        post_endpoint, json=serialized_record, timeout=10
     )
 
     mocked_session.delete.assert_called_once_with(
         openaire_api_endpoint,
-        data=json.dumps(
-            {
-                "originalId": f"10.5281/zenodo.{recid}",
-                "collectedFromId": "opendoar____::2659",
-            }
-        ),
+        json={
+            "originalId": f"10.5281/zenodo.{recid}",
+            "collectedFromId": "opendoar____::2659",
+        },
     )
 
 
@@ -126,20 +123,18 @@ def test_on_restore(
     post_endpoint = f"{openaire_api_endpoint}/feedObject"
     # HTTP POST will be called twice (one to create the record and one to restore it)
     post_calls = [
-        call(post_endpoint, data=json.dumps(serialized_record), timeout=10),
-        call(post_endpoint, data=json.dumps(serialized_record), timeout=10),
+        call(post_endpoint, json=serialized_record, timeout=10),
+        call(post_endpoint, json=serialized_record, timeout=10),
     ]
 
     # HTTP DELETE will be called once, when the record is deleted
     delete_calls = [
         call(
             openaire_api_endpoint,
-            data=json.dumps(
-                {
-                    "originalId": f"10.5281/zenodo.{recid}",
-                    "collectedFromId": "opendoar____::2659",
-                }
-            ),
+            json={
+                "originalId": f"10.5281/zenodo.{recid}",
+                "collectedFromId": "opendoar____::2659",
+            },
         )
     ]
 

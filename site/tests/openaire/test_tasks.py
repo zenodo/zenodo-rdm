@@ -6,8 +6,6 @@
 # it under the terms of the MIT License; see LICENSE file for more details.
 """Test OpenAIRE tasks."""
 
-
-import json
 from unittest.mock import call
 
 from invenio_cache.proxies import current_cache
@@ -34,12 +32,36 @@ def test_openaire_direct_index_task(
     the correct serialized record.
     """
     serialized_record = openaire_serializer.dump_obj(openaire_record.data)
+    expected = {
+        "authors": ["Brown, Troy"],
+        "collectedFromId": "opendoar____::2659",
+        "hostedById": "opendoar____::2659",
+        "language": "eng",
+        "licenseCode": "CLOSED",
+        "linksToProjects": [
+            "info:eu-repo/grantAgreement/ANR/H2020/755021/Personalised+Treatment+For+Cystic+Fibrosis+Patients+With+Ultra-rare+CFTR+Mutations+%28and+beyond%29/HIT-CF"
+        ],
+        "originalId": "10.5281/zenodo.2",
+        "pids": [
+            {"type": "doi", "value": "10.5281/zenodo.2"},
+            {"type": "oai", "value": "oai:oai:invenio-app-rdm.org::2"},
+        ],
+        "publisher": "Acme Inc",
+        "resourceType": "0025",
+        "title": "A Romans story",
+        "type": "dataset",
+        "url": "https://127.0.0.1:5000/records/2",
+        "version": "1.0",
+    }
+    assert serialized_record == expected
 
     # Will be executed synchronously in tests
     openaire_direct_index.delay(openaire_record.id)
     post_endpoint = f"{openaire_api_endpoint}/feedObject"
     mocked_session.post.assert_called_once_with(
-        post_endpoint, data=json.dumps(serialized_record), timeout=10
+        post_endpoint,
+        json=expected,
+        timeout=10,
     )
 
     # Assert key is not in cache : means success
@@ -72,8 +94,8 @@ def test_openaire_direct_index_task_with_beta(
     post_endpoint = f"{openaire_api_endpoint}/feedObject"
     beta_endpoint = f"{beta_url}/feedObject"
     calls = [
-        call(post_endpoint, data=json.dumps(serialized_record), timeout=10),
-        call(beta_endpoint, data=json.dumps(serialized_record), timeout=10),
+        call(post_endpoint, json=serialized_record, timeout=10),
+        call(beta_endpoint, json=serialized_record, timeout=10),
     ]
     mocked_session.post.assert_has_calls(calls)
 
@@ -123,7 +145,7 @@ def test_openaire_delete_task(
     openaire_url = running_app.app.config["OPENAIRE_API_URL"]
     params = {"originalId": original_id, "collectedFromId": datasource_id}
 
-    mocked_session.delete.assert_called_once_with(openaire_url, data=json.dumps(params))
+    mocked_session.delete.assert_called_once_with(openaire_url, json=params)
 
     # Assert key is not in cache : means success
     assert not current_cache.cache.has(f"openaire_direct_index:{openaire_record.id}")

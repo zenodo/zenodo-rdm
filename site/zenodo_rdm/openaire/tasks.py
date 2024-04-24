@@ -6,7 +6,6 @@
 # it under the terms of the MIT License; see LICENSE file for more details.
 """OpenAIRE celery tasks."""
 
-import json
 from datetime import datetime
 from functools import wraps
 
@@ -74,7 +73,7 @@ def openaire_direct_index(record_id, retry=True):
         openaire_api_url = current_app.config["OPENAIRE_API_URL"]
         url = f"{openaire_api_url}/feedObject"
         request = openaire_request_factory()
-        res = request.post(url, data=json.dumps(serialized_record), timeout=10)
+        res = request.post(url, json=serialized_record, timeout=10)
 
         if not res.ok:
             raise OpenAIRERequestError(res.text)
@@ -82,9 +81,7 @@ def openaire_direct_index(record_id, retry=True):
         beta_url = current_app.config.get("OPENAIRE_API_URL_BETA")
         if beta_url:
             beta_endpoint = f"{beta_url}/feedObject"
-            res_beta = request.post(
-                beta_endpoint, data=json.dumps(serialized_record), timeout=10
-            )
+            res_beta = request.post(beta_endpoint, json=serialized_record, timeout=10)
 
             if not res_beta.ok:
                 raise OpenAIRERequestError(res_beta.text)
@@ -121,16 +118,14 @@ def openaire_delete(record_id=None, retry=True):
 
         params = {"originalId": original_id, "collectedFromId": datasource_id}
         req = openaire_request_factory()
-        res = req.delete(
-            current_app.config["OPENAIRE_API_URL"], data=json.dumps(params)
-        )
+        res = req.delete(current_app.config["OPENAIRE_API_URL"], json=params)
 
         if not res.ok:
             raise OpenAIRERequestError(res.text)
 
         if current_app.config["OPENAIRE_API_URL_BETA"]:
             res_beta = req.delete(
-                current_app.config["OPENAIRE_API_URL_BETA"], data=json.dumps(params)
+                current_app.config["OPENAIRE_API_URL_BETA"], json=params
             )
 
             if not res_beta.ok:

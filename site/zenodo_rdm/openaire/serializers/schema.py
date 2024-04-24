@@ -202,8 +202,18 @@ class OpenAIRESchema(Schema):
                 award_title = quote_plus(award.get("title", {}).get("en", ""))
                 award_acronym = quote_plus(award.get("acronym", ""))
                 if funder_acronym and award_program and award_number:
-                    b_link = f"info:eu-repo/grantAgreement/{funder_acronym}/{award_program}/{award_number}{award_title}{award_acronym}"
-                    links.append(b_link)
+                    links.append(
+                        "/".join(
+                            (
+                                "info:eu-repo/grantAgreement",
+                                funder_acronym,
+                                award_program,
+                                award_number,
+                                award_title,
+                                award_acronym,
+                            )
+                        )
+                    )
         return links or missing
 
     def get_pids(self, obj):
