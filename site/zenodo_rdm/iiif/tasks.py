@@ -5,7 +5,7 @@
 # ZenodoRDM is free software; you can redistribute it and/or modify
 # it under the terms of the MIT License; see LICENSE file for more details.
 
-"""Tasks for statistics."""
+"""Tasks for IIIF."""
 
 from flask import current_app
 from celery import shared_task
@@ -15,7 +15,7 @@ from zenodo_rdm.iiif.utils import LocalTilesStorage
 
 
 @shared_task(ignore_result=True)
-def generate_zoomable_image(record_id, file_key, params=None):
+def generate_zoomable_image(record_id, file_key):
     """Generate pyramidal tiff."""
     tiles_storage_path = current_app.config.get("TILES_STORAGE_PATH")
     tif_store = LocalTilesStorage(base_path=tiles_storage_path)
