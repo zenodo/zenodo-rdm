@@ -1,7 +1,7 @@
 """IIIF Image conversion utils."""
 
 from pathlib import Path
-from textwrap import wrap
+import textwrap
 
 import pyvips
 from flask import current_app
@@ -116,24 +116,33 @@ class LocalTilesStorage(TilesStorage):
     def __init__(self, *, base_path: str, converter: ImageConverter = None, **kwargs):
         """Constructor."""
         converter = converter or PyVIPSImageConverter()
-        self.base_path = Path(base_path)
+        if Path(base_path).is_absolute():
+            self.base_path = Path(base_path)
+        else:
+            self.base_path = Path(current_app.instance_path) / base_path
         super().__init__(converter=converter, **kwargs)
 
     def _get_dir(self, record: RDMRecord) -> Path:
         """Get directory."""
-        rec_id = record.pid.pid_value
-        path_partitions = wrap(rec_id, width=3)
-        return (
-            self.base_path
-            / record.access.protection.files
-            / Path(*path_partitions)
-            / rec_id
-        )
+        # Partition record.id into 3 chunks of min. 2 characters e.g.:
+        #   - "12345678" -> "/12/34/5678_"
+        recid = record.pid.pid_value
+
+        recid_parts = textwrap.wrap(recid.ljust(4, "_"), 2)
+        start_parts = recid_parts[:2]
+        end_parts = recid_parts[2:]
+        recid_path = "/".join(start_parts)
+        if end_parts:
+            recid_path += f"/{''.join(end_parts)}"
+        if not recid_path.endswith("_"):
+            recid_path += "_"
+
+        # e.g. images/public/12/34/5678_
+        return self.base_path / record.access.protection.files / recid_path
 
     def _get_file_path(self, record: RDMRecord, filename: str) -> Path:
         """Get file path."""
-        # Partition record.id into 3 chunks of min. 2 characters (e.g. "12345678" -> ["12", "34", "5678"])
-        return self._get_dir(record) / (filename + ".ptif")
+        return self._get_dir(record) / f"{filename}.ptif"
 
     def save(self, record, filename):
         """Convert and save to ptif."""

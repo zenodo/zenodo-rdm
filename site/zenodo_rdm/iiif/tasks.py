@@ -7,18 +7,17 @@
 
 """Tasks for statistics."""
 
+from flask import current_app
 from celery import shared_task
 from invenio_rdm_records.proxies import current_rdm_records_service
 
 from zenodo_rdm.iiif.utils import LocalTilesStorage
 
-tif_store = LocalTilesStorage(base_path="/images")
 
-
-@shared_task(
-    ignore_result=True,
-)
+@shared_task(ignore_result=True)
 def generate_zoomable_image(record_id, file_key, params=None):
     """Generate pyramidal tiff."""
+    tiles_storage_path = current_app.config.get("TILES_STORAGE_PATH")
+    tif_store = LocalTilesStorage(base_path=tiles_storage_path)
     record = current_rdm_records_service.record_cls.pid.resolve(record_id)
     tif_store.save(record, file_key)
