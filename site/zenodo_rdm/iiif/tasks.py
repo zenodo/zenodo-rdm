@@ -7,8 +7,8 @@
 
 """Tasks for IIIF."""
 
-from flask import current_app
 from celery import shared_task
+from flask import current_app
 from invenio_rdm_records.proxies import current_rdm_records_service
 
 from zenodo_rdm.iiif.utils import LocalTilesStorage

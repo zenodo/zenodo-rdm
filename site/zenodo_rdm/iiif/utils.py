@@ -7,8 +7,8 @@
 
 """IIIF Image conversion utils."""
 
-from pathlib import Path
 import textwrap
+from pathlib import Path
 
 import pyvips
 from flask import current_app
