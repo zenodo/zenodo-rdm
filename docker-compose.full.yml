@@ -89,7 +89,7 @@ services:
       service: app
     restart: "always"
     entrypoint: ["bash", "-c"]
-    command: ["celery -A invenio_app.celery worker --loglevel=INFO"]
+    command: ["celery -A invenio_app.celery worker --beat --events --loglevel=INFO"]
     image: zenodo:latest
     depends_on:
       search:
