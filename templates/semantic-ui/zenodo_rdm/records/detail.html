@@ -25,7 +25,7 @@
           <h2 id="files-heading">{{ _('Files') }}</h2>
           {%- if files|has_previewable_files -%}
             {%-set preview_file = files|select_preview_file(default_preview=record.files.default_preview) %}
-            {{ preview_file_box(preview_file, record.id, is_preview, record, include_deleted) }}
+            {{ preview_file_box(preview_file, record.id, is_preview, record, include_deleted, media_files) }}
           {%- endif -%}
           {{ file_list_box(files, record.id, is_preview, include_deleted, record) }}
         {% endif %}

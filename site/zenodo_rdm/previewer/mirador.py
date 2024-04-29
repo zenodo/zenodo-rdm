@@ -19,8 +19,12 @@ def can_preview(file):
     # supported_extensions list needs . prefixed -
     preview_extensions = current_app.config["MIRADOR_PREVIEW_EXTENSIONS"]
     supported_extensions = ["." + ext for ext in preview_extensions]
+    media_file_name = file.filename + ".ptif"
     return (
-        file.has_extensions(*supported_extensions) and file.record.data["is_published"]
+        file.has_extensions(*supported_extensions)
+        and file.record.data["is_published"]
+        and file.record._record.media_files[media_file_name].processor["status"]
+        == "finished"
     )
 
 
