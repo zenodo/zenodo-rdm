@@ -140,9 +140,9 @@ class LocalTilesStorage(TilesStorage):
         end_parts = recid_parts[2:]
         recid_path = "/".join(start_parts)
         if end_parts:
-            recid_path += f"/{''.join(end_parts)}"
-        if not recid_path.endswith("_"):
-            recid_path += "_"
+            recid_path += f"/{''.join(end_parts)}_"
+        else:
+            recid_path += "/_"
 
         # e.g. images/public/12/34/5678_
         return self.base_path / record.access.protection.files / recid_path
