@@ -16,7 +16,7 @@ services:
       - "INVENIO_CELERY_RESULT_BACKEND=redis://cache:6379/2"
       - "INVENIO_SEARCH_HOSTS=['search:9200']"
       - "INVENIO_SECRET_KEY=CHANGE_ME"
-      - "INVENIO_SQLALCHEMY_DATABASE_URI=postgresql+psycopg2://zenodo:zenodo@pgbouncer:6432/zenodo"
+      - "INVENIO_SQLALCHEMY_DATABASE_URI=postgresql+psycopg2://zenodo:zenodo@db:5432/zenodo"
       - "INVENIO_WSGI_PROXIES=2"
       - "INVENIO_RATELIMIT_STORAGE_URL=redis://cache:6379/3"
       - "INVENIO_SITE_UI_URL=https://127.0.0.1"
