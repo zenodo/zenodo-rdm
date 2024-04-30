@@ -87,6 +87,8 @@ services:
     extends:
       file: docker-services.yml
       service: iipserver
+    volumes:
+      - image_tiles:/images
 
   # Worker
   worker:
@@ -97,6 +99,10 @@ services:
     entrypoint: ["bash", "-c"]
     command: ["celery -A invenio_app.celery worker --beat --events --loglevel=INFO"]
     image: zenodo:latest
+    volumes:
+      - uploaded_data:/opt/invenio/var/instance/data
+      - archived_data:/opt/invenio/var/instance/archive
+      - image_tiles:/opt/invenio/var/instance/images
     depends_on:
       search:
         condition: service_started
@@ -110,3 +116,4 @@ volumes:
   static_data:
   uploaded_data:
   archived_data:
+  image_tiles:

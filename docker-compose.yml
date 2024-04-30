@@ -32,3 +32,5 @@ services:
     extends:
       file: docker-services.yml
       service: iipserver
+    volumes:
+      - ${INSTANCE_PATH}/images:/images # INSTANCE_PATH must be defined in the environment (or .env file)

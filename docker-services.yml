@@ -115,5 +115,4 @@ services:
       - "9000"
     environment:
       - "CORS=*"
-    volumes:
-      - ${INSTANCE_PATH}/iiif/images/public:/images # INSTANCE_PATH must be defined in the environment (or .env file)
+      - "FILESYSTEM_PREFIX=/images/public"
