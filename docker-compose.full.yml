@@ -34,6 +34,7 @@ services:
     depends_on:
       - web-ui
       - web-api
+      - iipserver
     ports:
       - "80:80"
       - "443:443"
@@ -82,6 +83,11 @@ services:
         condition: service_started
       mq:
         condition: service_started
+  iipserver:
+    extends:
+      file: docker-services.yml
+      service: iipserver
+
   # Worker
   worker:
     extends:

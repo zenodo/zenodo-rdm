@@ -109,8 +109,10 @@ services:
     image: registry.cern.ch/docker.io/iipsrv/iipsrv:latest
     ports:
       - "8080:80"
+      - "9000:9000"
     expose:
       - "8080"
+      - "9000"
     environment:
       - "CORS=*"
     volumes:
