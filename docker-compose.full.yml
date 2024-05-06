@@ -95,7 +95,7 @@ services:
     extends:
       file: docker-services.yml
       service: app
-    restart: "always"
+    restart: "unless-stopped"
     entrypoint: ["bash", "-c"]
     command: ["celery -A invenio_app.celery worker --beat --events --loglevel=INFO"]
     image: zenodo:latest
