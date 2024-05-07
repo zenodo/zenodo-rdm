@@ -36,18 +36,21 @@ def preview(file):
         if ext in current_app.config["IIIF_SIMPLE_PREVIEWER_NATIVE_EXTENSIONS"]
         else "jpg"
     )
-    size = LocalProxy(lambda: current_app.config["IIIF_SIMPLE_PREVIEWER_SIZE"])
-    url = f"{file.data['links']['iiif_base']}/full/{size}/0/default.{format}"
+    size = current_app.config["IIIF_SIMPLE_PREVIEWER_SIZE"]
+    iiif_simple_url = (
+        f"{file.data['links']['iiif_base']}/full/{size}/0/default.{format}"
+    )
+    media_file = (
+        file.record._record.media_files.get(media_file_name)
+        if file.record._record.media_files.enabled
+        else None
+    )
 
     return render_template(
         "invenio_app_rdm/records/mirador_preview.html",
         css_bundles=["mirador-previewer.css"],
         file=file,
-        file_url=url,
-        media_file=(
-            file.record._record.media_files[media_file_name]
-            if file.record._record.media_files.enabled
-            else None
-        ),
+        file_url=iiif_simple_url,
+        media_file=media_file,
         ui_config=current_app.config["MIRADOR_PREVIEW_CONFIG"],
     )
