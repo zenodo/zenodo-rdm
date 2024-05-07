@@ -1,22 +1,42 @@
-.iiif-simple-preview {
+.mirador-iiif-simple-preview {
     display: flex;
     justify-content: center;
 }
 
-.iiif-simple-preview img {
+.mirador-iiif-simple-preview img {
     max-width: 100%;
 }
 
+
 .ui.info.message{
     background-color: #F8FFFF;
-    margin: -0.5em;
+    margin: -0.55em;
     margin-bottom: 1em;
     padding: 1em;
     display: block;
-    color: #0e576c;
+    color: #0E566C;
     opacity: 0.85;
     font-family: 'Helvetica';
     font-size: 15px;
     z-index: 10;
     box-shadow: 0px 0px 0px 1px #A9D5DE inset, 0px 0px 0px 0px rgba(0, 0, 0, 0);
 }
+
+
+i.info.icon {
+    width: 1.2em; 
+    height: 1.2em; 
+    background-color: #0E566C; 
+    border-radius: 50%;
+    display: inline-flex;
+    font-family: "Icons";
+    font-style: normal;
+    justify-content: center;
+    align-items: center;
+    margin-right: 0.5em;
+  }
+  i.info.icon::before {
+    content: "i";
+    color: #F8FFFF; 
+    font-weight: 600;
+  }
