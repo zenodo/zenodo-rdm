@@ -10,7 +10,6 @@
 from os.path import splitext
 
 from flask import current_app, render_template
-from werkzeug.local import LocalProxy
 
 
 def can_preview(file):
@@ -28,29 +27,48 @@ def can_preview(file):
 
 def preview(file):
     """Render template."""
-    media_file_name = file.filename + ".ptif"
+    record = file.record._record
+    tpl_ctx = {}
 
-    ext = splitext(file.filename)[1].lower()[1:]
-    format = (
-        ext
-        if ext in current_app.config["IIIF_SIMPLE_PREVIEWER_NATIVE_EXTENSIONS"]
-        else "jpg"
-    )
-    size = current_app.config["IIIF_SIMPLE_PREVIEWER_SIZE"]
-    iiif_simple_url = (
-        f"{file.data['links']['iiif_base']}/full/{size}/0/default.{format}"
-    )
-    media_file = (
-        file.record._record.media_files.get(media_file_name)
-        if file.record._record.media_files.enabled
-        else None
-    )
+    # Check the status of the tile generation for the image
+    tile_status = None
+    if record.media_files.enabled and not record.is_draft:
+        tile_file = record.media_files.get(f"{file.filename}.ptif")
+        if tile_file is not None and tile_file.processor:
+            tile_status = tile_file.processor.get("status")
+
+    show_mirador = tile_status == "finished"
+    tpl_ctx["show_mirador"] = show_mirador
+
+    if show_mirador:
+        # Add IIIF URLs for Mirador
+        tpl_ctx["iiif_canvas_url"] = file.data["links"]["iiif_canvas"]
+        tpl_ctx["iiif_manifest_url"] = file.record["links"]["self_iiif_manifest"]
+        tpl_ctx["mirador_cfg"] = current_app.config["MIRADOR_PREVIEW_CONFIG"]
+    else:
+        # Fallback to simple IIIF image preview
+        ext = splitext(file.filename)[1].lower()[1:]
+        format = (
+            ext
+            if ext in current_app.config["IIIF_SIMPLE_PREVIEWER_NATIVE_EXTENSIONS"]
+            else "jpg"
+        )
+        size = current_app.config["IIIF_SIMPLE_PREVIEWER_SIZE"]
+        tpl_ctx["iiif_simple_url"] = (
+            f"{file.data['links']['iiif_base']}/full/{size}/0/default.{format}"
+        )
+
+        # Add banner message if needed
+        if record.is_draft:
+            tpl_ctx["banner_message"] = "Zoom is not available in Preview"
+        elif tile_status in ("init", "processing"):
+            tpl_ctx["banner_message"] = (
+                "Zoom will be available shortly (processing in progress)"
+            )
 
     return render_template(
         "invenio_app_rdm/records/mirador_preview.html",
         css_bundles=["mirador-previewer.css"],
         file=file,
-        file_url=iiif_simple_url,
-        media_file=media_file,
-        ui_config=current_app.config["MIRADOR_PREVIEW_CONFIG"],
+        **tpl_ctx,
     )

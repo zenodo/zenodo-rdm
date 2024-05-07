@@ -7,39 +7,37 @@
 
 {%- extends config.PREVIEWER_ABSTRACT_TEMPLATE %}
 
-{% set show_mirador = file.record._record.is_draft != true and media_file is not none and media_file.processor["status"] == 'finished' %}
-
 {% block panel %}
+
 {% if show_mirador %}
-<div id="m3-dist"
-data-canvas='{{file.data.links.iiif_canvas}}'
-data-config='{{ ui_config | tojson }}'
-data-manifest='{{file.record.links["self_iiif_manifest"]}}'
-><p>{{ _("Loading...") }}</p></div>
+  <div id="m3-dist"
+    data-canvas='{{ iiif_canvas_url }}'
+    data-config='{{ mirador_cfg | tojson }}'
+    data-manifest='{{ iiif_manifest_url }}'
+  >
+    <p>{{ _("Loading...") }}</p>
+  </div>
 {% else %}
-{% set message = "" %}
-{% if file.record._record.is_draft != true and media_file.processor.status != ("finished" or "failed") %}
-{% set message = "Zoom will be available shortly (processing in progress)" %}
-{% elif file.record._record.is_draft == true  %}
-{% set message = "Zoom is not available in Preview" %}
-{% endif %}
-{% if message != "" %}
-<section id="previewer-banner" data-media-file='{{ media_file | tojson }}' data-is-draft='{{ file.record._record.is_draft | tojson }}' class="m-3 banners" aria-label="{{ _('Information banner') }}">
-    <div class="ui info flashed top attached m-3 message">
-      <div class="ui container">
-        <span id="previewer-banner-message" ><i class="info circle icon"></i>{{message}}</span> 
+  {% if banner_message %}
+  <section id="previewer-banner" class="m-3 banners" aria-label="{{ _('Information banner') }}">
+      <div class="ui info flashed top attached m-3 message">
+        <div class="ui container">
+          <span id="previewer-banner-message" ><i class="info circle icon"></i>{{ banner_message }}</span>
+        </div>
       </div>
-    </div>
-</section>
+  </section>
+  {% endif %}
+  <div class="mirador-iiif-simple-preview">
+    <img src="{{ iiif_simple_url }}" alt="{{ _('Preview for' )}} {{ file.filename }}" />
+  </div>
 {% endif %}
-<div class="mirador-iiif-simple-preview">
-  <img src="{{ file_url }}" alt="{{ _('Preview for' )}} {{ file.filename }}" />
-</div>
-{% endif %}
+
 {% endblock %}
 
 {% block javascript %}
+
 {% if show_mirador %}
 <script src="{{ url_for('static', filename='js/mirador3-dist/main.js') }}"></script>
 {% endif %}
+
 {% endblock javascript %}
