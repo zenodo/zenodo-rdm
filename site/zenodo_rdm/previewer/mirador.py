@@ -7,7 +7,10 @@
 
 """Mirador preview."""
 
+from os.path import splitext
+
 from flask import current_app, render_template
+from werkzeug.local import LocalProxy
 
 
 def can_preview(file):
@@ -19,19 +22,32 @@ def can_preview(file):
     # supported_extensions list needs . prefixed -
     preview_extensions = current_app.config["MIRADOR_PREVIEW_EXTENSIONS"]
     supported_extensions = ["." + ext for ext in preview_extensions]
-    media_file_name = file.filename + ".ptif"
-    return (
-        file.has_extensions(*supported_extensions)
-        and file.record.data["is_published"]
-        and file.record._record.media_files[media_file_name].processor["status"]
-        == "finished"
-    )
+
+    return file.has_extensions(*supported_extensions)
 
 
 def preview(file):
     """Render template."""
+    media_file_name = file.filename + ".ptif"
+
+    ext = splitext(file.filename)[1].lower()[1:]
+    format = (
+        ext
+        if ext in current_app.config["IIIF_SIMPLE_PREVIEWER_NATIVE_EXTENSIONS"]
+        else "jpg"
+    )
+    size = LocalProxy(lambda: current_app.config["IIIF_SIMPLE_PREVIEWER_SIZE"])
+    url = f"{file.data['links']['iiif_base']}/full/{size}/0/default.{format}"
+
     return render_template(
         "invenio_app_rdm/records/mirador_preview.html",
+        css_bundles=["mirador-previewer.css"],
         file=file,
+        file_url=url,
+        media_file=(
+            file.record._record.media_files[media_file_name]
+            if file.record._record.media_files.enabled
+            else None
+        ),
         ui_config=current_app.config["MIRADOR_PREVIEW_CONFIG"],
     )

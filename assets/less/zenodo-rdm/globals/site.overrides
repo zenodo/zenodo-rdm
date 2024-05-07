@@ -166,6 +166,12 @@ a.inverted {
 }
 
 .preview-iframe {
-  height:60vh;
+  height:600px;
 }
 
+#previewer-banner{
+  display: none;
+    .message {
+    padding: 1em;
+  }
+}
