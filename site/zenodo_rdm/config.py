@@ -335,7 +335,7 @@ EXPORT_REDIRECTS = {
 REDIRECTOR_RULES.update(EXPORT_REDIRECTS)
 
 
-def lock_edit_record_published_files(service, identity, record=None):
+def lock_edit_record_published_files(service, identity, record=None, draft=None):
     """Custom conditions for file bucket lock."""
     can_modify = service.check_permission(
         identity, "modify_locked_files", record=record
@@ -343,12 +343,6 @@ def lock_edit_record_published_files(service, identity, record=None):
     if can_modify:
         return False
 
-    if record:
-        is_external_doi = (
-            record.get("pids", {}).get("doi", {}).get("provider") == "external"
-        )
-        if is_external_doi:
-            return False
     return True
 
 

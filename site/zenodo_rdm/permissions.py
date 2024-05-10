@@ -33,6 +33,7 @@ from invenio_records_permissions.generators import (
 from invenio_users_resources.services.permissions import UserManager
 
 from .generators import (
+    ExternalDOIFilesManager,
     IfFilesRestrictedForCommunity,
     IfRecordManagementAllowedForCommunity,
     MediaFilesManager,
@@ -252,7 +253,12 @@ class ZenodoRDMRecordPermissionPolicy(RDMRecordPermissionPolicy):
     can_media_update_files = [SystemProcess()]
     can_media_delete_files = [SystemProcess()]
 
-    can_modify_locked_files = [Administration(), UserManager, SystemProcess()]
+    can_modify_locked_files = [
+        Administration(),
+        UserManager,
+        SystemProcess(),
+        IfExternalDOIRecord(then_=[ExternalDOIFilesManager()], else_=[Disable()]),
+    ]
 
 
 class ZenodoCommunityPermissionPolicy(CommunityPermissionPolicy):

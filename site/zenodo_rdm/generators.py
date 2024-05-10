@@ -8,7 +8,6 @@
 """Zenodo legacy permissions generators."""
 
 from invenio_access import action_factory
-from invenio_access.permissions import Permission
 from invenio_rdm_records.services.generators import IfRestricted
 from invenio_records.dictutils import dict_lookup
 from invenio_records_permissions.generators import ConditionalGenerator, Generator
@@ -16,7 +15,7 @@ from invenio_records_permissions.generators import ConditionalGenerator, Generat
 # these are defined here as there is a circular dependency otherwise with the
 # permissions.py file
 media_files_management_action = action_factory("manage-media-files")
-media_files_permission = Permission(media_files_management_action)
+manage_external_doi_files_action = action_factory("manage-external-doi-files")
 
 
 class IfFilesRestrictedForCommunity(IfRestricted):
@@ -52,6 +51,18 @@ class MediaFilesManager(Generator):
     def needs(self, **kwargs):
         """Enabling Needs."""
         return [media_files_management_action]
+
+
+class ExternalDOIFilesManager(Generator):
+    """Allows to manage files for exteranl DOI records."""
+
+    def __init__(self):
+        """Initialize generator."""
+        super(ExternalDOIFilesManager, self).__init__()
+
+    def needs(self, **kwargs):
+        """Enable Needs."""
+        return [manage_external_doi_files_action]
 
 
 class IfRecordManagementAllowedForCommunity(ConditionalGenerator):
