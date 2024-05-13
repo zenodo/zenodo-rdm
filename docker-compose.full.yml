@@ -45,6 +45,9 @@ services:
       service: app
     entrypoint: ["bash", "-c"]
     command: ["uwsgi /opt/invenio/var/instance/uwsgi_ui.ini"]
+    environment:
+      # Disable IIIF Proxy, since nginx/frontend handles it
+      - "INVENIO_IIIF_PROXY_CLASS=None"
     image: zenodo:latest
     ports:
       - "5000"
@@ -68,6 +71,9 @@ services:
       service: app
     entrypoint: ["bash", "-c"]
     command: ["uwsgi /opt/invenio/var/instance/uwsgi_rest.ini"]
+    environment:
+      # Disable IIIF Proxy, since nginx/frontend handles it
+      - "INVENIO_IIIF_PROXY_CLASS=None"
     image: zenodo:latest
     ports:
       - "5000"
