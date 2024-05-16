@@ -1,5 +1,9 @@
 <div align="center">
-  <img width="500" src="https://about.zenodo.org/static/img/logos/zenodo-black-border.svg">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://about.zenodo.org/static/img/logos/zenodo-white-border.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://about.zenodo.org/static/img/logos/zenodo-black-border.svg">
+    <img alt="Zenodo logo" src="https://about.zenodo.org/static/img/logos/zenodo-white-border.svg" width="500">
+  </picture>
 </div>
 
 ## Deployment instructions
