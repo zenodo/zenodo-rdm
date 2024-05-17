@@ -149,9 +149,4 @@ class EOSFilesOffload(BaseFileStorage):
 
 def storage_factory(**kwargs):
     """Create custom storage factory to enable file offloading."""
-    fileinstance = kwargs.get("fileinstance")
-    fileurl = kwargs.get("fileurl")
-    fileurl = fileurl or (fileinstance and fileinstance.uri)
-    if fileurl and fileurl.startswith("root://"):
-        return pyfs_storage_factory(filestorage_class=EOSFilesOffload, **kwargs)
-    return pyfs_storage_factory(**kwargs)
+    return pyfs_storage_factory(filestorage_class=EOSFilesOffload, **kwargs)
