@@ -257,7 +257,7 @@ class ZenodoRDMRecordPermissionPolicy(RDMRecordPermissionPolicy):
         Administration(),
         UserManager,
         SystemProcess(),
-        IfExternalDOIRecord(then_=[ExternalDOIFilesManager()], else_=[Disable()]),
+        IfExternalDOIRecord(then_=[ExternalDOIFilesManager()], else_=[]),
     ]
 
 
