@@ -22,7 +22,6 @@ import FileUploader from "./FileUploader";
 
 const requestConfig = {
   headers: {
-    "Accept": "application/json",
     "Content-Type": "multipart/form-data",
   },
 };
