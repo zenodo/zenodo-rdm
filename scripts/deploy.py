@@ -18,6 +18,7 @@ DEPLOYMENTS = {
     "worker-spam": ["worker-spam"],
     "worker-beat": ["worker-beat"],
     "terminal": ["terminal"],
+    "worker-beat-custom": ["worker-beat-custom"],
 }
 deployment_names = ", ".join(DEPLOYMENTS.keys())
 
