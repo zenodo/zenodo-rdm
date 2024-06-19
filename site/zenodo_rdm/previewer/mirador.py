@@ -46,25 +46,27 @@ def preview(file):
         tpl_ctx["iiif_manifest_url"] = file.record["links"]["self_iiif_manifest"]
         tpl_ctx["mirador_cfg"] = current_app.config["MIRADOR_PREVIEW_CONFIG"]
 
-        # Generate annotation file content link
-        annotation_url = None
-        annotation_filename = f"{file.filename}.short.wadm"
+        # Generate dictionary of annotation files
+        annotations = {}
 
-        if annotation_filename in record.files:
-            annotation_url = (
-                f"{file.record['links']['files']}/{annotation_filename}/content"
-            )
-        elif annotation_filename in record.media_files:
-            annotation_url = (
-                f"{file.record['links']['media_files']}/{annotation_filename}/content"
-            )
+        # Iterate through both record.files and record.media_files
+        for file_list, base_url in [
+            (record.files, "files"),
+            (record.media_files, "media_files"),
+        ]:
+            for filename in file_list:
+                if filename.endswith(".short.wadm"):
+                    main_filename = filename[:-11]  # Remove the ".short.wadm" part
+                    # Check if the main file exists in either files or media_files
+                    if (
+                        main_filename in record.files
+                        or main_filename in record.media_files
+                    ):
+                        annotations[main_filename] = (
+                            f"{file.record['links'][base_url]}/{filename}/content"
+                        )
 
-        # Update visiblity of annotations panel based on annotation file existence
-        if annotation_url:
-            tpl_ctx["mirador_cfg"]["window"]["panels"]["annotations"] = True
-            tpl_ctx["mirador_cfg"]["window"]["sideBarPanel"] = "annotations"
-
-        tpl_ctx["annotation_url"] = annotation_url
+        tpl_ctx["annotations"] = annotations
 
     else:
         # Fallback to simple IIIF image preview

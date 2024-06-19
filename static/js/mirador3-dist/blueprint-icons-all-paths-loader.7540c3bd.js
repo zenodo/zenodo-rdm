@@ -1,2 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[0],{1075:function(n,t,e){"use strict";e.r(t),e.d(t,"allPathsLoader",(function(){return r}));var o=e(909),r=function(n,t){return Object(o.b)(void 0,void 0,void 0,(function(){return Object(o.d)(this,(function(o){switch(o.label){case 0:return[4,Promise.resolve().then(e.bind(null,916))];case 1:return[2,(0,o.sent().getIconPaths)(n,t)]}}))}))}}}]);
-//# sourceMappingURL=blueprint-icons-all-paths-loader.7540c3bd.js.map
