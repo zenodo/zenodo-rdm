@@ -7,6 +7,7 @@
 
 """Mirador preview."""
 
+from copy import deepcopy
 from os.path import splitext
 
 from flask import current_app, render_template
@@ -44,7 +45,7 @@ def preview(file):
         # Add IIIF URLs for Mirador
         tpl_ctx["iiif_canvas_url"] = file.data["links"]["iiif_canvas"]
         tpl_ctx["iiif_manifest_url"] = file.record["links"]["self_iiif_manifest"]
-        tpl_ctx["mirador_cfg"] = current_app.config["MIRADOR_PREVIEW_CONFIG"]
+        tpl_ctx["mirador_cfg"] = deepcopy(current_app.config["MIRADOR_PREVIEW_CONFIG"])
 
         # Generate dictionary of annotation files
         annotations = {}
@@ -67,6 +68,11 @@ def preview(file):
                         )
 
         tpl_ctx["annotations"] = annotations
+
+        tpl_ctx["mirador_cfg"]["window"]["panels"]["annotations"] = bool(annotations)
+        tpl_ctx["mirador_cfg"]["window"]["sideBarPanel"] = (
+            "annotations" if annotations else "info"
+        )
 
     else:
         # Fallback to simple IIIF image preview
