@@ -45,6 +45,27 @@ def preview(file):
         tpl_ctx["iiif_canvas_url"] = file.data["links"]["iiif_canvas"]
         tpl_ctx["iiif_manifest_url"] = file.record["links"]["self_iiif_manifest"]
         tpl_ctx["mirador_cfg"] = current_app.config["MIRADOR_PREVIEW_CONFIG"]
+
+        # Generate annotation file content link
+        annotation_url = None
+        annotation_filename = f"{file.filename}.short.wadm"
+
+        if annotation_filename in record.files:
+            annotation_url = (
+                f"{file.record['links']['files']}/{annotation_filename}/content"
+            )
+        elif annotation_filename in record.media_files:
+            annotation_url = (
+                f"{file.record['links']['media_files']}/{annotation_filename}/content"
+            )
+
+        # Update visiblity of annotations panel based on annotation file existence
+        if annotation_url:
+            tpl_ctx["mirador_cfg"]["window"]["panels"]["annotations"] = True
+            tpl_ctx["mirador_cfg"]["window"]["sideBarPanel"] = "annotations"
+
+        tpl_ctx["annotation_url"] = annotation_url
+
     else:
         # Fallback to simple IIIF image preview
         ext = splitext(file.filename)[1].lower()[1:]
