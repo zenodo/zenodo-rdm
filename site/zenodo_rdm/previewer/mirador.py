@@ -7,6 +7,7 @@
 
 """Mirador preview."""
 
+from copy import deepcopy
 from os.path import splitext
 
 from flask import current_app, render_template
@@ -44,7 +45,35 @@ def preview(file):
         # Add IIIF URLs for Mirador
         tpl_ctx["iiif_canvas_url"] = file.data["links"]["iiif_canvas"]
         tpl_ctx["iiif_manifest_url"] = file.record["links"]["self_iiif_manifest"]
-        tpl_ctx["mirador_cfg"] = current_app.config["MIRADOR_PREVIEW_CONFIG"]
+        tpl_ctx["mirador_cfg"] = deepcopy(current_app.config["MIRADOR_PREVIEW_CONFIG"])
+
+        # Generate dictionary of annotation files
+        annotations = {}
+
+        # Iterate through both record.files and record.media_files
+        for file_list, base_url in [
+            (record.files, "files"),
+            (record.media_files, "media_files"),
+        ]:
+            for filename in file_list:
+                if filename.endswith(".short.wadm"):
+                    main_filename = filename[:-11]  # Remove the ".short.wadm" part
+                    # Check if the main file exists in either files or media_files
+                    if (
+                        main_filename in record.files
+                        or main_filename in record.media_files
+                    ):
+                        annotations[main_filename] = (
+                            f"{file.record['links'][base_url]}/{filename}/content"
+                        )
+
+        tpl_ctx["annotations"] = annotations
+
+        tpl_ctx["mirador_cfg"]["window"]["panels"]["annotations"] = bool(annotations)
+        tpl_ctx["mirador_cfg"]["window"]["sideBarPanel"] = (
+            "annotations" if annotations else "info"
+        )
+
     else:
         # Fallback to simple IIIF image preview
         ext = splitext(file.filename)[1].lower()[1:]
