@@ -44,6 +44,12 @@ else
   # Administration moderation role
   invenio roles create administration-moderation
   invenio access allow administration-moderation role administration-moderation
+  # Media files uploader role
+  invenio roles create media-files-uploader
+  invenio access allow manage-media-files role media-files-uploader
+  # External DOI files manager role
+  invenio roles create files-manager
+  invenio access allow manage-external-doi-files role files-manager
 
   invenio index init --force
   invenio rdm-records custom-fields init
