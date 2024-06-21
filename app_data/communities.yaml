@@ -1,0 +1,62 @@
+- slug: eu
+  metadata:
+    title: "EU Open Research Repository (Pilot)"
+    description: "Open repository for EU-funded research outputs from Horizon Europe, Euratom and earlier Framework Programmes."
+    website: "https://research-and-innovation.ec.europa.eu/"
+    type:
+      id: "organization"
+  access:
+    visibility: "public"
+    members_visibility: "restricted"
+    member_policy: "open"
+    record_policy: "open"
+    review_policy: "closed"
+  children:
+    allow: true
+  theme:
+    brand: "horizon"
+    enabled: true
+    style:
+      primaryColor: "#004494"
+      tertiaryColor: "#e3eefd"
+      secondaryColor: "#FFD617"
+      primaryTextColor: "#FFFFFF"
+      tertiaryTextColor: "#1c5694"
+      secondaryTextColor: "#000000"
+      mainHeaderBackgroundColor: "#FFFFFF"
+      font:
+        size: "16px"
+        family: "Arial, sans-serif"
+        weight: 600
+  logo: "ecfunded.png"
+- slug: horizon-zen
+  metadata:
+    title: "HORIZON-ZEN"
+    description: "Repository for the HORIZON-ZEN project - EU research programme beneficiary depositing solution in Zenodo. \n\nFunded by the European Union under grant agreement number 101122956."
+    type:
+      id: "project"
+    website: "https://about.zenodo.org/projects/horizon-zen/"
+    # TODO: Make sure the fixture creation order allows this:
+    # parent:
+    #   id: "eu"
+  access:
+    visibility: "public"
+    members_visibility: "public"
+    member_policy: "open"
+    record_policy: "open"
+    review_policy: "closed"
+  logo: "horizon-zen.png"
+- slug: biosyslit
+  metadata:
+    title: "Biodiversity Literature Repository"
+    description: "A community to share publications related to bio-systematics."
+    type:
+      id: "topic"
+    website: "https://www.biolitrepo.org/"
+  access:
+    visibility: "public"
+    members_visibility: "public"
+    member_policy: "open"
+    record_policy: "open"
+    review_policy: "closed"
+  logo: "biosyslit.png"
