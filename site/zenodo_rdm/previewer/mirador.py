@@ -56,8 +56,8 @@ def preview(file):
             (record.media_files, "media_files"),
         ]:
             for filename in file_list:
-                if filename.endswith(".short.wadm"):
-                    main_filename = filename[:-11]  # Remove the ".short.wadm" part
+                if filename.endswith(".wadm"):
+                    main_filename = filename[:-5]  # Remove the ".wadm" part
                     # Check if the main file exists in either files or media_files
                     if (
                         main_filename in record.files
