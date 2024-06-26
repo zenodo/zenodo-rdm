@@ -31,7 +31,9 @@ class ZenodoCommunitySchema(MinimalCommunitySchema):
         project = original.get("project")
         is_ec_community = self.context.get("community_slug") == "eu"
         if is_ec_community and not project:
-            raise ValidationError(_("Project is required for EC communities."))
+            raise ValidationError(
+                _("Project is required for EC communities.", field_name="project")
+            )
         if project:
             p_str = project.split("::", 1)
             if len(p_str) != 2:
