@@ -14,7 +14,6 @@ import {
   RemoteSelectField,
   http,
 } from "react-invenio-forms";
-import * as Yup from "yup";
 import { Button, Divider, Form, Grid, Header, Icon, Message } from "semantic-ui-react";
 import { CommunityApi } from "@js/invenio_communities/api";
 import { communityErrorSerializer } from "@js/invenio_communities/api/serializers";
@@ -108,27 +107,6 @@ class SubcommunityCreateForm extends Component {
     const { formConfig, canCreateRestricted, customFields, IdentifierField } =
       this.props;
     const { hasCommunity, communities, error } = this.state;
-    // Validation schema
-    const validationSchema = Yup.object().shape({
-      metadata: Yup.object().shape({
-        community: Yup.string().when("hasCommunity", {
-          is: true,
-          then: Yup.string().required(i18next.t("Community is required")),
-        }),
-        slug: Yup.string().when("hasCommunity", {
-          is: false,
-          then: Yup.string().required(i18next.t("Slug is required")),
-        }),
-        title: Yup.string().when("hasCommunity", {
-          is: false,
-          then: Yup.string().required(i18next.t("Community name is required")),
-        }),
-        project: Yup.string().when("hasCommunity", {
-          is: false,
-          then: Yup.string().required(i18next.t("Project is required")),
-        }),
-      }),
-    });
 
     return (
       <Formik
@@ -141,9 +119,8 @@ class SubcommunityCreateForm extends Component {
           },
         }}
         onSubmit={this.onSubmit}
-        validationSchema={validationSchema}
       >
-        {({ values, isSubmitting, handleSubmit, setFieldValue }) => (
+        {({ values, isSubmitting, handleSubmit }) => (
           <Form onSubmit={handleSubmit} className="communities-creation">
             <Message hidden={error === ""} negative className="flashed">
               <Grid container centered>
