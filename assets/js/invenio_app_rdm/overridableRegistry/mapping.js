@@ -6,9 +6,11 @@
 
 import { UpgradeLegacyRecordButton } from "../../components/landing_page/overrides/UpgradeLegacyRecordButton";
 import { FileUploaderNewVersion } from "../../components/landing_page/overrides/FileUploaderNewVersion";
+import SubcommunityCreateForm from "../../components/community/overrides/SubcommunityCreateForm";
 
 export const overriddenComponents = {
   "InvenioAppRdm.RecordLandingPage.RecordManagement.container":
     UpgradeLegacyRecordButton,
   "ReactInvenioDeposit.FileUploader.NewVersionButton.container": FileUploaderNewVersion,
+  "InvenioCommunities.CommunityCreateForm.layout": SubcommunityCreateForm
 };
