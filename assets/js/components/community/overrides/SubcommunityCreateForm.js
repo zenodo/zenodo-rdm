@@ -1,5 +1,5 @@
 import { i18next } from "@translations/invenio_communities/i18next";
-import { Formik, useFormikContext } from "formik";
+import { Formik } from "formik";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import PropTypes from "prop-types";
@@ -18,45 +18,6 @@ import { Button, Divider, Form, Grid, Header, Icon, Message } from "semantic-ui-
 import { CommunityApi } from "@js/invenio_communities/api";
 import { communityErrorSerializer } from "@js/invenio_communities/api/serializers";
 
-const IdentifierField = ({ formConfig }) => {
-  const { values } = useFormikContext();
-
-  const helpText = (
-    <>
-      {i18next.t(
-        "This is your community's unique identifier. You will be able to access your community through the URL:"
-      )}
-      <br />
-      {`${formConfig.SITE_UI_URL}/communities/${values["metadata"]["slug"]}`}
-    </>
-  );
-
-  return (
-    <TextField
-      required
-      id="metadata.slug"
-      label={
-        <FieldLabel
-          htmlFor="metadata.slug"
-          icon="barcode"
-          label={i18next.t("Identifier")}
-        />
-      }
-      fieldPath="metadata.slug"
-      helpText={helpText}
-      fluid
-      className="text-muted"
-      // Prevent submitting before the value is updated:
-      onKeyDown={(e) => {
-        e.key === "Enter" && e.preventDefault();
-      }}
-    />
-  );
-};
-
-IdentifierField.propTypes = {
-  formConfig: PropTypes.object.isRequired,
-};
 
 class SubcommunityCreateForm extends Component {
   state = {
@@ -143,7 +104,7 @@ class SubcommunityCreateForm extends Component {
   };
 
   render() {
-    const { formConfig, canCreateRestricted, customFields } = this.props;
+    const { formConfig, canCreateRestricted, customFields, IdentifierField } = this.props;
     const { hasCommunity, communities, error } = this.state;
 
     return (
@@ -182,7 +143,6 @@ class SubcommunityCreateForm extends Component {
                     <Form.Field>
                       {i18next.t("Do you already have an existing community?")}
                     </Form.Field>
-                    {/* <Form.Group aria-labelledby="community-label"> */}
                     <Form.Group>
                       <RadioField
                         label={i18next.t("Yes")}
