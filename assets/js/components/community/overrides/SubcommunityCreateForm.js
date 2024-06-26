@@ -14,10 +14,10 @@ import {
   RemoteSelectField,
   http,
 } from "react-invenio-forms";
+import * as Yup from "yup";
 import { Button, Divider, Form, Grid, Header, Icon, Message } from "semantic-ui-react";
 import { CommunityApi } from "@js/invenio_communities/api";
 import { communityErrorSerializer } from "@js/invenio_communities/api/serializers";
-
 
 class SubcommunityCreateForm extends Component {
   state = {
@@ -25,6 +25,7 @@ class SubcommunityCreateForm extends Component {
     hasCommunity: false,
     communities: [{ value: "Loading..." }],
   };
+
   componentDidMount() {
     withCancel(
       http
@@ -104,8 +105,30 @@ class SubcommunityCreateForm extends Component {
   };
 
   render() {
-    const { formConfig, canCreateRestricted, customFields, IdentifierField } = this.props;
+    const { formConfig, canCreateRestricted, customFields, IdentifierField } =
+      this.props;
     const { hasCommunity, communities, error } = this.state;
+    // Validation schema
+    const validationSchema = Yup.object().shape({
+      metadata: Yup.object().shape({
+        community: Yup.string().when("hasCommunity", {
+          is: true,
+          then: Yup.string().required(i18next.t("Community is required")),
+        }),
+        slug: Yup.string().when("hasCommunity", {
+          is: false,
+          then: Yup.string().required(i18next.t("Slug is required")),
+        }),
+        title: Yup.string().when("hasCommunity", {
+          is: false,
+          then: Yup.string().required(i18next.t("Community name is required")),
+        }),
+        project: Yup.string().when("hasCommunity", {
+          is: false,
+          then: Yup.string().required(i18next.t("Project is required")),
+        }),
+      }),
+    });
 
     return (
       <Formik
@@ -118,8 +141,9 @@ class SubcommunityCreateForm extends Component {
           },
         }}
         onSubmit={this.onSubmit}
+        validationSchema={validationSchema}
       >
-        {({ values, isSubmitting, handleSubmit }) => (
+        {({ values, isSubmitting, handleSubmit, setFieldValue }) => (
           <Form onSubmit={handleSubmit} className="communities-creation">
             <Message hidden={error === ""} negative className="flashed">
               <Grid container centered>
@@ -152,6 +176,7 @@ class SubcommunityCreateForm extends Component {
                           this.setState({ hasCommunity: true });
                         }}
                         fieldPath="metadata.hasCommunity"
+                        disabled={_isEmpty(communities)}
                       />
                       <RadioField
                         label={i18next.t("No")}
@@ -182,6 +207,67 @@ class SubcommunityCreateForm extends Component {
                   )}
                   {!hasCommunity && (
                     <>
+                      <RemoteSelectField
+                        fieldPath="metadata.project"
+                        id="metadata.project"
+                        suggestionAPIUrl="/api/awards?funders=00k4n6c32"
+                        suggestionAPIHeaders={{
+                          Accept: "application/vnd.inveniordm.v1+json",
+                        }}
+                        placeholder={i18next.t("Search for a project by name")}
+                        serializeSuggestions={(suggestions) =>
+                          suggestions.map((item) => ({
+                            text: item.title_l10n,
+                            content: (
+                              <Header
+                                content={`${item.title_l10n} - (${item.acronym})`}
+                                subheader={item.number}
+                              />
+                            ),
+                            value: item.id,
+                            key: item.id,
+                            acronym: item.acronym,
+                          }))
+                        }
+                        label={
+                          <FieldLabel
+                            htmlFor="metadata.prokject"
+                            icon="group"
+                            label={i18next.t("Project")}
+                          />
+                        }
+                        noQueryMessage={i18next.t("Search for project...")}
+                        clearable
+                        allowAdditions={false}
+                        multiple={false}
+                        selectOnBlur={false}
+                        selectOnNavigation={false}
+                        required
+                        searchParamKey="q"
+                        onValueChange={({ formikProps }, selectedSuggestions) => {
+                          let selectedProject = selectedSuggestions[0];
+                          if (selectedProject) {
+                            formikProps.form.setFieldValue(
+                              formikProps.fieldPath,
+                              selectedProject.key
+                            );
+                            formikProps.form.setFieldValue(
+                              "metadata.title",
+                              selectedProject.text
+                            );
+                            if (selectedProject.acronym) {
+                              formikProps.form.setFieldValue(
+                                "metadata.slug",
+                                selectedProject.acronym.toLowerCase()
+                              );
+                            }
+                          } else {
+                            formikProps.form.setFieldValue("metadata.project", "");
+                            formikProps.form.setFieldValue("metadata.title", "");
+                            formikProps.form.setFieldValue("metadata.slug", "");
+                          }
+                        }}
+                      />
                       <TextField
                         required
                         id="metadata.title"
@@ -198,36 +284,6 @@ class SubcommunityCreateForm extends Component {
                             label={i18next.t("Community name")}
                           />
                         }
-                      />
-                      <RemoteSelectField
-                        fieldPath="metadata.project"
-                        suggestionAPIUrl="/api/awards"
-                        suggestionAPIHeaders={{
-                          Accept: "application/vnd.inveniordm.v1+json",
-                        }}
-                        placeholder={i18next.t("Search for a project by name")}
-                        serializeSuggestions={(suggestions) =>
-                          suggestions.map((item) => ({
-                            text: item.title_l10n,
-                            content: (
-                              <Header
-                                content={`${item.title_l10n} [${item.number}]`}
-                                subheader={item.funder.name}
-                              />
-                            ),
-                            value: item.id,
-                            key: item.id,
-                          }))
-                        }
-                        label={i18next.t("Project")}
-                        noQueryMessage={i18next.t("Search for project...")}
-                        clearable
-                        allowAdditions={false}
-                        multiple={false}
-                        selectOnBlur={false}
-                        selectOnNavigation={false}
-                        required
-                        searchParamKey="q"
                       />
                       <IdentifierField formConfig={formConfig} />
                     </>
@@ -299,6 +355,7 @@ SubcommunityCreateForm.propTypes = {
   canCreateRestricted: PropTypes.bool.isRequired,
   communityId: PropTypes.string.isRequired,
   customFields: PropTypes.object,
+  IdentifierField: PropTypes.func,
 };
 
 export default SubcommunityCreateForm;
