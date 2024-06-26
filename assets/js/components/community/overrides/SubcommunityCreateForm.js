@@ -182,11 +182,6 @@ class SubcommunityCreateForm extends Component {
                   )}
                   {!hasCommunity && (
                     <>
-                      <FieldLabel
-                        htmlFor="metadata.project"
-                        icon="group"
-                        label={i18next.t("Project")}
-                      />
                       <SearchDropdown
                         fieldPath="metadata.project"
                         id="metadata.project"
@@ -217,6 +212,11 @@ class SubcommunityCreateForm extends Component {
                         onChange={this.handleChange}
                         allowAdditions={false}
                         multiple={false}
+                        label={ <FieldLabel
+                          htmlFor="metadata.project"
+                          icon="group"
+                          label={i18next.t("Project")}
+                        />}
                         required
                       />
                       <TextField

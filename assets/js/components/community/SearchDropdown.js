@@ -45,7 +45,6 @@ export default class SearchDropdown extends Component {
     // eslint-disable-next-line react/destructuring-assignment
   }, this.props.debounceTime);
 
-
   handleAddItem = (event, { value }) => {
     const { onAddItem } = this.props;
     if (onAddItem) {
@@ -81,8 +80,8 @@ export default class SearchDropdown extends Component {
 
 SearchDropdown.propTypes = {
   fetchData: PropTypes.func.isRequired,
+  fieldPath: PropTypes.string.isRequired,
   placeholder: PropTypes.string,
-  fieldPath: PropTypes.string,
   serializeSuggestions: PropTypes.func.isRequired,
   onAddItem: PropTypes.func,
   onChange: PropTypes.func,
