@@ -39,7 +39,7 @@ class ZenodoSubcommunityAccept(AcceptSubcommunity):
         # Move records
         records = self._get_community_records(to_be_moved)
         current_rdm_records.record_communities_service.bulk_add(
-            system_identity, move_to, (x['id'] for x in records), uow=uow
+            system_identity, move_to, (x["id"] for x in records), uow=uow
         )
         super().execute(identity, uow)
 
