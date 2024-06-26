@@ -5,15 +5,14 @@ import _isEmpty from "lodash/isEmpty";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 import {
-  CustomFields,
   FieldLabel,
   RadioField,
   SelectField,
   TextField,
   withCancel,
-  RemoteSelectField,
   http,
 } from "react-invenio-forms";
+import SearchDropdown from "../SearchDropdown";
 import { Button, Divider, Form, Grid, Header, Icon, Message } from "semantic-ui-react";
 import { CommunityApi } from "@js/invenio_communities/api";
 import { communityErrorSerializer } from "@js/invenio_communities/api/serializers";
@@ -104,8 +103,7 @@ class SubcommunityCreateForm extends Component {
   };
 
   render() {
-    const { formConfig, canCreateRestricted, customFields, IdentifierField } =
-      this.props;
+    const { formConfig, canCreateRestricted, IdentifierField } = this.props;
     const { hasCommunity, communities, error } = this.state;
 
     return (
@@ -120,7 +118,7 @@ class SubcommunityCreateForm extends Component {
         }}
         onSubmit={this.onSubmit}
       >
-        {({ values, isSubmitting, handleSubmit }) => (
+        {({ values, isSubmitting, handleSubmit, formikProps }) => (
           <Form onSubmit={handleSubmit} className="communities-creation">
             <Message hidden={error === ""} negative className="flashed">
               <Grid container centered>
@@ -184,20 +182,28 @@ class SubcommunityCreateForm extends Component {
                   )}
                   {!hasCommunity && (
                     <>
-                      <RemoteSelectField
+                      <FieldLabel
+                        htmlFor="metadata.project"
+                        icon="group"
+                        label={i18next.t("Project")}
+                      />
+                      <SearchDropdown
                         fieldPath="metadata.project"
                         id="metadata.project"
-                        suggestionAPIUrl="/api/awards?funders=00k4n6c32"
-                        suggestionAPIHeaders={{
-                          Accept: "application/vnd.inveniordm.v1+json",
-                        }}
                         placeholder={i18next.t("Search for a project by name")}
+                        fetchData={async (query) => {
+                          return await http.get(
+                            `/api/awards?funders=00k4n6c32&q=${query}`
+                          );
+                        }}
                         serializeSuggestions={(suggestions) =>
                           suggestions.map((item) => ({
-                            text: item.title_l10n,
+                            text: item.title.en,
                             content: (
                               <Header
-                                content={`${item.title_l10n} - (${item.acronym})`}
+                                content={`${item.title.en}${
+                                  item.acronym ? ` - (${item.acronym})` : ""
+                                }`}
                                 subheader={item.number}
                               />
                             ),
@@ -206,44 +212,12 @@ class SubcommunityCreateForm extends Component {
                             acronym: item.acronym,
                           }))
                         }
-                        label={
-                          <FieldLabel
-                            htmlFor="metadata.prokject"
-                            icon="group"
-                            label={i18next.t("Project")}
-                          />
-                        }
                         noQueryMessage={i18next.t("Search for project...")}
                         clearable
+                        onChange={this.handleChange}
                         allowAdditions={false}
                         multiple={false}
-                        selectOnBlur={false}
-                        selectOnNavigation={false}
                         required
-                        searchParamKey="q"
-                        onValueChange={({ formikProps }, selectedSuggestions) => {
-                          let selectedProject = selectedSuggestions[0];
-                          if (selectedProject) {
-                            formikProps.form.setFieldValue(
-                              formikProps.fieldPath,
-                              selectedProject.key
-                            );
-                            formikProps.form.setFieldValue(
-                              "metadata.title",
-                              selectedProject.text
-                            );
-                            if (selectedProject.acronym) {
-                              formikProps.form.setFieldValue(
-                                "metadata.slug",
-                                selectedProject.acronym.toLowerCase()
-                              );
-                            }
-                          } else {
-                            formikProps.form.setFieldValue("metadata.project", "");
-                            formikProps.form.setFieldValue("metadata.title", "");
-                            formikProps.form.setFieldValue("metadata.slug", "");
-                          }
-                        }}
                       />
                       <TextField
                         required
@@ -264,16 +238,6 @@ class SubcommunityCreateForm extends Component {
                       />
                       <IdentifierField formConfig={formConfig} />
                     </>
-                  )}
-                  {!_isEmpty(customFields.ui) && (
-                    <CustomFields
-                      config={customFields.ui}
-                      templateLoaders={[
-                        (widget) => import(`@templates/custom_fields/${widget}.js`),
-                        (widget) => import(`react-invenio-forms`),
-                      ]}
-                      fieldPathPrefix="custom_fields"
-                    />
                   )}
                   {canCreateRestricted && (
                     <>
@@ -331,7 +295,6 @@ SubcommunityCreateForm.propTypes = {
   formConfig: PropTypes.object.isRequired,
   canCreateRestricted: PropTypes.bool.isRequired,
   communityId: PropTypes.string.isRequired,
-  customFields: PropTypes.object,
   IdentifierField: PropTypes.func,
 };
 
