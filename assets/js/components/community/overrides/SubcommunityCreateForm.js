@@ -138,6 +138,11 @@ class SubcommunityCreateForm extends Component {
               </Grid.Row>
               <Grid.Row textAlign="left">
                 <Grid.Column mobile={16} tablet={12} computer={8}>
+                  <Header as='h5' className="message warning" block>
+                    {i18next.t("Community owners should be associated with an institutional email address. Please change your email address in ")}
+                    <a href='/account/settings/profile'>{i18next.t("your profile settings ")}</a>
+                    {i18next.t("if that is not the case.")}
+                  </Header>
                   <div className="field">
                     <Form.Field>
                       {i18next.t("Do you already have an existing community?")}
