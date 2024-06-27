@@ -29,7 +29,8 @@ class ZenodoCommunitySchema(MinimalCommunitySchema):
         For 'eu' community, it is a required field.
         """
         project = original.get("project")
-        is_ec_community = self.context.get("community_slug") == "eu"
+        parent_community = self.context.get("community")
+        is_ec_community = parent_community.slug == "eu"
         if is_ec_community and not project:
             raise ValidationError(
                 _("Project is required for EC communities.", field_name="project")
