@@ -21,7 +21,7 @@ class SubcommunityCreateForm extends Component {
   state = {
     error: "",
     hasCommunity: false,
-    communities: [{ value: "Loading..." }],
+    communities: [],
   };
 
   componentDidMount() {
@@ -35,7 +35,7 @@ class SubcommunityCreateForm extends Component {
               .filter((item) => !item?.parent?.id)
               .filter((item) => !item?.children?.allow === true)
               .map((item) => ({
-                text: item.metadata.title,
+                text: item.community.title,
                 value: item.id,
                 key: item.id,
               })),
@@ -64,14 +64,16 @@ class SubcommunityCreateForm extends Component {
     let slug = "";
     let project = "";
     if (hasCommunity) {
-      slug = values["metadata"]["community"];
-      payload = { community_id: slug };
+      payload = { 
+        community_id: values["community"]["community"],
+        project: values["community"]["project"]  
+      };
     } else {
-      slug = values["metadata"]["slug"];
-      project = values["metadata"]["project"];
+      slug = values["community"]["slug"];
+      project = values["community"]["project"];
       payload = {
         community: {
-          title: values["metadata"]["title"],
+          title: values["community"]["title"],
           slug: slug,
           project: project,
         },
@@ -112,13 +114,15 @@ class SubcommunityCreateForm extends Component {
           access: {
             visibility: "public",
           },
-          metadata: {
+          community: {
             slug: "",
+            title: "",
+            project:""
           },
         }}
         onSubmit={this.onSubmit}
       >
-        {({ values, isSubmitting, handleSubmit, formikProps }) => (
+        {({ values, isSubmitting, handleSubmit }) => (
           <Form onSubmit={handleSubmit} className="communities-creation">
             <Message hidden={error === ""} negative className="flashed">
               <Grid container centered>
@@ -155,7 +159,7 @@ class SubcommunityCreateForm extends Component {
                         onChange={() => {
                           this.setState({ hasCommunity: true });
                         }}
-                        fieldPath="metadata.hasCommunity"
+                        fieldPath="community.hasCommunity"
                         disabled={_isEmpty(communities)}
                       />
                       <RadioField
@@ -165,43 +169,27 @@ class SubcommunityCreateForm extends Component {
                         onChange={() => {
                           this.setState({ hasCommunity: false });
                         }}
-                        fieldPath="metadata.hasCommunity"
+                        fieldPath="community.hasCommunity"
                       />
                     </Form.Group>
                   </div>
-                  {hasCommunity && (
-                    <SelectField
-                      label={
-                        <FieldLabel
-                          icon="user"
-                          label={i18next.t("Community")}
-                          id="community-label"
-                          class="block"
-                        />
-                      }
-                      fieldPath="metadata.community"
-                      options={communities}
-                      required
-                      disabled={_isEmpty(communities)}
-                    />
-                  )}
-                  {!hasCommunity && (
-                    <>
-                      <SearchDropdown
-                        fieldPath="metadata.project"
-                        id="metadata.project"
+                  <SearchDropdown
+                        fieldPath="community.project"
+                        id="community.project"
                         placeholder={i18next.t("Search for a project by name")}
                         fetchData={async (query) => {
-                          return await http.get(
-                            `/api/awards?funders=00k4n6c32&q=${query}`
-                          );
+                          return await http.get(`/api/awards?funders=00k4n6c32&q=${query}`, {
+                            headers: {
+                              Accept: "application/vnd.inveniordm.v1+json",
+                            },
+                          })
                         }}
                         serializeSuggestions={(suggestions) =>
                           suggestions.map((item) => ({
-                            text: item.title.en,
+                            text: item.title_l10n,
                             content: (
                               <Header
-                                content={`${item.title.en}${
+                                content={`${item.title_l10n}${
                                   item.acronym ? ` - (${item.acronym})` : ""
                                 }`}
                                 subheader={item.number}
@@ -212,30 +200,73 @@ class SubcommunityCreateForm extends Component {
                             acronym: item.acronym,
                           }))
                         }
+                        onChange={({ data, formikProps }) => {
+                          let selectedProject = data.options.find(option => option.value === data.value);
+                          if (selectedProject) {
+                            formikProps.form.setFieldValue(
+                              formikProps.fieldPath,
+                              selectedProject.key
+                            );
+                            formikProps.form.setFieldValue(
+                              "community.title",
+                              selectedProject.text
+                            );
+                            if (selectedProject.acronym) {
+                              formikProps.form.setFieldValue(
+                                "community.slug",
+                                selectedProject.acronym.toLowerCase()
+                              );
+                            }
+                          } else {
+                            formikProps.form.setFieldValue("community.project", "");
+                            formikProps.form.setFieldValue("community.title", "");
+                            formikProps.form.setFieldValue("community.slug", "");
+                          }
+                        }}
                         noQueryMessage={i18next.t("Search for project...")}
                         clearable
-                        onChange={this.handleChange}
                         allowAdditions={false}
                         multiple={false}
                         label={ <FieldLabel
-                          htmlFor="metadata.project"
+                          htmlFor="community.project"
                           icon="group"
                           label={i18next.t("Project")}
                         />}
                         required
                       />
+                  {hasCommunity && (
+                    <>
+                    <SelectField
+                      label={
+                        <FieldLabel
+                        icon="user"
+                        label={i18next.t("Community")}
+                        id="community-label"
+                        class="block"
+                        />
+                      }
+                      fieldPath="community.community"
+                      options={communities}
+                      defaultValue={"Loading..."}
+                      required
+                      placeholder={"Select your community"}
+                      />
+                    </>
+                  )}
+                  {!hasCommunity && (
+                    <>
                       <TextField
                         required
-                        id="metadata.title"
+                        id="community.title"
                         fluid
-                        fieldPath="metadata.title"
+                        fieldPath="community.title"
                         // Prevent submitting before the value is updated:
                         onKeyDown={(e) => {
                           e.key === "Enter" && e.preventDefault();
                         }}
                         label={
                           <FieldLabel
-                            htmlFor="metadata.title"
+                            htmlFor="community.title"
                             icon="book"
                             label={i18next.t("Community name")}
                           />

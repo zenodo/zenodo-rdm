@@ -54,7 +54,7 @@ export default class SearchDropdown extends Component {
 
   render() {
     const { isFetching, error } = this.state;
-    const { placeholder, selectedSuggestion, fieldPath, ...uiProps } = this.props;
+    const { placeholder, selectedSuggestion, fieldPath, onChange, ...uiProps } = this.props;
     const { suggestions } = this.state;
 
     return (
@@ -72,6 +72,7 @@ export default class SearchDropdown extends Component {
         icon="search"
         placeholder={placeholder}
         onAddItem={this.handleAddItem}
+        onChange={onChange}
         {...uiProps}
       />
     );
