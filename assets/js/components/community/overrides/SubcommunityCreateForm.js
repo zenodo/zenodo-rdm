@@ -13,7 +13,7 @@ import {
   http,
 } from "react-invenio-forms";
 import SearchDropdown from "../SearchDropdown";
-import { Button, Divider, Form, Grid, Header, Icon, Message } from "semantic-ui-react";
+import { Button, Divider, Form, Grid, Header, Icon, Message, Segment } from "semantic-ui-react";
 import { CommunityApi } from "@js/invenio_communities/api";
 import { communityErrorSerializer } from "@js/invenio_communities/api/serializers";
 
@@ -135,18 +135,25 @@ class SubcommunityCreateForm extends Component {
               <Grid.Row>
                 <Grid.Column mobile={16} tablet={12} computer={8} textAlign="center">
                   <Header as="h1" className="rel-mt-2">
-                    {i18next.t("Subcommunity request")}
+                    {i18next.t("Setup your new EU project community")}
                   </Header>
                   <Divider />
                 </Grid.Column>
               </Grid.Row>
               <Grid.Row textAlign="left">
                 <Grid.Column mobile={16} tablet={12} computer={8}>
-                  <Header as='h5' className="message warning" block>
-                    {i18next.t("Community owners should be associated with an institutional email address. Please change your email address in ")}
-                    <a href='/account/settings/profile'>{i18next.t("your profile settings ")}</a>
-                    {i18next.t("if that is not the case.")}
-                  </Header>
+                  <Segment className="visible message info">
+                    <Header as="h5" className="rel-mb-1">
+                      {i18next.t("Only for EU-funded projects.")}
+                    </Header>
+                    {i18next.t("To setup a new EU project community, you must be affiliated with an EU-funded project (e.g. Horizon 2020, Horizon Europe, Euratom).")}
+                    <Header as="h5" className="rel-mb-1 rel-mt-2">
+                      {i18next.t("Instituional email required.")}
+                    </Header>
+                    {i18next.t("In order for us to verify the request, your Zendoo account must be using an institutional email address, so that we can verify your institutional affiliation. You can change your email address in ")}
+                     <a href='/account/settings/profile'>{i18next.t("your profile settings ")}</a>
+                     {i18next.t("if that is not the case.")}
+                  </Segment>
                   <div className="field">
                     <Form.Field>
                       {i18next.t("Do you already have an existing community?")}
