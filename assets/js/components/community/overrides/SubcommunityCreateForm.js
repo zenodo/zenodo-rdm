@@ -11,8 +11,8 @@ import {
   TextField,
   withCancel,
   http,
+  RemoteSelectField,
 } from "react-invenio-forms";
-import SearchDropdown from "../SearchDropdown";
 import {
   Button,
   Divider,
@@ -162,7 +162,7 @@ class SubcommunityCreateForm extends Component {
                       {i18next.t("Instituional email required.")}
                     </Header>
                     {i18next.t(
-                      "In order for us to verify the request, your Zenodo account must be using an institutional email address, so that we can verify your institutional affiliation. You can change your email address in "
+                      "In order for us to verify the request, your Zendoo account must be using an institutional email address, so that we can verify your institutional affiliation. You can change your email address in "
                     )}
                     <a href="/account/settings/profile">
                       {i18next.t("your profile settings ")}
@@ -195,23 +195,21 @@ class SubcommunityCreateForm extends Component {
                       />
                     </Form.Group>
                   </div>
-                  <SearchDropdown
+                  <RemoteSelectField
                     fieldPath="community.project"
                     id="community.project"
+                    searchQueryParamName="q"
                     placeholder={i18next.t("Search for a project by name")}
-                    fetchData={async (query) => {
-                      return await http.get(
-                        `/api/awards?funders=00k4n6c32&q=${query}`,
-                        {
-                          headers: {
-                            Accept: "application/vnd.inveniordm.v1+json",
-                          },
-                        }
-                      );
+                    suggestionAPIUrl="/api/awards"
+                    suggestionAPIHeaders={{
+                      Accept: "application/vnd.inveniordm.v1+json",
                     }}
+                    suggestionAPIQueryParams={{ funders: "00k4n6c32" }}
                     serializeSuggestions={(suggestions) =>
                       suggestions.map((item) => ({
-                        text: item.title_l10n,
+                        text: `${item.title_l10n} - ${
+                          item.acronym ? ` - (${item.acronym})` : ""
+                        } - ${item.number}`,
                         content: (
                           <Header
                             content={`${item.title_l10n}${
@@ -225,7 +223,7 @@ class SubcommunityCreateForm extends Component {
                         acronym: item.acronym,
                       }))
                     }
-                    onChange={({ data, formikProps }) => {
+                    onValueChange={({ data, formikProps }) => {
                       let selectedProject = data.options.find(
                         (option) => option.value === data.value
                       );
