@@ -44,7 +44,7 @@ class SubcommunityCreateForm extends Component {
               .filter((item) => !item?.parent?.id)
               .filter((item) => !item?.children?.allow === true)
               .map((item) => ({
-                text: item.community.title,
+                text: item.metadata.title,
                 value: item.id,
                 key: item.id,
               })),
@@ -71,20 +71,24 @@ class SubcommunityCreateForm extends Component {
     const { community } = this.props;
     let payload = {};
     let slug = "";
-    let project = "";
+    let project_id = "";
     if (hasCommunity) {
       payload = {
-        community_id: values["community"]["community"],
-        project: values["community"]["project"],
+        community_id: values["metadata"]["community"],
+        payload:{
+          project_id: values["metadata"]["project_id"]
+        },
       };
     } else {
-      slug = values["community"]["slug"];
-      project = values["community"]["project"];
+      slug = values["metadata"]["slug"];
+      project_id = values["metadata"]["project_id"];
       payload = {
         community: {
-          title: values["community"]["title"],
+          title: values["metadata"]["title"],
           slug: slug,
-          project: project,
+        },
+        payload:{
+          project_id: values["metadata"]["project_id"]
         },
       };
     }
@@ -104,11 +108,18 @@ class SubcommunityCreateForm extends Component {
       const { errors, message } = communityErrorSerializer(error);
 
       if (message) {
-        this.setGlobalError(message);
+        this.setGlobalError("The form contains errors or missing fields. Please verify before submitting.");
       }
 
       if (errors) {
-        errors.map(({ field, messages }) => setFieldError(field, messages[0]));
+        errors.map(({ field, messages }) => {
+          // Check if the field is already prefixed with "metadata"
+          if (!field.startsWith("metadata")) {
+            // Add "metadata" prefix if not already present
+            field = `metadata.${field.split('.').pop()}`;
+          }
+          setFieldError(field, messages[0]);
+        });
       }
     }
   };
@@ -123,10 +134,10 @@ class SubcommunityCreateForm extends Component {
           access: {
             visibility: "public",
           },
-          community: {
+          metadata: {
             slug: "",
             title: "",
-            project: "",
+            project_id: "",
           },
         }}
         onSubmit={this.onSubmit}
@@ -181,7 +192,7 @@ class SubcommunityCreateForm extends Component {
                         onChange={() => {
                           this.setState({ hasCommunity: true });
                         }}
-                        fieldPath="community.hasCommunity"
+                        fieldPath="metadata.hasCommunity"
                         disabled={_isEmpty(communities)}
                       />
                       <RadioField
@@ -191,13 +202,13 @@ class SubcommunityCreateForm extends Component {
                         onChange={() => {
                           this.setState({ hasCommunity: false });
                         }}
-                        fieldPath="community.hasCommunity"
+                        fieldPath="metadata.hasCommunity"
                       />
                     </Form.Group>
                   </div>
                   <RemoteSelectField
-                    fieldPath="community.project"
-                    id="community.project"
+                    fieldPath="metadata.project_id"
+                    id="metadata.project_id"
                     searchQueryParamName="q"
                     placeholder={i18next.t("Search for a project by name")}
                     suggestionAPIUrl="/api/awards"
@@ -207,7 +218,7 @@ class SubcommunityCreateForm extends Component {
                     suggestionAPIQueryParams={{ funders: "00k4n6c32" }}
                     serializeSuggestions={(suggestions) =>
                       suggestions.map((item) => ({
-                        text: `${item.title_l10n} - ${
+                        text: `${item.title_l10n} ${
                           item.acronym ? ` - (${item.acronym})` : ""
                         } - ${item.number}`,
                         content: (
@@ -233,19 +244,19 @@ class SubcommunityCreateForm extends Component {
                           selectedProject.key
                         );
                         formikProps.form.setFieldValue(
-                          "community.title",
+                          "metadata.title",
                           selectedProject.text
                         );
                         if (selectedProject.acronym) {
                           formikProps.form.setFieldValue(
-                            "community.slug",
+                            "metadata.slug",
                             selectedProject.acronym.toLowerCase()
                           );
                         }
                       } else {
-                        formikProps.form.setFieldValue("community.project", "");
-                        formikProps.form.setFieldValue("community.title", "");
-                        formikProps.form.setFieldValue("community.slug", "");
+                        formikProps.form.setFieldValue("metadata.project_id", "");
+                        formikProps.form.setFieldValue("metadata.title", "");
+                        formikProps.form.setFieldValue("metadata.slug", "");
                       }
                     }}
                     noQueryMessage={i18next.t("Search for project...")}
@@ -254,7 +265,7 @@ class SubcommunityCreateForm extends Component {
                     multiple={false}
                     label={
                       <FieldLabel
-                        htmlFor="community.project"
+                        htmlFor="metadata.project_id"
                         icon="group"
                         label={i18next.t("Project")}
                       />
@@ -271,7 +282,7 @@ class SubcommunityCreateForm extends Component {
                           class="block"
                         />
                       }
-                      fieldPath="community.community"
+                      fieldPath="metadata.community"
                       options={communities}
                       defaultValue="Loading..."
                       required
@@ -282,16 +293,16 @@ class SubcommunityCreateForm extends Component {
                     <>
                       <TextField
                         required
-                        id="community.title"
+                        id="metadata.title"
                         fluid
-                        fieldPath="community.title"
+                        fieldPath="metadata.title"
                         // Prevent submitting before the value is updated:
                         onKeyDown={(e) => {
                           e.key === "Enter" && e.preventDefault();
                         }}
                         label={
                           <FieldLabel
-                            htmlFor="community.title"
+                            htmlFor="metadata.title"
                             icon="book"
                             label={i18next.t("Community name")}
                           />
