@@ -17,9 +17,11 @@ from invenio_rdm_records.proxies import (
     current_rdm_records,
 )
 from invenio_requests.customizations import actions
+from invenio_requests.customizations.event_types import CommentEventType
+from invenio_requests.proxies import current_events_service
 
 
-class ZenodoSubcommunityAccept(AcceptSubcommunity):
+class SubcommunityAcceptAction(AcceptSubcommunity):
     """Represents an accept action used to accept a subcommunity.
 
     Zenodo re-implementation of the accept action, to also move the records.
@@ -44,13 +46,51 @@ class ZenodoSubcommunityAccept(AcceptSubcommunity):
         super().execute(identity, uow)
 
 
+class SubcommunityCreateAction(actions.CreateAndSubmitAction):
+    """Represents an create action used to create a subcommunity request.
+
+    Zenodo re-implementation of the create action, to also create the system comment.
+    """
+
+    def execute(self, identity, uow):
+        """Execute create action."""
+
+        subcommunity = self.request.topic.resolve()
+        _data = dict(
+            payload={
+                "content": f"""
+            <p>
+            We have created your community for your project <a href='/communities/{subcommunity.slug}'>{subcommunity['metadata']['title']}</a>.
+            </p>
+
+            <p>
+            While we review your request, you can get started using your community by:
+            <ul>
+                <li><a href="https://help.zenodo.org/docs/communities/manage-community-settings/edit-profile/">Edit your community profile</a>, to add a logo and other information.</li>
+                <li><a href="https://help.zenodo.org/docs/communities/manage-members/">Invite new members</a> to join your community.</li>
+                <li>Learn more about how to <a href="https://help.zenodo.org/docs/communities/review-submissions/"> review submissions</a> and <a href="https://help.zenodo.org/docs/communities/curate/">curate records.</a></li>
+            </ul>
+            </p>
+            """
+            }
+        )
+        super().execute(identity, uow)
+        current_events_service.create(
+            system_identity,
+            self.request,
+            _data,
+            CommentEventType,
+            uow=uow,
+        )
+
+
 class ZenodoSubCommunityRequest(SubCommunityRequest):
     """Request to add a subcommunity to a Zenodo community."""
 
     available_actions = {
         "delete": actions.DeleteAction,
-        "create": actions.CreateAndSubmitAction,
+        "create": SubcommunityCreateAction,
         "cancel": actions.CancelAction,
-        "accept": ZenodoSubcommunityAccept,
+        "accept": SubcommunityAcceptAction,
         "decline": DeclineSubcommunity,
     }
