@@ -162,7 +162,7 @@ class SubcommunityCreateForm extends Component {
                       {i18next.t("Instituional email required.")}
                     </Header>
                     {i18next.t(
-                      "In order for us to verify the request, your Zendoo account must be using an institutional email address, so that we can verify your institutional affiliation. You can change your email address in "
+                      "In order for us to verify the request, your Zenodo account must be using an institutional email address, so that we can verify your institutional affiliation. You can change your email address in "
                     )}
                     <a href="/account/settings/profile">
                       {i18next.t("your profile settings ")}
