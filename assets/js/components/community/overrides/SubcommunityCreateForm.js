@@ -68,7 +68,7 @@ class SubcommunityCreateForm extends Component {
     setSubmitting(true);
     const client = new CommunityApi();
     const { hasCommunity } = this.state;
-    const { communityId } = this.props;
+    const { community } = this.props;
     let payload = {};
     let slug = "";
     let project = "";
@@ -89,7 +89,7 @@ class SubcommunityCreateForm extends Component {
       };
     }
     this.cancellableCreate = withCancel(
-      client.createSubcommunity(communityId, payload)
+      client.createSubcommunity(community.id, payload)
     );
 
     try {
@@ -97,7 +97,7 @@ class SubcommunityCreateForm extends Component {
       setSubmitting(false);
       const requestID = response.data.id;
       // TODO It is computed for now because the link contains references to two different entities (request and community), and that's not supported yet by the backend.
-      window.location.href = `/communities/${slug}/requests/${requestID}`;
+      window.location.href = `/communities/${community.slug}/requests/${requestID}`;
     } catch (error) {
       if (error === "UNMOUNTED") return;
 
@@ -357,7 +357,7 @@ class SubcommunityCreateForm extends Component {
 SubcommunityCreateForm.propTypes = {
   formConfig: PropTypes.object.isRequired,
   canCreateRestricted: PropTypes.bool.isRequired,
-  communityId: PropTypes.string.isRequired,
+  community: PropTypes.string.isRequired,
   IdentifierField: PropTypes.func,
 };
 
