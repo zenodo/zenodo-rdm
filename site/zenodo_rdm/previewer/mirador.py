@@ -70,6 +70,7 @@ def preview(file):
         tpl_ctx["annotations"] = annotations
 
         tpl_ctx["mirador_cfg"]["window"]["panels"]["annotations"] = bool(annotations)
+        tpl_ctx["mirador_cfg"]["window"]["sideBarOpen"] = bool(annotations)
         tpl_ctx["mirador_cfg"]["window"]["sideBarPanel"] = (
             "annotations" if annotations else "info"
         )
