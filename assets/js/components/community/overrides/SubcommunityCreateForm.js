@@ -232,6 +232,7 @@ class SubcommunityCreateForm extends Component {
                         value: item.id,
                         key: item.id,
                         acronym: item.acronym,
+                        title: item.title_l10n,
                       }))
                     }
                     onValueChange={({ data, formikProps }) => {
@@ -245,7 +246,7 @@ class SubcommunityCreateForm extends Component {
                         );
                         formikProps.form.setFieldValue(
                           "metadata.title",
-                          selectedProject.text
+                          selectedProject.title
                         );
                         if (selectedProject.acronym) {
                           formikProps.form.setFieldValue(
