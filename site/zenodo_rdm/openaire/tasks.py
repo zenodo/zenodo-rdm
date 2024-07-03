@@ -157,7 +157,9 @@ def retry_openaire_failures():
     for key in failed_records:
         try:
             record_id = key.decode().split("openaire_direct_index:")[1]
-            record = records_service.read(system_identity, record_id, include_deleted=True)
+            record = records_service.read(
+                system_identity, record_id, include_deleted=True
+            )
             is_deleted = record.data["deletion_status"]["is_deleted"]
 
             # If record was deleted, try to remove it from OpenAIRE
