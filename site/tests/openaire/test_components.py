@@ -83,7 +83,7 @@ def test_on_delete(
 
     mocked_session.delete.assert_called_once_with(
         openaire_api_endpoint,
-        json={
+        params={
             "originalId": f"10.5281/zenodo.{recid}",
             "collectedFromId": "opendoar____::2659",
         },
@@ -131,7 +131,7 @@ def test_on_restore(
     delete_calls = [
         call(
             openaire_api_endpoint,
-            json={
+            params={
                 "originalId": f"10.5281/zenodo.{recid}",
                 "collectedFromId": "opendoar____::2659",
             },

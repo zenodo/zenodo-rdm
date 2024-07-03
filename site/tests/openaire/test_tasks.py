@@ -145,7 +145,7 @@ def test_openaire_delete_task(
     openaire_url = running_app.app.config["OPENAIRE_API_URL"]
     params = {"originalId": original_id, "collectedFromId": datasource_id}
 
-    mocked_session.delete.assert_called_once_with(openaire_url, json=params)
+    mocked_session.delete.assert_called_once_with(openaire_url, params=params)
 
     # Assert key is not in cache : means success
     assert not current_cache.cache.has(f"openaire_direct_index:{openaire_record.id}")
