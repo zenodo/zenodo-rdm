@@ -12,6 +12,8 @@ from marshmallow import Schema, ValidationError, fields, validates
 
 
 class SubCommunityRequestPayloadShema(Schema):
+    """Schema for the payload of a subcommunity request."""
+
     project_id = fields.String()
 
     @validates("project_id")
