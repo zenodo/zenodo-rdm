@@ -22,8 +22,21 @@ def can_preview(file):
     # supported_extensions list needs . prefixed -
     preview_extensions = current_app.config["MIRADOR_PREVIEW_EXTENSIONS"]
     supported_extensions = ["." + ext for ext in preview_extensions]
+    if not file.has_extensions(*supported_extensions):
+        return False
 
-    return file.has_extensions(*supported_extensions)
+    iiif_config = current_app.config["IIIF_TILES_CONVERTER_PARAMS"]
+    metadata = file.data["metadata"]
+    # If any of metdata, height or width aren't present, return false
+    if not (metadata and "height" in metadata and "width" in metadata):
+        return False
+    elif (
+        metadata["width"] <= iiif_config["tile_width"]
+        or metadata["height"] <= iiif_config["tile_height"]
+    ):
+        return False
+
+    return True
 
 
 def preview(file):
