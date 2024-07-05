@@ -62,7 +62,7 @@
 
 
 {%- macro file_list(
-    files, pid, is_preview, include_deleted,
+    files, pid, is_preview, include_deleted, permissions,
     record=None,
     with_preview=true,
     download_endpoint='invenio_app_rdm_records.record_file_download',
@@ -117,6 +117,18 @@
           <td>{{ file.size|filesizeformat(binary=binary_sizes) }}</td>
           <td class="right aligned">
             <span>
+              {%- for community in record.parent.communities.entries -%}
+                {%- set slug = community.slug %}
+                {%- set annostor_config = config.ANNOSTOR_COMMUNITIES[slug] if slug in config.ANNOSTOR_COMMUNITIES else None -%}
+                {%- if annostor_config is not none -%}
+                  {%- set annostar_url = annostor_config.annostor_instance ~ "annotate/" ~ annostor_config.repo_instance ~ "/" ~ annostor_config.task ~ "/" ~ record.id  -%}
+                  {%- if permissions.can_edit and file_type=="pdf" and file.metadata.preview -%}
+                  <a role="button" class="ui compact mini button" href="{{ annostar_url }}">
+                    <i class="pencil icon" aria-hidden="true"></i>{{_("Annotate")}}<i aria-hidden="true" class="right aligned external icon"></i>
+                  </a>
+                  {%- endif -%}
+              {% endif %}
+              {%- endfor -%}
               {% if with_preview and file_type|lower is previewable %}
                 <a role="button" class="ui compact mini button preview-link" href="{{ file_url_preview }}" target="preview-iframe" data-file-key="{{file.key}}">
                   <i class="eye icon" aria-hidden="true"></i>{{_("Preview")}}
@@ -135,7 +147,7 @@
 {%- endmacro %}
 
 
-{% macro file_list_box(files, pid, is_preview, include_deleted, record) %}
+{% macro file_list_box(files, pid, is_preview, include_deleted, permissions, record) %}
   {%- set binary_sizes = not config.APP_RDM_DISPLAY_DECIMAL_FILE_SIZES %}
   <div class="ui accordion panel mb-10 {{ record.ui.access_status.id }}" href="#files-list-accordion-panel">
     <h3 class="active title panel-heading {{ record.ui.access_status.id }} m-0">
@@ -158,7 +170,7 @@
         </div>
       {% endif %}
       <div>
-        {{ file_list(files, pid, is_preview, include_deleted, record=record, download_endpoint="invenio_app_rdm_records.record_file_download") }}
+        {{ file_list(files, pid, is_preview, include_deleted, permissions, record=record, download_endpoint="invenio_app_rdm_records.record_file_download") }}
       </div>
     </div>
   </div>
