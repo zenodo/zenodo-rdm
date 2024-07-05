@@ -15,6 +15,7 @@ DEPLOYMENTS = {
     "web": ["web", "copy-web-assets"],
     "worker": ["worker"],
     "worker-low": ["worker-low"],
+    "worker-spam": ["worker-spam"],
     "worker-beat": ["worker-beat"],
     "terminal": ["terminal"],
 }
