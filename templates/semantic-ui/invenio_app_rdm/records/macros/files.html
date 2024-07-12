@@ -62,12 +62,13 @@
 
 
 {%- macro file_list(
-    files, pid, is_preview, include_deleted, permissions,
+    files, pid, is_preview, include_deleted,
     record=None,
     with_preview=true,
     download_endpoint='invenio_app_rdm_records.record_file_download',
     preview_endpoint='invenio_app_rdm_records.record_file_preview',
-    is_media=false
+    is_media=false,
+    permissions=None
 ) %}
   <table class="ui striped table files fluid {{record.ui.access_status.id}}">
     <thead>
@@ -145,7 +146,7 @@
 {%- endmacro %}
 
 
-{% macro file_list_box(files, pid, is_preview, include_deleted, permissions, record) %}
+{% macro file_list_box(files, pid, is_preview, include_deleted, record, permissions) %}
   {%- set binary_sizes = not config.APP_RDM_DISPLAY_DECIMAL_FILE_SIZES %}
   <div class="ui accordion panel mb-10 {{ record.ui.access_status.id }}" href="#files-list-accordion-panel">
     <h3 class="active title panel-heading {{ record.ui.access_status.id }} m-0">
@@ -168,13 +169,13 @@
         </div>
       {% endif %}
       <div>
-        {{ file_list(files, pid, is_preview, include_deleted, permissions, record=record, download_endpoint="invenio_app_rdm_records.record_file_download") }}
+        {{ file_list(files, pid, is_preview, include_deleted, record=record, download_endpoint="invenio_app_rdm_records.record_file_download", permissions=permissions) }}
       </div>
     </div>
   </div>
 {%- endmacro %}
 
-{% macro media_file_list_box(files, pid, is_preview, include_deleted, permissions, record) %}
+{% macro media_file_list_box(files, pid, is_preview, include_deleted, record, permissions) %}
   {%- set binary_sizes = not config.APP_RDM_DISPLAY_DECIMAL_FILE_SIZES %}
   <div class="ui accordion panel mb-10 {{ record.access.record }}" href="#media-files-preview-accordion-panel">
     <h3 class="active title panel-heading {{ record.access.record }} m-0">
@@ -198,7 +199,7 @@
         </div>
       {% endif %}
       <div>
-        {{ file_list(files, pid, is_preview, include_deleted, permissions, record=record, with_preview=false, download_endpoint="invenio_app_rdm_records.record_media_file_download", is_media=true) }}
+        {{ file_list(files, pid, is_preview, include_deleted, record=record, with_preview=false, download_endpoint="invenio_app_rdm_records.record_media_file_download", is_media=true, permissions=permissions) }}
       </div>
     </div>
   </div>

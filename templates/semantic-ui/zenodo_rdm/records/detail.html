@@ -27,7 +27,7 @@
             {%-set preview_file = files|select_preview_file(default_preview=record.files.default_preview) %}
             {{ preview_file_box(preview_file, record.id, is_preview, record, include_deleted) }}
           {%- endif -%}
-          {{ file_list_box(files, record.id, is_preview, include_deleted, permissions, record) }}
+          {{ file_list_box(files, record.id, is_preview, include_deleted, record, permissions) }}
         {%- endif -%}
       {% else %}
         {# record has files BUT user does not have permission to see files #}
