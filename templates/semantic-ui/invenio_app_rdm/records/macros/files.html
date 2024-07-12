@@ -92,15 +92,13 @@
     {% endif %}
     {% for file in files %}
       {% if not file.access.hidden %}
-      {# updates the preview link if the file has a preview filename in metadata to direct to for preview and if that file is present if not then preview the current file #}
-       {%- set filename = file.metadata.preview if file.metadata and 'preview' in file.metadata and files|selectattr('key', 'equalto', file.metadata.preview)|list|length > 0 else file.key %}
-          {% if is_preview %}
-            {%- set file_url_download = url_for(download_endpoint, pid_value=pid, filename=file.key, download=1, preview=1) %}
-            {%- set file_url_preview = url_for(preview_endpoint, pid_value=pid, filename=filename, preview=1, include_deleted=include_deleted_value) %}
-          {% else %}
-            {%- set file_url_download = url_for(download_endpoint, pid_value=pid, filename=file.key, download=1) %}
-            {%- set file_url_preview = url_for(preview_endpoint, pid_value=pid, filename=filename, include_deleted=include_deleted_value) %}
-          {% endif %}
+        {% if is_preview %}
+          {%- set file_url_download = url_for(download_endpoint, pid_value=pid, filename=file.key, download=1, preview=1) %}
+          {%- set file_url_preview = url_for(preview_endpoint, pid_value=pid, filename=file.key, preview=1, include_deleted=include_deleted_value) %}
+        {% else %}
+          {%- set file_url_download = url_for(download_endpoint, pid_value=pid, filename=file.key, download=1) %}
+          {%- set file_url_preview = url_for(preview_endpoint, pid_value=pid, filename=file.key, include_deleted=include_deleted_value) %}
+        {% endif %}
 
         {%- set file_type = file.key.split('.')[-1] %}
         <tr>
@@ -176,7 +174,7 @@
   </div>
 {%- endmacro %}
 
-{% macro media_file_list_box(files, pid, is_preview, include_deleted, record) %}
+{% macro media_file_list_box(files, pid, is_preview, include_deleted, permissions, record) %}
   {%- set binary_sizes = not config.APP_RDM_DISPLAY_DECIMAL_FILE_SIZES %}
   <div class="ui accordion panel mb-10 {{ record.access.record }}" href="#media-files-preview-accordion-panel">
     <h3 class="active title panel-heading {{ record.access.record }} m-0">
@@ -200,7 +198,7 @@
         </div>
       {% endif %}
       <div>
-        {{ file_list(files, pid, is_preview, record=record, with_preview=false, download_endpoint="invenio_app_rdm_records.record_media_file_download", is_media=true) }}
+        {{ file_list(files, pid, is_preview, include_deleted, permissions, record=record, with_preview=false, download_endpoint="invenio_app_rdm_records.record_media_file_download", is_media=true) }}
       </div>
     </div>
   </div>

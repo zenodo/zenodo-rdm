@@ -372,25 +372,4 @@ THEME_MATHJAX_CDN = (
     "?config=TeX-AMS-MML_HTMLorMML"
 )
 
-ANNOSTOR_COMMUNITIES = {
-    "biosyslit": {
-        "annostor_instance": "https://blr.annostor.org/",
-        "repo_instance": "zenodo",
-        "task": "taxons",
-    },
-    "hasdai": {
-        "annostor_instance": "https://hasdai.annostor.org/",
-        "repo_instance": "zenodo",
-        "task": "taxons",
-    },
-    "hasdai-sandboxy": {
-        "annostor_instance": "https://hasdai-sandboxy.annostor.org/",
-        "repo_instance": "zenodo_sandbox",
-        "task": "taxons",
-    },
-    "mfn": {
-        "annostor_instance": "https://mfn.annostor.org/",
-        "repo_instance": "zenodo_sandbox",
-        "task": "taxons",
-    },
-}
+ANNOSTOR_COMMUNITIES = {}

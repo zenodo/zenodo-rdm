@@ -13,6 +13,15 @@ from os.path import splitext
 from flask import current_app, render_template
 
 
+def is_pdf_previewable(file):
+    """Check if the file is a PDF that should be previewed with Mirador."""
+    return (
+        file.has_extensions(".pdf")
+        and file.data["metadata"]["previewer"] == "mirador"
+        and file.record._record.media_files.entries
+    )
+
+
 def can_preview(file):
     """Check if file can be previewed by this previewer.
 
@@ -22,12 +31,16 @@ def can_preview(file):
     # supported_extensions list needs . prefixed -
     preview_extensions = current_app.config["MIRADOR_PREVIEW_EXTENSIONS"]
     supported_extensions = ["." + ext for ext in preview_extensions]
+
+    if is_pdf_previewable(file):
+        return True
+
     if not file.has_extensions(*supported_extensions):
         return False
 
     iiif_config = current_app.config["IIIF_TILES_CONVERTER_PARAMS"]
     metadata = file.data["metadata"]
-    # If any of metdata, height or width aren't present, return false
+    # If any of metadata, height or width aren't present, return false
     if not (metadata and "height" in metadata and "width" in metadata):
         return False
     elif (
@@ -56,7 +69,8 @@ def preview(file):
 
     if show_mirador:
         # Add IIIF URLs for Mirador
-        tpl_ctx["iiif_canvas_url"] = file.data["links"]["iiif_canvas"]
+        if not is_pdf_previewable(file):
+            tpl_ctx["iiif_canvas_url"] = file.data["links"]["iiif_canvas"]
         tpl_ctx["iiif_manifest_url"] = file.record["links"]["self_iiif_manifest"]
         tpl_ctx["mirador_cfg"] = deepcopy(current_app.config["MIRADOR_PREVIEW_CONFIG"])
 

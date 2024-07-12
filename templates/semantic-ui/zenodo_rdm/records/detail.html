@@ -21,18 +21,10 @@
       {%- if permissions.can_read_files -%}
         {# record has files AND user has permission to see files #}
         {%- set files = files | order_entries | selectattr("status", "==", "completed") | list %}
-        {%- if record.files.default_preview is defined -%}
-          {%- set default_preview_file = files | selectattr("key", "==", record.files.default_preview) | first %}
-          {# check if the file has a preview filename in metadata to direct to for preview and if that file is present if not then preview the current file #}
-          {%- set default_preview = default_preview_file.metadata.preview if default_preview_file and default_preview_file.metadata.preview in files|map(attribute='key') else default_preview_file.key if default_preview_file else None -%}
-        {%- else -%}
-          {%- set default_preview = None -%}
-        {%- endif -%}
-
         {%- if files|length > 0 -%}
           <h2 id="files-heading">{{ _('Files') }}</h2>
           {%- if files|has_previewable_files -%}
-            {%- set preview_file = files|select_preview_file(default_preview=default_preview) %}
+            {%-set preview_file = files|select_preview_file(default_preview=record.files.default_preview) %}
             {{ preview_file_box(preview_file, record.id, is_preview, record, include_deleted) }}
           {%- endif -%}
           {{ file_list_box(files, record.id, is_preview, include_deleted, permissions, record) }}
