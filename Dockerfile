@@ -40,14 +40,15 @@ RUN dnf install -y http://rpms.remirepo.net/enterprise/remi-release-9.rpm
 RUN dnf install -y vips
 # /VIPS
 
-COPY site ./site
-COPY legacy ./legacy
-COPY Pipfile Pipfile.lock ./
-RUN pipenv install --deploy --system
 # XRootD
 RUN pip install "requests-kerberos==0.14.0"
 RUN pip install "invenio-xrootd==2.0.0a2"
 # /XRootD
+
+COPY site ./site
+COPY legacy ./legacy
+COPY Pipfile Pipfile.lock ./
+RUN pipenv install --deploy --system
 
 COPY ./docker/uwsgi/ ${INVENIO_INSTANCE_PATH}
 COPY ./invenio.cfg ${INVENIO_INSTANCE_PATH}
