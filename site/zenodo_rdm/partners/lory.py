@@ -7,7 +7,6 @@
 
 """LORY payloads and settings."""
 
-
 PAYLOAD = {
     "metadata": {
         # Communities

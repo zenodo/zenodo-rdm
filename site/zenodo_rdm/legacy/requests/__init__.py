@@ -7,7 +7,6 @@
 
 """Request types for ZenodoRDM."""
 
-
 from .community_manage_record import CommunityManageRecord
 from .record_upgrade import LegacyRecordUpgrade
 

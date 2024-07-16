@@ -8,6 +8,7 @@
 
 Tests were ported from: https://github.com/zenodo/zenodo/blob/master/tests/unit/deposit/test_api_simpleflow.py
 """
+
 from io import BytesIO
 
 from flask import url_for

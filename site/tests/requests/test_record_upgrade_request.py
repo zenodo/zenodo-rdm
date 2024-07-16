@@ -6,6 +6,7 @@
 # it under the terms of the MIT License; see LICENSE file for more details.
 
 """Test Zenodo legacy record upgrade request."""
+
 from io import BytesIO
 
 import pytest

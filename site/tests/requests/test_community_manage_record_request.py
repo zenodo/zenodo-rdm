@@ -6,6 +6,7 @@
 # it under the terms of the MIT License; see LICENSE file for more details.
 
 """Test Zenodo community manage record request."""
+
 import arrow
 import pytest
 from invenio_access.permissions import system_identity

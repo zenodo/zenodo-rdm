@@ -10,6 +10,7 @@
 Usage: python -m zenodo_rdm.partners "dryad"
 
 """
+
 import sys
 
 from . import dryad, lory, plazi

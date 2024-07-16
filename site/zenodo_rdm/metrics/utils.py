@@ -6,6 +6,7 @@
 # it under the terms of the MIT License; see LICENSE file for more details.
 
 """Utilities for metrics module."""
+
 from copy import deepcopy
 
 from flask import current_app

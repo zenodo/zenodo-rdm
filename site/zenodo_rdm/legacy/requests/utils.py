@@ -6,6 +6,7 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Utility functions."""
+
 from datetime import datetime, timedelta
 
 from invenio_access.permissions import system_identity

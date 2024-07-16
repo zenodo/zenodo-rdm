@@ -6,6 +6,7 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Zenodo legacy REST API client."""
+
 import os
 from typing import BinaryIO
 

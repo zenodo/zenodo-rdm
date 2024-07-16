@@ -7,7 +7,6 @@
 """Subcommunities request implementation for ZenodoRDM."""
 
 from invenio_access.permissions import system_identity
-from invenio_communities.proxies import current_communities
 from invenio_communities.subcommunities.services.request import (
     AcceptSubcommunity,
     DeclineSubcommunity,
@@ -17,6 +16,7 @@ from invenio_rdm_records.proxies import (
     current_community_records_service,
     current_rdm_records,
 )
+from invenio_records_resources.services.uow import RecordCommitOp
 from invenio_requests.customizations import actions
 from invenio_requests.customizations.event_types import CommentEventType
 from invenio_requests.proxies import current_events_service
@@ -54,31 +54,26 @@ class SubcommunityCreateAction(actions.CreateAndSubmitAction):
     Zenodo re-implementation of the create action, to also create the system comment.
     """
 
-    def _update_subcommunity_funding(self, identity, subcommunity, uow):
+    def _update_subcommunity_funding(self, subcommunity, uow):
         """Update the subcommunity funding metadata."""
         project_id = self.request.get("payload", {}).get("project_id")
         if not project_id:
             return
-        subcommunity_data = subcommunity.dumps()
-        subcommunity_data["metadata"].setdefault("funding", [])
-        funder_id, _ = project_id.split("::", 1)
-        subcommunity_data["metadata"]["funding"].append(
-            {
-                "award": {"id": project_id},
-                "funder": {"id": funder_id},
-            }
-        )
-        current_communities.service.update(
-            identity, subcommunity.id, data={**subcommunity_data}, uow=uow
-        )
 
-        return subcommunity_data
+        funding = subcommunity.metadata.setdefault("funding", [])
+        if project_id in [f.get("award", {}).get("id") for f in funding]:
+            return subcommunity
+
+        funder_id, _ = project_id.split("::", 1)
+        funding.append({"award": {"id": project_id}, "funder": {"id": funder_id}})
+        uow.register(RecordCommitOp(subcommunity))
+        return subcommunity
 
     def execute(self, identity, uow):
         """Execute create action."""
         subcommunity = self.request.topic.resolve()
 
-        self._update_subcommunity_funding(identity, subcommunity, uow)
+        self._update_subcommunity_funding(subcommunity, uow)
 
         # Execute the default create action
         super().execute(identity, uow)

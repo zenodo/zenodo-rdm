@@ -6,6 +6,7 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Custom fields."""
+
 from invenio_i18n import lazy_gettext as _
 from invenio_records_resources.services.custom_fields import (
     BaseCF,
