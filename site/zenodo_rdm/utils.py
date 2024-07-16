@@ -14,6 +14,7 @@ from flask import current_app, url_for
 from invenio_app_rdm.records_ui.utils import dump_external_resource
 from invenio_i18n import _
 from invenio_rdm_records.proxies import current_rdm_records_service as service
+from invenio_swh.models import SWHDepositStatus
 from invenio_swh.proxies import current_swh_service as service_swh
 
 from zenodo_rdm.openaire.utils import openaire_link
@@ -22,7 +23,7 @@ from zenodo_rdm.openaire.utils import openaire_link
 def github_link_render(record):
     """Entry for GitHub."""
     ret = []
-    related_identifiers = record.get("ui", {}).get("related_identifiers", [])
+    related_identifiers = record.data["metadata"].get("related_identifiers", [])
     for rel_id in related_identifiers:
         is_url = rel_id["scheme"] == "url"
         is_supplement = rel_id["relation_type"]["id"] == "issupplementto"
@@ -51,7 +52,7 @@ def github_link_render(record):
 def f1000_link_render(record):
     """Entry for F1000."""
     ret = []
-    related_identifiers = record.get("ui", {}).get("related_identifiers", [])
+    related_identifiers = record.data["metadata"].get("related_identifiers", [])
     for rel_id in related_identifiers:
         is_doi = rel_id["scheme"] == "doi"
         is_cited = rel_id["relation_type"]["id"] == "iscitedby"
@@ -72,7 +73,7 @@ def f1000_link_render(record):
 def briefideas_link_render(record):
     """Entry for Brief Ideas."""
     ret = []
-    related_identifiers = record.get("ui", {}).get("related_identifiers", [])
+    related_identifiers = record.data["metadata"].get("related_identifiers", [])
     for rel_id in related_identifiers:
         is_url = rel_id["scheme"] == "url"
         is_identical = rel_id["relation_type"]["id"] == "isidenticalto"
@@ -93,7 +94,7 @@ def briefideas_link_render(record):
 def reana_link_render(record):
     """Entry for REANA."""
     ret = []
-    related_identifiers = record.get("ui", {}).get("related_identifiers", [])
+    related_identifiers = record.data["metadata"].get("related_identifiers", [])
     for rel_id in related_identifiers:
         url_parts = urlsplit(rel_id["identifier"])
         is_reana_host = url_parts.hostname in (
@@ -105,7 +106,7 @@ def reana_link_render(record):
         if is_reana_host and is_reana_launch_path:
             # Add a "name" if not already there
             query = parse_qs(url_parts.query)
-            query.setdefault("name", record["metadata"]["title"])
+            query.setdefault("name", record.data["metadata"]["title"])
             url_parts = url_parts._replace(query=urlencode(query))
             ret.append(
                 dump_external_resource(
@@ -121,7 +122,7 @@ def reana_link_render(record):
 def openaire_link_render(record):
     """Entry for OpenAIRE."""
     ret = []
-    oa_link = openaire_link(record)
+    oa_link = openaire_link(record.data)
     if oa_link:
         ret.append(
             dump_external_resource(
@@ -136,34 +137,88 @@ def openaire_link_render(record):
 
 def swh_link_render(record):
     """Render the swh link."""
+    permissions = record.has_permissions_to(["manage"])
+    can_manage = permissions.get("can_manage", False)
+
+    def _get_success_text(deposit):
+        """Get the text to be displayed when the deposit was successful.
+
+        This function takes a `deposit` object as input and returns the text and link
+        to be displayed when the deposit was successful. The text is the identifier of
+        the deposit, and the link is a URL to the deposit's directory in the SWH UI.
+
+        Examples
+        --------
+            >>> deposit = Deposit(swhid="swh:1:dir:abc123")
+            >>> _get_success_text(deposit)
+            ('swh:1:dir:abc123', 'https://swh.example.com/browse/directory/abc123/')
+
+            >>> deposit = Deposit(swhid="swh:1:origin:abc123;origin=https://zenodo.org/record/xyz789")
+            >>> _get_success_text(deposit)
+            ('swh:1:origin:abc123', 'https://swh.example.com/browse/directory/abc123/')
+
+        """
+        swhid = deposit.swhid
+        base_url = current_app.config.get("SWH_UI_BASE_URL")
+        try:
+            swh_link = f"{base_url}/{swhid}"
+            swh_text = swhid.split(";")[0]
+        except Exception as e:
+            # Handle any exceptions that may occur to avoid breaking the UI
+            swh_link = None
+            swh_text = None
+        return swh_text, swh_link
+
+    def _get_failed_text(deposit):
+        """Get the text to be displayed when the deposit failed.
+
+        This is only displayed to users with the "manage" permission.
+        """
+        if not can_manage:
+            return None, None
+        return _("Failed to archive."), None
+
+    def _get_waiting_text(deposit):
+        """Get the text to be displayed when the deposit is waiting.
+
+        This is only displayed to users with the "manage" permission.
+        """
+        if not can_manage:
+            return None, None
+        return _("Waiting to be archived."), None
+
     if not current_app.config.get("SWH_ENABLED"):
         return None
 
     ret = []
 
-    pid = service.record_cls.pid.resolve(record["id"])
-    d_res = service_swh.get_record_deposit(pid.id)
+    d_res = service_swh.get_record_deposit(record._record.id)
     if not d_res.deposit:
         return None
+    subtitle = None
+    link = None
+    if d_res.deposit.status == SWHDepositStatus.FAILED:
+        subtitle, link = _get_failed_text(d_res.deposit)
 
-    swhid = d_res.deposit.swhid
-    if not swhid:
+    if d_res.deposit.status == SWHDepositStatus.WAITING:
+        subtitle, link = _get_waiting_text(d_res.deposit)
+
+    if d_res.deposit.status == SWHDepositStatus.SUCCESS:
+        subtitle, link = _get_success_text(d_res.deposit)
+
+    if not subtitle:
         return None
 
-    base_url = current_app.config.get("SWH_UI_BASE_URL")
-    swh_stripped = swhid.split(":")[3]
-    swh_link = f"{base_url}/browse/directory/{swh_stripped}/"
-    if swh_link:
-        ret.append(
-            dump_external_resource(
-                swh_link,
-                title=f"Software Heritage",
-                subtitle=swhid,
-                section=_("Archived in"),
-                icon=url_for("static", filename="images/swh.png"),
-                template="invenio_swh/swh_link.html",
-            )
+    ret.append(
+        dump_external_resource(
+            link or "#",
+            title=f"Software Heritage",
+            subtitle=subtitle,
+            section=_("Archived in"),
+            icon=url_for("static", filename="images/swh.png"),
+            template="invenio_swh/swh_link.html",
         )
+    )
     return ret
 
 
