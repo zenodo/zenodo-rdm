@@ -170,7 +170,7 @@ class SubcommunityCreateForm extends Component {
                       "To setup a new EU project community, you must be affiliated with an EU-funded project (e.g. Horizon 2020, Horizon Europe, Euratom)."
                     )}
                     <Header as="h5" className="rel-mb-1 rel-mt-2">
-                      {i18next.t("Instituional email required.")}
+                      {i18next.t("Institutional email required.")}
                     </Header>
                     {i18next.t(
                       "In order for us to verify the request, your Zendoo account must be using an institutional email address, so that we can verify your institutional affiliation. You can change your email address in "
