@@ -6,6 +6,7 @@
 # it under the terms of the MIT License; see LICENSE file for more details.
 """Script to run a Python script in a job on OpenShift."""
 #!/usr/bin/env python
+import json
 import subprocess
 import sys
 from pathlib import Path
@@ -20,13 +21,46 @@ def _abort(message):
 
 
 if len(sys.argv) < 1:
-    print(f"Usage: {PROGRAM} <file>\n")
+    print(f"Usage: {PROGRAM} <file> <image>\n")
     print(f"  file: the path to the script to run")
-    print(f"  Example: {PROGRAM} /home/script.py")
+    print(
+        f"  image: the image version to be used by the job. If not provided, the script will try to infer it from the deployed image."
+    )
+    print(f"  Example: {PROGRAM} /home/script.py 7.3.0")
     sys.exit(1)
 
 
+def infer_deployed_version():
+    """Infer which version of Zenodo is currently deployed in 'web'."""
+    # oc get deployment web -o json
+    res = subprocess.run(
+        [
+            "oc",
+            "get",
+            "deployment",
+            "web",
+            "-o",
+            "json",
+        ],
+        capture_output=True,
+        text=True,
+    )
+    if res.returncode != 0:
+        _abort(f"Failed to get latest deployed image: {res.stderr}")
+    deployment_info = json.loads(res.stdout)
+    containers = deployment_info["spec"]["template"]["spec"]["containers"]
+    filtered = list(filter(lambda x: x["name"] == "web", containers))
+    if len(filtered) == 0:
+        _abort("No 'web' container found in deployment, can't infer deployed version.")
+    elif len(filtered) > 1:
+        _abort("Found multiple 'web' containers, can't infer deployed version.")
+    image = filtered[0]["image"]
+    version = image.replace("ghcr.io/zenodo/zenodo-rdm/zenodo-rdm:", "")
+    return version
+
+
 script_path = sys.argv[1]
+image_version = sys.argv[2].removeprefix("v") if len(sys.argv) > 2 else infer_deployed_version()
 
 # verify the file exists in local filesystem
 if not Path(script_path).is_file():
@@ -64,8 +98,16 @@ if terminal_pod.returncode != 0:
     _abort("Terminal pod not found.")
 
 terminal_pod_name = terminal_pod.stdout.strip("'")
-if input(f"Copy script {script_path} to {terminal_pod_name}? (y/n): ") != "y":
+str_ = f"""
+The job will:
+- copy the script {script_path} to {terminal_pod_name}
+- run a pod with Zenodo {image_version}
+- execute the script inside the created pod
+Proceed? (y/n): 
+"""
+if input(str_) != "y":
     _abort("Aborted.")
+
 
 res = subprocess.run(["oc", "cp", script_path, f"{terminal_pod_name}:/ops"])
 if res.returncode != 0:
@@ -83,6 +125,8 @@ res = subprocess.run(
         TEMPLATE_NAME,
         "-p",
         f"SCRIPT_PATH={script_name}",
+        "-p",
+        f"ZENODO_VERSION={image_version}",
     ],
     capture_output=True,
 )
