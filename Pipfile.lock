@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "847d903600970c6b31c8972a8760c7784b7bacdc0126abc310f19ff88eeca5ca"
+            "sha256": "8a4fb1a682fc1412bc7a8266118d281e92dfc197671bab9414186b7725683994"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -867,7 +867,7 @@
                 "sha256:fd096eb7ffef17c456cfa587523c5f92321ae02427ff955bebe9e3c63bc9f0da",
                 "sha256:fe754d231288e1e64323cfad462fcee8f0288654c10bdf4f603a39ed923bef33"
             ],
-            "markers": "python_version < '3.13' and (platform_machine == 'aarch64' or (platform_machine == 'ppc64le' or (platform_machine == 'x86_64' or (platform_machine == 'amd64' or (platform_machine == 'AMD64' or (platform_machine == 'win32' or platform_machine == 'WIN32'))))))",
+            "markers": "python_version >= '3' and (platform_machine == 'aarch64' or (platform_machine == 'ppc64le' or (platform_machine == 'x86_64' or (platform_machine == 'amd64' or (platform_machine == 'AMD64' or (platform_machine == 'win32' or platform_machine == 'WIN32'))))))",
             "version": "==3.0.3"
         },
         "html5lib": {
@@ -919,11 +919,11 @@
         },
         "importlib-metadata": {
             "hashes": [
-                "sha256:15584cf2b1bf449d98ff8a6ff1abef57bf20f3ac6454f431736cd3e660921b2f",
-                "sha256:188bd24e4c346d3f0a933f275c2fec67050326a856b9a359881d7c2a697e8812"
+                "sha256:3cd29f739ed65973840b068e3132135ce954c254d48b5b640484467ef7ab3c8c",
+                "sha256:fcdcb1d5ead7bdf3dd32657bb94ebe9d2aabfe89a19782ddc32da5041d6ebfb4"
             ],
             "markers": "python_version < '3.10'",
-            "version": "==8.0.0"
+            "version": "==8.1.0"
         },
         "importlib-resources": {
             "hashes": [
@@ -991,11 +991,11 @@
                 "opensearch2"
             ],
             "hashes": [
-                "sha256:3121f963e429bcbbb77ff8c9a17e12953bd6176d7eb9ab2554bab4c92b5f16f5",
-                "sha256:cc9bbcc8ad00ad25e956d6272425b8e7fd59fe4d377a379971a61008d0ae288c"
+                "sha256:7aafed77ae8cf155fb18bf5efbc2c611a17e88f275d58887264227ab886daa55",
+                "sha256:cee75b85bbd809f536139ca81860a19e615294c9122e65a51e105d09cd634100"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==13.0.0b0.dev9"
+            "version": "==13.0.0b0.dev10"
         },
         "invenio-assets": {
             "hashes": [
@@ -1054,6 +1054,10 @@
             "version": "==1.0.4"
         },
         "invenio-db": {
+            "extras": [
+                "mysql",
+                "postgresql"
+            ],
             "hashes": [
                 "sha256:c02120e22d22498fcd23c3761a1d160c177261c760c38ccfddb4d671fcb7ddef",
                 "sha256:cbbe6d53678a04e21afd8220498a9ddde041bf5c7afd66df00fb46907b109c13"
@@ -1111,11 +1115,11 @@
         },
         "invenio-jobs": {
             "hashes": [
-                "sha256:3fdf5736b28ea66d1d25fc6e0e0fe299c2324f809f0dbdca9f8b7144bc254e57",
-                "sha256:b593a92bcef3d2ccd59b28aa395694ef3d4ac2b9a7266558d8c1251da0a0d55a"
+                "sha256:4596eee0a428f95152b9163f2277b9043c23382384789f97b89ceff2a45a7f9a",
+                "sha256:b6e4bd45930e2a74a3cb41bc1643ca45ac81ce305676a8bb4a2b435187840dc9"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==0.3.1"
+            "version": "==0.3.2"
         },
         "invenio-jsonschemas": {
             "hashes": [
@@ -1333,11 +1337,11 @@
         },
         "invenio-vocabularies": {
             "hashes": [
-                "sha256:537b362c8e58a456dd23722ecf485fd17b38e7a5ab84bcbf52fd97feaaa8a7bd",
-                "sha256:8194576077b05899ae9bc15eeb826d7a1f35c4f5b2bc6d07606a79a155e2b32c"
+                "sha256:c9557964d5b1283d2479877336abfa5798791825365ba9cf5e552a8240eb61b1",
+                "sha256:f3c4d7d6bd64da659cf17666fd5517acd832dd8d6d5a2de90dcb606d19b982c0"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==4.1.1"
+            "version": "==4.2.0"
         },
         "invenio-webhooks": {
             "hashes": [
@@ -2721,6 +2725,9 @@
             "version": "==12.6.0"
         },
         "sentry-sdk": {
+            "extras": [
+                "flask"
+            ],
             "hashes": [
                 "sha256:1ce29e30240cc289a027011103a8c83885b15ef2f316a60bcc7c5300afa144f1",
                 "sha256:509aa9678c0512344ca886281766c2e538682f8acfa50fd8d405f8c417ad0625"
@@ -3144,11 +3151,11 @@
         },
         "types-pyyaml": {
             "hashes": [
-                "sha256:a9e0f0f88dc835739b0c1ca51ee90d04ca2a897a71af79de9aec5f38cb0a5342",
-                "sha256:b845b06a1c7e54b8e5b4c683043de0d9caf205e7434b3edc678ff2411979b8f6"
+                "sha256:cf7b31ae67e0c5b2919c703d2affc415485099d3fe6666a6912f040fd05cb67f",
+                "sha256:e5becec598f3aa3a2ddf671de4a75fa1c6856fbf73b2840286c9d50fae2d5d48"
             ],
             "markers": "python_version >= '3.8'",
-            "version": "==6.0.12.20240311"
+            "version": "==6.0.12.20240724"
         },
         "types-requests": {
             "hashes": [
@@ -3654,6 +3661,9 @@
             "version": "==8.1.7"
         },
         "coverage": {
+            "extras": [
+                "toml"
+            ],
             "hashes": [
                 "sha256:0086cd4fc71b7d485ac93ca4239c8f75732c2ae3ba83f6be1c9be59d9e2c6382",
                 "sha256:01c322ef2bbe15057bc4bf132b525b7e3f7206f071799eb8aa6ad1940bcf5fb1",
@@ -3753,11 +3763,11 @@
         },
         "importlib-metadata": {
             "hashes": [
-                "sha256:15584cf2b1bf449d98ff8a6ff1abef57bf20f3ac6454f431736cd3e660921b2f",
-                "sha256:188bd24e4c346d3f0a933f275c2fec67050326a856b9a359881d7c2a697e8812"
+                "sha256:3cd29f739ed65973840b068e3132135ce954c254d48b5b640484467ef7ab3c8c",
+                "sha256:fcdcb1d5ead7bdf3dd32657bb94ebe9d2aabfe89a19782ddc32da5041d6ebfb4"
             ],
             "markers": "python_version < '3.10'",
-            "version": "==8.0.0"
+            "version": "==8.1.0"
         },
         "importlib-resources": {
             "hashes": [
