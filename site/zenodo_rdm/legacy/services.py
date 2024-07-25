@@ -152,7 +152,7 @@ class LegacyRecordServiceConfig(RDMRecordServiceConfig):
         ),
         "doi": RecordPIDLink("https://doi.org/{+pid_doi}", when=has_doi),
         "parent_doi": RecordParentPIDLink(
-            "{+ui}/doi/{+pid_doi}",
+            "https://doi.org/{+pid_doi}",
             when=is_record_and_has_parent_doi,
         ),
         "badge": RecordPIDLink("{+ui}/badge/doi/{pid_doi}.svg"),
