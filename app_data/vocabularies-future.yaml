@@ -5,3 +5,52 @@ names:
         origin: "./app_data/names.yaml"
   writers:
     - type: names-service
+
+affiliations:
+  readers:
+    - type: ror-http
+    - args:
+        regex: "_schema_v2\\.json$"
+      type: zip
+    - type: json
+  transformers:
+    - type: ror-affiliations
+  writers:
+    - args:
+        writer:
+          type: affiliations-service
+      type: async
+
+funders:
+  readers:
+    - type: ror-http
+    - args:
+        regex: "_schema_v2\\.json$"
+      type: zip
+    - type: json
+  transformers:
+    - type: ror-funders
+  writers:
+    - args:
+        writer:
+          type: funders-service
+      type: async
+
+awards:
+  readers:
+      - type: openaire-project-http
+        args:
+          origin: full
+      - type: tar
+        args:
+          regex: "\\.json.gz$"
+          mode: r
+      - type: gzip
+      - type: jsonl
+  transformers:
+      - type: openaire-award
+  writers:
+    - args:
+        writer:
+          type: awards-service
+      type: async
