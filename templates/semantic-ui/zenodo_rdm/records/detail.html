@@ -11,6 +11,17 @@
 {%- set citations_enabled = config.ZENODO_RECORDS_UI_CITATIONS_ENABLE %}
 {%- set isBlrRecord = record | is_blr_related_record %}
 
+{# Unverified records should not be indexed by robots (and display the reason for admins) #}
+{%- if not record.parent.is_verified -%}
+  {% set meta_robot_tags = [
+    {
+      "name": "robots",
+      "content": "noindex, nofollow",
+      "data-reason": ("Record is not verified" if permissions.can_moderate),
+    }
+  ] %}
+{%- endif -%}
+
 {%- block record_files -%}
   {# record has files BUT passed files are empty. This happens when we display are request. #}
   {%- if record.files.enabled -%}
