@@ -10,7 +10,6 @@
 import arrow
 from flask import current_app, url_for
 from invenio_communities.proxies import current_communities
-from invenio_db import db
 from invenio_rdm_records.proxies import current_rdm_records_service as records_service
 from invenio_search.api import RecordsSearchV2
 

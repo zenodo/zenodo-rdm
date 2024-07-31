@@ -6,7 +6,6 @@
 # it under the terms of the MIT License; see LICENSE file for more details.
 """OpenAire related helpers."""
 
-import hashlib
 import urllib
 
 from flask import current_app

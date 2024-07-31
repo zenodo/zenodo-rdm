@@ -12,7 +12,7 @@ from io import BytesIO
 import pytest
 from invenio_access.permissions import system_identity
 from invenio_rdm_records.proxies import current_rdm_records
-from invenio_rdm_records.records import RDMParent, RDMRecord
+from invenio_rdm_records.records import RDMRecord
 from invenio_records_resources.services.errors import PermissionDeniedError
 from invenio_requests import current_requests_service
 

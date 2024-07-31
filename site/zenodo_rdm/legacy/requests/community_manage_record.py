@@ -15,10 +15,10 @@ from invenio_rdm_records.proxies import (
     current_rdm_records_service,
     current_record_communities_service,
 )
-from invenio_rdm_records.records import RDMParent, RDMRecord
+from invenio_rdm_records.records import RDMRecord
 from invenio_records_resources.services.uow import IndexRefreshOp, RecordCommitOp
 from invenio_requests.customizations import CommentEventType, RequestType, actions
-from invenio_requests.proxies import current_events_service, current_requests_service
+from invenio_requests.proxies import current_events_service
 from invenio_search.engine import dsl
 
 

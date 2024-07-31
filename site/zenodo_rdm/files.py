@@ -15,7 +15,6 @@ import requests
 from flask import current_app, make_response, request
 from invenio_files_rest.helpers import sanitize_mimetype
 from invenio_files_rest.storage.pyfs import pyfs_storage_factory
-from werkzeug.urls import url_quote
 
 try:
     from invenio_xrootd.storage import EOSFileStorage as BaseFileStorage

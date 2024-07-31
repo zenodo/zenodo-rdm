@@ -30,8 +30,6 @@ class LegacyAllVersionsParam(ParamInterpreter):
 
     def apply(self, identity, search, params):
         """Evaluate the allversions parameter on the search."""
-        from invenio_search.engine import dsl
-
         all_versions = params.get("all_versions")
         if all_versions is not None:
             params["allversions"] = all_versions
@@ -65,8 +63,6 @@ class LegacyTypeSubtypeParam(ParamInterpreter):
 
     def apply(self, identity, search, params):
         """Evaluate the allversions parameter on the search."""
-        from invenio_search.engine import dsl
-
         type = params.get("type")
         subtype = params.get("subtype")
 

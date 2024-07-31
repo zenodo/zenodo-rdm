@@ -23,7 +23,6 @@ from marshmallow import (
 )
 from marshmallow_utils.fields import SanitizedUnicode
 from marshmallow_utils.schemas import IdentifierSchema
-from nameparser import HumanName
 from werkzeug.local import LocalProxy
 from zenodo_legacy.funders import FUNDER_DOI_TO_ROR
 from zenodo_legacy.licenses import LEGACY_LICENSES, legacy_to_rdm
@@ -196,7 +195,7 @@ class MetadataSchema(Schema):
 
         for grant in grants:
             # FP7 project grant - special case for FP7 project grant
-            if not "::" in grant["id"]:
+            if "::" not in grant["id"]:
                 grant["id"] = "10.13039/501100000780::{0}".format(grant["id"])
 
             # format "10.13039/501100000780::190101904"

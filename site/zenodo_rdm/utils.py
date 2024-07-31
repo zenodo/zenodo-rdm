@@ -13,7 +13,6 @@ import idutils
 from flask import current_app, url_for
 from invenio_app_rdm.records_ui.utils import dump_external_resource
 from invenio_i18n import _
-from invenio_rdm_records.proxies import current_rdm_records_service as service
 from invenio_swh.models import SWHDepositStatus
 from invenio_swh.proxies import current_swh_service as service_swh
 
@@ -163,7 +162,7 @@ def swh_link_render(record):
         try:
             swh_link = f"{base_url}/{swhid}"
             swh_text = swhid.split(";")[0]
-        except Exception as e:
+        except Exception:
             # Handle any exceptions that may occur to avoid breaking the UI
             swh_link = None
             swh_text = None
@@ -212,7 +211,7 @@ def swh_link_render(record):
     ret.append(
         dump_external_resource(
             link or "#",
-            title=f"Software Heritage",
+            title="Software Heritage",
             subtitle=subtitle,
             section=_("Archived in"),
             icon=url_for("static", filename="images/swh.png"),

@@ -7,8 +7,6 @@
 
 """Plazi payloads and settings."""
 
-from datetime import datetime, timedelta
-
 PAYLOAD = {
     "metadata": {
         # Communities

@@ -7,11 +7,8 @@
 
 """Redirector functions and rules."""
 
-from urllib.parse import urlencode
-
 from flask import abort, current_app, request, url_for
 from invenio_app_rdm.redirector.resource import RedirectorConfig, RedirectorResource
-from invenio_communities import current_communities
 from invenio_records_resources.services.base.config import FromConfig
 from invenio_requests.proxies import current_requests_service
 

@@ -9,7 +9,6 @@
 
 import io
 import secrets
-from datetime import datetime, timedelta
 
 
 def rand_bytes_file(name, size=10):

@@ -55,7 +55,7 @@ class ZenodoSupport(MethodView):
         data = self.validate_form(input_data)
         try:
             self.handle_form(data)
-        except RequestException as e:
+        except RequestException:
             # Any error from Zammad being down to badly formatted requests.
             raise Exception(
                 "The request could not be sent to the support system due to an internal error."

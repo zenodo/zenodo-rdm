@@ -8,21 +8,9 @@
 """Custom fields."""
 
 from invenio_i18n import lazy_gettext as _
-from invenio_rdm_records.contrib.imprint import (
-    IMPRINT_CUSTOM_FIELDS,
-    IMPRINT_CUSTOM_FIELDS_UI,
-    IMPRINT_NAMESPACE,
-)
-from invenio_rdm_records.contrib.journal import (
-    JOURNAL_CUSTOM_FIELDS,
-    JOURNAL_CUSTOM_FIELDS_UI,
-    JOURNAL_NAMESPACE,
-)
-from invenio_rdm_records.contrib.thesis import (
-    THESIS_CUSTOM_FIELDS,
-    THESIS_CUSTOM_FIELDS_UI,
-    THESIS_NAMESPACE,
-)
+from invenio_rdm_records.contrib.imprint import IMPRINT_CUSTOM_FIELDS_UI
+from invenio_rdm_records.contrib.journal import JOURNAL_CUSTOM_FIELDS_UI
+from invenio_rdm_records.contrib.thesis import THESIS_CUSTOM_FIELDS_UI
 
 PUBLISHING_FIELDS_UI = {
     "section": _("Publishing information"),
