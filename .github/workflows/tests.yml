@@ -73,7 +73,6 @@ jobs:
           pip install "./${{ matrix.package-dir }}[$EXTRAS]"
           pip freeze
           docker --version
-          docker-compose --version
 
       - name: Run tests
         working-directory: ./${{ matrix.package-dir }}
