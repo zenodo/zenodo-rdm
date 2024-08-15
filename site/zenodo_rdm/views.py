@@ -14,7 +14,7 @@ from invenio_records_resources.resources.records.utils import search_preference
 from marshmallow import ValidationError
 
 from .decorators import cached_unless_authenticated_or_flashes
-from .filters import is_blr_related_record
+from .filters import is_blr_related_record, is_verified_record
 from .support.support import ZenodoSupport
 
 
@@ -90,5 +90,6 @@ def create_blueprint(app):
 
     # Register template filters
     blueprint.add_app_template_filter(is_blr_related_record)
+    blueprint.add_app_template_test(is_verified_record, name="verified_record")
 
     return blueprint

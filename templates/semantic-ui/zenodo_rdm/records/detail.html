@@ -12,7 +12,7 @@
 {%- set isBlrRecord = record | is_blr_related_record %}
 
 {# Unverified records should not be indexed by robots (and display the reason for admins) #}
-{%- if not record.parent.is_verified -%}
+{%- if record is not verified_record -%}
   {% set meta_robot_tags = [
     {
       "name": "robots",
