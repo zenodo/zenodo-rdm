@@ -25,55 +25,57 @@ on:
         default: 'Manual trigger'
 
 jobs:
-  Tests:
-    runs-on: ubuntu-20.04
-    continue-on-error: ${{ matrix.ignore-failure }}
+  Python:
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
           package-dir: ["site", "legacy"]
-          python-version: [3.9]
+          python-version: ["3.9"]
           db-service: [postgresql14]
           search-service: [opensearch2]
-          ignore-failure: [false]
-          include:
-          - package-dir: "migrator"
-            ignore-failure: true
-            python-version: 3.9
-            db-service: postgresql14
     env:
       DB: ${{ matrix.db-service }}
       SEARCH: ${{ matrix.search-service }}
       EXTRAS: tests
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: Run eslint test
-        run: ./run-js-linter.sh -i
-
-      - name: Generate dependencies
-        run: |
-          pip install "pipenv==2023.12.1"
+          cache: pip
+          cache-dependency-path: Pipfile.lock
 
       - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get -y install libkrb5-dev libvips-dev
+
+          # We're pinning "pipenv" to the same version as in the deployment Docker image
+          pip install "pipenv==2023.12.1"
           [ "${{ matrix.package-dir }}" == "site" ] && pipenv install --dev --deploy --system
           pip install "./legacy"
           pip install "./${{ matrix.package-dir }}[$EXTRAS]"
+
           pip freeze
           docker --version
 
       - name: Run tests
         working-directory: ./${{ matrix.package-dir }}
         run: ./run-tests.sh
+
+  JS:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Use Node.js v16.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: v16.x
+
+      - name: Run eslint test
+        run: ./run-js-linter.sh -i
+
