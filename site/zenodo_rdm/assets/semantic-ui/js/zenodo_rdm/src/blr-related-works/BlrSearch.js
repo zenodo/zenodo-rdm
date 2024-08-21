@@ -74,8 +74,8 @@ export const BlrSearch = ({ endpoint, recordDOI, resourceType, blrId }) => {
     sortBy: "bestmatch",
     sortOrder: "asc",
     page: 1,
-    size: 4,
-    layout: "list",
+    size: 12,
+    layout: "grid",
   };
 
   return (
