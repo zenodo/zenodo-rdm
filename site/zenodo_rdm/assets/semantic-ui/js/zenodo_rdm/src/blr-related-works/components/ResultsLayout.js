@@ -35,7 +35,7 @@ ResultsListLayout.propTypes = {
 };
 
 export const ResultsGridLayout = ({ results }) => (
-  <Grid columns="4" doubling>
+  <Grid columns="4" doubling stackable>
     {results}
   </Grid>
 );
