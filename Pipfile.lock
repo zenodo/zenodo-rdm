@@ -1054,12 +1054,12 @@
         },
         "invenio-communities": {
             "hashes": [
-                "sha256:70d1089490f08d584dd5d02a769e17988e9f54fe36d5abac6af274fc25c78bd7",
-                "sha256:aa633c40f110634bed479ea24707f3ad7fed02870dcddf3bd4b455f2666c5fa9"
+                "sha256:0cdc87f9ffb213ef01cf459944d5dde2bd2aaec842cd66dfaaaacae1e4c4f409",
+                "sha256:b5bf522b346b46c17079e18c78710a23ed8c697f163372fdcf327ae480a930b9"
             ],
             "index": "pypi",
             "markers": "python_version >= '3.8'",
-            "version": "==14.5.3"
+            "version": "==14.5.4"
         },
         "invenio-config": {
             "hashes": [
