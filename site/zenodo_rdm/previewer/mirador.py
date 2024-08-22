@@ -38,15 +38,9 @@ def can_preview(file):
     if not file.has_extensions(*supported_extensions):
         return False
 
-    iiif_config = current_app.config["IIIF_TILES_CONVERTER_PARAMS"]
     metadata = file.data["metadata"]
     # If any of metadata, height or width aren't present, return false
     if not (metadata and "height" in metadata and "width" in metadata):
-        return False
-    elif (
-        metadata["width"] <= iiif_config["tile_width"]
-        or metadata["height"] <= iiif_config["tile_height"]
-    ):
         return False
 
     return True
@@ -56,6 +50,7 @@ def preview(file):
     """Render template."""
     record = file.record._record
     tpl_ctx = {}
+    iiif_config = current_app.config["IIIF_TILES_CONVERTER_PARAMS"]
 
     # Check the status of the tile generation for the image
     tile_status = None
@@ -63,6 +58,17 @@ def preview(file):
         tile_file = record.media_files.get(f"{file.filename}.ptif")
         if tile_file is not None and tile_file.processor:
             tile_status = tile_file.processor.get("status")
+
+    # If the image size is smaller than 256x256, preview the default image URL instead of IIIF
+    if (
+        file.data["metadata"]["width"] <= iiif_config["tile_width"]
+        or file.data["metadata"]["height"] <= iiif_config["tile_height"]
+    ):
+        return render_template(
+            "invenio_app_rdm/records/previewers/simple_image_preview.html",
+            css_bundles=["mirador-previewer.css"],
+            file=file,
+        )
 
     show_mirador = tile_status == "finished"
     tpl_ctx["show_mirador"] = show_mirador
@@ -124,7 +130,7 @@ def preview(file):
             )
 
     return render_template(
-        "invenio_app_rdm/records/mirador_preview.html",
+        "invenio_app_rdm/records/previewers/mirador_preview.html",
         css_bundles=["mirador-previewer.css"],
         file=file,
         **tpl_ctx,
