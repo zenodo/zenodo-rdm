@@ -8,6 +8,7 @@
 """Mirador preview."""
 
 from copy import deepcopy
+from datetime import datetime, timedelta, timezone
 from os.path import splitext
 
 from flask import current_app, render_template
@@ -59,6 +60,29 @@ def preview(file):
         if tile_file is not None and tile_file.processor:
             tile_status = tile_file.processor.get("status")
 
+    # Check if the file was updated more than an hour ago
+    last_updated_time = datetime.fromisoformat(file.data["updated"])
+    current_time = datetime.now(timezone.utc)
+    time_diff = current_time - last_updated_time
+
+    # If the image tile status size is processing and the image was last updated more than an hour ago
+    if tile_status == "processing" and time_diff > timedelta(hours=1):
+        # The image size is less than configured size, fall back to IIIF
+        if file.size < current_app.config["PREVIEWER_MAX_IMAGE_SIZE_BYTES"]:
+            return render_template(
+                "invenio_app_rdm/records/previewers/simple_image_preview.html",
+                css_bundles=["mirador-previewer.css"],
+                file_url=file.file.links["iiif_api"],
+            )
+        # The image size is greater than configured size,
+        # image cannot be previewed
+        elif file.size > current_app.config["PREVIEWER_MAX_IMAGE_SIZE_BYTES"]:
+            return render_template(
+                "invenio_app_rdm/records/previewers/default.html",
+                css_bundles=["mirador-previewer.css"],
+                file=file,
+            )
+
     # If the image size is smaller than 256x256, preview the default image URL instead of IIIF
     if (
         file.data["metadata"]["width"] <= iiif_config["tile_width"]
@@ -67,7 +91,7 @@ def preview(file):
         return render_template(
             "invenio_app_rdm/records/previewers/simple_image_preview.html",
             css_bundles=["mirador-previewer.css"],
-            file=file,
+            file_url=file.uri,
         )
 
     show_mirador = tile_status == "finished"
