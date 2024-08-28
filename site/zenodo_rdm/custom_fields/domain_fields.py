@@ -548,9 +548,19 @@ AUDIOVIS_FIELDS_UI = {
             ui_widget="MultiInput",
             props=dict(
                 label=_("Resource creation technique"),
-                note="""Information about technical aspects of the creation and 
-                digitization process of the resource. This includes modification 
+                note="""Information about technical aspects of the creation and
+                digitization process of the resource. This includes modification
                 steps (\"retouching\") after the initial resource capture.""",
+            ),
+        ),
+        dict(
+            field="ac:subjectOrientation",
+            ui_widget="MultiInput",
+            props=dict(
+                label=_("Subject orientation"),
+                note=_(
+                    "Specific orientation (direction, view angle) of the subject represented in the resource with respect to the acquisition device."
+                ),
             ),
         ),
         dict(
