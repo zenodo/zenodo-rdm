@@ -5,7 +5,7 @@
 # ZenodoRDM is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
-"""Mirador preview."""
+"""Image previewer."""
 
 from copy import deepcopy
 from datetime import datetime, timedelta, timezone
@@ -29,22 +29,17 @@ def can_preview(file):
     :param file: The file to be previewed.
     :returns: Boolean.
     """
-    # supported_extensions list needs . prefixed -
-    preview_extensions = current_app.config["MIRADOR_PREVIEW_EXTENSIONS"]
-    supported_extensions = ["." + ext for ext in preview_extensions]
+    # supported_extensions list for image formats
+    preview_extensions = current_app.config["IIIF_FORMATS"]
+    supported_extensions = ["." + ext for ext in preview_extensions if ext != "pdf"]
 
     if is_pdf_previewable(file):
         return True
 
-    if not file.has_extensions(*supported_extensions):
-        return False
+    if file.has_extensions(*supported_extensions):
+        return True
 
-    metadata = file.data["metadata"]
-    # If any of metadata, height or width aren't present, return false
-    if not (metadata and "height" in metadata and "width" in metadata):
-        return False
-
-    return True
+    return False
 
 
 def preview(file):
@@ -64,37 +59,54 @@ def preview(file):
     last_updated_time = datetime.fromisoformat(file.data["updated"])
     current_time = datetime.now(timezone.utc)
     time_diff = current_time - last_updated_time
+    threshold_time = timedelta(
+        **current_app.config["PREVIEWER_IMAGE_FAILED_PROCESSING_TIMEDELTA"]
+    )
 
     # If the image tile status size is processing and the image was last updated more than an hour ago
-    if tile_status == "processing" and time_diff > timedelta(hours=1):
+    if tile_status == "processing" and time_diff > threshold_time:
         # The image size is less than configured size, fall back to IIIF
         if file.size < current_app.config["PREVIEWER_MAX_IMAGE_SIZE_BYTES"]:
             return render_template(
                 "invenio_app_rdm/records/previewers/simple_image_preview.html",
-                css_bundles=["mirador-previewer.css"],
+                css_bundles=["image-previewer.css"],
                 file_url=file.file.links["iiif_api"],
             )
         # The image size is greater than configured size,
         # image cannot be previewed
         elif file.size > current_app.config["PREVIEWER_MAX_IMAGE_SIZE_BYTES"]:
             return render_template(
-                "invenio_app_rdm/records/previewers/default.html",
-                css_bundles=["mirador-previewer.css"],
+                "invenio_app_rdm/records/previewers/preview_unavailable.html",
+                css_bundles=current_app.config[
+                    "PREVIEWER_BASE_CSS_BUNDLES"
+                ]  # Basic bundle which includes Font-Awesome/Bootstrap
+                + ["image-previewer.css"],
                 file=file,
             )
+    else:
+        metadata = file.data.get("metadata")
+        width = metadata.get("width") if metadata else None
+        height = metadata.get("height") if metadata else None
 
-    # If the image size is smaller than 256x256, preview the default image URL instead of IIIF
-    if (
-        file.data["metadata"]["width"] <= iiif_config["tile_width"]
-        or file.data["metadata"]["height"] <= iiif_config["tile_height"]
-    ):
-        return render_template(
-            "invenio_app_rdm/records/previewers/simple_image_preview.html",
-            css_bundles=["mirador-previewer.css"],
-            file_url=file.uri,
-        )
+        # If metadata is missing, or if width or height are missing or smaller than the configured tile size
+        if (
+            not metadata
+            or not (width and height)
+            or width <= iiif_config["tile_width"]
+            or height <= iiif_config["tile_height"]
+        ):
+            return render_template(
+                "invenio_app_rdm/records/previewers/simple_image_preview.html",
+                css_bundles=["image-previewer.css"],
+                file_url=file.uri,
+            )
 
-    show_mirador = tile_status == "finished"
+    supported_mirador_extensions = [
+        "." + ext for ext in current_app.config["MIRADOR_PREVIEW_EXTENSIONS"]
+    ]
+    show_mirador = tile_status == "finished" and file.has_extensions(
+        *supported_mirador_extensions
+    )
     tpl_ctx["show_mirador"] = show_mirador
 
     if show_mirador:
@@ -155,7 +167,7 @@ def preview(file):
 
     return render_template(
         "invenio_app_rdm/records/previewers/mirador_preview.html",
-        css_bundles=["mirador-previewer.css"],
+        css_bundles=["image-previewer.css"],
         file=file,
         **tpl_ctx,
     )
