@@ -10,10 +10,15 @@
 {%- extends config.PREVIEWER_ABSTRACT_TEMPLATE %}
 
 {% block panel %}
-<div class="container">
-    <div class="col-md-2 col-md-offset-3">
-        <h3>{{_('Image size too big to be previewed')}}</h3>
-        <p>{{_('Sorry, we are unfortunately not able to preview this file.')}}</p>
-    </div>
+
+<div class="iframe-container">
+    <h3 class="ui header">
+        <i class="eye outline slash icon"></i>
+        <div class="content">
+            {{_('We are unable to preview the image')}}
+            <div class="sub header">{{_('The image file is too big to be previewed.')}}</div>
+        </div>
+    </h3>
 </div>
+
 {% endblock %}
