@@ -12,8 +12,10 @@ import unicodedata
 from urllib.parse import quote, urlsplit, urlunsplit
 
 import requests
+import sqlalchemy as sa
 from flask import current_app, make_response, request
 from invenio_files_rest.helpers import sanitize_mimetype
+from invenio_files_rest.models import FileInstance
 from invenio_files_rest.storage.pyfs import pyfs_storage_factory
 
 try:
@@ -149,3 +151,21 @@ class EOSFilesOffload(BaseFileStorage):
 def storage_factory(**kwargs):
     """Create custom storage factory to enable file offloading."""
     return pyfs_storage_factory(filestorage_class=EOSFilesOffload, **kwargs)
+
+
+def checksum_verification_files_query():
+    """Return a FileInstance query taking into account file URI prefixes."""
+    files = FileInstance.query
+
+    uri_prefixes = current_app.config.get(
+        "FILES_REST_CHECKSUM_VERIFICATION_URI_PREFIXES"
+    )
+    if uri_prefixes:
+        files = files.filter(
+            sa.or_(*[FileInstance.uri.startswith(p) for p in uri_prefixes])
+        )
+    # Filtering out .ptif media files
+    excluded_path = current_app.config["IIIF_TILES_STORAGE_BASE_PATH"]
+    files = files.filter(~FileInstance.uri.contains(excluded_path))
+
+    return files
