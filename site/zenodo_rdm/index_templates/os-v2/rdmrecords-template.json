@@ -1,0 +1,9 @@
+{
+  "priority": 100,
+  "index_patterns": ["__SEARCH_INDEX_PREFIX__rdmrecords-*"],
+  "template": {
+    "settings": {
+        "number_of_shards": 3
+    }
+  }
+}
