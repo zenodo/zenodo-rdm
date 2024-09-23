@@ -4,10 +4,3 @@ licenses:
 descriptiontypes:
   pid-type: dty
   data-file: vocabularies/description_types.yaml
-subjects:
-  pid-type: sub
-  schemes:
-    - id: EuroSciVoc
-      data-file: vocabularies/euroscivoc.jsonl
-      name: European Science Vocabulary
-      uri: "https://op.europa.eu/en/web/eu-vocabularies/dataset/-/resource?uri=http://publications.europa.eu/resource/dataset/euroscivoc"
