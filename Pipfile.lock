@@ -1184,11 +1184,11 @@
         },
         "invenio-oaiserver": {
             "hashes": [
-                "sha256:1a35c1d98da34f9d67c3280b5bc6fd9d570acce5245879f45477b4f1798aa5cd",
-                "sha256:4510660812f84fdf599b91c3c9b7c69123f0dddf39f5ae4243dda51acbeeb490"
+                "sha256:73dd1dcb2f716ccf62cafd407aa0ce02c2500079a671fb22df3eb9b73c19a239",
+                "sha256:c037215dc0a6019f6a602f84f68d3ef74ee3c2311c654f1165aa7b06ace03e81"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==2.2.2"
+            "version": "==2.2.3"
         },
         "invenio-oauth2server": {
             "hashes": [
