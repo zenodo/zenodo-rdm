@@ -11,6 +11,10 @@ isort = "<6.0" # Unpin when isort==6.0.0 is released
 
 [packages]
 invenio-app-rdm = {version = "~=13.0.0b1.dev5", extras = ["opensearch2"]}
+
+# NOTE: Tempoarily pinned until https://github.com/zenodo/zenodo-rdm/issues/998 is fixed
+invenio-rdm-records = {version = ">=12.1.1,<12.2.0"}
+
 invenio-logging = {extras = ["sentry_sdk"], version = "~=2.0"}
 sentry-sdk = ">=1.45,<2.0.0"
 zenodo_rdm = {editable="True", path="./site"}
