@@ -34,10 +34,8 @@ COPY ./krb5.conf /etc/krb5.conf
 # libvips is not available in EPEL so we install the Remi repository configuration package
 # See: https://github.com/libvips/libvips/issues/1184
 RUN dnf install -y http://rpms.remirepo.net/enterprise/remi-release-9.rpm
-# Command to enable the repository (this does not seem to be needed)
-#RUN dnf config-manager --set-enable remi
-# Install libvips
-RUN dnf install -y vips
+# Install libvips (pinned to 8.15.2 because of a conversion bug)
+RUN dnf install -y vips-8.15.2-1.el9.remi
 # /VIPS
 
 # XRootD
