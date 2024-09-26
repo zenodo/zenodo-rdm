@@ -367,7 +367,7 @@ RDM_SEARCH_ARGS_SCHEMA = ZenodoArgsSchema
 """Zenodo search args schema to support legacy search parameters."""
 
 THEME_MATHJAX_CDN = (
-    "//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js"
+    "//cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js"
     "?config=TeX-AMS-MML_HTMLorMML"
 )
 
