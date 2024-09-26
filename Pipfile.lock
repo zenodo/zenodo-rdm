@@ -1070,11 +1070,11 @@
         },
         "invenio-communities": {
             "hashes": [
-                "sha256:b46853b07722f78f0aba880a1d495d2fbd9f88b892e64da36670dac032035fd8",
-                "sha256:b4d4b940ce0ac36b73031a8207bc3e92e0efb94fc11b4a9548dedf9ece698d6d"
+                "sha256:a10f99c7ddac874b0d44370cc8dc10db112dd405d473050f0d9bc2f38ef4e098",
+                "sha256:bcb7ac3b56c37ec07fadfafc65aee29378aba6a4cc141ac8aa54b88dbd5e01fd"
             ],
             "markers": "python_version >= '3.8'",
-            "version": "==15.1.0"
+            "version": "==15.1.1"
         },
         "invenio-config": {
             "hashes": [
