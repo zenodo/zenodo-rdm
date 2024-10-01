@@ -15,11 +15,11 @@ from flask import current_app, render_template
 
 
 def is_pdf_previewable(file):
-    """Check if the file is a PDF that should be previewed with Mirador."""
+    """Check if the file is a PDF that should be previewed."""
     return (
         file.has_extensions(".pdf")
-        and file.data["metadata"]["previewer"] == "mirador"
-        and file.record._record.media_files.entries
+        and file.data.get("metadata", {}).get("previewer", "") == "image_previewer"
+        and bool(file.record._record.media_files.entries)
     )
 
 
@@ -55,51 +55,52 @@ def preview(file):
         if tile_file is not None and tile_file.processor:
             tile_status = tile_file.processor.get("status")
 
-    # Check if the file was updated more than an hour ago
-    last_updated_time = datetime.fromisoformat(file.data["updated"])
-    current_time = datetime.now(timezone.utc)
-    time_diff = current_time - last_updated_time
-    threshold_time = timedelta(
-        **current_app.config["PREVIEWER_IMAGE_FAILED_PROCESSING_TIMEDELTA"]
-    )
+    if not file.has_extensions(".pdf"):
+        # Check if the file was updated more than an hour ago
+        last_updated_time = datetime.fromisoformat(file.data["updated"])
+        current_time = datetime.now(timezone.utc)
+        time_diff = current_time - last_updated_time
+        threshold_time = timedelta(
+            **current_app.config["PREVIEWER_IMAGE_FAILED_PROCESSING_TIMEDELTA"]
+        )
 
-    # If the image tile status size is processing and the image was last updated more than an hour ago
-    if tile_status == "processing" and time_diff > threshold_time:
-        # The image size is less than configured size, fall back to IIIF
-        if file.size < current_app.config["PREVIEWER_MAX_IMAGE_SIZE_BYTES"]:
-            return render_template(
-                "invenio_app_rdm/records/previewers/simple_image_preview.html",
-                css_bundles=["image-previewer.css"],
-                file_url=file.file.links["iiif_api"],
-            )
-        # The image size is greater than configured size,
-        # image cannot be previewed
-        elif file.size > current_app.config["PREVIEWER_MAX_IMAGE_SIZE_BYTES"]:
-            return render_template(
-                "invenio_app_rdm/records/previewers/preview_unavailable.html",
-                css_bundles=current_app.config[
-                    "PREVIEWER_BASE_CSS_BUNDLES"
-                ]  # Basic bundle which includes Font-Awesome/Bootstrap
-                + ["image-previewer.css"],
-                file=file,
-            )
-    else:
-        metadata = file.data.get("metadata")
-        width = metadata.get("width") if metadata else None
-        height = metadata.get("height") if metadata else None
+        # If the image tile status size is processing and the image was last updated more than an hour ago
+        if tile_status == "processing" and time_diff > threshold_time:
+            # The image size is less than configured size, fall back to IIIF
+            if file.size < current_app.config["PREVIEWER_MAX_IMAGE_SIZE_BYTES"]:
+                return render_template(
+                    "invenio_app_rdm/records/previewers/simple_image_preview.html",
+                    css_bundles=["image-previewer.css"],
+                    file_url=file.file.links["iiif_api"],
+                )
+            # The image size is greater than configured size,
+            # image cannot be previewed
+            elif file.size > current_app.config["PREVIEWER_MAX_IMAGE_SIZE_BYTES"]:
+                return render_template(
+                    "invenio_app_rdm/records/previewers/preview_unavailable.html",
+                    css_bundles=current_app.config[
+                        "PREVIEWER_BASE_CSS_BUNDLES"
+                    ]  # Basic bundle which includes Font-Awesome/Bootstrap
+                    + ["image-previewer.css"],
+                    file=file,
+                )
+        else:
+            metadata = file.data.get("metadata")
+            width = metadata.get("width") if metadata else None
+            height = metadata.get("height") if metadata else None
 
-        # If metadata is missing, or if width or height are missing or smaller than the configured tile size
-        if (
-            not metadata
-            or not (width and height)
-            or width <= iiif_config["tile_width"]
-            or height <= iiif_config["tile_height"]
-        ):
-            return render_template(
-                "invenio_app_rdm/records/previewers/simple_image_preview.html",
-                css_bundles=["image-previewer.css"],
-                file_url=file.uri,
-            )
+            # If metadata is missing, or if width or height are missing or smaller than the configured tile size
+            if (
+                not metadata
+                or not (width and height)
+                or width <= iiif_config["tile_width"]
+                or height <= iiif_config["tile_height"]
+            ):
+                return render_template(
+                    "invenio_app_rdm/records/previewers/simple_image_preview.html",
+                    css_bundles=["image-previewer.css"],
+                    file_url=file.uri,
+                )
 
     supported_mirador_extensions = [
         "." + ext for ext in current_app.config["MIRADOR_PREVIEW_EXTENSIONS"]
