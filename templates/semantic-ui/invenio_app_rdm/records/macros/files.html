@@ -121,7 +121,7 @@
                 {%- set annostor_config = config.ANNOSTOR_COMMUNITIES[slug] if slug in config.ANNOSTOR_COMMUNITIES else None -%}
                 {%- if annostor_config is not none -%}
                   {%- set annostor_url = annostor_config.annostor_instance ~ "annotate/" ~ annostor_config.repo_instance ~ "/" ~ annostor_config.task ~ "/" ~ record.id  -%}
-                  {%- if permissions.can_edit and file_type=="pdf" and file.metadata.previewer == "mirador" -%}
+                  {%- if permissions.can_edit and file_type=="pdf" and file.metadata.previewer == "image_previewer" -%}
                   <a role="button" target="_blank" class="ui compact mini button" href="{{ annostor_url }}">
                     <i class="pencil icon" aria-hidden="true"></i>{{_("Annotate")}}<i aria-hidden="true" class="right aligned external icon"></i>
                   </a>
