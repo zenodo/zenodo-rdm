@@ -33,7 +33,7 @@ theme = WebpackThemeBundle(
                 "i18next-browser-languagedetector": "^6.1.0",
                 "prop-types": "^15.7.2",
                 "react-i18next": "^11.11.0",
-                "react-invenio-forms": "~4.1.0",
+                "react-invenio-forms": "~4.3.0",
                 "yup": "^0.32.11",
                 "react": "^16.13.0",
                 "react-dom": "^16.13.0",
