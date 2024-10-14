@@ -283,3 +283,45 @@ def blr_link_render(record):
             )
         )
     return ret
+
+
+def annostor_link_render(record):
+    """Entry for annostor."""
+    communities = record.data["parent"].get("communities", {}).get("entries", [])
+    comm_slugs = {comm["slug"] for comm in communities}
+
+    annostor_communities = current_app.config["ANNOSTOR_COMMUNITIES"]
+    as_comm = next(
+        (as_comm for as_comm in annostor_communities if as_comm in comm_slugs), None
+    )
+
+    if as_comm:
+        as_cfg = annostor_communities[as_comm]
+        activity = None
+        resource_type = record.data["metadata"]["resource_type"]["id"]
+        is_annotation_collection = resource_type == "publication-annotationcollection"
+        has_iiif_files = any(
+            file["ext"] in current_app.config["IIIF_FORMATS"]
+            for file in record.data.get("files", {}).get("entries", {}).values()
+        )
+        if is_annotation_collection:
+            activity = "oia:ac"
+        elif has_iiif_files:
+            activity = "oia:at"
+
+        if activity:
+            record_id = record["id"]
+            host = as_cfg["annostor_instance"]
+            repo = as_cfg["repo_instance"]
+            url = f"https://{host}/annotate/{repo}/{activity}/{record_id}"
+            return [
+                dump_external_resource(
+                    url,
+                    title="annostor",
+                    section="Open using",
+                    subtitle=None,
+                    icon=url_for("static", filename="images/annostor.svg"),
+                )
+            ]
+
+    return []
