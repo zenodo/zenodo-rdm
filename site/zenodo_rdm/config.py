@@ -370,5 +370,3 @@ THEME_MATHJAX_CDN = (
     "//cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js"
     "?config=TeX-AMS-MML_HTMLorMML"
 )
-
-ANNOSTOR_COMMUNITIES = {}
