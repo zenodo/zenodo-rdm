@@ -313,7 +313,7 @@ def annostor_link_render(record):
             record_id = record["id"]
             host = as_cfg["annostor_instance"]
             repo = as_cfg["repo_instance"]
-            url = f"https://{host}/annotate/{repo}/{activity}/{record_id}"
+            url = f"{host}/annotate/{repo}/{activity}/{record_id}"
             return [
                 dump_external_resource(
                     url,
