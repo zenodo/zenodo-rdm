@@ -6,13 +6,14 @@
 # it under the terms of the MIT License; see LICENSE file for more details.
 """Test OpenAIRE components."""
 
-from unittest.mock import call
+from unittest import mock
 
 from invenio_access.permissions import system_identity
 from invenio_rdm_records.proxies import current_rdm_records_service as records_service
 from invenio_rdm_records.services.components import DefaultRecordsComponents
 
 from zenodo_rdm.openaire.records.components import OpenAIREComponent
+from zenodo_rdm.openaire.utils import get_openaire_id
 
 
 def test_on_publish(
@@ -40,11 +41,11 @@ def test_on_publish(
 
     serialized_record = openaire_serializer.dump_obj(record.data)
 
-    post_endpoint = f"{openaire_api_endpoint}/feedObject"
+    post_endpoint = f"{openaire_api_endpoint}/results/feedObject"
     mocked_session.post.assert_called_once_with(
         post_endpoint,
         json=serialized_record,
-        timeout=10,
+        timeout=30,
     )
 
 
@@ -76,17 +77,16 @@ def test_on_delete(
 
     serialized_record = openaire_serializer.dump_obj(record.data)
 
-    post_endpoint = f"{openaire_api_endpoint}/feedObject"
+    post_endpoint = f"{openaire_api_endpoint}/results/feedObject"
     mocked_session.post.assert_called_once_with(
-        post_endpoint, json=serialized_record, timeout=10
+        post_endpoint, json=serialized_record, timeout=30
     )
 
+    # NOTE: It would be better if we had a stable/deterministic DOI for the record
+    # so we could hardcode here the OpenAIRE ID based on the md5 of the DOI
+    openaire_id = get_openaire_id(record.data)
     mocked_session.delete.assert_called_once_with(
-        openaire_api_endpoint,
-        params={
-            "originalId": f"10.5281/zenodo.{recid}",
-            "collectedFromId": "opendoar____::2659",
-        },
+        f"{openaire_api_endpoint}/result/{openaire_id}"
     )
 
 
@@ -120,22 +120,17 @@ def test_on_restore(
 
     serialized_record = openaire_serializer.dump_obj(record.data)
 
-    post_endpoint = f"{openaire_api_endpoint}/feedObject"
+    post_endpoint = f"{openaire_api_endpoint}/results/feedObject"
     # HTTP POST will be called twice (one to create the record and one to restore it)
     post_calls = [
-        call(post_endpoint, json=serialized_record, timeout=10),
-        call(post_endpoint, json=serialized_record, timeout=10),
+        mock.call(post_endpoint, json=serialized_record, timeout=30),
+        mock.call(post_endpoint, json=serialized_record, timeout=30),
     ]
 
     # HTTP DELETE will be called once, when the record is deleted
+    openaire_id = get_openaire_id(record.data)
     delete_calls = [
-        call(
-            openaire_api_endpoint,
-            params={
-                "originalId": f"10.5281/zenodo.{recid}",
-                "collectedFromId": "opendoar____::2659",
-            },
-        )
+        mock.call(f"{openaire_api_endpoint}/result/{openaire_id}"),
     ]
 
     mocked_session.post.assert_has_calls(post_calls)

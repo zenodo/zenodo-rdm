@@ -15,7 +15,7 @@ from zenodo_rdm.openaire.tasks import (
     openaire_direct_index,
     retry_openaire_failures,
 )
-from zenodo_rdm.openaire.utils import openaire_datasource_id, openaire_original_id
+from zenodo_rdm.openaire.utils import get_openaire_id
 
 
 def test_openaire_direct_index_task(
@@ -57,11 +57,11 @@ def test_openaire_direct_index_task(
 
     # Will be executed synchronously in tests
     openaire_direct_index.delay(openaire_record.id)
-    post_endpoint = f"{openaire_api_endpoint}/feedObject"
+    post_endpoint = f"{openaire_api_endpoint}/results/feedObject"
     mocked_session.post.assert_called_once_with(
         post_endpoint,
         json=expected,
-        timeout=10,
+        timeout=30,
     )
 
     # Assert key is not in cache : means success
@@ -91,11 +91,11 @@ def test_openaire_direct_index_task_with_beta(
     openaire_direct_index.delay(openaire_record.id)
 
     # Assert two ``post`` requests were issued: one to production and one to beta
-    post_endpoint = f"{openaire_api_endpoint}/feedObject"
-    beta_endpoint = f"{beta_url}/feedObject"
+    post_endpoint = f"{openaire_api_endpoint}/results/feedObject"
+    beta_endpoint = f"{beta_url}/results/feedObject"
     calls = [
-        call(post_endpoint, json=serialized_record, timeout=10),
-        call(beta_endpoint, json=serialized_record, timeout=10),
+        call(post_endpoint, json=serialized_record, timeout=30),
+        call(beta_endpoint, json=serialized_record, timeout=30),
     ]
     mocked_session.post.assert_has_calls(calls)
 
@@ -140,12 +140,12 @@ def test_openaire_delete_task(
     openaire_delete.delay(openaire_record.id)
 
     # Assert ``requests.delete`` was executed once
-    original_id = openaire_original_id(openaire_record.data)[1]
-    datasource_id = openaire_datasource_id(openaire_record.data)
+    openaire_id = get_openaire_id(openaire_record.data)
     openaire_url = running_app.app.config["OPENAIRE_API_URL"]
-    params = {"originalId": original_id, "collectedFromId": datasource_id}
 
-    mocked_session.delete.assert_called_once_with(openaire_url, params=params)
+    mocked_session.delete.assert_called_once_with(
+        f"{openaire_url}/result/{openaire_id}",
+    )
 
     # Assert key is not in cache : means success
     assert not current_cache.cache.has(f"openaire_direct_index:{openaire_record.id}")

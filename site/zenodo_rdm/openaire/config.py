@@ -5,7 +5,7 @@
 # it under the terms of the MIT License; see LICENSE file for more details.
 """OpenAire related configs."""
 
-OPENAIRE_API_URL = "http://dev.openaire.research-infrastructures.eu/is/mvc/api/results"
+OPENAIRE_API_URL = "http://dev.openaire.research-infrastructures.eu/is/mvc/api"
 """OpenAIRE API endpoint."""
 
 OPENAIRE_API_CREDENTIALS = {"username": "CHANGE_ME", "password": "CHANGE_ME"}

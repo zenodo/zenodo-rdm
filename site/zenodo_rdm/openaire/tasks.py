@@ -18,12 +18,7 @@ from werkzeug.local import LocalProxy
 
 from .errors import OpenAIRERequestError
 from .serializers import OpenAIREV1Serializer
-from .utils import (
-    openaire_datasource_id,
-    openaire_original_id,
-    openaire_request_factory,
-    openaire_type,
-)
+from .utils import get_openaire_id, openaire_request_factory, openaire_type
 
 is_openaire_enabled = LocalProxy(
     lambda: current_app.config["OPENAIRE_DIRECT_INDEXING_ENABLED"]
@@ -48,7 +43,7 @@ def execute_if_openaire_enabled():
 @shared_task(
     ignore_result=True,
     max_retries=6,
-    default_retry_delay=4 * 60 * 60,
+    default_retry_delay=10 * 60,  # 10 minutes
     rate_limit="100/m",
 )
 @execute_if_openaire_enabled()
@@ -70,21 +65,23 @@ def openaire_direct_index(record_id, retry=True):
         serialized_record = serializer.dump_obj(record.data)
 
         # Build the request
-        openaire_api_url = current_app.config["OPENAIRE_API_URL"]
-        url = f"{openaire_api_url}/feedObject"
-        request = openaire_request_factory()
-        res = request.post(url, json=serialized_record, timeout=10)
+        base_url = current_app.config["OPENAIRE_API_URL"]
+        url = f"{base_url}/results/feedObject"
+        session = openaire_request_factory()
+        res = session.post(url, json=serialized_record, timeout=30)
 
         if not res.ok:
             raise OpenAIRERequestError(res.text)
 
-        beta_url = current_app.config.get("OPENAIRE_API_URL_BETA")
-        if beta_url:
-            beta_endpoint = f"{beta_url}/feedObject"
-            res_beta = request.post(beta_endpoint, json=serialized_record, timeout=10)
+        beta_base_url = current_app.config.get("OPENAIRE_API_URL_BETA")
+        if beta_base_url:
+            beta_endpoint = f"{beta_base_url}/results/feedObject"
+            res_beta = session.post(beta_endpoint, json=serialized_record, timeout=30)
 
             if not res_beta.ok:
-                raise OpenAIRERequestError(res_beta.text)
+                # Just log the error, but don't raise
+                current_app.logger.warning("OpenAIRE indexing to beta failed")
+
         current_cache.delete(f"openaire_direct_index:{record_id}")
     except Exception as exc:
         current_cache.set(
@@ -100,7 +97,7 @@ def openaire_direct_index(record_id, retry=True):
 @shared_task(
     ignore_result=True,
     max_retries=6,
-    default_retry_delay=4 * 60 * 60,
+    default_retry_delay=10 * 60,  # 10 minutes
     rate_limit="100/m",
 )
 @execute_if_openaire_enabled()
@@ -112,24 +109,22 @@ def openaire_delete(record_id=None, retry=True):
     """
     try:
         record = records_service.read(system_identity, record_id, include_deleted=True)
+        openaire_id = get_openaire_id(record.data)
 
-        original_id = openaire_original_id(record.data)[1]
-        datasource_id = openaire_datasource_id(record.data)
+        session = openaire_request_factory()
 
-        params = {"originalId": original_id, "collectedFromId": datasource_id}
-        req = openaire_request_factory()
-        res = req.delete(current_app.config["OPENAIRE_API_URL"], params=params)
+        base_url = current_app.config["OPENAIRE_API_URL"]
+        res = session.delete(f"{base_url}/result/{openaire_id}")
 
         if not res.ok:
             raise OpenAIRERequestError(res.text)
 
-        if current_app.config["OPENAIRE_API_URL_BETA"]:
-            res_beta = req.delete(
-                current_app.config["OPENAIRE_API_URL_BETA"], params=params
-            )
-
+        base_beta_url = current_app.config.get("OPENAIRE_API_URL_BETA")
+        if base_beta_url:
+            res_beta = session.delete(f"{base_beta_url}/result/{openaire_id}")
             if not res_beta.ok:
-                raise OpenAIRERequestError(res.text)
+                # Just log the error, but don't raise
+                current_app.logger.warning("OpenAIRE deleting to beta failed")
 
         # Remove from failures cache
         current_cache.delete(f"openaire_direct_index:{record_id}")
@@ -167,6 +162,6 @@ def retry_openaire_failures():
                 openaire_delete.delay(record_id, retry=False)
             else:
                 openaire_direct_index.delay(record_id, retry=False)
-        except:
+        except Exception:
             # Otherwise it stops processing records when the first one fails.
             continue
