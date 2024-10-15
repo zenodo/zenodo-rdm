@@ -6,6 +6,7 @@
 # it under the terms of the MIT License; see LICENSE file for more details.
 """OpenAire related helpers."""
 
+import hashlib
 import urllib
 
 from flask import current_app
@@ -119,6 +120,13 @@ def openaire_original_id(record):
 def openaire_datasource_id(record):
     """Get OpenAIRE datasource identifier."""
     return OPENAIRE_ZENODO_IDS.get(openaire_type(record))
+
+
+def get_openaire_id(record):
+    """Compute OpenAIRE identifier."""
+    doi = record.get("pids", {}).get("doi", {}).get("identifier")
+    doi_hash = hashlib.md5(doi.encode()).hexdigest()
+    return f"doi_________::{doi_hash}"
 
 
 def openaire_request_factory(headers=None, auth=None):
