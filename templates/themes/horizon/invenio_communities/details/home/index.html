@@ -12,6 +12,8 @@
 
 {%- set title = community.metadata.title -%}
 {% set active_community_header_menu_item = 'home' %}
+{% from "invenio_communities/collections/macros.html" import render_depth_one_collection %}
+
 
 {%- block page_body %}
   {{ super() }}
@@ -49,7 +51,7 @@
       </div>
     </div>
 
-  <!--BROWSE SECTION-->
+  <!--SUMMARY SECTION-->
   {% macro format_metric_value(key, value) %}
     {% if key in ("total_records", "total_grants") %}
       {{ value | compact_number(max_value=1_000_000) }}
@@ -66,10 +68,10 @@
     "total_data": {"icon": "database", "title": _("DATA VOLUME")}
   } %}
 
-  <div class="ui stackable theme-font grid container rel-mt-4 rel-mb-2">
+  <div class="ui stackable theme-font grid container rel-mt-4">
     <div class="column">
       <div class="row item">
-        <h1 class="ui large header inline">{{ _("Browse") }}</h1>
+        <h1 class="ui large header inline">{{ _("Summary") }}</h1>
       </div>
       <div class="ui divider ml-0"></div>
       <div class="center aligned ui equal width stackable grid rel-mt-4 rel-mb-2">
@@ -86,22 +88,74 @@
           </div>
           {% endfor %}
         </div>
-        <div class="row">
-          <div class="center aligned">
-            <a href="{{ url_for('invenio_app_rdm_communities.communities_detail', pid_value=community.slug) }}"
-              class="ui button labeled icon rel-mt-1">
-              <i class="eye icon" aria-hidden="true"></i>
-              {{ _("Browse") }}
-            </a>
+      </div>
+    </div>
+  </div>
+
+  <!--BROWSE SECTION-->
+  <div class="ui stackable theme-font one column grid container rel-mt-2 rel-mb-4">
+    <div class="column">
+        <div class="row item">
+          <h1 class="ui large header">{{ _("Browse") }}</h1>
+        </div>
+        <div class="ui divider ml-0"></div>
+        <div class="ui wide stretched stackable three column grid rel-mt-3">
+          <div class="column">
+            <div class="segment-container rel-p-1">
+                <h1 class="center aligned ui medium header rel-m-1">{{ _("Subject areas") }} </h1>
+                <div class="ui bottom attached"> 
+                  {% set subjects = collections.values() | selectattr('slug', 'equalto', 'subjects') | first %}
+                  {% for collection in subjects.collections %}
+                    {{ render_depth_one_collection(community, subjects, collection) }}
+                  {% endfor %}
+                  <div class="ui container center aligned rel-mb-1">
+                    <a href="{{ url_for('invenio_app_rdm_communities.communities_browse', pid_value=community.slug) }}"
+                    class=" theme-primary-text-direct rel-mt-2">
+                  {{ _("Browse all") }}
+                </a>
+                  </div>
+                </div>
+            </div>
+          </div>
+          <div class="column">
+            <div class="segment-container rel-p-1">
+                <h1 class="center aligned ui medium header rel-m-1">{{ _("Projects") }} </h1>
+                <div class="ui bottom attached">
+                  <div id="project-search-menu" class="rel-p-1">
+                  </div>
+                  <div class="ui container center aligned rel-mb-1">
+                    <a href="{{ url_for('invenio_communities.communities_subcommunities', pid_value=community.slug) }}"
+                    class="rel-mt-1 theme-primary-text-direct">
+                  {{ _("See all") }}
+                </a>
+                  </div>
+                </div>
+            </div>
+          </div>
+          <div class="column">
+            <div class="segment-container rel-p-1">
+                <h1 class="center aligned ui medium header rel-m-1">{{ _("Funding programmes") }} </h1>
+                <div class="ui bottom attached">
+                  {% set programs = collections.values() | selectattr('slug', 'equalto', 'programs') | first %}
+                  {% for collection in programs.collections %}
+                    {{ render_depth_one_collection(community, programs, collection) }}
+                  {% endfor %}
+                  <div class="ui container center aligned rel-mb-1">
+                    <a href="{{ url_for('invenio_app_rdm_communities.communities_browse', pid_value=community.slug) }}"
+                      class="ui rel-mt-1 theme-primary-text-direct ">
+                      {{ _("Browse all") }}
+                    </a>
+                  </div>
+                </div>
+            </div>
           </div>
         </div>
-      </div>
     </div>
   </div>
 
 
     {% if records %}
-      <div class="ui stackable theme-font grid container ">
+      <div class="ui stackable theme-font grid container rel-mt-4">
         <div class="column rel-mb-4">
           <div class="row item">
             <h1 class="ui large header">{{ _("Recent uploads") }}</h1>
@@ -174,7 +228,7 @@
                     </ul>
                     <div class="ui container center aligned rel-mb-1">
                       <a href="/communities/{{ community.slug }}/pages/join"
-                      class="ui positive button labeled theme-primary icon rel-mt-1">
+                      class="ui positive button labeled theme-primary icon rel-mt-2">
                     <i class="users icon" aria-hidden="true"></i>
                     {{ _("Join with your EU project") }}
                   </a>
@@ -218,3 +272,8 @@
     </div>
   </div>
 {%- endblock page_body -%}
+
+{%- block javascript %}
+  {{ super() }}
+  {{ webpack['zenodo-rdm-horizon-frontpage.js'] }}
+{%- endblock %}
