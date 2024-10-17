@@ -100,8 +100,8 @@
         </div>
         <div class="ui divider ml-0"></div>
         <div class="ui wide stretched stackable three column grid rel-mt-3">
-          <div class="column">
-            <div class="segment-container rel-p-1">
+          <div class="sixteen wide mobile sixteen wide tablet five wide computer column">
+            <div class="segment-container rel-p-2">
                 <h1 class="center aligned ui medium header rel-m-1">{{ _("Subject areas") }} </h1>
                 <div class="ui bottom attached"> 
                   {% set subjects = collections.values() | selectattr('slug', 'equalto', 'subjects') | first %}
@@ -117,7 +117,7 @@
                 </div>
             </div>
           </div>
-          <div class="column">
+          <div class="sixteen wide mobile sixteen wide tablet six wide computer  column">
             <div class="segment-container rel-p-1">
                 <h1 class="center aligned ui medium header rel-m-1">{{ _("Projects") }} </h1>
                 <div class="ui bottom attached">
@@ -132,8 +132,8 @@
                 </div>
             </div>
           </div>
-          <div class="column">
-            <div class="segment-container rel-p-1">
+          <div class="sixteen wide mobile sixteen wide tablet five wide computer column">
+            <div class="segment-container rel-p-2">
                 <h1 class="center aligned ui medium header rel-m-1">{{ _("Funding programmes") }} </h1>
                 <div class="ui bottom attached">
                   {% set programs = collections.values() | selectattr('slug', 'equalto', 'programs') | first %}
