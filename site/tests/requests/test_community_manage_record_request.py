@@ -85,10 +85,10 @@ def test_submit_a_request(uploader):
     assert db_request["receiver"] == {"user": "1"}
     assert db_request["topic"] is None
     assert db_request["created_by"] == {"user": "system"}
-    assert db_request["title"] == "Communities manage legacy records"
+    assert db_request["title"] == "Allow communities to manage your pre-migration records"
     assert db_request["expires_at"] is not None
     assert db_request["description"].startswith(
-        "<h4>Some of your records, that are going through the migration"
+        "<p>In <a href='https://blog.zenodo.org/2023/10/13/2023-10-13-zenodo-rdm/'>"
     )
 
 
