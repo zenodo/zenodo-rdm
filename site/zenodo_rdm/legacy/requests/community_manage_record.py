@@ -91,19 +91,24 @@ class SubmitAction(actions.SubmitAction):
 
     def execute(self, identity, uow):
         """Execute the submit action."""
-        self.request["title"] = "Communities manage legacy records"
+        self.request["title"] = "Allow communities to manage your pre-migration records"
 
         # example: "May 11, 2024"
         expires_at = self.request.expires_at.strftime("%B %d, %Y")
         self.request["description"] = (
-            "<h4>Some of your records, that are going through the migration process are part "
-            "of communities that don't belong to you.</br>Accept this request to adopt the new "
-            "behaviour and <b>allow community curators</b> to manage (edit, create new versions, add to "
-            "another community, etc.) your corresponding records. </br>In case of declining this "
-            "request all your legacy records will be <b>removed from all communities</b> "
-            "that you are not an owner of. </br></br>If you do not perform any action by "
-            f"<b>{expires_at}</b>, the permission for community curators to manage your records "
-            "will automatically be fully granted.</h4>"
+            "<p>In <a href='https://blog.zenodo.org/2023/10/13/2023-10-13-zenodo-rdm/'>October "
+            "2023 we migrated Zenodo</a> to a new platform which behaves slightly differently. One of these "
+            "differences is that <a href='https://help.zenodo.org/docs/communities/about-communities/'>community "
+            "owners, managers and curators</a> are now able to manage records in their communities. "
+            "By managing we mean that they can edit the metadata, create new versions, add to another "
+            "community, but not edit the files of their community's records.<br><br>As prior to the "
+            "migration you uploaded records into communities which you do not own, you have not "
+            "consented that curators of these communities can edit your records. As such <b>we "
+            "are asking your consent to allow community owners, managers and curators to manage your "
+            "corresponding records</b>.<br><br>In the case which you decline this request, your records "
+            "created prior to the migration will be removed from the communities which you are not an "
+            f"owner of.<br><br>If you do not perform any action by <b>{expires_at}</b>, the permission for "
+            "community curators, managers and owners to manage your records will be automatically granted.</p>"
         )
 
         super().execute(identity, uow)
