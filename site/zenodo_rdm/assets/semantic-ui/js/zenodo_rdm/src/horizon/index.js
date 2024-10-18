@@ -3,6 +3,9 @@ import ReactDOM from "react-dom";
 import { CommunityItem } from "./community-item";
 import { CommunitySelectionSearch } from "@js/invenio_rdm_records";
 
+const projectSearchContainer = document.getElementById("project-search-menu");
+const isUserAuthenticated = JSON.parse(projectSearchContainer.dataset.isAuthenticated);
+
 const defaultProps = {
   isInitialSubmission: true,
   apiConfigs: {
@@ -37,7 +40,8 @@ ReactDOM.render(
     isInitialSubmission={defaultProps.isInitialSubmission}
     CommunityListItem={CommunityItem}
     pagination={false}
+    myCommunitiesEnabled={isUserAuthenticated}
     autofocus={false}
   />,
-  document.getElementById("project-search-menu")
+  projectSearchContainer
 );

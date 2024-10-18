@@ -121,7 +121,11 @@
             <div class="segment-container rel-p-1">
                 <h1 class="center aligned ui medium header rel-m-1">{{ _("Projects") }} </h1>
                 <div class="ui bottom attached">
-                  <div id="project-search-menu" class="rel-p-1">
+                  {%- set is_user_authenticated = current_user.is_authenticated %}
+                  <div
+                    id="project-search-menu"
+                    data-is-authenticated='{{ is_user_authenticated | tojson }}'
+                    class="rel-p-1">
                   </div>
                   <div class="ui container center aligned rel-mb-1">
                     <a href="{{ url_for('invenio_communities.communities_subcommunities', pid_value=community.slug) }}"
