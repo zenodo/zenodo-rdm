@@ -37,6 +37,7 @@ ReactDOM.render(
     isInitialSubmission={defaultProps.isInitialSubmission}
     CommunityListItem={CommunityItem}
     pagination={false}
+    autofocus={false}
   />,
   document.getElementById("project-search-menu")
 );
