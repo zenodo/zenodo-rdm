@@ -7,10 +7,10 @@ const defaultProps = {
   isInitialSubmission: true,
   apiConfigs: {
     allCommunities: {
-      initialQueryState: { size: 5, page: 1, sortBy: "newest" },
+      initialQueryState: { size: 6, page: 1, sortBy: "newest" },
       searchApi: {
         axios: {
-          url: "/api/communities",
+          url: "/api/communities/eu/subcommunities",
           headers: { Accept: "application/vnd.inveniordm.v1+json" },
         },
       },
@@ -18,7 +18,7 @@ const defaultProps = {
       toggleText: "Search in all communities",
     },
     myCommunities: {
-      initialQueryState: { size: 5, page: 1, sortBy: "bestmatch" },
+      initialQueryState: { size: 6, page: 1, sortBy: "bestmatch" },
       searchApi: {
         axios: {
           url: "/api/user/communities",

@@ -23,7 +23,7 @@ export class CommunityItem extends Component {
         <ListItem>
           <ListContent>
             <ListHeader as="a" href={requestLinkSelf}>
-              <h4 className="theme-primary-text-direct">{title}</h4>
+              <h4 className="theme-primary-text-direct truncated">{title}</h4>
             </ListHeader>
             <ListDescription>{awardAcronym}</ListDescription>
           </ListContent>
