@@ -69,7 +69,7 @@ services:
       - "15672:15672"
       - "5672:5672"
   search:
-    image: registry.cern.ch/docker.io/opensearchproject/opensearch:2.3.0
+    image: registry.cern.ch/docker.io/opensearchproject/opensearch:2.15.0
     restart: "unless-stopped"
     environment:
       - bootstrap.memory_lock=true
@@ -97,7 +97,7 @@ services:
       - "9200:9200"
       - "9300:9300"
   opensearch-dashboards:
-    image: registry.cern.ch/docker.io/opensearchproject/opensearch-dashboards:2.3.0
+    image: registry.cern.ch/docker.io/opensearchproject/opensearch-dashboards:2.15.0
     ports:
       - "5601:5601"
     expose:
