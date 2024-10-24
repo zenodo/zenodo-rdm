@@ -40,7 +40,7 @@ ReactDOM.render(
     isInitialSubmission={defaultProps.isInitialSubmission}
     CommunityListItem={CommunityItem}
     pagination={false}
-    myCommunitiesEnabled={isUserAuthenticated}
+    communitiesStatusFilterEnabled={isUserAuthenticated}
     autofocus={false}
   />,
   projectSearchContainer
