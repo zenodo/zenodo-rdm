@@ -1,7 +1,18 @@
+# -*- coding: utf-8 -*-
+#
+# Copyright (C) 2023 CERN.
+#
+# ZenodoRDM is free software; you can redistribute it and/or modify
+# it under the terms of the MIT License; see LICENSE file for more details.
+
+"""Rules for moderation."""
+
 import re
 from urllib.parse import urlparse
 
 from flask import current_app
+
+from zenodo_rdm.moderation.proxies import current_domain_tree
 
 # Moderation Scores
 SPAM_LINK_SCORE = 8
@@ -12,87 +23,6 @@ SPAM_FILES_SCORE = 2
 HAM_FILES_SCORE = -5
 UNVERIFIED_USER_SCORE = 10
 VERIFIED_USER_SCORE = -10
-
-
-class DomainTree:
-    def __init__(self):
-        self.tree = {}
-        self.score = 0
-        self.initialize_links(
-            current_app.config.get("CONTENT_MODERATION_BANNED_LINKS", []), "banned"
-        )
-        self.initialize_links(
-            current_app.config.get("CONTENT_MODERATION_SAFE_LINKS", []), "safe"
-        )
-
-    def add_domain(self, domain, status):
-        """Add a domain to the tree with its status: 'banned' or 'safe'."""
-        parts = domain.strip(".").split(".")
-        current = self.tree
-        for part in parts:
-            current = current.setdefault(part, {})
-        current["status"] = status
-
-    def initialize_links(self, links, status):
-        """Helper method to add multiple links to the domain tree with a given status."""
-        for domain in links:
-            self.add_domain(domain, status)
-
-    def get_status(self, domain_parts):
-        """Retrieve the status of a domain"""
-        current = self.tree
-        for part in domain_parts:
-            if part in current:
-                current = current[part]
-                if "status" in current:
-                    return current["status"]
-            else:
-                break
-        return None
-
-    def score_links(self, metadata):
-        """Calculate the score based on the domains found in the metadata links."""
-        description_links = self.extract_links(str(metadata.get("description", "")))
-
-        if len(description_links) > 5:
-            self.score += EXCESS_LINKS_SCORE
-
-        extracted_links = self.extract_links(str(metadata))
-
-        for link in extracted_links:
-            domain_parts = self.extract_domain(link)
-            status = self.get_status(domain_parts)
-            if status == "banned":
-                self.score += SPAM_LINK_SCORE
-            elif status == "safe":
-                self.score += HAM_LINK_SCORE
-        return self.score
-
-    @staticmethod
-    def extract_links(metadata):
-        """Extract unique URLs from metadata using regex."""
-        url_pattern = re.compile(
-            r'href=["\']?([^"\'>]+)|\b(https?://[^\s\'"<>,]+|www\.[^\s\'"<>,]+)',
-        )
-
-        links = []
-        for match in url_pattern.findall(metadata):
-            for url in match:
-                if url:
-                    links.append(url)
-
-        return links
-
-    @staticmethod
-    def extract_domain(url):
-        """Extract and reverse domain parts from a given URL."""
-        pattern = r"^(?:https?://)?(?:www\.)?([^/]+)"
-        match = re.search(pattern, url)
-        if match:
-            domain = match.group(1)
-            domain_parts = domain.split(".")
-            return domain_parts[::-1]
-        return None
 
 
 # Utility Functions
@@ -114,13 +44,53 @@ def extract_emojis(text):
     return EMOJI_PATTERN.findall(text)
 
 
+def extract_links(text):
+    """Extract unique URLs from text using regex."""
+    url_pattern = re.compile(
+        r'href=["\']?([^"\'>]+)|\b(https?://[^\s\'"<>,]+|www\.[^\s\'"<>,]+)',
+    )
+
+    links = []
+    for match in url_pattern.findall(text):
+        for url in match:
+            if url:
+                links.append(url)
+
+    return links
+
+
+def extract_domain(url):
+    """Extract and reverse domain parts from a given URL."""
+    pattern = r"^(?:https?://)?(?:www\.)?([^/]+)"
+    match = re.search(pattern, url)
+    if match:
+        domain = match.group(1)
+        domain_parts = domain.split(".")
+        return domain_parts[::-1]
+    return None
+
+
 # Moderation Rule Functions
 
 
 def links_rule(identity, draft=None, record=None):
     """Calculate a moderation score based on links found in record metadata."""
-    domain_tree = DomainTree()
-    return domain_tree.score_links(record.metadata)
+    score = 0
+    description_links = extract_links(str(record.metadata.get("description", "")))
+
+    if len(description_links) > 5:
+        score += EXCESS_LINKS_SCORE
+
+    extracted_links = extract_links(str(record.metadata))
+
+    for link in extracted_links:
+        domain_parts = extract_domain(link)
+        status = current_domain_tree.get_status(domain_parts)
+        if status == "banned":
+            score += SPAM_LINK_SCORE
+        elif status == "safe":
+            score += HAM_LINK_SCORE
+    return score
 
 
 def text_sanitization_rule(identity, draft=None, record=None):
