@@ -10,6 +10,7 @@
 import re
 
 from flask import current_app
+
 from zenodo_rdm.moderation.proxies import current_domain_tree
 
 from .proxies import current_domain_tree, current_scores

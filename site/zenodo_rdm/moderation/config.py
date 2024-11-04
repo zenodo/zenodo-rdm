@@ -7,8 +7,7 @@
 
 """Moderation config."""
 
-from .rules import (files_rule, links_rule, text_sanitization_rule,
-                    verified_user_rule)
+from .rules import files_rule, links_rule, text_sanitization_rule, verified_user_rule
 
 MODERATION_BANNED_LINK_DOMAINS = []
 """Banned domains for links."""
