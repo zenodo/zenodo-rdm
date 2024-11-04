@@ -24,20 +24,40 @@ from .errors import UserBlockedException
 from .proxies import current_scores
 
 
+# TODO: This should be moved to invenio-db or invenio-records-resources
 class ExceptionOp(Operation):
+    """Operation to perform cleanup logic for exceptions.
+
+    This unit of work operation is initialied using another regular operation and maps
+    the following methods to the associated "clean-up" unit of work lifecycle methods:
+
+    - ``on_exception``: ``on_register``
+    - ``on_rollback``: ``on_commit``
+    - ``on_post_rollback``: ``on_post_commit``
+
+    Additionally, it allows to specify an action function to be executed during the
+    unit of work lifecycle if an exception is raised. This is to allow rolling back
+    any transactions up to the point of the exception, while still performing some
+    cleanup logic.
+    """
+
     def __init__(self, commit_op, action_func=None):
+        """Initialize exception operation."""
         self.action_func = action_func
         self.commit_op = commit_op
 
     def on_exception(self, uow, exception):
+        """Perform action function if exception is raised."""
         if self.action_func:
             self.action_func(uow, exception)
         self.commit_op.on_register(uow)
 
     def on_rollback(self, uow):
+        """Perform the commit operation on rollback."""
         self.commit_op.on_commit(uow)
 
     def on_post_rollback(self, uow):
+        """Perform the post commit operation on post rollback."""
         self.commit_op.on_post_commit(uow)
 
 
@@ -57,90 +77,90 @@ class BaseScoreHandler:
 
     def run(self, identity, draft=None, record=None, uow=None):
         """Calculate the moderation score for a given record or draft."""
-        score = 0
-        for rule in self.rules:
-            score += rule(identity, draft=draft, record=record)
+        try:
+            user = User.query.get(identity.id)
+            score = 0
+            for rule in self.rules:
+                score += rule(identity, draft=draft, record=record)
 
-        apply_actions = current_app.config.get("MODERATION_APPLY_ACTIONS", False)
-        user = UserAggregate.get_record(identity.id)
-        if score > current_scores.spam_threshold:
-            if apply_actions:
-                uow.register(
-                    ExceptionOp(
-                        RecordCommitOp(
-                            user,
-                            indexer=current_users_service.indexer,
-                            index_refresh=True,
-                        ),
-                        action_func=lambda *_: user.block(),
-                    )
-                )
-                uow.register(
-                    ExceptionOp(
-                        TaskOp(
-                            execute_moderation_actions,
-                            user_id=identity.id,
-                            action="block",
+            apply_actions = current_app.config.get("MODERATION_APPLY_ACTIONS", False)
+            user = UserAggregate.get_record(identity.id)
+            action_ctx = {
+                "user_id": user.id,
+                "record_pid": record.pid.pid_value,
+                "score": score,
+            }
+            if score > current_scores.spam_threshold:
+                action_ctx["action"] = "block"
+                if apply_actions:
+                    uow.register(
+                        ExceptionOp(
+                            RecordCommitOp(
+                                user,
+                                indexer=current_users_service.indexer,
+                                index_refresh=True,
+                            ),
+                            action_func=lambda *_: user.block(),
                         )
                     )
-                )
-
-                raise UserBlockedException()
-            else:
-                current_app.logger.warning(
-                    "Block moderation action triggered",
-                    extra={
-                        "action": "block_user",
-                        "record_pid": record.id,
-                        "score": score,
-                    },
-                )
-        elif score < current_scores.ham_threshold:
-            # If the user is already verified, we don't need to verify again
-            if user.verified:
-                return
-
-            if apply_actions:
-                uow.register(
-                    ExceptionOp(
-                        RecordCommitOp(
-                            user,
-                            indexer=current_users_service.indexer,
-                            index_refresh=True,
-                        ),
-                        action_func=lambda *_: user.verify(),
-                    )
-                )
-                uow.register(
-                    ExceptionOp(
-                        TaskOp(
-                            execute_moderation_actions,
-                            user_id=identity.id,
-                            action="approve",
+                    uow.register(
+                        ExceptionOp(
+                            TaskOp(
+                                execute_moderation_actions,
+                                user_id=identity.id,
+                                action="block",
+                            )
                         )
                     )
-                )
+
+                    raise UserBlockedException()
+                else:
+                    current_app.logger.error(
+                        "Block moderation action triggered",
+                        extra=action_ctx,
+                    )
+            elif score < current_scores.ham_threshold:
+                # If the user is already verified, we don't need to verify again
+                if user.verified:
+                    return
+
+                action_ctx["action"] = "verify"
+                if apply_actions:
+                    uow.register(
+                        ExceptionOp(
+                            RecordCommitOp(
+                                user,
+                                indexer=current_users_service.indexer,
+                                index_refresh=True,
+                            ),
+                            action_func=lambda *_: user.verify(),
+                        )
+                    )
+                    uow.register(
+                        ExceptionOp(
+                            TaskOp(
+                                execute_moderation_actions,
+                                user_id=identity.id,
+                                action="approve",
+                            )
+                        )
+                    )
+                else:
+                    current_app.logger.error(
+                        "Verify moderation action triggered",
+                        extra=action_ctx,
+                    )
             else:
-                current_app.logger.warning(
-                    "Verify moderation action triggered",
-                    extra={
-                        "action": "verify_user",
-                        "record_pid": record.id,
-                        "score": score,
-                    },
-                )
-        else:
-            if apply_actions:
-                uow.register(TaskOp(request_moderation, user_id=identity.id))
-            else:
-                current_app.logger.warning(
-                    "Manual moderation action triggered",
-                    extra={
-                        "action": "moderate_user",
-                        "record_pid": record.id,
-                        "score": score,
-                    },
-                )
+                action_ctx["action"] = "moderate"
+                if apply_actions:
+                    uow.register(TaskOp(request_moderation, user_id=identity.id))
+                else:
+                    current_app.logger.error(
+                        "Manual moderation action triggered",
+                        extra=action_ctx,
+                    )
+        except Exception:
+            current_app.logger.exception("Error calculating moderation score")
 
 
 class RecordScoreHandler(BaseHandler, BaseScoreHandler):
@@ -152,7 +172,7 @@ class RecordScoreHandler(BaseHandler, BaseScoreHandler):
 
     def publish(self, identity, draft=None, record=None, uow=None, **kwargs):
         """Calculate and log the score when a record is published."""
-        score = self.run(identity, record=record, uow=uow)
+        self.run(identity, record=record, uow=uow)
 
 
 class CommunityScoreHandler(community_moderation.BaseHandler, BaseScoreHandler):
@@ -164,8 +184,8 @@ class CommunityScoreHandler(community_moderation.BaseHandler, BaseScoreHandler):
 
     def update(self, identity, record=None, data=None, uow=None, **kwargs):
         """Calculate and log the score when a community is updated."""
-        score = self.run(identity, record=record, uow=uow)
+        self.run(identity, record=record, uow=uow)
 
     def create(self, identity, record=None, data=None, uow=None, **kwargs):
         """Calculate and log the score when a community is created."""
-        score = self.run(identity, record=record, uow=uow)
+        self.run(identity, record=record, uow=uow)
