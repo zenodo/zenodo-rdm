@@ -20,6 +20,7 @@ MODERATION_SCORES = {
     "ham_link": -3,
     "excess_links": 5,
     "spam_emoji": 5,
+    "spam_header_tags": 2,
     "spam_files": 2,
     "ham_files": -5,
     "unverified_user": 10,
@@ -37,7 +38,7 @@ MODERATION_MAX_SPAM_FILE_SIZE = 5_000_000  # 5MB
 MODERATION_MIN_HAM_FILE_SIZE = 15_000_000  # 15MB
 """Minimum file size for ham files."""
 
-MODERATION_SPAM_FILE_EXTS = {"jpg", "jpeg", "pdf", "png", "jfif"}
+MODERATION_SPAM_FILE_EXTS = {"jpg", "jpeg", "pdf", "png", "jfif", "docx", "webp"}
 """Frequest spam file extensions."""
 
 MODERATION_RECORD_SCORE_RULES = [
