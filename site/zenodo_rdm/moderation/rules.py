@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2023 CERN.
+# Copyright (C) 2024 CERN.
 #
 # ZenodoRDM is free software; you can redistribute it and/or modify
 # it under the terms of the MIT License; see LICENSE file for more details.
@@ -8,39 +8,31 @@
 """Rules for moderation."""
 
 import re
-from urllib.parse import urlparse
 
 from flask import current_app
 
 from zenodo_rdm.moderation.proxies import current_domain_tree
 
-# Moderation Scores
-SPAM_LINK_SCORE = 8
-HAM_LINK_SCORE = -3
-EXCESS_LINKS_SCORE = 5
-SPAM_EMOJI_SCORE = 5
-SPAM_FILES_SCORE = 2
-HAM_FILES_SCORE = -5
-UNVERIFIED_USER_SCORE = 10
-VERIFIED_USER_SCORE = -10
+from .proxies import current_domain_tree, current_scores
 
-
-# Utility Functions
+#
+# Utilities
+#
+EMOJI_PATTERN = re.compile(
+    "["
+    "\U0001f600-\U0001f64f"  # Emoticons
+    "\U0001f300-\U0001f5ff"  # Symbols & Pictographs
+    "\U0001f680-\U0001f6ff"  # Transport & Map Symbols
+    "\U0001f1e0-\U0001f1ff"  # Flags (iOS)
+    "\U00002700-\U000027bf"  # Dingbats
+    "\U000024c2-\U0001f251"  # Enclosed characters
+    "]+",
+    flags=re.UNICODE,
+)
 
 
 def extract_emojis(text):
     """Extract all emojis from text using a regex pattern."""
-    EMOJI_PATTERN = re.compile(
-        "["
-        "\U0001F600-\U0001F64F"  # Emoticons
-        "\U0001F300-\U0001F5FF"  # Symbols & Pictographs
-        "\U0001F680-\U0001F6FF"  # Transport & Map Symbols
-        "\U0001F1E0-\U0001F1FF"  # Flags (iOS)
-        "\U00002700-\U000027BF"  # Dingbats
-        "\U000024C2-\U0001F251"  # Enclosed characters
-        "]+",
-        flags=re.UNICODE,
-    )
     return EMOJI_PATTERN.findall(text)
 
 
@@ -59,44 +51,32 @@ def extract_links(text):
     return links
 
 
-def extract_domain(url):
-    """Extract and reverse domain parts from a given URL."""
-    pattern = r"^(?:https?://)?(?:www\.)?([^/]+)"
-    match = re.search(pattern, url)
-    if match:
-        domain = match.group(1)
-        domain_parts = domain.split(".")
-        return domain_parts[::-1]
-    return None
-
-
-# Moderation Rule Functions
-
-
+#
+# Rules
+#
 def links_rule(identity, draft=None, record=None):
     """Calculate a moderation score based on links found in record metadata."""
     score = 0
     description_links = extract_links(str(record.metadata.get("description", "")))
 
     if len(description_links) > 5:
-        score += EXCESS_LINKS_SCORE
+        score += current_scores.excess_links
 
     extracted_links = extract_links(str(record.metadata))
 
     for link in extracted_links:
-        domain_parts = extract_domain(link)
-        status = current_domain_tree.get_status(domain_parts)
+        status = current_domain_tree.get_status(link)
         if status == "banned":
-            score += SPAM_LINK_SCORE
+            score += current_scores.spam_link
         elif status == "safe":
-            score += HAM_LINK_SCORE
+            score += current_scores.ham_link
     return score
 
 
 def text_sanitization_rule(identity, draft=None, record=None):
     """Calculate a score for excessive emoji usage in metadata text."""
     record_text = " ".join(map(str, record.metadata.values()))
-    return SPAM_EMOJI_SCORE if len(extract_emojis(record_text)) > 3 else 0
+    return current_scores.spam_emoji if len(extract_emojis(record_text)) > 3 else 0
 
 
 def verified_user_rule(identity, draft=None, record=None):
@@ -106,25 +86,32 @@ def verified_user_rule(identity, draft=None, record=None):
         if hasattr(record, "parent")
         else getattr(record, "is_verified", False)
     )
-    return UNVERIFIED_USER_SCORE if not is_verified else VERIFIED_USER_SCORE
+    return (
+        current_scores.unverified_user
+        if not is_verified
+        else current_scores.verified_user
+    )
 
 
 def files_rule(identity, draft=None, record=None):
     """Calculate score based on the number, size, and type of files associated with the record."""
     score = 0
+
     files_count = record.files.count
-    file_size_threshold = current_app.config.get("RDM_CONTENT_MODERATION_FILE_SIZE")
     data_size = record.files.total_bytes
     exts = {filename.split(".")[-1].lower() for filename in record.files.entries.keys()}
 
+    max_spam_file_size = current_app.config.get("MODERATION_MAX_SPAM_FILE_SIZE")
+    min_ham_file_size = current_app.config.get("MODERATION_MIN_HAM_FILE_SIZE")
+    spam_exts = len(exts.intersection(current_app.config.get("MODERATION_SPAM_FILE_EXTS")))
     if (
-        files_count == 1
-        and data_size < file_size_threshold
-        and len(exts.intersection(current_app.config.get("SPAM_FILE_EXTS"))) > 0
+        files_count <= 4
+        and data_size < max_spam_file_size
+        and spam_exts > 0
     ):
-        score += SPAM_FILES_SCORE
+        score += current_scores.spam_files
 
-    if files_count > 3 or data_size > file_size_threshold:
-        score += HAM_FILES_SCORE
+    if files_count > 4 or data_size > min_ham_file_size:
+        score += current_scores.ham_files
 
     return score
