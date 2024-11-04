@@ -9,12 +9,6 @@
 
 from .rules import files_rule, links_rule, text_sanitization_rule, verified_user_rule
 
-MODERATION_BANNED_LINK_DOMAINS = []
-"""Banned domains for links."""
-
-MODERATION_SAFE_LINK_DOMAINS = []
-"""Safe domains for links."""
-
 MODERATION_SCORES = {
     "spam_link": 8,
     "ham_link": -3,

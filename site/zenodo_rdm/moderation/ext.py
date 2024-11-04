@@ -13,7 +13,6 @@ from flask import current_app
 from werkzeug.utils import cached_property
 
 from . import config
-from .domains import DomainTree
 
 
 class ZenodoModeration:
@@ -35,18 +34,6 @@ class ZenodoModeration:
         """Flask application initialization."""
         self.init_config(app)
         app.extensions["zenodo-moderation"] = self
-
-    @cached_property
-    def domain_tree(self):
-        """Initialize and return the DomainTree instance with config-based links."""
-        domain_tree = DomainTree()
-        domain_tree.initialize_links(
-            current_app.config.get("MODERATION_BANNED_LINK_DOMAINS", []), "banned"
-        )
-        domain_tree.initialize_links(
-            current_app.config.get("MODERATION_SAFE_LINK_DOMAINS", []), "safe"
-        )
-        return domain_tree
 
     @cached_property
     def scores(self):
