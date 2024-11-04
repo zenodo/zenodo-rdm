@@ -74,9 +74,18 @@ def links_rule(identity, draft=None, record=None):
 
 
 def text_sanitization_rule(identity, draft=None, record=None):
-    """Calculate a score for excessive emoji usage in metadata text."""
+    """Calculate a score based on excessive emoji and HTML tag usage in metadata text."""
     record_text = " ".join(map(str, record.metadata.values()))
-    return current_scores.spam_emoji if len(extract_emojis(record_text)) > 3 else 0
+    htag_count = len(re.findall(r"<h[1-9]\b[^>]*>", record_text, re.IGNORECASE))
+    score = 0
+
+    if len(extract_emojis(record_text)) > 3:
+        score += current_scores.spam_emoji
+
+    if htag_count > 4:
+        score += current_scores.spam_header_tags
+
+    return score
 
 
 def verified_user_rule(identity, draft=None, record=None):
@@ -106,6 +115,7 @@ def files_rule(identity, draft=None, record=None):
     spam_exts = len(
         exts.intersection(current_app.config.get("MODERATION_SPAM_FILE_EXTS"))
     )
+
     if files_count <= 4 and data_size < max_spam_file_size and spam_exts > 0:
         score += current_scores.spam_files
 
