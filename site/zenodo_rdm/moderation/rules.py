@@ -11,9 +11,8 @@ import re
 
 from flask import current_app
 
-from zenodo_rdm.moderation.proxies import current_domain_tree
-
-from .proxies import current_domain_tree, current_scores
+from .models import LinkDomain, LinkDomainStatus
+from .proxies import current_scores
 
 #
 # Utilities
@@ -65,11 +64,19 @@ def links_rule(identity, draft=None, record=None):
     extracted_links = extract_links(str(record.metadata))
 
     for link in extracted_links:
-        status = current_domain_tree.get_status(link)
-        if status == "banned":
-            score += current_scores.spam_link
-        elif status == "safe":
-            score += current_scores.ham_link
+        domain = LinkDomain.lookup_domain(link)
+        if domain is None:
+            continue
+        if domain.status == LinkDomainStatus.BANNED:
+            if domain.score is not None:
+                score += domain.score
+            else:
+                score += current_scores.spam_link
+        elif domain == LinkDomainStatus.SAFE:
+            if domain.score is not None:
+                score += domain.score
+            else:
+                score += current_scores.ham_link
     return score
 
 
