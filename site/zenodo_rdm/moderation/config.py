@@ -16,6 +16,7 @@ MODERATION_SAFE_LINK_DOMAINS = []
 """Safe domains for links."""
 
 MODERATION_SCORES = {
+    "spam_link": 8,
     "ham_link": -3,
     "excess_links": 5,
     "spam_emoji": 5,
