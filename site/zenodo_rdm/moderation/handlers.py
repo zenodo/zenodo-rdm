@@ -13,12 +13,12 @@ from invenio_access.permissions import system_identity
 from invenio_accounts.models import User
 from invenio_db.uow import Operation
 from invenio_rdm_records.services.components.verified import BaseHandler
-from invenio_users_resources.records.api import UserAggregate
-from invenio_users_resources.proxies import current_users_service
-from invenio_users_resources.services.users.tasks import execute_moderation_actions
-from invenio_records_resources.services.uow import TaskOp, RecordCommitOp
+from invenio_records_resources.services.uow import RecordCommitOp, TaskOp
 from invenio_requests.tasks import request_moderation
-
+from invenio_users_resources.proxies import current_users_service
+from invenio_users_resources.records.api import UserAggregate
+from invenio_users_resources.services.users.tasks import \
+    execute_moderation_actions
 
 from .proxies import current_scores
 
@@ -59,12 +59,22 @@ class BaseScoreHandler:
             if apply_actions:
                 uow.register(
                     ExceptionOp(
-                        RecordCommitOp(user, indexer=current_users_service.indexer, index_refresh=True),
+                        RecordCommitOp(
+                            user,
+                            indexer=current_users_service.indexer,
+                            index_refresh=True,
+                        ),
                         action_func=lambda *_: user.block(),
                     )
                 )
                 uow.register(
-                    ExceptionOp(TaskOp(execute_moderation_actions, user_id=identity.id, action="block"))
+                    ExceptionOp(
+                        TaskOp(
+                            execute_moderation_actions,
+                            user_id=identity.id,
+                            action="block",
+                        )
+                    )
                 )
             else:
                 current_app.logger.warning(
@@ -79,12 +89,22 @@ class BaseScoreHandler:
             if apply_actions:
                 uow.register(
                     ExceptionOp(
-                        RecordCommitOp(user, indexer=current_users_service.indexer, index_refresh=True),
+                        RecordCommitOp(
+                            user,
+                            indexer=current_users_service.indexer,
+                            index_refresh=True,
+                        ),
                         action_func=lambda *_: user.verify(),
                     )
                 )
                 uow.register(
-                    ExceptionOp(TaskOp(execute_moderation_actions, user_id=identity.id, action="approve"))
+                    ExceptionOp(
+                        TaskOp(
+                            execute_moderation_actions,
+                            user_id=identity.id,
+                            action="approve",
+                        )
+                    )
                 )
             else:
                 current_app.logger.warning(

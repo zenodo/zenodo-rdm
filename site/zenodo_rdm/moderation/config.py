@@ -7,7 +7,8 @@
 
 """Moderation config."""
 
-from .rules import links_rule, verified_user_rule, files_rule, text_sanitization_rule
+from .rules import (files_rule, links_rule, text_sanitization_rule,
+                    verified_user_rule)
 
 MODERATION_BANNED_LINK_DOMAINS = []
 """Banned domains for links."""
@@ -36,14 +37,14 @@ MODERATION_MAX_SPAM_FILE_SIZE = 5_000_000  # 5MB
 MODERATION_MIN_HAM_FILE_SIZE = 15_000_000  # 15MB
 """Minimum file size for ham files."""
 
-MODERATION_SPAM_FILE_EXTS = {'jpg', 'jpeg', 'pdf', 'png', 'jfif'}
+MODERATION_SPAM_FILE_EXTS = {"jpg", "jpeg", "pdf", "png", "jfif"}
 """Frequest spam file extensions."""
 
 MODERATION_RECORD_SCORE_RULES = [
     verified_user_rule,
     links_rule,
     files_rule,
-    text_sanitization_rule
+    text_sanitization_rule,
 ]
 """Scoring rules for record moderation."""
 

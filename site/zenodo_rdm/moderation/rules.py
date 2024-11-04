@@ -10,7 +10,6 @@
 import re
 
 from flask import current_app
-
 from zenodo_rdm.moderation.proxies import current_domain_tree
 
 from .proxies import current_domain_tree, current_scores
@@ -103,12 +102,10 @@ def files_rule(identity, draft=None, record=None):
 
     max_spam_file_size = current_app.config.get("MODERATION_MAX_SPAM_FILE_SIZE")
     min_ham_file_size = current_app.config.get("MODERATION_MIN_HAM_FILE_SIZE")
-    spam_exts = len(exts.intersection(current_app.config.get("MODERATION_SPAM_FILE_EXTS")))
-    if (
-        files_count <= 4
-        and data_size < max_spam_file_size
-        and spam_exts > 0
-    ):
+    spam_exts = len(
+        exts.intersection(current_app.config.get("MODERATION_SPAM_FILE_EXTS"))
+    )
+    if files_count <= 4 and data_size < max_spam_file_size and spam_exts > 0:
         score += current_scores.spam_files
 
     if files_count > 4 or data_size > min_ham_file_size:
