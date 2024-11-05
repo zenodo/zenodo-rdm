@@ -87,7 +87,7 @@ class BaseScoreHandler:
             if identity == system_identity:
                 # Use the owner of the record as the user for moderation actions
                 if isinstance(record, records_service.record_cls):
-                    user_id = record.parent.access.owned_by.user
+                    user_id = record.parent.access.owned_by.owner_id
             else:
                 user_id = identity.id
             if user_id is None:
