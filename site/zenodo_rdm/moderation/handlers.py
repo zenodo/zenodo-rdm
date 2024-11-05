@@ -10,8 +10,8 @@
 import invenio_rdm_records.services.communities.moderation as community_moderation
 from flask import current_app
 from invenio_access.permissions import system_identity
-from invenio_accounts.models import User
 from invenio_db.uow import Operation
+from invenio_rdm_records.proxies import current_rdm_records_service as records_service
 from invenio_rdm_records.services.components.verified import BaseHandler
 from invenio_records_resources.services.uow import RecordCommitOp, TaskOp
 from invenio_requests.tasks import request_moderation
@@ -78,18 +78,31 @@ class BaseScoreHandler:
     def run(self, identity, draft=None, record=None, uow=None):
         """Calculate the moderation score for a given record or draft."""
         try:
-            user = User.query.get(identity.id)
             score = 0
             for rule in self.rules:
                 score += rule(identity, draft=draft, record=record)
 
-            apply_actions = current_app.config.get("MODERATION_APPLY_ACTIONS", False)
-            user = UserAggregate.get_record(identity.id)
+            # TODO: Move to caller handler method (i.e. publish, create, update, etc.)
+            user_id = None
+            if identity == system_identity:
+                # Use the owner of the record as the user for moderation actions
+                if isinstance(record, records_service.record_cls):
+                    user_id = record.parent.access.owned_by.user
+            else:
+                user_id = identity.id
+            if user_id is None:
+                current_app.logger.error(
+                    "No user found for moderation action", stack_info=True
+                )
+                return
+
+            user = UserAggregate.get_record(user_id)
             action_ctx = {
-                "user_id": user.id,
+                "user_id": user_id,
                 "record_pid": record.pid.pid_value,
                 "score": score,
             }
+            apply_actions = current_app.config.get("MODERATION_APPLY_ACTIONS", False)
             if score > current_scores.spam_threshold:
                 action_ctx["action"] = "block"
                 if apply_actions:
