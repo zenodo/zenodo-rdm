@@ -41,6 +41,10 @@ MODERATION_MIN_HAM_FILE_SIZE = 15_000_000  # 15MB
 MODERATION_SPAM_FILE_EXTS = {"jpg", "jpeg", "pdf", "png", "jfif", "docx", "webp"}
 """Frequest spam file extensions."""
 
+# TODO: This should be moved to a table (or stored in the User model?)
+MODERATION_EXEMPT_USERS = []
+"""List of users exempt from moderation."""
+
 MODERATION_RECORD_SCORE_RULES = [
     verified_user_rule,
     links_rule,
