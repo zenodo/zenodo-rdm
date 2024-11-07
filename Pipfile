@@ -24,6 +24,8 @@ uwsgi = ">=2.0"
 uwsgitop = ">=0.11"
 uwsgi-tools = ">=1.1.1"
 pyvips = ">=2.2.2,<3.0.0"
+# TODO: Remove once all packages are compatible with wtforms 3.2+
+wtforms = "<3.0.0"
 
 [requires]
 python_version = "3.9"
