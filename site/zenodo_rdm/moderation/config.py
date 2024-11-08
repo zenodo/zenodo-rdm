@@ -7,7 +7,13 @@
 
 """Moderation config."""
 
-from .rules import files_rule, links_rule, text_sanitization_rule, verified_user_rule
+from .rules import (
+    files_rule,
+    links_rule,
+    match_query_rule,
+    text_sanitization_rule,
+    verified_user_rule,
+)
 
 MODERATION_SCORES = {
     "spam_link": 8,
@@ -40,6 +46,7 @@ MODERATION_RECORD_SCORE_RULES = [
     links_rule,
     files_rule,
     text_sanitization_rule,
+    match_query_rule,
 ]
 """Scoring rules for record moderation."""
 
@@ -47,5 +54,19 @@ MODERATION_COMMUNITY_SCORE_RULES = [
     links_rule,
     text_sanitization_rule,
     verified_user_rule,
+    match_query_rule,
 ]
 """Scoring rules for communtiy moderation."""
+
+MODERATION_PERCOLATOR_INDEX_PREFIX = "moderation-queries"
+"""Index Prefix for percolator index."""
+
+MODERATION_PERCOLATOR_MAPPING = {
+    "properties": {
+        "query": {"type": "percolator"},
+        "score": {"type": "integer"},
+        "notes": {"type": "text"},
+        "active": {"type": "boolean"},
+    }
+}
+"""Properties for moderation percolator index."""
