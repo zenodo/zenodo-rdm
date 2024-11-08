@@ -8,10 +8,9 @@
 """Test ModerationQuery model class."""
 
 from invenio_db import db
-from invenio_search import current_search_client
+
 from zenodo_rdm.moderation.models import ModerationQuery
-from zenodo_rdm.moderation.rules import match_query_rule
-from zenodo_rdm.api import ZenodoRDMRecord
+
 
 def test_moderation_query_creation(app):
     """Test to create and index a ModerationQuery."""
@@ -22,7 +21,10 @@ def test_moderation_query_creation(app):
         active = True
 
         query = ModerationQuery.create(
-            query_string, ZenodoRDMRecord, notes=notes, score=score, active=active
+            query_string,
+            notes=notes,
+            score=score,
+            active=active,
         )
         db.session.commit()
 
@@ -36,4 +38,5 @@ def test_moderation_query_creation(app):
             ]
         )
 
-#TODO: Add test for matching query
+
+# TODO: Add test for matching query
