@@ -10,14 +10,8 @@
 import enum
 from urllib.parse import urlparse
 
-from flask import current_app
 from invenio_db import db
-from invenio_search import current_search_client
 from sqlalchemy_utils import ChoiceType, Timestamp
-
-from zenodo_rdm.api import ZenodoRDMRecord
-
-from .percolator import index_percolate_query
 
 
 class LinkDomainStatus(enum.Enum):
@@ -86,7 +80,7 @@ class ModerationQuery(db.Model):
 
     __tablename__ = "moderation_queries"
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column(db.Integer, primary_key=True)
     """Primary key identifier for the moderation query."""
 
     score = db.Column(db.Integer, default=0)
@@ -102,14 +96,10 @@ class ModerationQuery(db.Model):
     """Indicates whether the moderation query is currently active."""
 
     @classmethod
-    def create(
-        cls, query_string, record_cls=ZenodoRDMRecord, notes=None, score=0, active=True
-    ):
+    def create(cls, query_string, notes=None, score=0, active=True):
         """Create a new moderation query with a configurable record class."""
         query = cls(query_string=query_string, notes=notes, score=score, active=active)
         db.session.add(query)
-
-        index_percolate_query(record_cls, query_string, active, score, notes)
 
         return query
 
@@ -118,10 +108,7 @@ class ModerationQuery(db.Model):
         """Retrieve a moderation query by ID or return all queries if no ID is provided."""
         if query_id is not None:
             return cls.query.filter_by(id=query_id).one_or_none()
-        return cls.query.all()
 
     def __repr__(self):
         """Get a string representation of the moderation query."""
-        return (
-            f"<ModerationQuery id={self.id}, score={self.score}, active={self.active}>"
-        )
+        return f"<ModerationQuery id={self.id}, query_string={self.query_string}, score={self.score}, active={self.active}>"

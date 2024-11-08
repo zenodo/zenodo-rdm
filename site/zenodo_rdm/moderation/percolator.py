@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio.
-# Copyright (C) 2017-2024 CERN.
-# Copyright (C) 2022 Graz University of Technology.
+# Copyright (C) 2024 CERN.
 #
 # Invenio is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -74,12 +73,15 @@ def create_percolator_index(record_cls):
             current_app.logger.exception(e)
 
 
-def index_percolate_query(record_cls, query_string, active=True, score=1, notes=None):
+def index_percolate_query(
+    record_cls, query_id, query_string, active=True, score=1, notes=None
+):
     """Index a percolate query."""
     try:
         current_search_client.index(
             index=get_percolator_index(record_cls),
             body={
+                "id": query_id,
                 "query": {"query_string": {"query": query_string}},
                 "active": active,
                 "score": score,

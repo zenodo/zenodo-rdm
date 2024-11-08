@@ -6,6 +6,9 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 """Zenodo RDM cli commands."""
 
+import csv
+import os
+
 import click
 from flask.cli import with_appcontext
 from invenio_access.permissions import system_identity
@@ -27,9 +30,11 @@ from invenio_requests.records.api import Request
 from invenio_requests.records.models import RequestMetadata
 
 from zenodo_rdm.api import ZenodoRDMRecord
+from zenodo_rdm.moderation.models import ModerationQuery
 from zenodo_rdm.moderation.percolator import (
     create_percolator_index,
     get_percolator_index,
+    index_percolate_query,
 )
 
 
@@ -279,3 +284,89 @@ def create_index(record_cls):
         click.secho(f"Percolator index '{index_name}' created successfully.")
     except Exception as e:
         click.secho(f"Error creating percolator index: {e}")
+
+
+@moderation.command("add-query")
+@click.option(
+    "-r",
+    "--record-cls",
+    type=click.Choice(["records", "communities"], case_sensitive=False),
+    default="records",
+    help="Record class to base the query on (default: records).",
+)
+@click.option(
+    "-q",
+    "--query-string",
+    help="The query string for the moderation query (optional if loading from CSV).",
+)
+@click.option(
+    "-n",
+    "--notes",
+    default="Example note",
+    help="Additional notes for the moderation query (optional if loading from CSV).",
+)
+@click.option(
+    "-s",
+    "--score",
+    default=10,
+    type=int,
+    help="The score for the moderation query (optional if loading from CSV).",
+)
+@click.option(
+    "-a",
+    "--active",
+    default=True,
+    type=bool,
+    help="Whether the query is active (optional if loading from CSV).",
+)
+@click.option(
+    "-f",
+    "--file",
+    type=click.Path(exists=True, readable=True),
+    help="Path to CSV file containing queries.",
+)
+@with_appcontext
+def add_query(record_cls, query_string, notes, score, active, file):
+    """Command to add a moderation query from CSV or directly and index it."""
+    record_cls = ZenodoRDMRecord if record_cls == "records" else Community
+
+    try:
+        if file:
+            add_queries_from_csv(file, record_cls)
+        else:
+            create_and_index_query(record_cls, query_string, notes, score, active)
+
+        click.secho("Queries added and indexed successfully.")
+    except Exception as e:
+        click.secho(f"Error adding or indexing query: {e}")
+
+
+def add_queries_from_csv(file_path, record_cls=ZenodoRDMRecord):
+    """Load queries from a CSV file, add them to the database, and index them."""
+    with open(file_path, mode="r", newline="", encoding="utf-8") as csvfile:
+        csvreader = csv.reader(csvfile)
+
+        for row in csvreader:
+            if row:
+                query_string = row[0].strip().strip("'")
+                notes = row[1].strip().strip("'") if len(row) > 1 else None
+                score = int(row[2].strip()) if len(row) > 2 else 10  # Default score 10
+                active = (
+                    row[3].strip().lower() == "true" if len(row) > 3 else True
+                )  # Default to True
+
+                # Ensure to add query only if there's a query string
+                if query_string:
+                    create_and_index_query(
+                        record_cls, query_string, notes, score, active
+                    )
+
+
+def create_and_index_query(record_cls, query_string, notes, score, active):
+    """Create and index a single moderation query."""
+    query = ModerationQuery.create(
+        query_string=query_string, notes=notes, score=score, active=active
+    )
+
+    db.session.commit()
+    index_percolate_query(record_cls, query.id, query_string, active, score, notes)
