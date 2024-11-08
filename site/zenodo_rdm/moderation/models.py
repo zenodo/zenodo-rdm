@@ -25,7 +25,7 @@ class LinkDomainStatus(enum.Enum):
 class LinkDomain(db.Model, Timestamp):
     """Link domain model."""
 
-    __tablename__ = "link_domains"
+    __tablename__ = "moderation_link_domains"
 
     id = db.Column(db.Integer, primary_key=True)
 
