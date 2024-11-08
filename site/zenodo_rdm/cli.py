@@ -9,6 +9,7 @@
 import click
 from flask.cli import with_appcontext
 from invenio_access.permissions import system_identity
+from invenio_communities.communities.records.api import Community
 from invenio_db import db
 from invenio_pidstore.models import PersistentIdentifier
 from invenio_rdm_records.proxies import current_rdm_records_service
@@ -24,6 +25,12 @@ from invenio_rdm_records.records.models import (
 from invenio_requests.proxies import current_requests_service
 from invenio_requests.records.api import Request
 from invenio_requests.records.models import RequestMetadata
+
+from zenodo_rdm.api import ZenodoRDMRecord
+from zenodo_rdm.moderation.percolator import (
+    create_percolator_index,
+    get_percolator_index,
+)
 
 
 def _get_parent(record_model):
@@ -246,3 +253,29 @@ def delete_record(recid):
 
     for req in requests:
         current_requests_service.indexer.delete(req)
+
+
+@click.group()
+def moderation():
+    """Moderation commands."""
+
+
+@moderation.command("create-queries-index")
+@click.option(
+    "-r",
+    "--record-cls",
+    type=click.Choice(["records", "communities"], case_sensitive=False),
+    default="records",
+    help="Record class to base the index on (default: records).",
+)
+@with_appcontext
+def create_index(record_cls):
+    """Command to create a percolator index for moderation queries."""
+    record_cls = ZenodoRDMRecord if record_cls == "records" else Community
+
+    try:
+        create_percolator_index(record_cls)
+        index_name = get_percolator_index(record_cls)
+        click.secho(f"Percolator index '{index_name}' created successfully.")
+    except Exception as e:
+        click.secho(f"Error creating percolator index: {e}")

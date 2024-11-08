@@ -10,8 +10,11 @@
 import re
 
 from flask import current_app
+from invenio_search import current_search_client
+from invenio_search.utils import build_alias_name
 
 from .models import LinkDomain, LinkDomainStatus
+from .percolator import get_percolator_index
 from .proxies import current_scores
 
 #
@@ -129,4 +132,31 @@ def files_rule(identity, draft=None, record=None):
     if files_count > 4 or data_size > min_ham_file_size:
         score += current_scores.ham_files
 
+    return score
+
+
+def match_query_rule(identity, draft=None, record=None):
+    """Calculate a score based on matched percolate queries against the given document in the specified index."""
+    document = record.dumps()
+    percolator_index = get_percolator_index(record)
+    if percolator_index:
+        matched_queries = current_search_client.search(
+            index=percolator_index,
+            body={
+                "query": {
+                    "bool": {
+                        "must": [
+                            {"term": {"active": True}},
+                            {"percolate": {"field": "query", "document": document}},
+                        ]
+                    }
+                }
+            },
+        )
+
+    score = 0
+
+    for hit in matched_queries["hits"]["hits"]:
+        query_score = hit["_source"].get("score", 0)
+        score += query_score
     return score
