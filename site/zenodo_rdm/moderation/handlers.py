@@ -44,7 +44,7 @@ from .tasks import run_moderation_handlers, update_moderation_request
 from .uow import ExceptionOp
 
 
-class BaseScoreHandler:
+class BaseModerationHandler:
     """Base handler to calculate moderation scores based on rules."""
 
     def __init__(self, rules=None):
@@ -56,7 +56,11 @@ class BaseScoreHandler:
         """Get scoring rules."""
         if isinstance(self._rules, str):
             return current_app.config[self._rules]
-        return self._rules or []
+        return self._rules or {}
+
+    def evaluate_result(self, params):
+        """Evaluate aggregate result based on params."""
+        return sum(params.values())
 
     @property
     def should_apply_actions(self):
@@ -77,17 +81,20 @@ class BaseScoreHandler:
                 )
                 return
 
-            score = 0
-            for rule in self.rules:
-                score += rule(identity, draft=draft, record=record)
+            results = {}
+            for name, rule in self.rules.items():
+                results[name] = rule(identity, draft=draft, record=record)
 
+            evaluation = self.evaluate_result(results)
             action_ctx = {
                 "user_id": user.id,
                 "record_pid": record.pid.pid_value,
-                "score": score,
+                "results": results,
+                "evaluation": evaluation,
             }
             current_app.logger.debug("Moderation score calculated", extra=action_ctx)
-            if score > current_scores.spam_threshold:
+
+            if evaluation > current_scores.spam_threshold:
                 action_ctx["action"] = "block"
                 if self.should_apply_actions:
                     # If user is verified, we need to (re)open the moderation
@@ -102,9 +109,11 @@ class BaseScoreHandler:
                         "Block moderation action triggered",
                         extra=action_ctx,
                     )
-            elif score < current_scores.ham_threshold:
+
+            elif evaluation < current_scores.ham_threshold:
                 action_ctx["action"] = "approve"
 
+                # If the user is already verified, we don't need to verify again
                 if user.verified:
                     current_app.logger.debug(
                         "User is verified, skipping moderation actions",
@@ -187,7 +196,7 @@ class BaseScoreHandler:
         raise UserBlockedException()
 
 
-class RecordScoreHandler(BaseHandler, BaseScoreHandler):
+class RecordModerationHandler(BaseHandler, BaseModerationHandler):
     """Handler for calculating scores for records."""
 
     def __init__(self):
@@ -222,7 +231,9 @@ class RecordScoreHandler(BaseHandler, BaseScoreHandler):
         self.run(identity, record=record, user=user, uow=uow)
 
 
-class CommunityScoreHandler(community_moderation.BaseHandler, BaseScoreHandler):
+class CommunityModerationHandler(
+    community_moderation.BaseHandler, BaseModerationHandler
+):
     """Handler for calculating scores for communities."""
 
     def __init__(self):
