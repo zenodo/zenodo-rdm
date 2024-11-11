@@ -45,21 +45,21 @@ MODERATION_SPAM_FILE_EXTS = {"jpg", "jpeg", "pdf", "png", "jfif", "docx", "webp"
 MODERATION_EXEMPT_USERS = []
 """List of users exempt from moderation."""
 
-MODERATION_RECORD_SCORE_RULES = [
-    verified_user_rule,
-    links_rule,
-    files_rule,
-    text_sanitization_rule,
-    match_query_rule,
-]
+MODERATION_RECORD_SCORE_RULES = {
+    "verified_user_rule": verified_user_rule,
+    "links_rule": links_rule,
+    "files_rule": files_rule,
+    "text_sanitization_rule": text_sanitization_rule,
+    "match_query_rule": match_query_rule,
+}
 """Scoring rules for record moderation."""
 
-MODERATION_COMMUNITY_SCORE_RULES = [
-    links_rule,
-    text_sanitization_rule,
-    verified_user_rule,
-    match_query_rule,
-]
+MODERATION_COMMUNITY_SCORE_RULES = {
+    "links_rule": links_rule,
+    "text_sanitization_rule": text_sanitization_rule,
+    "verified_user_rule": verified_user_rule,
+    "match_query_rule": match_query_rule,
+}
 """Scoring rules for communtiy moderation."""
 
 MODERATION_PERCOLATOR_INDEX_PREFIX = "moderation-queries"
