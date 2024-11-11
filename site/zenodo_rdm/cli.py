@@ -29,7 +29,7 @@ from invenio_requests.records.api import Request
 from invenio_requests.records.models import RequestMetadata
 
 from zenodo_rdm.api import ZenodoRDMRecord
-from zenodo_rdm.moderation.models import ModerationQuery
+from zenodo_rdm.moderation.models import LinkDomain, LinkDomainStatus, ModerationQuery
 from zenodo_rdm.moderation.percolator import (
     create_percolator_index,
     get_percolator_index,
@@ -264,7 +264,7 @@ def moderation_cli():
     """Moderation commands."""
 
 
-@moderation_cli.group()
+@moderation_cli.group("queries")
 def queries_cli():
     """Moderation queries commands."""
 
@@ -333,18 +333,14 @@ def add_query(record_cls, query_string, notes, score, active, file):
     """Command to add a moderation query from CSV or directly and index it."""
     record_cls = ZenodoRDMRecord if record_cls == "records" else Community
 
-    try:
-        if file:
-            add_queries_from_csv(file, record_cls)
-        else:
-            create_and_index_query(record_cls, query_string, notes, score, active)
-
-        click.secho("Queries added and indexed successfully.")
-    except Exception as e:
-        click.secho(f"Error adding or indexing query: {e}")
+    if file:
+        _add_queries_from_csv(file, record_cls)
+    else:
+        _create_and_index_query(record_cls, query_string, notes, score, active)
+    click.secho("Queries added and indexed successfully.", fg="green")
 
 
-def add_queries_from_csv(file_path, record_cls=ZenodoRDMRecord):
+def _add_queries_from_csv(file_path, record_cls=ZenodoRDMRecord):
     """Load queries from a CSV file, add them to the database, and index them."""
     with open(file_path, mode="r", newline="", encoding="utf-8") as csvfile:
         csvreader = csv.reader(csvfile)
@@ -360,12 +356,12 @@ def add_queries_from_csv(file_path, record_cls=ZenodoRDMRecord):
 
                 # Ensure to add query only if there's a query string
                 if query_string:
-                    create_and_index_query(
+                    _create_and_index_query(
                         record_cls, query_string, notes, score, active
                     )
 
 
-def create_and_index_query(record_cls, query_string, notes, score, active):
+def _create_and_index_query(record_cls, query_string, notes, score, active):
     """Create and index a single moderation query."""
     query = ModerationQuery.create(
         query_string=query_string, notes=notes, score=score, active=active
@@ -373,3 +369,54 @@ def create_and_index_query(record_cls, query_string, notes, score, active):
 
     db.session.commit()
     index_percolate_query(record_cls, query.id, query_string, active, score, notes)
+
+
+@moderation_cli.group("domains")
+def domains_cli():
+    """Moderation domains commands."""
+
+
+@domains_cli.command("add")
+@click.option("-d", "--domain", required=True, help="The domain to add.")
+@click.option("-n", "--notes", help="Additional notes for the domain.")
+@click.option(
+    "-s",
+    "--status",
+    type=click.Choice(["banned", "safe"], case_sensitive=False),
+    help="The status for the domain.",
+    default="banned",
+)
+@click.option("--score", type=int, help="The score for the domain.")
+@click.option(
+    "-f",
+    "--file",
+    type=click.Path(exists=True, readable=True),
+    help="Path to CSV file containing queries.",
+)
+@with_appcontext
+def add_domain(domain, notes, status, score, file):
+    """Command to add a moderated links domain."""
+    if file:
+        _add_domains_from_csv(file)
+    else:
+        _create_domain(domain, notes, score, status)
+
+
+def _create_domain(domain, notes, score, status):
+    """Create a moderated links domain."""
+    status = LinkDomainStatus.BANNED if status == "banned" else LinkDomainStatus.SAFE
+    domain = LinkDomain.create(domain, status, score, notes)
+    db.session.commit()
+    click.secho(f"Domain {domain} added successfully.", fg="green")
+
+
+def _add_domains_from_csv(file_path):
+    """Load domains from a CSV file, add them to the database."""
+    with open(file_path, mode="r", encoding="utf-8") as csvfile:
+        reader = csv.DictReader(csvfile)
+        for entry in reader:
+            domain = entry["domain"].strip()
+            notes = entry.get("notes", None)
+            score = entry.get("score") or None
+            status = entry.get("status", "banned")
+            _create_domain(domain, notes, score, status)

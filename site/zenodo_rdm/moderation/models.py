@@ -74,6 +74,10 @@ class LinkDomain(db.Model, Timestamp):
             .scalar()
         )
 
+    def __repr__(self):
+        """Get a string representation of the link domain."""
+        return f"<LinkDomain {self.domain} ({self.status})>"
+
 
 class ModerationQuery(db.Model):
     """Moderation queries model."""

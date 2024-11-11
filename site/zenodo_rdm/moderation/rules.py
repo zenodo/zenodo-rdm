@@ -11,7 +11,6 @@ import re
 
 from flask import current_app
 from invenio_search import current_search_client
-from invenio_search.utils import build_alias_name
 
 from .models import LinkDomain, LinkDomainStatus
 from .percolator import get_percolator_index
@@ -70,16 +69,16 @@ def links_rule(identity, draft=None, record=None):
         domain = LinkDomain.lookup_domain(link)
         if domain is None:
             continue
-        if domain.status == LinkDomainStatus.BANNED:
-            if domain.score is not None:
-                score += domain.score
-            else:
-                score += current_scores.spam_link
-        elif domain == LinkDomainStatus.SAFE:
-            if domain.score is not None:
-                score += domain.score
-            else:
-                score += current_scores.ham_link
+        default_score = (
+            current_scores.ham_link
+            if domain.status == LinkDomainStatus.SAFE
+            else current_scores.spam_link
+        )
+        if domain.score is not None:
+            score += domain.score
+        else:
+            score += default_score
+
     return score
 
 
