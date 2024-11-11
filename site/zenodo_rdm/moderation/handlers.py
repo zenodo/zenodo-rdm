@@ -71,6 +71,12 @@ class BaseScoreHandler:
     def run(self, identity, draft=None, record=None, user=None, uow=None):
         """Calculate the moderation score for a given record or draft."""
         try:
+            if user.id in self.exempt_users:
+                current_app.logger.debug(
+                    "User is exempt from moderation", extra={"user_id": user.id}
+                )
+                return
+
             score = 0
             for rule in self.rules:
                 score += rule(identity, draft=draft, record=record)
@@ -122,6 +128,10 @@ class BaseScoreHandler:
                         "Manual moderation action triggered",
                         extra=action_ctx,
                     )
+        # Re-raise UserBlockedException to prevent further processing of the record
+        except UserBlockedException:
+            raise
+        # Failsafe in the moderation check is faulty
         except Exception:
             current_app.logger.exception("Error calculating moderation score")
 
@@ -196,13 +206,6 @@ class RecordScoreHandler(BaseHandler, BaseScoreHandler):
                 "No user found for moderation action", stack_info=True
             )
             return
-
-        if user_id in self.exempt_users:
-            current_app.logger.info(
-                "User is exempt from moderation", extra={"user_id": user_id}
-            )
-            return
-
         user = UserAggregate.get_record(user_id)
 
         # Perform the moderation checks asynchronously for verified users
@@ -228,13 +231,7 @@ class CommunityScoreHandler(community_moderation.BaseHandler, BaseScoreHandler):
 
     def _run(self, identity, record, uow):
         """Run the moderation scoring."""
-        user_id = identity.id
-        if user_id in self.exempt_users:
-            current_app.logger.info(
-                "User is exempt from moderation", extra={"user_id": user_id}
-            )
-            return
-        user = UserAggregate.get_record(user_id)
+        user = UserAggregate.get_record(identity.id)
 
         # Perform the moderation checks asynchronously for verified users
         if user.verified:

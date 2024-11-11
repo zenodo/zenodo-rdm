@@ -8,10 +8,9 @@
 
 """Percolator."""
 
-
 from flask import current_app
 from invenio_search import current_search_client
-from invenio_search.utils import build_alias_name, build_index_name
+from invenio_search.utils import build_alias_name
 
 
 def get_percolator_index(record_cls):
@@ -30,7 +29,7 @@ def create_percolator_index(record_cls):
     """
     # Build the name for the new percolator index, using a prefix and the record's index name
     combined_index_name = f"{current_app.config.get('MODERATION_PERCOLATOR_INDEX_PREFIX')}-{record_cls.index._name}"
-    percolator_index = build_index_name(combined_index_name, app=current_app)
+    percolator_index = build_alias_name(combined_index_name)
 
     # Get the current mapping for the record index to copy its structure
     record_index = build_alias_name(record_cls.index._name)

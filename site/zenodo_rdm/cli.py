@@ -7,7 +7,6 @@
 """Zenodo RDM cli commands."""
 
 import csv
-import os
 
 import click
 from flask.cli import with_appcontext
@@ -261,11 +260,16 @@ def delete_record(recid):
 
 
 @click.group()
-def moderation():
+def moderation_cli():
     """Moderation commands."""
 
 
-@moderation.command("create-queries-index")
+@moderation_cli.group()
+def queries_cli():
+    """Moderation queries commands."""
+
+
+@queries_cli.command("create-index")
 @click.option(
     "-r",
     "--record-cls",
@@ -286,7 +290,7 @@ def create_index(record_cls):
         click.secho(f"Error creating percolator index: {e}")
 
 
-@moderation.command("add-query")
+@queries_cli.command("add")
 @click.option(
     "-r",
     "--record-cls",
@@ -302,7 +306,6 @@ def create_index(record_cls):
 @click.option(
     "-n",
     "--notes",
-    default="Example note",
     help="Additional notes for the moderation query (optional if loading from CSV).",
 )
 @click.option(

@@ -31,7 +31,12 @@ from invenio_users_resources.proxies import current_users_service as users_servi
 
 @shared_task(ignore_result=True)
 def update_moderation_request(user_id, action_ctx):
-    """(Create and) update a moderation request."""
+    """Update a moderation request from an automated moderation action.
+
+    This task is called by moderation handlers to log the results of an
+    automated moderation action on the user moderation request. If no request
+    exists for the user, a new one is created.
+    """
     # Find the moderation request for the user (even if it's closed)
     results = requests_service.search(
         system_identity,
@@ -71,10 +76,17 @@ def update_moderation_request(user_id, action_ctx):
         )
         req: Request = requests_service.record_cls.get_record(request_id)
 
-        # If the request is closed, reopen it
-        if req.is_closed:
+        # If the request is closed or we want to moderate again, reopen it...
+        if req.is_closed or action_ctx["action"] == "moderate":
             req.status = "submitted"
-            uow.register(RecordCommitOp(req, indexer=requests_service.indexer))
+        else:
+            # ...otherwise update the request based on the action
+            if action_ctx["action"] == "block":
+                req.status = "declined"
+            elif action_ctx["action"] == "approve":
+                req.status = "accepted"
+
+        uow.register(RecordCommitOp(req, indexer=requests_service.indexer))
 
         # TODO: Generate content/links in a cleaner way
         # Add a comment with the moderation context (score, etc.)
