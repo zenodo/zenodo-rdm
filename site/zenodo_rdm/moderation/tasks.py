@@ -90,7 +90,7 @@ def update_moderation_request(user_id, action_ctx):
 
         # TODO: Generate content/links in a cleaner way
         # Add a comment with the moderation context (score, etc.)
-        score = action_ctx["score"]
+        evaluation = action_ctx["evaluation"]
         content_pid = action_ctx.get("record_pid") or ""
         content = ""
         if content_pid.isdigit():
@@ -100,7 +100,9 @@ def update_moderation_request(user_id, action_ctx):
                 f' (<a href="/communities/{content_pid}">Community {content_pid}</a>)'
             )
 
-        comment = dict(payload={"content": f"<p>Score: {score}{content}</p>"})
+        comment = dict(
+            payload={"content": f"<p>Final evaluation: {evaluation}{content}</p>"}
+        )
         events_service.create(system_identity, req, comment, CommentEventType, uow=uow)
 
         uow.commit()
