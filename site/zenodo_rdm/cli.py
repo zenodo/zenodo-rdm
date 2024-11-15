@@ -377,7 +377,7 @@ def domains_cli():
 
 
 @domains_cli.command("add")
-@click.option("-d", "--domain", required=True, help="The domain to add.")
+@click.option("-d", "--domain", help="The domain to add.")
 @click.option("-n", "--notes", help="Additional notes for the domain.")
 @click.option(
     "-s",
@@ -396,6 +396,7 @@ def domains_cli():
 @with_appcontext
 def add_domain(domain, notes, status, score, file):
     """Command to add a moderated links domain."""
+    assert domain or file, "You must provide either a single domain or a CSV file."
     if file:
         _add_domains_from_csv(file)
     else:
