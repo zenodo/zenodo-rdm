@@ -231,6 +231,9 @@ class CommunityScoreHandler(community_moderation.BaseHandler, BaseScoreHandler):
 
     def _run(self, identity, record, uow):
         """Run the moderation scoring."""
+        # Skip moderation for system actions (e.g. subcommunity inclusion actions)
+        if identity == system_identity:
+            return
         user = UserAggregate.get_record(identity.id)
 
         # Perform the moderation checks asynchronously for verified users
