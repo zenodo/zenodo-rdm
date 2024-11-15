@@ -1,8 +1,7 @@
 #!/usr/bin/env python
-import sys
 import subprocess
+import sys
 from pathlib import Path
-
 
 PROGRAM = Path(sys.argv[0]).name
 ENVS = {
@@ -17,10 +16,11 @@ DEPLOYMENTS = {
     "worker-low": ["worker-low"],
     "worker-spam": ["worker-spam"],
     "worker-beat": ["worker-beat"],
-    "terminal": ["terminal"],
     "worker-beat-custom": ["worker-beat-custom"],
+    "terminal": ["terminal"],
 }
 deployment_names = ", ".join(DEPLOYMENTS.keys())
+
 
 def _abort(message):
     print(message)
