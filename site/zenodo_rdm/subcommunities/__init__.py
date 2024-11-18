@@ -7,9 +7,11 @@
 """Subcommunities implementation."""
 
 from .request import ZenodoSubCommunityRequest
+from .request import ZenodoSubCommunityInvitationRequest
 from .schema import ZenodoSubcommunityRequestSchema
 
 __all__ = (
     "ZenodoSubcommunityRequestSchema",
     "ZenodoSubCommunityRequest",
+    "ZenodoSubCommunityInvitationRequest",
 )
