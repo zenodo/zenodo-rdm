@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "93b1edd37e3ddcccd2f37d92d84e738229687c94a07662fc5d715f8fbfcec8bd"
+            "sha256": "c8773ce002ca56066b6c228f14d3d591c206f55a51b61f51cf6f327b5f228240"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -1216,11 +1216,11 @@
         },
         "invenio-oauthclient": {
             "hashes": [
-                "sha256:0aacac0e721f07ec578b0b0ca3cadb46853da0f7bb48127865d5e7ee4a3f0c84",
-                "sha256:8ea0420b2f965cbbdbc95bb36c73ed1a78c18094f3425df5d1880bb3e1533ac6"
+                "sha256:14d68ef4c3e5f4a5697a319050208c8a89f731eeab66389d10bd5332bbc06b19",
+                "sha256:356f6ee3331503bfb09a406fc6e4ee588a3c8820b24620255ee5617ccf8d4bac"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==4.1.0"
+            "version": "==4.1.1"
         },
         "invenio-pages": {
             "hashes": [
@@ -1256,11 +1256,11 @@
         },
         "invenio-rdm-records": {
             "hashes": [
-                "sha256:c842b378cce4ecdb4ef5b3bc9fbe15a5e9b89c7e0e8b29e376fb43388a1f403d",
-                "sha256:d8ae5b03266bec1afe664e0f2df29765696e5bc69f76f3af2419c8b9c0745b8f"
+                "sha256:9c162b3398481ca3e3a50dd1c9dd96db1cc8ff4cfe3eb181231b3a9c68be5114",
+                "sha256:dca619327c7fa2f2383ddef5529ff596ad7ae1a1d84eccfed9b93e6489c9bd37"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==16.1.0"
+            "version": "==16.2.0"
         },
         "invenio-records": {
             "hashes": [
@@ -1319,11 +1319,11 @@
         },
         "invenio-rest": {
             "hashes": [
-                "sha256:7c8ff04d6e2460bbf1867e9f8f8220c326a10280b7039f853c7dfaa12b73bf8c",
-                "sha256:a7e45e36fda31b66067013c1f69b014e65e39cde58636f0499e01fcaf2618799"
+                "sha256:b7b9b9811695f4b754ba128c9be8a98afecb4d9b94c7911411aa1b34a3e99546",
+                "sha256:ce4182c1cdda6e2336399f43b792a2946d930ced80343552775b58b5b1318370"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==1.3.1"
+            "version": "==1.4.0"
         },
         "invenio-search": {
             "extras": [
@@ -1353,7 +1353,7 @@
         },
         "invenio-swh": {
             "git": "https://github.com/inveniosoftware/invenio-swh",
-            "ref": "107a0ad166b0ed1f0fe37fe103593093976e4abe"
+            "ref": "511a88046c15fc6986ce85183ac7d842b8157eb1"
         },
         "invenio-theme": {
             "hashes": [
