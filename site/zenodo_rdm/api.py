@@ -11,6 +11,7 @@ from invenio_pidstore.models import PIDStatus, RecordIdentifier
 from invenio_pidstore.providers.recordid import RecordIdProvider
 from invenio_rdm_records.records.api import RDMDraft, RDMParent, RDMRecord
 from invenio_records_resources.records.systemfields import PIDField
+from invenio_swh.records.systemfields import SWHSysField
 
 
 class DraftRecordIdProvider(RecordIdProvider):
@@ -49,6 +50,8 @@ class ZenodoRDMRecord(RDMRecord):
     parent = ParentField(
         ZenodoRDMParent, create=False, soft_delete=False, hard_delete=False
     )
+
+    swh = SWHSysField("swh")
 
 
 class ZenodoRDMDraft(RDMDraft):
