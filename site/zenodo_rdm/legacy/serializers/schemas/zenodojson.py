@@ -177,6 +177,8 @@ class ZenodoSchema(common.LegacySchema):
     files = fields.Method("dump_files", dump_only=True)
     metadata = fields.Nested(MetadataSchema)
 
+    swh = fields.Dict(dump_only=True)
+
     owners = fields.Method("dump_owners")
 
     def dump_owners(self, obj):
