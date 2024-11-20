@@ -162,12 +162,49 @@ class SubcommunityInvitationSubmitAction(actions.SubmitAction):
 
         # example: "May 11, 2024"
         expires_at = self.request.expires_at.strftime("%B %d, %Y")
+        NAME = "TODO"
+        ACRONYMS = "TODO"
         self.request["description"] = (
-            "<p><br><br>If you do not perform any action by <b>{expires_at}</b>, the permission for "
-            "community curators, managers and owners to manage your records will be automatically granted.</p>"
+            "<p>We would like to invite you to join the <a href='https://zenodo.org/communities/eu/'>"
+            "EU Open Research Repository</a> because we have detected that your Zenodo community "
+            "is likely related to an EU-funded project:</br><ul><li>Zenodo community: "
+            f"{NAME}</li><li>EU-funded project(s): {ACRONYMS}</li></ul>The EU Open "
+            "Research Repository is a Zenodo community dedicated to fostering open science "
+            "and enhancing the visibility and accessibility of research outputs funded by "
+            "the European Union. The community is managed by CERN on behalf of the European "
+            "Commission.</br></br><b>What does it mean to join?</b></br><ul><li><b>Indexing:</b> "
+            "All current and future records in your community will be automatically indexed "
+            "in the EU Open Research Repository increasing their visibility</li><li><b>Curation:</b> "
+            "All records will be subject to the EU Open Research Repository "
+            "<a href='https://zenodo.org/communities/eu/curation-policy'>curation policy</a>. "
+            "For instance, you can only deposit records in the community related to the EU-funded "
+            "project</li><li><b>Verified:</b> All EU project communities are marked with a "
+            "Verified community badge</li></ul></b></br>The EU Open Research Repository is gradually "
+            "being improved and by mid-2025 new submissions will automatically be checked "
+            "for compliance with the related open science requirements in the Horizon Europe "
+            "grant agreement. For more information see <a href='https://zenodo.org/communities/eu/pages/join'>"
+            "https://zenodo.org/communities/eu/pages/join</a>.</br></br><b>Which EU-funded projects "
+            "have already joined?</b></br>You can browse the "
+            "<a href='https://zenodo.org/communities/eu/browse/subcommunities'>EU-funded projects</a> "
+            "which have already already joined.</br></br><b>When should I decline the invitation "
+            "to join?</b></br>You should <b>decline</b> this invitation if your Zenodo community "
+            "is not related to the above mentioned EU-funded project, or if the community is used "
+            "for multiple purposes (e.g both an organisation and a project).</br></br><b>"
+            "Further questions?</b></br>Don't hesitate to get in <a href='https://zenodo.org/support'>"
+            "touch with us</a> if you have any questions.</br></br>The request will be automatically "
+            f"accepted on <b>{expires_at}</b> in case you do not accept or decline the request by then."
+            "</br></br>Your sincerely,</br>The Zenodo team"
         )
 
         super().execute(identity, uow)
+
+        uow.register(
+            NotificationOp(
+                notifications.SubComInvitationCreate.build(
+                    identity=identity, request=self.request
+                )
+            )
+        )
 
 
 class SubcommunityInvitationExpireAction(actions.ExpireAction):
