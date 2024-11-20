@@ -12,7 +12,9 @@ import invenio_communities.notifications.builders as notifications
 from invenio_access.permissions import system_identity
 from invenio_communities.subcommunities.services.request import (
     AcceptSubcommunity,
+    AcceptSubcommunityInvitation,
     DeclineSubcommunity,
+    DeclineSubcommunityInvitation,
     SubCommunityInvitationRequest,
     SubCommunityRequest,
 )
@@ -28,6 +30,7 @@ from invenio_requests.customizations.event_types import CommentEventType
 from invenio_requests.proxies import current_events_service
 from invenio_requests.resolvers.registry import ResolverRegistry
 from marshmallow import fields
+from marshmallow.exceptions import ValidationError
 
 
 class SubcommunityAcceptAction(AcceptSubcommunity):
@@ -128,7 +131,18 @@ class ZenodoSubCommunityRequest(SubCommunityRequest):
     }
 
 
-class SubCommunityInvitationAcceptAction(AcceptSubcommunity):
+class SubcommunityInvitationCreateAction(actions.CreateAction):
+    """Represents an accept action used to accept a subcommunity."""
+
+    def execute(self, identity, uow):
+        """Execute approve action."""
+        parent = self.request.created_by.resolve()
+        if not parent.children.allow:
+            raise ValidationError("Assigned parent is not allowed to be a parent.")
+        super().execute(identity, uow)
+
+
+class SubCommunityInvitationAcceptAction(AcceptSubcommunityInvitation):
     """Represents an accept action used to accept a subcommunity.
 
     Zenodo re-implementation of the accept action, to also move the records.
@@ -142,13 +156,13 @@ class SubCommunityInvitationAcceptAction(AcceptSubcommunity):
 
     def execute(self, identity, uow):
         """Execute approve action."""
-        to_be_moved = self.request.topic.resolve().id
-        move_to = self.request.receiver.resolve().id
+        child = self.request.receiver.resolve().id
+        parent = self.request.created_by.resolve().id
 
         # Move records
-        records = self._get_community_records(to_be_moved)
+        records = self._get_community_records(child)
         current_rdm_records.record_communities_service.bulk_add(
-            system_identity, move_to, (x["id"] for x in records), uow=uow
+            system_identity, parent, (x["id"] for x in records), uow=uow
         )
         super().execute(identity, uow)
 
@@ -220,13 +234,13 @@ class ZenodoSubCommunityInvitationRequest(SubCommunityInvitationRequest):
     """Request from a Zenodo community to add a child community."""
 
     available_actions = {
-        "create": actions.CreateAction,
         "delete": actions.DeleteAction,
         "cancel": actions.CancelAction,
         # Custom implemented actions
+        "create": SubcommunityInvitationCreateAction,
         "submit": SubcommunityInvitationSubmitAction,
-        "accept": SubcommunityAcceptAction,
-        "decline": DeclineSubcommunity,
+        "accept": SubCommunityInvitationAcceptAction,
+        "decline": DeclineSubcommunityInvitation,
         "expire": SubcommunityInvitationExpireAction,
     }
 
