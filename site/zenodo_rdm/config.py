@@ -6,6 +6,7 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 """Custom code config."""
 
+
 from .params import ZenodoArgsSchema, ZenodoSearchOptions
 from .redirector import (
     communities_detail_view_function,
@@ -27,6 +28,7 @@ from .redirector import (
     redirect_records_search_slash,
     search_view_function,
 )
+from .schema import ZenodoRecordSchema
 
 # I18N_TRANSLATIONS_PATHS = [os.path.abspath("./site/zenodo_rdm/translations")]
 
@@ -370,3 +372,7 @@ THEME_MATHJAX_CDN = (
     "//cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js"
     "?config=TeX-AMS-MML_HTMLorMML"
 )
+
+
+RDM_RECORD_SCHEMA = ZenodoRecordSchema
+"""Base record schema."""
