@@ -6,8 +6,10 @@
 # it under the terms of the MIT License; see LICENSE file for more details.
 """Zenodo codemeta serializer."""
 
+from flask import current_app
 from flask_resources import BaseListSchema, MarshmallowSerializer
 from flask_resources.serializers import JSONSerializer
+from idutils import normalize_doi, to_url
 from invenio_rdm_records.contrib.codemeta.processors import CodemetaDumper
 from invenio_rdm_records.resources.serializers.codemeta.schema import CodemetaSchema
 from marshmallow import missing
@@ -16,12 +18,25 @@ from marshmallow import missing
 class ZenodoCodemetaSchema(CodemetaSchema):
     """Zenodo Codemeta schema."""
 
-    def get_sameAs(self, obj):
-        """Get sameAs field."""
-        ret = super().get_sameAs(obj) or []
+    id_ = missing
+
+    def get_id(self, obj):
+        """Compute the "identifier".
+
+        It uses the DOI expressed as a URL and the Software Hash ID as `swhid`.
+        If only one identifier is present, it returns it as a single entry.
+        """
+        doi = obj.get("pids", {}).get("doi", {}).get("identifier")
+        ret = []
+        if doi:
+            doi_url = to_url(normalize_doi(doi), "doi")
+            ret.append({"@type": "doi", "value": doi, "propertyID": doi_url})
         swhid = obj.get("swh", {}).get("swhid")
         if swhid:
-            ret.append({"@id": swhid})
+            swh_url = f"{current_app.config['SWH_UI_BASE_URL']}/{swhid}"
+            ret.append({"@type": "swhid", "value": swhid, "propertyID": swh_url})
+        if len(ret) == 1:
+            return ret[0]
         return ret or missing
 
 
@@ -35,5 +50,5 @@ class ZenodoCodemetaSerializer(MarshmallowSerializer):
             object_schema_cls=ZenodoCodemetaSchema,
             list_schema_cls=BaseListSchema,
             schema_kwargs={"dumpers": [CodemetaDumper()]},  # Order matters
-            **options
+            **options,
         )
