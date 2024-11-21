@@ -8,8 +8,10 @@
 
 from .bibtex import ZenodoBibtexSerializer
 from .codemeta import ZenodoCodemetaSerializer
+from .datacite import ZenodoDataciteJSONSerializer
 
 __all__ = (
     "ZenodoBibtexSerializer",
     "ZenodoCodemetaSerializer",
+    "ZenodoDataciteJSONSerializer",
 )

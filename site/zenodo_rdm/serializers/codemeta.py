@@ -4,16 +4,13 @@
 #
 # ZenodoRDM is free software; you can redistribute it and/or modify
 # it under the terms of the MIT License; see LICENSE file for more details.
-"""Zenodo bibtex serializer."""
+"""Zenodo codemeta serializer."""
 
 from flask_resources import BaseListSchema, MarshmallowSerializer
 from flask_resources.serializers import JSONSerializer
 from invenio_rdm_records.contrib.codemeta.processors import CodemetaDumper
 from invenio_rdm_records.resources.serializers.codemeta.schema import CodemetaSchema
-from invenio_rdm_records.resources.serializers.schemaorg.schema import (
-    _serialize_identifiers,
-)
-from marshmallow import fields, missing
+from marshmallow import missing
 
 
 class ZenodoCodemetaSchema(CodemetaSchema):
