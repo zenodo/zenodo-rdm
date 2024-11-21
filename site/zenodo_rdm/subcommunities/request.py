@@ -18,6 +18,7 @@ from invenio_communities.subcommunities.services.request import (
     SubCommunityInvitationRequest,
     SubCommunityRequest,
 )
+from invenio_communities.proxies import current_communities
 from invenio_notifications.services.uow import NotificationOp
 from invenio_rdm_records.proxies import (
     current_community_records_service,
@@ -224,10 +225,36 @@ class SubcommunityInvitationSubmitAction(actions.SubmitAction):
 class SubcommunityInvitationExpireAction(actions.ExpireAction):
     """Expire action."""
 
+    def _get_community_records(self, community_id):
+        """Get the records of a community."""
+        return current_community_records_service.search(
+            system_identity, community_id=community_id
+        )
+
     def execute(self, identity, uow):
-        """Accepts the request."""
+        """Execute expire action."""
+        child = self.request.receiver.resolve().id
+        parent = self.request.created_by.resolve().id
+
+        # Move records
+        records = self._get_community_records(child)
+        current_rdm_records.record_communities_service.bulk_add(
+            system_identity, parent, (x["id"] for x in records), uow=uow
+        )
+
+        current_communities.service.bulk_update_parent(
+            system_identity, [child], parent_id=parent, uow=uow
+        )
 
         super().execute(identity, uow)
+
+        uow.register(
+            NotificationOp(
+                notifications.SubComInvitationExpire.build(
+                    identity=identity, request=self.request
+                )
+            )
+        )
 
 
 class ZenodoSubCommunityInvitationRequest(SubCommunityInvitationRequest):
