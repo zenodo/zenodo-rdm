@@ -7,5 +7,9 @@
 """Zenodo serializers."""
 
 from .bibtex import ZenodoBibtexSerializer
+from .codemeta import ZenodoCodemetaSerializer
 
-__all__ = ("ZenodoBibtexSerializer",)
+__all__ = (
+    "ZenodoBibtexSerializer",
+    "ZenodoCodemetaSerializer",
+)
