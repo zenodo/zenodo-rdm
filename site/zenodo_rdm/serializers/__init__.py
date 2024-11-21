@@ -7,6 +7,7 @@
 """Zenodo serializers."""
 
 from .bibtex import ZenodoBibtexSerializer
+from .cff import ZenodoCFFSerializer
 from .codemeta import ZenodoCodemetaSerializer
 from .datacite import ZenodoDataciteJSONSerializer
 
@@ -14,4 +15,5 @@ __all__ = (
     "ZenodoBibtexSerializer",
     "ZenodoCodemetaSerializer",
     "ZenodoDataciteJSONSerializer",
+    "ZenodoCFFSerializer",
 )
