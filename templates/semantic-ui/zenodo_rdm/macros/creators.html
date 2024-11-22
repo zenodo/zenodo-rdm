@@ -53,6 +53,11 @@
       {% set link = "https://ror.org/{identifier}".format(identifier=id.identifier) %}
       {% set link_title = _("ROR profile") %}
       {% set icon = "/static/images/ror-icon.svg" %}
+    
+    {% elif id.scheme == "edmo" %}
+      {% set link = "https://edmo.seadatanet.org/report/{identifier}".format(identifier=id.identifier) %}
+      {% set link_title = _("EDMO profile") %}
+      {% set icon = "/static/images/edmo-icon.svg" %}
 
     {% elif id.scheme == "gnd" %}
       {% set link = "https://d-nb.info/gnd/{identifier}".format(identifier=id.identifier) %}
