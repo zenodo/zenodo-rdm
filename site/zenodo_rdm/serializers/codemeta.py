@@ -12,15 +12,15 @@ from flask_resources.serializers import JSONSerializer
 from idutils import normalize_doi, to_url
 from invenio_rdm_records.contrib.codemeta.processors import CodemetaDumper
 from invenio_rdm_records.resources.serializers.codemeta.schema import CodemetaSchema
-from marshmallow import missing
+from marshmallow import fields, missing
 
 
 class ZenodoCodemetaSchema(CodemetaSchema):
     """Zenodo Codemeta schema."""
 
-    id_ = missing
+    identifier = fields.Method("get_identifiers")
 
-    def get_id(self, obj):
+    def get_identifiers(self, obj):
         """Compute the "identifier".
 
         It uses the DOI expressed as a URL and the Software Hash ID as `swhid`.
