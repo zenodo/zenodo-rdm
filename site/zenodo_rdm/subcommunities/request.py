@@ -6,32 +6,35 @@
 # it under the terms of the MIT License; see LICENSE file for more details.
 """Subcommunities request implementation for ZenodoRDM."""
 
-from datetime import datetime, timedelta, timezone
-
 import invenio_communities.notifications.builders as notifications
 from invenio_access.permissions import system_identity
-from invenio_communities.subcommunities.services.request import (
-    AcceptSubcommunity,
-    AcceptSubcommunityInvitation,
-    DeclineSubcommunity,
-    DeclineSubcommunityInvitation,
-    SubCommunityInvitationRequest,
-    SubCommunityRequest,
-)
 from invenio_communities.proxies import current_communities
+from invenio_communities.subcommunities.services.request import (
+    AcceptSubcommunity, AcceptSubcommunityInvitation,
+    CreateSubcommunityInvitation, DeclineSubcommunity,
+    DeclineSubcommunityInvitation, SubCommunityInvitationRequest,
+    SubCommunityRequest)
 from invenio_notifications.services.uow import NotificationOp
-from invenio_rdm_records.proxies import (
-    current_community_records_service,
-    current_rdm_records,
-)
-from invenio_records_resources.services.uow import RecordCommitOp, unit_of_work
-from invenio_requests import current_request_type_registry, current_requests_service
+from invenio_rdm_records.proxies import (current_community_records_service,
+                                         current_rdm_records)
+from invenio_records_resources.services.uow import RecordCommitOp
 from invenio_requests.customizations import actions
 from invenio_requests.customizations.event_types import CommentEventType
 from invenio_requests.proxies import current_events_service
-from invenio_requests.resolvers.registry import ResolverRegistry
 from marshmallow import fields
-from marshmallow.exceptions import ValidationError
+from werkzeug.local import LocalProxy
+
+community_service = LocalProxy(lambda: current_communities.service)
+
+
+def _add_community_records(child, parent, uow):
+    """Add records from child to parent."""
+    records = current_community_records_service.search(
+        system_identity, community_id=child
+    )
+    current_rdm_records.record_communities_service.bulk_add(
+        system_identity, parent, (x["id"] for x in records), uow=uow
+    )
 
 
 class SubcommunityAcceptAction(AcceptSubcommunity):
@@ -40,22 +43,12 @@ class SubcommunityAcceptAction(AcceptSubcommunity):
     Zenodo re-implementation of the accept action, to also move the records.
     """
 
-    def _get_community_records(self, community_id):
-        """Get the records of a community."""
-        return current_community_records_service.search(
-            system_identity, community_id=community_id
-        )
-
     def execute(self, identity, uow):
         """Execute approve action."""
         to_be_moved = self.request.topic.resolve().id
         move_to = self.request.receiver.resolve().id
 
-        # Move records
-        records = self._get_community_records(to_be_moved)
-        current_rdm_records.record_communities_service.bulk_add(
-            system_identity, move_to, (x["id"] for x in records), uow=uow
-        )
+        _add_community_records(to_be_moved, move_to, uow)
         super().execute(identity, uow)
 
 
@@ -132,47 +125,11 @@ class ZenodoSubCommunityRequest(SubCommunityRequest):
     }
 
 
-class SubcommunityInvitationCreateAction(actions.CreateAction):
-    """Represents an accept action used to accept a subcommunity."""
+class SubcommunityInvitationCreateAction(CreateSubcommunityInvitation):
+    """Represents an action to create and submit a subcommunity invitation."""
 
     def execute(self, identity, uow):
         """Execute approve action."""
-        parent = self.request.created_by.resolve()
-        if not parent.children.allow:
-            raise ValidationError("Assigned parent is not allowed to be a parent.")
-        super().execute(identity, uow)
-
-
-class SubCommunityInvitationAcceptAction(AcceptSubcommunityInvitation):
-    """Represents an accept action used to accept a subcommunity.
-
-    Zenodo re-implementation of the accept action, to also move the records.
-    """
-
-    def _get_community_records(self, community_id):
-        """Get the records of a community."""
-        return current_community_records_service.search(
-            system_identity, community_id=community_id
-        )
-
-    def execute(self, identity, uow):
-        """Execute approve action."""
-        child = self.request.receiver.resolve().id
-        parent = self.request.created_by.resolve().id
-
-        # Move records
-        records = self._get_community_records(child)
-        current_rdm_records.record_communities_service.bulk_add(
-            system_identity, parent, (x["id"] for x in records), uow=uow
-        )
-        super().execute(identity, uow)
-
-
-class SubcommunityInvitationSubmitAction(actions.SubmitAction):
-    """Submit action."""
-
-    def execute(self, identity, uow):
-        """Execute the submit action."""
         self.request["title"] = "Invitation to join the EU Open Research Repository"
 
         # example: "May 11, 2024"
@@ -213,34 +170,33 @@ class SubcommunityInvitationSubmitAction(actions.SubmitAction):
 
         super().execute(identity, uow)
 
-        uow.register(
-            NotificationOp(
-                notifications.SubComInvitationCreate.build(
-                    identity=identity, request=self.request
-                )
-            )
-        )
+
+class SubCommunityInvitationAcceptAction(AcceptSubcommunityInvitation):
+    """Represents an accept action used to accept a subcommunity.
+
+    Zenodo re-implementation of the accept action, to also move the records.
+    """
+
+    def execute(self, identity, uow):
+        """Execute approve action."""
+        child = self.request.receiver.resolve().id
+        parent = self.request.created_by.resolve().id
+
+        _add_community_records(child, parent, uow)
+        # moving the community is handled by super()
+
+        super().execute(identity, uow)
 
 
 class SubcommunityInvitationExpireAction(actions.ExpireAction):
     """Expire action."""
-
-    def _get_community_records(self, community_id):
-        """Get the records of a community."""
-        return current_community_records_service.search(
-            system_identity, community_id=community_id
-        )
 
     def execute(self, identity, uow):
         """Execute expire action."""
         child = self.request.receiver.resolve().id
         parent = self.request.created_by.resolve().id
 
-        # Move records
-        records = self._get_community_records(child)
-        current_rdm_records.record_communities_service.bulk_add(
-            system_identity, parent, (x["id"] for x in records), uow=uow
-        )
+        _add_community_records(child, parent, uow)
 
         current_communities.service.bulk_update_parent(
             system_identity, [child], parent_id=parent, uow=uow
@@ -265,39 +221,7 @@ class ZenodoSubCommunityInvitationRequest(SubCommunityInvitationRequest):
         "cancel": actions.CancelAction,
         # Custom implemented actions
         "create": SubcommunityInvitationCreateAction,
-        "submit": SubcommunityInvitationSubmitAction,
         "accept": SubCommunityInvitationAcceptAction,
         "decline": DeclineSubcommunityInvitation,
         "expire": SubcommunityInvitationExpireAction,
     }
-
-
-@unit_of_work()
-def submit_join_as_subcommunity_request(
-    parent_community_uuid, community_uuid, uow, comment=None
-):
-    """Create and submit a SubCommunityInvitation request."""
-    type_ = current_request_type_registry.lookup(
-        ZenodoSubCommunityInvitationRequest.type_id
-    )
-    creator = ResolverRegistry.resolve_entity_proxy(
-        {"community": parent_community_uuid}
-    ).resolve()
-    receiver = ResolverRegistry.resolve_entity_proxy(
-        {"community": community_uuid}
-    ).resolve()
-    expires_at = datetime.now(timezone.utc) + timedelta(days=30)
-
-    request_item = current_requests_service.create(
-        system_identity,
-        {},
-        type_,
-        receiver,
-        creator=creator,
-        expires_at=expires_at,
-        uow=uow,
-    )
-
-    return current_requests_service.execute_action(
-        system_identity, request_item._request.id, "submit", data=comment, uow=uow
-    )
