@@ -12,7 +12,6 @@ from flask import current_app
 from invenio_github.errors import CustomGitHubMetadataError
 from invenio_rdm_records.services.github.metadata import RDMReleaseMetadata
 from invenio_rdm_records.services.github.release import RDMGithubRelease
-
 from zenodo_rdm.github.schemas import CitationMetadataSchema
 from zenodo_rdm.legacy.deserializers.schemas import LegacySchema
 
@@ -28,7 +27,10 @@ class ZenodoReleaseMetadata(RDMReleaseMetadata):
             if not content:
                 # File does not exists
                 return {}
-            legacy_data = {"metadata": json.loads(content.decoded.decode("utf-8"))}
+            file_data = json.loads(content.decoded.decode("utf-8"))
+            if not file_data.get("license") and self.repo_license:
+                file_data.update({"license": self.repo_license})
+            legacy_data = {"metadata": file_data}
             rdm_data = LegacySchema().load(legacy_data)
             return rdm_data["metadata"]
         except Exception as exc:
@@ -51,6 +53,8 @@ class ZenodoReleaseMetadata(RDMReleaseMetadata):
         )
 
         try:
+            if not data.get("license") and self.repo_license:
+                data.update({"license": self.repo_license})
             legacy_data = {"metadata": CitationMetadataSchema().load(data)}
             rdm_data = LegacySchema().load(legacy_data)
             return rdm_data["metadata"]
@@ -105,4 +109,7 @@ class ZenodoGithubRelease(RDMGithubRelease):
                     ]
                 }
             )
+            # Add default license if not yet added
+        if not output.get("rights"):
+            output.update({"rights": [{"id": metadata.repo_license or "cc-by-4.0"}]})
         return output
