@@ -12,6 +12,7 @@ from flask import current_app
 from invenio_github.errors import CustomGitHubMetadataError
 from invenio_rdm_records.services.github.metadata import RDMReleaseMetadata
 from invenio_rdm_records.services.github.release import RDMGithubRelease
+
 from zenodo_rdm.github.schemas import CitationMetadataSchema
 from zenodo_rdm.legacy.deserializers.schemas import LegacySchema
 
