@@ -7,17 +7,18 @@
 
 """Curators for ZenodoRDM Curation."""
 
-
 from flask import current_app
 from invenio_access.permissions import system_identity
 from invenio_rdm_records.proxies import current_record_communities_service
 from invenio_records_resources.services.uow import UnitOfWork
 
+from zenodo_rdm.curation.proxies import current_curation
+
 
 class BaseCurator:
     """Base Curator class."""
 
-    def __init__(self, dry=False, raise_exc=False) -> None:
+    def __init__(self, dry=False, raise_exc=False):
         """Constructor."""
         self.dry = dry
         self.raise_exc = raise_exc
@@ -59,13 +60,16 @@ class EURecordCurator(BaseCurator):
         """Evaluate result for EC curation."""
         score = 0
         for rule, result in results.items():
-            # TODO put in config?
-            if rule == "award_in_title" and result:
-                score += 5
-            if rule == "award_in_description" and result:
-                score += 10
-            if rule == "test_word_record" and result:
-                return False
+            rule_score = current_curation.scores.get(rule)
+            if isinstance(rule_score, int):
+                score += rule_score if result else 0
+            elif isinstance(rule_score, bool):
+                if result:
+                    return rule_score
+                else:
+                    continue
+            else:
+                raise ValueError("Unsupported score type configured.")
         return score >= current_app.config.get("CURATION_EU_CURATION_THRESHOLD")
 
     @property

@@ -1,3 +1,11 @@
+# -*- coding: utf-8 -*-
+#
+# Copyright (C) 2024 CERN.
+#
+# ZenodoRDM is free software; you can redistribute it and/or modify
+# it under the terms of the MIT License; see LICENSE file for more details.
+"""Tasks for curation."""
+
 from datetime import datetime, timedelta
 
 from celery import shared_task
@@ -5,6 +13,7 @@ from flask import current_app
 from invenio_access.permissions import system_identity
 from invenio_rdm_records.proxies import current_rdm_records_service as records_service
 from invenio_search.engine import dsl
+
 from zenodo_rdm.curation.curators import EURecordCurator
 
 
@@ -52,13 +61,12 @@ def run_eu_record_curation(since):
         try:
             result = curator.run(record=record)
             ctx["processed"] += 1
-        except Exception:
+            if result["evaluation"]:
+                ctx["approved"] += 1
+        except Exception as e:
             # NOTE Since curator's raise_exc is by default false, rules would not fail.
             # This catches failure due to other reasons
             ctx["failed"] += 1
-        if result["evaluation"]:
-            ctx["approved"] += 1
-
     current_app.logger.error(
         f"EU curation processed",
         extra=ctx,

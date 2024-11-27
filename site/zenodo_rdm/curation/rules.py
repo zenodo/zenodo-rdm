@@ -13,7 +13,6 @@ from invenio_records_resources.proxies import current_service_registry
 
 def award_acronym_in_description(record):
     """Check if EU award name in record description."""
-
     award_service = current_service_registry.get("awards")
     description = record.metadata["description"]
     funding = record.metadata["funding"]
@@ -29,7 +28,6 @@ def award_acronym_in_description(record):
 
 def award_acronym_in_title(record):
     """Check if EU award name in record title."""
-
     award_service = current_service_registry.get("awards")
     title = record.metadata["title"]
     funding = record.metadata["funding"]
@@ -45,7 +43,6 @@ def award_acronym_in_title(record):
 
 def test_phrases_in_record(record):
     """Check if test words in record."""
-
     test_phrases = current_app.config.get("CURATION_TEST_PHRASES")
     record_data = record.metadata["title"] + " " + record.metadata["description"]
 
