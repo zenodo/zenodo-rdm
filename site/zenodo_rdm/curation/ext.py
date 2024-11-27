@@ -34,3 +34,11 @@ class ZenodoCuration:
         """Flask application initialization."""
         self.init_config(app)
         app.extensions["zenodo-curation"] = self
+
+    @cached_property
+    def scores(self):
+        """Return curation scores used for rules."""
+        return {
+            **config.CURATION_SCORES,
+            **current_app.config.get("CURATION_SCORES", {}),
+        }

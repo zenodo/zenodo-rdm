@@ -20,5 +20,12 @@ CURATION_EU_RULES = {
 }
 """Rules to run for EU Curation."""
 
+CURATION_SCORES = {
+    "award_acronym_in_title": 5,
+    "award_acronym_in_description": 10,
+    "test_phrases_in_record": False,
+}
+"""Rule scores for EU Curation."""
+
 CURATION_ENABLE_EU_CURATOR = False
 """Controls whether to dry run EU Curation."""
