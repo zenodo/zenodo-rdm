@@ -1183,11 +1183,11 @@
                 "sentry_sdk"
             ],
             "hashes": [
-                "sha256:6e9d74c3b89f85877c212e2e5224272cda04c5b27bed0576efcafc4670172824",
-                "sha256:f2f93f6a294061ab1e7b12572a9d1685d5476ca24af3062926e44e7b6b44ade1"
+                "sha256:0e8bbb6a3fe862ac9b3c2ec2d12e5589b836d51b4139d87e41ee538801e6d89c",
+                "sha256:71e0eb80488955a6d7a569074da38de5586e9c4b57a4e6e6de94a25834953026"
             ],
             "index": "pypi",
-            "version": "==2.1.2"
+            "version": "==2.1.1"
         },
         "invenio-mail": {
             "hashes": [
