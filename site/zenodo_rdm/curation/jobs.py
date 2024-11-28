@@ -8,6 +8,7 @@
 
 from datetime import datetime, timezone
 
+from invenio_i18n import lazy_gettext as _
 from invenio_jobs.jobs import JobType
 from marshmallow import Schema, fields
 from marshmallow_utils.fields import ISODateString
@@ -31,8 +32,8 @@ class EURecordCuration(JobType):
 
     arguments_schema = ArgsSchema
     task = run_eu_record_curation
-    description = "Curate published records for EU community"
-    title = "EU Record Curation"
+    description = _("Curate published records for EU community")
+    title = _("EU Record Curation")
     id = "eu_record_curation"
 
     @classmethod
