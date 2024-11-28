@@ -6,7 +6,7 @@
 # it under the terms of the MIT License; see LICENSE file for more details.
 """Tasks for curation."""
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from celery import shared_task
 from flask import current_app
@@ -32,7 +32,9 @@ def run_eu_record_curation(since):
             dsl.Q(
                 "range",
                 created={
-                    "lte": (datetime.now() - timedelta(days=30)).isoformat(),
+                    "lte": (
+                        datetime.now(timezone.utc) - timedelta(days=30)
+                    ).isoformat(),
                 },
             ),
             dsl.Q(
@@ -45,7 +47,11 @@ def run_eu_record_curation(since):
         must_not=[
             dsl.Q(
                 "term",
-                **{"parent.communities.ids": current_app.config.get("EU_COMMUNITY_ID")},
+                **{
+                    "parent.communities.ids": current_app.config.get(
+                        "EU_COMMUNITY_UUID"
+                    )
+                },
             )
         ],
     )
@@ -63,11 +69,12 @@ def run_eu_record_curation(since):
             ctx["processed"] += 1
             if result["evaluation"]:
                 ctx["approved"] += 1
-        except Exception as e:
-            # NOTE Since curator's raise_exc is by default false, rules would not fail.
-            # This catches failure due to other reasons
+        except Exception:
+            # NOTE Since curator's raise_rules_exc is by default false, rules would not fail.
+            # This catches failures due to other reasons
             ctx["failed"] += 1
+
     current_app.logger.error(
-        f"EU curation processed",
+        "EU curation processed",
         extra=ctx,
     )

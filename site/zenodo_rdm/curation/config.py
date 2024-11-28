@@ -27,5 +27,10 @@ CURATION_SCORES = {
 }
 """Rule scores for EU Curation."""
 
+
+CURATION_THRESHOLDS = {"EU_RECORDS_CURATION": 10}
+"""Threshold values for curators/rules."""
+
+
 CURATION_ENABLE_EU_CURATOR = False
 """Controls whether to dry run EU Curation."""

@@ -7,8 +7,6 @@
 
 """ZenodoRDM Curation module."""
 
-from types import SimpleNamespace
-
 from flask import current_app
 from werkzeug.utils import cached_property
 
@@ -41,4 +39,12 @@ class ZenodoCuration:
         return {
             **config.CURATION_SCORES,
             **current_app.config.get("CURATION_SCORES", {}),
+        }
+
+    @cached_property
+    def thresholds(self):
+        """Return curation thresholds used for rules/curators."""
+        return {
+            **config.CURATION_THRESHOLDS,
+            **current_app.config.get("CURATION_THRESHOLDS", {}),
         }
