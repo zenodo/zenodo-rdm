@@ -10,21 +10,24 @@ import invenio_communities.notifications.builders as notifications
 from invenio_access.permissions import system_identity
 from invenio_communities.proxies import current_communities
 from invenio_communities.subcommunities.services.request import (
-    AcceptSubcommunity, AcceptSubcommunityInvitation,
-    CreateSubcommunityInvitation, DeclineSubcommunity,
-    DeclineSubcommunityInvitation, SubCommunityInvitationRequest,
-    SubCommunityRequest)
+    AcceptSubcommunity,
+    AcceptSubcommunityInvitation,
+    CreateSubcommunityInvitation,
+    DeclineSubcommunity,
+    DeclineSubcommunityInvitation,
+    SubCommunityInvitationRequest,
+    SubCommunityRequest,
+)
 from invenio_notifications.services.uow import NotificationOp
-from invenio_rdm_records.proxies import (current_community_records_service,
-                                         current_rdm_records)
+from invenio_rdm_records.proxies import (
+    current_community_records_service,
+    current_rdm_records,
+)
 from invenio_records_resources.services.uow import RecordCommitOp
 from invenio_requests.customizations import actions
 from invenio_requests.customizations.event_types import CommentEventType
 from invenio_requests.proxies import current_events_service
 from marshmallow import fields
-from werkzeug.local import LocalProxy
-
-community_service = LocalProxy(lambda: current_communities.service)
 
 
 def _add_community_records(child, parent, uow):
@@ -134,13 +137,13 @@ class SubcommunityInvitationCreateAction(CreateSubcommunityInvitation):
 
         # example: "May 11, 2024"
         expires_at = self.request.expires_at.strftime("%B %d, %Y")
-        NAME = "TODO"
-        ACRONYMS = "TODO"
+        NAME = self.request.get("payload", {}).get("community-name")
+        ACRONYM = self.request.get("payload", {}).get("project-acronym")
         self.request["description"] = (
             "<p>We would like to invite you to join the <a href='https://zenodo.org/communities/eu/'>"
             "EU Open Research Repository</a> because we have detected that your Zenodo community "
             "is likely related to an EU-funded project:</br><ul><li>Zenodo community: "
-            f"{NAME}</li><li>EU-funded project(s): {ACRONYMS}</li></ul>The EU Open "
+            f"{NAME}</li><li>EU-funded project: {ACRONYM}</li></ul>The EU Open "
             "Research Repository is a Zenodo community dedicated to fostering open science "
             "and enhancing the visibility and accessibility of research outputs funded by "
             "the European Union. The community is managed by CERN on behalf of the European "
@@ -151,7 +154,7 @@ class SubcommunityInvitationCreateAction(CreateSubcommunityInvitation):
             "<a href='https://zenodo.org/communities/eu/curation-policy'>curation policy</a>. "
             "For instance, you can only deposit records in the community related to the EU-funded "
             "project</li><li><b>Verified:</b> All EU project communities are marked with a "
-            "Verified community badge</li></ul></b></br>The EU Open Research Repository is gradually "
+            "Verified community badge</li></ul>The EU Open Research Repository is gradually "
             "being improved and by mid-2025 new submissions will automatically be checked "
             "for compliance with the related open science requirements in the Horizon Europe "
             "grant agreement. For more information see <a href='https://zenodo.org/communities/eu/pages/join'>"
@@ -215,6 +218,11 @@ class SubcommunityInvitationExpireAction(actions.ExpireAction):
 
 class ZenodoSubCommunityInvitationRequest(SubCommunityInvitationRequest):
     """Request from a Zenodo community to add a child community."""
+
+    payload_schema = {
+        "community-name": fields.String(required=True),
+        "project-acronym": fields.String(required=True),
+    }
 
     available_actions = {
         "delete": actions.DeleteAction,
