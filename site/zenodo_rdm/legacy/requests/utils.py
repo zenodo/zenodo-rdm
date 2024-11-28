@@ -12,8 +12,7 @@ from datetime import datetime, timedelta
 from invenio_access.permissions import system_identity
 from invenio_records.dictutils import dict_lookup
 from invenio_records_resources.services.uow import unit_of_work
-from invenio_requests import (current_request_type_registry,
-                              current_requests_service)
+from invenio_requests import current_request_type_registry, current_requests_service
 from invenio_requests.resolvers.registry import ResolverRegistry
 from invenio_search.engine import dsl
 

@@ -6,8 +6,7 @@
 # it under the terms of the MIT License; see LICENSE file for more details.
 """Subcommunities implementation."""
 
-from .request import ZenodoSubCommunityRequest
-from .request import ZenodoSubCommunityInvitationRequest
+from .request import ZenodoSubCommunityInvitationRequest, ZenodoSubCommunityRequest
 from .schema import ZenodoSubcommunityRequestSchema
 
 __all__ = (
