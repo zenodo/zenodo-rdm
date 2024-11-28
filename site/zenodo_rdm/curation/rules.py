@@ -19,9 +19,11 @@ def award_acronym_in_description(record):
 
     for f in funding:
         if f["funder"]["id"] == "00k4n6c32":
-            if "award" in f:
-                award = award_service.record_cls.pid.resolve(f["award"]["id"])
-                if award["acronym"].lower() in description.lower():
+            if award_id := f.get("award", {}).get("id"):
+                award = award_service.record_cls.pid.resolve(award_id)
+                if award.get("acronym") and (
+                    award.get("acronym").lower() in description.lower()
+                ):
                     return True
     return False
 
@@ -34,9 +36,11 @@ def award_acronym_in_title(record):
 
     for f in funding:
         if f["funder"]["id"] == "00k4n6c32":
-            if "award" in f:
-                award = award_service.record_cls.pid.resolve(f["award"]["id"])
-                if award["acronym"].lower() in title.lower():
+            if award_id := f.get("award", {}).get("id"):
+                award = award_service.record_cls.pid.resolve(award_id)
+                if award.get("acronym") and (
+                    award.get("acronym").lower() in title.lower()
+                ):
                     return True
     return False
 
@@ -44,7 +48,9 @@ def award_acronym_in_title(record):
 def test_phrases_in_record(record):
     """Check if test words in record."""
     test_phrases = current_app.config.get("CURATION_TEST_PHRASES")
-    record_data = record.metadata["title"] + " " + record.metadata["description"]
+    record_data = (
+        record.metadata["title"] + " " + record.metadata.get("description", "")
+    )
 
     for word in test_phrases:
         if word.lower() in record_data.lower():
