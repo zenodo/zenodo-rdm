@@ -8,6 +8,7 @@
 
 import re
 from urllib.parse import parse_qs, urlencode, urlsplit, urlunsplit
+from zipfile import Path, is_zipfile
 
 import idutils
 from flask import current_app, url_for
@@ -139,12 +140,15 @@ def swh_link_render(record):
     permissions = record.has_permissions_to(["manage"])
     can_manage = permissions.get("can_manage", False)
 
-    def _get_success_text(deposit):
+    def _get_success_text(deposit, record):
         """Get the text to be displayed when the deposit was successful.
 
         This function takes a `deposit` object as input and returns the text and link
         to be displayed when the deposit was successful. The text is the identifier of
         the deposit, and the link is a URL to the deposit's directory in the SWH UI.
+
+        Additionally, takes a `record` object as input to get the root path of the ZIP file
+        to be displayed in the SWH link.
 
         Examples
         --------
@@ -156,10 +160,15 @@ def swh_link_render(record):
             >>> _get_success_text(deposit)
             ('swh:1:origin:abc123', 'https://swh.example.com/browse/directory/abc123/')
 
+            >>> deposit = Deposit(swhid="swh:1:origin:abc123;origin=https://zenodo.org/record/xyz789&path=/")
+            >>> _get_success_text(deposit)
+            ('swh:1:origin:abc123', 'https://swh.example.com/browse/directory/abc123&path=/root_directory/')
+
         """
         swhid = deposit.swhid
         base_url = current_app.config.get("SWH_UI_BASE_URL")
         try:
+            # Generate the link and text to be displayed
             swh_link = f"{base_url}/{swhid}"
             swh_text = swhid.split(";")[0]
         except Exception:
@@ -203,7 +212,7 @@ def swh_link_render(record):
         subtitle, link = _get_waiting_text(d_res.deposit)
 
     if d_res.deposit.status == SWHDepositStatus.SUCCESS:
-        subtitle, link = _get_success_text(d_res.deposit)
+        subtitle, link = _get_success_text(d_res.deposit, record)
 
     if not subtitle:
         return None
