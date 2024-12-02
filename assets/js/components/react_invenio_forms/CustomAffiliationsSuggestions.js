@@ -2,11 +2,14 @@ import React from "react";
 import { Header, Grid } from "semantic-ui-react";
 
 export const CustomAffiliationsSuggestions = ({
-  creatibutor, makeSubheader, makeIdEntry
+  creatibutor,
+  isOrganization,
+  makeSubheader,
+  makeIdEntry,
 }) => {
   const { name, acronym, identifiers = [], id } = creatibutor;
 
-  const subheader = makeSubheader(creatibutor, creatibutor.isOrganization);
+  const subheader = makeSubheader(creatibutor, isOrganization);
   const displayName = acronym ? `${name} (${acronym})` : name;
 
   const sources = [];
