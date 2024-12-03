@@ -10,6 +10,7 @@ from .bibtex import ZenodoBibtexSerializer
 from .cff import ZenodoCFFSerializer
 from .codemeta import ZenodoCodemetaSerializer
 from .datacite import ZenodoDataciteJSONSerializer, ZenodoDataciteXMLSerializer
+from .dcat import ZenodoDCATSerializer
 
 __all__ = (
     "ZenodoBibtexSerializer",
@@ -17,4 +18,5 @@ __all__ = (
     "ZenodoDataciteJSONSerializer",
     "ZenodoDataciteXMLSerializer",
     "ZenodoCFFSerializer",
+    "ZenodoDCATSerializer",
 )
