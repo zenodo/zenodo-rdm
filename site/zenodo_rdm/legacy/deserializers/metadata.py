@@ -254,10 +254,19 @@ class MetadataSchema(Schema):
         if rdm_license:
             ret = {"id": rdm_license}
         else:
+            if isinstance(obj, dict) and "id" in obj:
+                license_id = obj.get("id")
+            elif isinstance(obj, str):
+                license_id = obj
+            else:
+                raise ValidationError(
+                    f"Invalid license value provided (expected string or object with 'id' key): {obj}"
+                )
+
             # If license does not exist in RDM, it is added as custom
-            legacy_license = LEGACY_LICENSES.get(obj)
+            legacy_license = LEGACY_LICENSES.get(license_id)
             if not legacy_license:
-                raise ValidationError(f"Invalid license provided: {obj}")
+                raise ValidationError(f"Invalid license provided: {license_id}")
             ret = {"title": {"en": legacy_license["title"]}}
 
         return [ret]
