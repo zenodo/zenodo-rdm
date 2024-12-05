@@ -165,10 +165,10 @@ class SubcommunityInvitationCreateAction(CreateSubcommunityInvitation):
             "to join?</b></br>You should <b>decline</b> this invitation if your Zenodo community "
             "is not related to the above mentioned EU-funded project, or if the community is used "
             "for multiple purposes (e.g both an organisation and a project).</br></br><b>"
-            "Further questions?</b></br>Don't hesitate to get in <a href='https://zenodo.org/support'>"
-            "touch with us</a> if you have any questions.</br></br>The request will be automatically "
+            "Further questions?</b></br>Don't hesitate to <a href='https://zenodo.org/support'>get in "
+            "touch</a> with us if you have any questions.</br></br>The request will be automatically "
             f"accepted on <b>{expires_at}</b> in case you do not accept or decline the request by then."
-            "</br></br>Your sincerely,</br>The Zenodo team"
+            "</br></br>Yours sincerely,</br>The Zenodo team"
         )
 
         super().execute(identity, uow)
