@@ -12,6 +12,7 @@ from flask import current_app
 from invenio_github.errors import CustomGitHubMetadataError
 from invenio_rdm_records.services.github.metadata import RDMReleaseMetadata
 from invenio_rdm_records.services.github.release import RDMGithubRelease
+from zenodo_legacy.licenses import legacy_to_rdm
 
 from zenodo_rdm.github.schemas import CitationMetadataSchema
 from zenodo_rdm.legacy.deserializers.schemas import LegacySchema
@@ -110,10 +111,11 @@ class ZenodoGithubRelease(RDMGithubRelease):
                     ]
                 }
             )
-            # Add default license if not yet added
+        # Add default license if not yet added
         if not output.get("rights"):
             default_license = "cc-by-4.0"
             if metadata.repo_license:
                 default_license = metadata.repo_license.lower()
-            output.update({"rights": [{"id": default_license}]})
+            rdm_license = legacy_to_rdm(default_license) or default_license
+            output.update({"rights": [{"id": rdm_license}]})
         return output
