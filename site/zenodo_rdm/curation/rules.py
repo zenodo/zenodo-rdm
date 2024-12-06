@@ -21,7 +21,7 @@ def award_acronym_in_description(record):
 
     funding = record.metadata.get("funding", [])
     for f in funding:
-        if f["funder"]["id"] == "00k4n6c32":
+        if f["funder"].get("id") == "00k4n6c32":
             if award_id := f.get("award", {}).get("id"):
                 award = award_service.record_cls.pid.resolve(award_id)
                 if award.get("acronym") and (
