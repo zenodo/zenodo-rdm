@@ -6,8 +6,7 @@
 # it under the terms of the MIT License; see LICENSE file for more details.
 """Rules for curation."""
 
-from datetime import datetime
-
+import arrow
 from flask import current_app
 from invenio_records_resources.proxies import current_service_registry
 
@@ -70,7 +69,7 @@ def published_before_award_start(record):
             if award_id := f.get("award", {}).get("id"):
                 award = award_service.record_cls.pid.resolve(award_id)
                 if award.get("start_date") and (
-                    record.created < datetime.fromisoformat(award.get("start_date"))
+                    record.created < arrow.get(award.get("start_date")).datetime
                 ):
                     return True
     return False
