@@ -19,7 +19,7 @@ def award_acronym_in_description(record):
     if not description:
         return False
 
-    funding = record.metadata["funding"]
+    funding = record.metadata.get("funding", [])
     for f in funding:
         if f["funder"]["id"] == "00k4n6c32":
             if award_id := f.get("award", {}).get("id"):
