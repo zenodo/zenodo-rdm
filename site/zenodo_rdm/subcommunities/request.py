@@ -30,14 +30,31 @@ from invenio_requests.proxies import current_events_service
 from marshmallow import fields
 
 
-def _add_community_records(child, parent, uow):
+def _add_community_records(child_id, parent_id, uow):
     """Add records from child to parent."""
     records = current_community_records_service.search(
-        system_identity, community_id=child
+        system_identity, community_id=child_id
     )
     current_rdm_records.record_communities_service.bulk_add(
-        system_identity, parent, (x["id"] for x in records), uow=uow
+        system_identity, parent_id, (x["id"] for x in records), uow=uow
     )
+
+
+def _update_subcommunity_funding(request, subcommunity, uow):
+    """Update the subcommunity funding metadata."""
+    project_id = request.get("payload", {}).get("project_id")
+    if not project_id:
+        return
+
+    funding = subcommunity.metadata.setdefault("funding", [])
+    if project_id in [f.get("award", {}).get("id") for f in funding]:
+        return subcommunity
+
+    funder_id, _ = project_id.split("::", 1)
+    funding.append({"award": {"id": project_id}, "funder": {"id": funder_id}})
+    uow.register(RecordCommitOp(subcommunity))
+
+    return subcommunity
 
 
 class SubcommunityAcceptAction(AcceptSubcommunity):
@@ -61,26 +78,11 @@ class SubcommunityCreateAction(actions.CreateAndSubmitAction):
     Zenodo re-implementation of the create action, to also create the system comment.
     """
 
-    def _update_subcommunity_funding(self, subcommunity, uow):
-        """Update the subcommunity funding metadata."""
-        project_id = self.request.get("payload", {}).get("project_id")
-        if not project_id:
-            return
-
-        funding = subcommunity.metadata.setdefault("funding", [])
-        if project_id in [f.get("award", {}).get("id") for f in funding]:
-            return subcommunity
-
-        funder_id, _ = project_id.split("::", 1)
-        funding.append({"award": {"id": project_id}, "funder": {"id": funder_id}})
-        uow.register(RecordCommitOp(subcommunity))
-        return subcommunity
-
     def execute(self, identity, uow):
         """Execute create action."""
         subcommunity = self.request.topic.resolve()
 
-        self._update_subcommunity_funding(subcommunity, uow)
+        _update_subcommunity_funding(self.request, subcommunity, uow)
 
         # Execute the default create action
         super().execute(identity, uow)
@@ -137,14 +139,15 @@ class SubcommunityInvitationCreateAction(CreateSubcommunityInvitation):
 
         # example: "May 11, 2024"
         expires_at = self.request.expires_at.strftime("%B %d, %Y")
-        NAME = self.request.get("payload", {}).get("community-name")
-        ACRONYM = self.request.get("payload", {}).get("project-acronym")
+        NAME = self.request.get("payload", {}).get("community_name")
+        ACRONYM = self.request.get("payload", {}).get("project_acronym")
+        _, ID = self.request.get("payload", {}).get("project_id").split("::")
         self.request["description"] = (
             "<p>We would like to invite you to join the <a href='https://zenodo.org/communities/eu/'>"
             "EU Open Research Repository</a> because we have detected that your Zenodo community "
             "is likely related to an EU-funded project:</br><ul><li>Zenodo community: "
-            f"{NAME}</li><li>EU-funded project: {ACRONYM}</li></ul>The EU Open "
-            "Research Repository is a Zenodo community dedicated to fostering open science "
+            f"{NAME}</li><li>EU-funded project: <a href='https://cordis.europa.eu/project/id/{ID}'>{ACRONYM}</a>"
+            "</li></ul>The EU Open Research Repository is a Zenodo community dedicated to fostering open science "
             "and enhancing the visibility and accessibility of research outputs funded by "
             "the European Union. The community is managed by CERN on behalf of the European "
             "Commission.</br></br><b>What does it mean to join?</b></br><ul><li><b>Indexing:</b> "
@@ -182,10 +185,11 @@ class SubCommunityInvitationAcceptAction(AcceptSubcommunityInvitation):
 
     def execute(self, identity, uow):
         """Execute approve action."""
-        child = self.request.receiver.resolve().id
-        parent = self.request.created_by.resolve().id
+        child = self.request.receiver.resolve()
+        parent = self.request.created_by.resolve()
 
-        _add_community_records(child, parent, uow)
+        _add_community_records(child.id, parent.id, uow)
+        _update_subcommunity_funding(self.request, child, uow)
         # moving the community is handled by super()
 
         super().execute(identity, uow)
@@ -196,14 +200,16 @@ class SubcommunityInvitationExpireAction(actions.ExpireAction):
 
     def execute(self, identity, uow):
         """Execute expire action."""
-        child = self.request.receiver.resolve().id
-        parent = self.request.created_by.resolve().id
+        child = self.request.receiver.resolve()
+        parent = self.request.created_by.resolve()
 
-        _add_community_records(child, parent, uow)
+        _add_community_records(child.id, parent.id, uow)
 
         current_communities.service.bulk_update_parent(
-            system_identity, [child], parent_id=parent, uow=uow
+            system_identity, [child.id], parent_id=parent.id, uow=uow
         )
+
+        _update_subcommunity_funding(self.request, child, uow)
 
         super().execute(identity, uow)
 
@@ -220,8 +226,9 @@ class ZenodoSubCommunityInvitationRequest(SubCommunityInvitationRequest):
     """Request from a Zenodo community to add a child community."""
 
     payload_schema = {
-        "community-name": fields.String(required=True),
-        "project-acronym": fields.String(required=True),
+        "community_name": fields.String(required=True),
+        "project_acronym": fields.String(required=True),
+        "project_id": fields.String(required=True),
     }
 
     available_actions = {
