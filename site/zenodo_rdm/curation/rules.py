@@ -34,10 +34,10 @@ def award_acronym_in_title(record):
     """Check if EU award name in record title."""
     award_service = current_service_registry.get("awards")
     title = record.metadata["title"]
-    funding = record.metadata["funding"]
 
+    funding = record.metadata.get("funding", [])
     for f in funding:
-        if f["funder"]["id"] == "00k4n6c32":
+        if f["funder"].get("id") == "00k4n6c32":
             if award_id := f.get("award", {}).get("id"):
                 award = award_service.record_cls.pid.resolve(award_id)
                 if award.get("acronym") and (
@@ -64,12 +64,14 @@ def published_before_award_start(record):
     """Check if published before award start date."""
     award_service = current_service_registry.get("awards")
 
-    for f in record.metadata["funding"]:
-        if f["funder"]["id"] == "00k4n6c32":
+    funding = record.metadata.get("funding", [])
+    for f in funding:
+        if f["funder"].get("id") == "00k4n6c32":
             if award_id := f.get("award", {}).get("id"):
                 award = award_service.record_cls.pid.resolve(award_id)
                 if award.get("start_date") and (
-                    record.created < arrow.get(award.get("start_date")).datetime
+                    record.created.timestamp()
+                    < arrow.get(award.get("start_date")).datetime.timestamp()
                 ):
                     return True
     return False
