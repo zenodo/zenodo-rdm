@@ -62,7 +62,7 @@ class EURecordCurator(BaseCurator):
             rule_score = current_curation.scores.get(rule)
             if result is None:
                 continue
-            elif isinstance(rule_score, int):
+            elif type(rule_score) is int:
                 score += rule_score if result else 0
             elif isinstance(rule_score, bool):
                 if result:

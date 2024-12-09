@@ -52,3 +52,6 @@ CURATION_LOW_CONF_KEYWORDS_EU = []
 
 CURATION_HIGH_CONF_KEYWORDS_EU = []
 """High confidence keywords for EU records."""
+
+CURATION_TEST_PHRASES = []
+"""Test record phrases."""
