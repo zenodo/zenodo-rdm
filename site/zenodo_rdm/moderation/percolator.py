@@ -68,8 +68,20 @@ def create_percolator_index(record_cls):
                     "mappings": {**percolator_mappings},
                 },
             )
-        except Exception as e:
-            current_app.logger.exception(e)
+        except Exception:
+            current_app.logger.exception(
+                "Failed to create moderation percolator index."
+            )
+    else:
+        try:
+            current_search_client.indices.put_mapping(
+                index=percolator_index,
+                body=percolator_mappings,
+            )
+        except Exception:
+            current_app.logger.exception(
+                "Failed to update moderation percolator index."
+            )
 
 
 def index_percolate_query(
