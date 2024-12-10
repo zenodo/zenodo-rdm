@@ -33,7 +33,9 @@ from marshmallow import fields
 def _add_community_records(child_id, parent_id, uow):
     """Add records from child to parent."""
     records = current_community_records_service.search(
-        system_identity, community_id=child_id
+        system_identity,
+        community_id=child_id,
+        scan=True,
     )
     current_rdm_records.record_communities_service.bulk_add(
         system_identity, parent_id, (x["id"] for x in records), uow=uow
