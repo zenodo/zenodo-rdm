@@ -20,7 +20,13 @@ from zenodo_rdm.curation.curators import EURecordCurator
 @shared_task
 def run_eu_record_curation(since):
     """Run EC Curator."""
-    ctx = {"processed": 0, "approved": 0, "failed": 0, "since": since}
+    ctx = {
+        "processed": 0,
+        "approved": 0,
+        "failed": 0,
+        "since": since,
+        "records_moved": [],
+    }
     dry_run = not current_app.config.get("CURATION_ENABLE_EU_CURATOR")
     curator = EURecordCurator(dry=dry_run)
 
@@ -40,7 +46,8 @@ def run_eu_record_curation(since):
             dsl.Q(
                 "range",
                 updated={
-                    "gte": datetime.fromisoformat(since).isoformat(),
+                    "gte": datetime.fromisoformat(since).isoformat()
+                    - timedelta(hours=12),
                 },
             ),
         ],
@@ -69,6 +76,8 @@ def run_eu_record_curation(since):
             ctx["processed"] += 1
             if result["evaluation"]:
                 ctx["approved"] += 1
+                if not dry_run:
+                    ctx["records_moved"].append(record.pid.pid_value)
         except Exception:
             # NOTE Since curator's raise_rules_exc is by default false, rules would not fail.
             # This catches failures due to other reasons
