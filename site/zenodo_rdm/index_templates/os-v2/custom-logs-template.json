@@ -1,0 +1,29 @@
+{
+  "index_patterns": [
+    "__SEARCH_INDEX_PREFIX__custom-logs-*"
+  ],
+  "template": {
+    "aliases": {
+      "__SEARCH_INDEX_PREFIX__custom-logs": {}
+    },
+    "settings": {
+      "index": {
+        "refresh_interval": "5s"
+      }
+    },
+    "mappings": {
+      "properties": {
+        "timestamp": {
+          "type": "date"
+        },
+        "key": {
+          "type": "keyword"
+        },
+        "context": {
+          "type": "object",
+          "dynamic": true
+        }
+      }
+    }
+  }
+}
