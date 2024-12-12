@@ -5,7 +5,7 @@
 # ZenodoRDM is free software; you can redistribute it and/or modify
 # it under the terms of the MIT License; see LICENSE file for more details.
 
-"""Moderation config."""
+"""Curation config."""
 
 from .rules import (
     additional_desc_contains_high_conf_keywords,
