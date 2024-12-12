@@ -1,0 +1,30 @@
+{# -*- coding: utf-8 -*-
+
+  This file is part of Zenodo.
+  Copyright (C) 2024 CERN.
+
+  Zenodo is a free software; you can redistribute it and/or modify it
+  under the terms of the MIT License; see LICENSE file for more details.
+#}
+
+{% extends "invenio_communities/base.html" %}
+
+{%- if community is not verified_community -%}
+  {% set meta_robot_tags = [
+    {
+      "name": "robots",
+      "content": "noindex, nofollow",
+      "data-reason": ("Community is not verified" if permissions.can_moderate),
+    }
+  ] %}
+{%- endif -%}
+
+{%- block javascript %}
+{{ super() }}
+{{ webpack['invenio-communities-header.js'] }}
+{%- endblock javascript %}
+
+{%- block page_body %}
+  {% set community_menu_active = True %}
+  {% include "invenio_communities/details/header.html" %}
+{%- endblock page_body %}

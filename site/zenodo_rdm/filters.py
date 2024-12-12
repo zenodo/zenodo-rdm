@@ -7,6 +7,7 @@
 
 """Filters to be used in the Jinja templates."""
 
+from invenio_communities.proxies import current_communities
 from invenio_rdm_records.proxies import current_rdm_records_service as records_service
 from invenio_records.dictutils import dict_lookup
 
@@ -44,5 +45,19 @@ def is_verified_record(record):
     try:
         record = records_service.record_cls.pid.resolve(record["id"])
         return record.parent.is_verified
+    except Exception:
+        return False
+
+
+def is_verified_community(community):
+    """Return ``True`` if record is verified.
+
+    NOTE: This is not a good way to check in a Jinja template if a record is verified,
+    since it fetches again the record from the DB. We should include the verification
+    information in the template context.
+    """
+    try:
+        comm = current_communities.service.record_cls.pid.resolve(community["id"])
+        return comm.is_verified
     except Exception:
         return False
