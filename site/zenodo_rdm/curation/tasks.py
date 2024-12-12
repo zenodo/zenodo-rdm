@@ -29,6 +29,8 @@ def run_eu_record_curation(since):
     }
     dry_run = not current_app.config.get("CURATION_ENABLE_EU_CURATOR")
     curator = EURecordCurator(dry=dry_run)
+    created_before = (datetime.now(timezone.utc) - timedelta(days=30)).isoformat()
+    updated_after = (datetime.fromisoformat(since) - timedelta(hours=12)).isoformat()
 
     query = dsl.Q(
         "bool",
@@ -38,16 +40,13 @@ def run_eu_record_curation(since):
             dsl.Q(
                 "range",
                 created={
-                    "lte": (
-                        datetime.now(timezone.utc) - timedelta(days=30)
-                    ).isoformat(),
+                    "lte": created_before,
                 },
             ),
             dsl.Q(
                 "range",
                 updated={
-                    "gte": datetime.fromisoformat(since).isoformat()
-                    - timedelta(hours=12),
+                    "gte": updated_after,
                 },
             ),
         ],
