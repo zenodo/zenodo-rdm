@@ -113,3 +113,47 @@ def contains_high_conf_keywords(record):
         if word.lower() in record_data.lower():
             return True
     return False
+
+
+def additional_desc_contains_high_conf_keywords(record):
+    """Check if additional description contains high confidence keywords."""
+    high_conf_keywords_eu = current_app.config.get("CURATION_HIGH_CONF_KEYWORDS_EU")
+    additional_descriptions = record.metadata.get("additional_descriptions", [])
+    record_data = " ".join([x.get("description", "") for x in additional_descriptions])
+
+    for word in high_conf_keywords_eu:
+        # TODO could possibly return a number for higher conf
+        if word.lower() in record_data.lower():
+            return True
+    return False
+
+
+def additional_desc_contains_low_conf_keywords(record):
+    """Check if additional description contains low confidence keywords."""
+    low_conf_keywords_eu = current_app.config.get("CURATION_LOW_CONF_KEYWORDS_EU")
+    additional_descriptions = record.metadata.get("additional_descriptions", [])
+    record_data = " ".join([x.get("description", "") for x in additional_descriptions])
+
+    for word in low_conf_keywords_eu:
+        # TODO could possibly return a number for higher conf
+        if word.lower() in record_data.lower():
+            return True
+    return False
+
+
+def award_acronym_in_additional_description(record):
+    """Check if EU award name in record additional description."""
+    award_service = current_service_registry.get("awards")
+    additional_descriptions = record.metadata.get("additional_descriptions", [])
+    record_data = " ".join([x.get("description", "") for x in additional_descriptions])
+
+    funding = record.metadata.get("funding", [])
+    for f in funding:
+        if f["funder"].get("id") == "00k4n6c32":
+            if award_id := f.get("award", {}).get("id"):
+                award = award_service.record_cls.pid.resolve(award_id)
+                if award.get("acronym") and (
+                    award.get("acronym").lower() in record_data.lower()
+                ):
+                    return True
+    return False
