@@ -8,6 +8,9 @@
 """Moderation config."""
 
 from .rules import (
+    additional_desc_contains_high_conf_keywords,
+    additional_desc_contains_low_conf_keywords,
+    award_acronym_in_additional_description,
     award_acronym_in_description,
     award_acronym_in_title,
     contains_high_conf_keywords,
@@ -25,22 +28,28 @@ CURATION_EU_RULES = {
     "user_verified": user_verified,
     "contains_low_conf_keywords": contains_low_conf_keywords,
     "contains_high_conf_keywords": contains_high_conf_keywords,
+    "additional_desc_contains_low_conf_keywords": additional_desc_contains_low_conf_keywords,
+    "additional_desc_contains_high_conf_keywords": additional_desc_contains_high_conf_keywords,
+    "award_acronym_in_additional_description": award_acronym_in_additional_description,
 }
 """Rules to run for EU Curation."""
 
 CURATION_SCORES = {
-    "award_acronym_in_title": 5,
-    "award_acronym_in_description": 10,
+    "award_acronym_in_title": 0,
+    "award_acronym_in_description": 0,
     "test_phrases_in_record": False,
     "published_before_award_start": False,
-    "user_verified": 5,
-    "contains_low_conf_keywords": 5,
-    "contains_high_conf_keywords": 10,
+    "user_verified": 0,
+    "contains_low_conf_keywords": 0,
+    "contains_high_conf_keywords": 0,
+    "additional_desc_contains_low_conf_keywords": 0,
+    "additional_desc_contains_high_conf_keywords": 0,
+    "award_acronym_in_additional_description": 0,
 }
 """Rule scores for EU Curation."""
 
 
-CURATION_THRESHOLDS = {"EU_RECORDS_CURATION": 15}
+CURATION_THRESHOLDS = {"EU_RECORDS_CURATION": 100}
 """Threshold values for curators/rules."""
 
 
