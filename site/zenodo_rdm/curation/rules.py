@@ -16,39 +16,45 @@ from invenio_requests.proxies import current_requests_service
 from invenio_search.engine import dsl
 
 
-def award_acronym_in_description(record):
-    """Check if EU award name in record description."""
-    award_service = current_service_registry.get("awards")
-    description = record.metadata.get("description")
-    if not description:
-        return False
+def _award_acronym_number_in_text(award, text):
+    """Check for award number/acronym in data."""
+    if award.get("acronym") and (award.get("acronym") in text):
+        return True
+    if award.get("number") and (award.get("number") in text):
+        return True
+    return False
 
+
+def _get_ec_awards(record):
+    award_service = current_service_registry.get("awards")
+    awards = []
     funding = record.metadata.get("funding", [])
     for f in funding:
         if f["funder"].get("id") == "00k4n6c32":
             if award_id := f.get("award", {}).get("id"):
                 award = award_service.record_cls.pid.resolve(award_id)
-                if award.get("acronym") and (
-                    award.get("acronym").lower() in description.lower()
-                ):
-                    return True
+                awards.append(award)
+    return awards
+
+
+def award_acronym_in_description(record):
+    """Check if EU award name in record description."""
+    if description := record.metadata.get("description"):
+        awards = _get_ec_awards(record)
+        for award in awards:
+            if _award_acronym_number_in_text(award, description):
+                return True
     return False
 
 
 def award_acronym_in_title(record):
     """Check if EU award name in record title."""
-    award_service = current_service_registry.get("awards")
     title = record.metadata["title"]
 
-    funding = record.metadata.get("funding", [])
-    for f in funding:
-        if f["funder"].get("id") == "00k4n6c32":
-            if award_id := f.get("award", {}).get("id"):
-                award = award_service.record_cls.pid.resolve(award_id)
-                if award.get("acronym") and (
-                    award.get("acronym").lower() in title.lower()
-                ):
-                    return True
+    awards = _get_ec_awards(record)
+    for award in awards:
+        if _award_acronym_number_in_text(award, title):
+            return True
     return False
 
 
@@ -67,18 +73,13 @@ def test_phrases_in_record(record):
 
 def published_before_award_start(record):
     """Check if published before award start date."""
-    award_service = current_service_registry.get("awards")
-
-    funding = record.metadata.get("funding", [])
-    for f in funding:
-        if f["funder"].get("id") == "00k4n6c32":
-            if award_id := f.get("award", {}).get("id"):
-                award = award_service.record_cls.pid.resolve(award_id)
-                if award.get("start_date") and (
-                    record.created.timestamp()
-                    < arrow.get(award.get("start_date")).datetime.timestamp()
-                ):
-                    return True
+    awards = _get_ec_awards(record)
+    for award in awards:
+        if award.get("start_date") and (
+            record.created.timestamp()
+            < arrow.get(award.get("start_date")).datetime.timestamp()
+        ):
+            return True
     return False
 
 
@@ -148,23 +149,17 @@ def additional_desc_contains_low_conf_keywords(record):
 
 def award_acronym_in_additional_description(record):
     """Check if EU award name in record additional description."""
-    award_service = current_service_registry.get("awards")
     additional_descriptions = record.metadata.get("additional_descriptions", [])
     record_data = " ".join([x.get("description", "") for x in additional_descriptions])
 
-    funding = record.metadata.get("funding", [])
-    for f in funding:
-        if f["funder"].get("id") == "00k4n6c32":
-            if award_id := f.get("award", {}).get("id"):
-                award = award_service.record_cls.pid.resolve(award_id)
-                if award.get("acronym") and (
-                    award.get("acronym").lower() in record_data.lower()
-                ):
-                    return True
+    awards = _get_ec_awards(record)
+    for award in awards:
+        if _award_acronym_number_in_text(award, record_data):
+            return True
     return False
 
 
-def eu_community_declined_request(record):
+def eu_community_request(record):
     """Check if record was rejected from EU community."""
     community_requests = dsl.Q(
         "bool",
@@ -188,6 +183,8 @@ def eu_community_declined_request(record):
     results = current_requests_service.search(system_identity, extra_filter=finalq)
 
     for result in results:
+        # return true if there was a declined request or an existing open request
+        # as we respond to open requests ourselves.
         if result["is_closed"] and result["status"] == "declined":
             return True
         if result["is_open"] and not result["is_expired"]:
@@ -216,10 +213,10 @@ def eu_subcommunity_declined_request(record):
     results = current_requests_service.search(system_identity, extra_filter=finalq)
 
     for result in results:
-        receiver = current_communities.service.record_cls.pid.resolve(
+        community = current_communities.service.record_cls.pid.resolve(
             result["receiver"]["community"]
         )
-        if receiver.parent and str(receiver.parent.id) == current_app.config.get(
+        if community.parent and str(community.parent.id) == current_app.config.get(
             "EU_COMMUNITY_UUID"
         ):
             if result["status"] == "declined":
@@ -232,17 +229,11 @@ def community_name_award_acronym(record):
     comm_text = ""
     for comm in record.parent.communities:
         comm_text += comm.metadata.get("title", "")
-        comm_text += comm.metadata.get("page", "")
+        comm_text += " " + comm.metadata.get("page", "")
 
     if comm_text:
-        award_service = current_service_registry.get("awards")
-        funding = record.metadata.get("funding", [])
-        for f in funding:
-            if f["funder"].get("id") == "00k4n6c32":
-                if award_id := f.get("award", {}).get("id"):
-                    award = award_service.record_cls.pid.resolve(award_id)
-                    if award.get("acronym") and (
-                        award.get("acronym").lower() in comm_text.lower()
-                    ):
-                        return True
+        awards = _get_ec_awards(record)
+        for award in awards:
+            if _award_acronym_number_in_text(award, comm_text):
+                return True
     return False
