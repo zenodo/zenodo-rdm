@@ -16,7 +16,7 @@ from .rules import (
     community_name_award_acronym,
     contains_high_conf_keywords,
     contains_low_conf_keywords,
-    eu_community_declined_request,
+    eu_community_request,
     eu_subcommunity_declined_request,
     published_before_award_start,
     test_phrases_in_record,
@@ -34,7 +34,7 @@ CURATION_EU_RULES = {
     "additional_desc_contains_low_conf_keywords": additional_desc_contains_low_conf_keywords,
     "additional_desc_contains_high_conf_keywords": additional_desc_contains_high_conf_keywords,
     "award_acronym_in_additional_description": award_acronym_in_additional_description,
-    "eu_community_declined_request": eu_community_declined_request,
+    "eu_community_request": eu_community_request,
     "eu_subcommunity_declined_request": eu_subcommunity_declined_request,
     "community_name_award_acronym": community_name_award_acronym,
 }
@@ -51,7 +51,7 @@ CURATION_SCORES = {
     "additional_desc_contains_low_conf_keywords": 0,
     "additional_desc_contains_high_conf_keywords": 0,
     "award_acronym_in_additional_description": 0,
-    "eu_community_declined_request": False,
+    "eu_community_request": False,
     "eu_subcommunity_declined_request": False,
     "community_name_award_acronym": 0,
 }
