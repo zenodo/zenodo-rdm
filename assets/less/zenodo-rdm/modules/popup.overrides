@@ -48,3 +48,12 @@
   max-width: 80vw;
   white-space: break-spaces;
 }
+
+.field-info {
+  padding: 0.4em !important;
+  margin-top: -0.7em !important;
+  [data-tooltip]::after {
+    width: 25vw;
+    white-space: break-spaces;
+  }
+}

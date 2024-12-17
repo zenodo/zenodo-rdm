@@ -1,6 +1,16 @@
 {%- extends config.ACCOUNTS_COVER_TEMPLATE %}
 
 {% from "invenio_accounts/_macros.html" import render_field, form_errors %}
+
+{% macro render_field_info(message, tooltip) %}
+  <div class="ui small bottom attached message info field-info">
+    {{ message }}
+    <span class="ui icon" data-position="bottom center" data-tooltip="{{ tooltip }}">
+      <i class="circle info icon"></i>
+    </span>
+  </div>
+{% endmacro %}
+
 {% block page_body %}
 <div class="ui centered container">
   <h1 class="ui inverted header text-center">Research. Shared! Sign up today</h1>
@@ -52,7 +62,9 @@
       {{ form.hidden_tag() }}
 
       {%- block registration_form_fields scoped %}
-      {{ render_field(form.email, icon="user icon", autofocus=True, errormsg=False) }}
+        {{ render_field(form.email, icon="user icon", autofocus=True, errormsg=False) }}
+        {{ render_field_info(_('Please use an institutional email address'), _('An institutional email address helps us verify your account and prevents our spam filtering system from automatically blocking your account.')) }}  
+
       {{ render_field(form.password, icon="lock icon", errormsg=False) }}
 
       {%- if form.password_confirm %}
