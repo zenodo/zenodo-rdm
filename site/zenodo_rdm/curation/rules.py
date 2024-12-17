@@ -8,7 +8,12 @@
 
 import arrow
 from flask import current_app
+from invenio_access.permissions import system_identity
+from invenio_communities.proxies import current_communities
+from invenio_rdm_records.requests import CommunityInclusion, CommunitySubmission
 from invenio_records_resources.proxies import current_service_registry
+from invenio_requests.proxies import current_requests_service
+from invenio_search.engine import dsl
 
 
 def award_acronym_in_description(record):
@@ -156,4 +161,67 @@ def award_acronym_in_additional_description(record):
                     award.get("acronym").lower() in record_data.lower()
                 ):
                     return True
+    return False
+
+
+def eu_community_declined_request(record):
+    """Check if record was rejected from EU community."""
+    community_requests = dsl.Q(
+        "bool",
+        must=[
+            dsl.Q(
+                "term",
+                **{"receiver.community": current_app.config.get("EU_COMMUNITY_UUID")},
+            ),
+            dsl.Q("term", **{"topic.record": record.pid.pid_value}),
+        ],
+    )
+    request_types = dsl.Q(
+        "bool",
+        should=[
+            dsl.Q("term", **{"type": CommunityInclusion.type_id}),
+            dsl.Q("term", **{"type": CommunitySubmission.type_id}),
+        ],
+        minimum_should_match=1,
+    )
+    finalq = community_requests & request_types
+    results = current_requests_service.search(system_identity, extra_filter=finalq)
+
+    for result in results:
+        if result["is_closed"] and result["status"] == "declined":
+            return True
+        if result["is_open"] and not result["is_expired"]:
+            return True
+    return False
+
+
+def eu_subcommunity_declined_request(record):
+    """Check if record was rejected from EU sub community."""
+    record_requests = dsl.Q(
+        "bool",
+        must=[
+            dsl.Q("term", **{"topic.record": record.pid.pid_value}),
+            dsl.Q("term", **{"is_open": False}),
+        ],
+    )
+    request_types = dsl.Q(
+        "bool",
+        should=[
+            dsl.Q("term", **{"type": CommunityInclusion.type_id}),
+            dsl.Q("term", **{"type": CommunitySubmission.type_id}),
+        ],
+        minimum_should_match=1,
+    )
+    finalq = record_requests & request_types
+    results = current_requests_service.search(system_identity, extra_filter=finalq)
+
+    for result in results:
+        receiver = current_communities.service.record_cls.pid.resolve(
+            result["receiver"]["community"]
+        )
+        if receiver.parent and str(receiver.parent.id) == current_app.config.get(
+            "EU_COMMUNITY_UUID"
+        ):
+            if result["status"] == "declined":
+                return True
     return False
