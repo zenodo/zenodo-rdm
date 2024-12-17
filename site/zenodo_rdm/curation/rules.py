@@ -16,16 +16,22 @@ from invenio_requests.proxies import current_requests_service
 from invenio_search.engine import dsl
 
 
-def _award_acronym_number_in_text(award, text):
-    """Check for award number/acronym in data."""
-    if award.get("acronym") and (award.get("acronym") in text):
+def _award_acronym_in_text(award, text):
+    """Check for award acronym in data."""
+    if award.get("acronym") and (award.get("acronym").lower() in text.lower()):
         return True
-    if award.get("number") and (award.get("number") in text):
+    return False
+
+
+def _award_number_in_text(award, text):
+    """Check for award number in data."""
+    if award.get("number") and (str(award.get("number")) in text):
         return True
     return False
 
 
 def _get_ec_awards(record):
+    """Get all EC funded awards of record."""
     award_service = current_service_registry.get("awards")
     awards = []
     funding = record.metadata.get("funding", [])
@@ -42,7 +48,17 @@ def award_acronym_in_description(record):
     if description := record.metadata.get("description"):
         awards = _get_ec_awards(record)
         for award in awards:
-            if _award_acronym_number_in_text(award, description):
+            if _award_acronym_in_text(award, description):
+                return True
+    return False
+
+
+def award_number_in_description(record):
+    """Check if EU award number in record description."""
+    if description := record.metadata.get("description"):
+        awards = _get_ec_awards(record)
+        for award in awards:
+            if _award_number_in_text(award, description):
                 return True
     return False
 
@@ -53,7 +69,7 @@ def award_acronym_in_title(record):
 
     awards = _get_ec_awards(record)
     for award in awards:
-        if _award_acronym_number_in_text(award, title):
+        if _award_acronym_in_text(award, title):
             return True
     return False
 
@@ -154,7 +170,19 @@ def award_acronym_in_additional_description(record):
 
     awards = _get_ec_awards(record)
     for award in awards:
-        if _award_acronym_number_in_text(award, record_data):
+        if _award_acronym_in_text(award, record_data):
+            return True
+    return False
+
+
+def award_number_in_additional_description(record):
+    """Check if EU award number in record additional description."""
+    additional_descriptions = record.metadata.get("additional_descriptions", [])
+    record_data = " ".join([x.get("description", "") for x in additional_descriptions])
+
+    awards = _get_ec_awards(record)
+    for award in awards:
+        if _award_number_in_text(award, record_data):
             return True
     return False
 
@@ -224,8 +252,8 @@ def eu_subcommunity_declined_request(record):
     return False
 
 
-def community_name_award_acronym(record):
-    """Check if award acronym in community name."""
+def community_data_award_acronym(record):
+    """Check if award acronym in community data."""
     comm_text = ""
     for comm in record.parent.communities:
         comm_text += comm.metadata.get("title", "")
@@ -234,6 +262,6 @@ def community_name_award_acronym(record):
     if comm_text:
         awards = _get_ec_awards(record)
         for award in awards:
-            if _award_acronym_number_in_text(award, comm_text):
+            if _award_acronym_in_text(award, comm_text):
                 return True
     return False
