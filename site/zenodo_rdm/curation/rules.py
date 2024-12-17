@@ -225,3 +225,24 @@ def eu_subcommunity_declined_request(record):
             if result["status"] == "declined":
                 return True
     return False
+
+
+def community_name_award_acronym(record):
+    """Check if award acronym in community name."""
+    comm_text = ""
+    for comm in record.parent.communities:
+        comm_text += comm.metadata.get("title", "")
+        comm_text += comm.metadata.get("page", "")
+
+    if comm_text:
+        award_service = current_service_registry.get("awards")
+        funding = record.metadata.get("funding", [])
+        for f in funding:
+            if f["funder"].get("id") == "00k4n6c32":
+                if award_id := f.get("award", {}).get("id"):
+                    award = award_service.record_cls.pid.resolve(award_id)
+                    if award.get("acronym") and (
+                        award.get("acronym").lower() in comm_text.lower()
+                    ):
+                        return True
+    return False
