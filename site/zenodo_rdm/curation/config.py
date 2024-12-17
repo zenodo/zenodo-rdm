@@ -13,6 +13,7 @@ from .rules import (
     award_acronym_in_additional_description,
     award_acronym_in_description,
     award_acronym_in_title,
+    community_name_award_acronym,
     contains_high_conf_keywords,
     contains_low_conf_keywords,
     eu_community_declined_request,
@@ -35,6 +36,7 @@ CURATION_EU_RULES = {
     "award_acronym_in_additional_description": award_acronym_in_additional_description,
     "eu_community_declined_request": eu_community_declined_request,
     "eu_subcommunity_declined_request": eu_subcommunity_declined_request,
+    "community_name_award_acronym": community_name_award_acronym,
 }
 """Rules to run for EU Curation."""
 
@@ -51,6 +53,7 @@ CURATION_SCORES = {
     "award_acronym_in_additional_description": 0,
     "eu_community_declined_request": False,
     "eu_subcommunity_declined_request": False,
+    "community_name_award_acronym": 0,
 }
 """Rule scores for EU Curation (bool value implies direct approval/decline)."""
 
