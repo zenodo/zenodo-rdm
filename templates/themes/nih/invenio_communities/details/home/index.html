@@ -1,0 +1,271 @@
+{# -*- coding: utf-8 -*-
+
+    This file is part of Invenio.
+    Copyright (C) 2024 CERN.
+  
+    Invenio is free software; you can redistribute it and/or modify it
+    under the terms of the MIT License; see LICENSE file for more details.
+  #}
+  
+  {% extends "invenio_communities/details/base.html" %}
+  {% from "zenodo_rdm/macros/record_item.html" import record_item %}
+  
+  {%- set title = community.metadata.title -%}
+  {% set active_community_header_menu_item = 'home' %}
+  
+  
+  {%- block page_body %}
+    {{ super() }}
+    <div class="ui rel-m-2 rel-pt-1">
+      <div class="ui centered stackable theme-font grid container rel-mt-4 rel-mb-4">
+        <div class="thirteen centered wide column">
+          <div class=" rel-mt-2 rel-mb-2">
+            <h1 class="ui large header">{{ _("Open repository for NIH-funded research") }}</h1>
+            <p class="text-muted ui small header">{{ _("Access research outputs from NIH-funded projects, advancing health discovery and innovation") }}</p>
+          </div>
+          <div class="ui grid centered rel-mt-2 rel-mb-4">
+            <div class="row">
+              <div class="column eight wide">
+                <form action="{{ url_for('invenio_app_rdm_communities.communities_detail', pid_value=community.slug) }}" class="ui form" role="search">
+                <div class="ui fluid action input">
+                  <input
+                    type="text"
+                    name="q"
+                    class="form-control"
+                    placeholder="{{ _('Search...') }}"
+                    aria-label="{{ _('Search') }}"
+                  >
+                  <button
+                    type="submit"
+                    class="ui icon search button"
+                    aria-label="{{ _('Search') }}"
+                  >
+                  {{ _('Search') }}
+                  </button>
+                </div>
+              </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+    <!--SUMMARY SECTION-->
+    {% macro format_metric_value(key, value) %}
+      {% if key in ("total_records", "total_grants") %}
+        {{ value | compact_number(max_value=1_000_000) }}
+      {% elif key == "total_data" %}
+        {{ value | filesizeformat }}
+      {% else %}
+        {{ value }}
+      {% endif %}
+    {% endmacro %}
+  
+    {% set icon_map = {
+      "total_records": {"icon": "file", "title": _("RECORDS")},
+      "total_grants": {"icon": "money", "title": _("GRANTS")},
+      "total_data": {"icon": "database", "title": _("DATA VOLUME")}
+    } %}
+  
+    <div class="ui stackable theme-font grid container rel-mt-4">
+      <div class="column">
+        <div class="row item">
+          <h1 class="ui large header inline">{{ _("Summary") }}</h1>
+        </div>
+        <div class="ui divider ml-0"></div>
+        <div class="center aligned ui equal width stackable grid rel-mt-4 rel-mb-2">
+          <div class="row rel-mb-4">
+            {% for key, value in metrics.items() %}
+            <div class="column">
+              <div class="theme-primary-text">
+                <h1 class="ui header header huge">
+                  <i class="{{ icon_map[key]['icon'] }} icon" aria-hidden="true"></i>
+                  {{ format_metric_value(key, value) }}
+                </h1>
+              </div>
+              <h1 class="text-muted ui header medium">{{ icon_map[key]['title'] }}</h1>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!--BROWSE SECTION-->
+    <div class="ui stackable theme-font one column grid container rel-mt-2 rel-mb-4">
+      <div class="column">
+          <div class="row item">
+            <h1 class="ui large header">{{ _("Browse") }}</h1>
+          </div>
+          <div class="ui divider ml-0"></div>
+          <div class="ui wide stretched stackable three column grid rel-mt-3">
+            <div class="sixteen wide mobile sixteen wide tablet five wide computer column">
+              <div class="segment-container rel-p-1 rel-pl-2 rel-pr-2">
+                  <h1 class="center aligned ui medium header rel-m-1">{{ _("Subject areas") }} </h1>
+                  <div class="ui bottom attached"> 
+                    <div class="ui container center aligned rel-mb-1">
+                      <a href="{{ url_for('invenio_app_rdm_communities.communities_browse', pid_value=community.slug) }}"
+                      class=" theme-primary-text-direct rel-mt-2">
+                    {{ _("Browse all") }}
+                  </a>
+                    </div>
+                  </div>
+              </div>
+            </div>
+            <div class="sixteen wide mobile sixteen wide tablet six wide computer  column">
+              <div class="segment-container rel-p-1">
+                  <h1 class="center aligned ui medium header rel-m-1">{{ _("Projects") }} </h1>
+                  <div class="ui bottom attached">
+                    {%- set is_user_authenticated = current_user.is_authenticated %}
+                    <div
+                      id="project-search-menu"
+                      data-is-authenticated='{{ is_user_authenticated | tojson }}'
+                      class="rel-p-1">
+                    </div>
+                    <div class="ui container center aligned rel-mb-1">
+                      <a href="{{ url_for('invenio_communities.communities_subcommunities', pid_value=community.slug) }}"
+                      class="rel-mt-1 theme-primary-text-direct">
+                    {{ _("See all") }}
+                  </a>
+                    </div>
+                  </div>
+              </div>
+            </div>
+            <div class="sixteen wide mobile sixteen wide tablet five wide computer column">
+              <div class="segment-container rel-p-1 rel-pl-2 rel-pr-2">
+                  <h1 class="center aligned ui medium header rel-m-1">{{ _("Funding programmes") }} </h1>
+                  <div class="ui bottom attached">
+                    <div class="ui container center aligned rel-mb-1">
+                      <a href="{{ url_for('invenio_app_rdm_communities.communities_browse', pid_value=community.slug) }}"
+                        class="ui rel-mt-1 theme-primary-text-direct ">
+                        {{ _("Browse all") }}
+                      </a>
+                    </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+      </div>
+    </div>
+  
+  
+      {% if records %}
+        <div class="ui stackable theme-font grid container rel-mt-4">
+          <div class="column rel-mb-4">
+            <div class="row item">
+              <h1 class="ui large header">{{ _("Recent uploads") }}</h1>
+            </div>
+            <div class="ui divider ml-0"></div>
+  
+            <div class="ui fluid stackable three column grid">
+              {% for record in records %}
+                <ul class="ui column items m-0">
+                  {{ record_item(record=record, themed_community=community) }}
+                </ul>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      {% endif %}
+  
+      <div class="ui stackable theme-font one column grid container rel-mt-2">
+        <div class="column">
+            <div class="row item">
+              <h1 class="ui large header">{{ _("How it works") }}</h1>
+            </div>
+            <div class="ui divider ml-0"></div>
+            <div class="ui wide stretched stackable three column grid rel-mt-3">
+              <div class="column">
+                <div class="segment-container rel-p-1">
+                    <h1 class="center aligned ui medium header rel-m-1">{{ _("Submit your research") }} </h1>
+                    <div class="ui bottom attached">
+                      <ul class="rel-pr-2">
+                        <li>
+                          <strong>{{ _("Eligibility") }}</strong> — {{ _("Any research output (data, software, posters, presentation, deliverables, ...) stemming from Horizon Europe (including ERC and MCSA), as well as earlier Framework Programmes and Euratom across all subject areas.") }}
+                        </li>
+                        <li>
+                          <strong>{{ _("Curation") }}</strong> — All submissions are <a href="/communities/eu/curation-policy">curated</a>. Submissions are NOT peer- reviewed (for papers please consider to publish through Open Research Europe platform).
+                        </li>
+                        <li>
+                          <strong>{{ _("Compliance") }}</strong> — {{ _("the EU Open Research Repository makes it easy to comply with the related open science requirements of the Horizon Europe grant agreement.") }}
+                        </li>
+                        <li>
+                          <strong>{{ _("Zenodo") }}</strong> — {{ _("EU Open Research Repository is community inside Zenodo which is managed and hosted by CERN.") }}
+                        </li>
+                      </ul>
+                      <div class="ui container center aligned rel-mb-1">
+                        <a href="/communities/{{ community.slug }}/pages/how-to-submit"
+                        class="ui positive button labeled theme-secondary icon rel-mt-2">
+                      <i class="upload icon" aria-hidden="true"></i>
+                      {{ _("How to submit") }}
+                    </a>
+                      </div>
+                    </div>
+                </div>
+              </div>
+              <div class="column">
+                <div class="segment-container rel-p-1">
+                    <h1 class="center aligned ui medium header rel-m-1">{{ _("Get an EU project community") }} </h1>
+                    <div class="ui bottom attached">
+                      <ul class="rel-pr-2">
+                        <li>
+                          <strong>{{ _("Manage your project's research outputs") }}</strong> — {{ _("An EU project community provides you with a common space to manage research outputs from your project and from all your partners.") }}
+                        </li>
+                        <li>
+                          <strong>{{ _("Eligibility") }}</strong> — {{ _("Any EU-funded project stemming from Horizon Europe and/or Euratom can get a project community. Request must be made by a beneficiary of a grant.") }}
+                        </li>
+                        <li>
+                          <strong>{{ _("Members") }}</strong> — {{ _("Allows you to manage members from across all the project's partners and determine who can submit, who can review and who can manage.") }}
+                        </li>
+                        <li>
+                          <strong>{{ _("200GB") }}</strong> — {{ _("EU project communities gets a quota per record of 200GB instead of the normal 50GB.") }}
+                        </li>
+                      </ul>
+                      <div class="ui container center aligned rel-mb-1">
+                        <a href="/communities/{{ community.slug }}/pages/join"
+                        class="ui positive button labeled theme-primary icon rel-mt-2">
+                      <i class="users icon" aria-hidden="true"></i>
+                      {{ _("Join with your EU project") }}
+                    </a>
+                      </div>
+                    </div>
+                </div>
+              </div>
+              <div class="column">
+                <div class="segment-container rel-p-1">
+                    <h1 class="center aligned ui medium header rel-m-1">{{ _("About") }} </h1>
+                    <div class="ui bottom attached">
+                      <ul class="rel-pr-2">
+                        <li>
+                          <strong>{{ _("European Commission & CERN") }}</strong> — {{ _("the EU Open Research Community is managed by CERN on behalf of the European Commission.") }}
+                        </li>
+                        <li>
+                          <strong>{{ _("Become an early adopter") }}</strong> — do you manage an EU project and want to help test the new features of the repository? <a href="/support">Reach out to us</a>.
+                        </li>
+                        <li>
+                          <strong>{{ _("Upcoming") }}</strong> — We're working on integrating automated basic curation checks and FAIR assistance directly into the submission workflow. Subscribe to the <a href="https://newsletters.zenodo.org/subscription/form">Zenodo newsletter</a> to learn about the new features as soon as they are out.
+                        </li>
+                        <li>
+                          <strong>{{ _("Funded by") }}</strong> — {{ _("the work is funded by the European Union under grant agreement no. 101122956 (HORIZON-ZEN).") }}
+                        </li>
+                      </ul>
+                      <div class="ui container center aligned rel-mb-1">
+                        <a href="about"
+                          class="ui button labeled icon rel-mt-1">
+                          <i class="info icon" aria-hidden="true"></i>
+                          {{ _("Learn More") }}
+                        </a>
+                      </div>
+                    </div>
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  {%- endblock page_body -%}
+  
+  {%- block javascript %}
+    {{ super() }}
+    {{ webpack['zenodo-rdm-horizon-frontpage.js'] }}
+  {%- endblock %}

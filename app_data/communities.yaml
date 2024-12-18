@@ -29,6 +29,37 @@
         family: "Arial, sans-serif"
         weight: 600
   logo: "ecfunded.png"
+- slug: nih
+  metadata:
+    title: "National Institutes of Health (Pilot)"
+    description: "Open repository for NIH-funded research outputs."
+    website: "https://www.nih.gov/"
+    type:
+      id: "organization"
+  access:
+    visibility: "public"
+    members_visibility: "restricted"
+    member_policy: "open"
+    record_policy: "open"
+    review_policy: "closed"
+  children:
+    allow: true
+  theme:
+    brand: "nih"
+    enabled: true
+    style:
+      primaryColor: "#20558a"
+      tertiaryColor: "#3678b3"
+      secondaryColor: "#0a8484"
+      primaryTextColor: "#FFFFFF"
+      tertiaryTextColor: "#FFFFFF"
+      secondaryTextColor: "#FFFFFF"
+      mainHeaderBackgroundColor: "#FFFFFF"
+      font:
+        size: "16px"
+        family: "Arial, sans-serif"
+        weight: 600
+  logo: "nih.png"
 - slug: horizon-zen
   metadata:
     title: "HORIZON-ZEN"
