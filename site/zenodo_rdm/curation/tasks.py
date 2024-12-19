@@ -10,11 +10,38 @@ from datetime import datetime, timedelta, timezone
 
 from celery import shared_task
 from flask import current_app
+from flask_mail import Message
 from invenio_access.permissions import system_identity
 from invenio_rdm_records.proxies import current_rdm_records_service as records_service
 from invenio_search.engine import dsl
 
 from zenodo_rdm.curation.curators import EURecordCurator
+
+RESULT_EMAIL_BODY = """
+EU Record Curation Processed
+
+Finished at: {finished_at}
+Processed since: {since}
+Total Records Processed: {processed}
+Records Failed: {failed}
+Records Approved: {approved}
+Record IDs Approved:
+{records_moved}
+"""
+
+
+def _send_result_email(content):
+    """Send curation result as email."""
+    subject = f"EU Record Curation Processesed {datetime.now().date()}"
+    body = RESULT_EMAIL_BODY.format(finished_at=datetime.now(timezone.utc), **content)
+    sender = current_app.config["MAIL_DEFAULT_SENDER"]
+    admin_email = current_app.config["APP_RDM_ADMIN_EMAIL_RECIPIENT"]
+    recipients = admin_email
+    if not isinstance(admin_email, list):
+        recipients = [admin_email]
+    mail_ext = current_app.extensions["mail"]
+    msg = Message(subject, sender=sender, recipients=recipients, body=body)
+    mail_ext.send(msg)
 
 
 @shared_task
@@ -81,6 +108,9 @@ def run_eu_record_curation(since):
             # NOTE Since curator's raise_rules_exc is by default false, rules would not fail.
             # This catches failures due to other reasons
             ctx["failed"] += 1
+
+    if not dry_run:
+        _send_result_email(ctx)
 
     current_app.logger.error(
         "EU curation processed",
