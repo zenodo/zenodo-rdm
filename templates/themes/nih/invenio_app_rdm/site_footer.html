@@ -1,0 +1,50 @@
+{#
+    -*- coding: utf-8 -*-
+    Copyright (C) 2023-2024 CERN.
+
+    Invenio App RDM is free software; you can redistribute it and/or modify it
+    under the terms of the MIT License; see LICENSE file for more details.
+#}
+
+<div class="footer-bottom sub-footer theme-default rel-p-1">
+  <div class="ui container">
+    <div class="ui grid">
+      {%- block footer_bottom_left %}
+        <div
+        class="four wide computer six wide tablet sixteen wide mobile column left middle aligned"
+        >
+          {% trans %}
+            Powered by
+            <a href="http://information-technology.web.cern.ch/about/computer-centre">CERN Data Centre</a> & <a href="https://inveniordm.docs.cern.ch/">InvenioRDM</a>
+          {% endtrans %}
+        </div>
+      {%- endblock footer_bottom_left %}
+
+      <div
+        class="four wide computer four wide tablet sixteen wide mobile column centered middle aligned"
+      >
+        {% trans %}
+          <i class="green check circle outline icon"></i>
+            <a href="https://support.zenodo.org/help/en-gb/11/108">Verified community</a>
+        {% endtrans %}
+      </div>
+      <div
+        class="four wide computer six wide tablet sixteen wide mobile column right aligned"
+      >
+        {%- block footer_bottom_right %}
+          <div class="ui horizontal list">
+            <div class="item"><a href="https://stats.uptimerobot.com/vlYOVuWgM/">{{ _('Status') }}</a></div>
+            <div class="item"><a href="https://about.zenodo.org/privacy-policy">{{ _('Privacy policy') }}</a></div>
+            <div class="item"><a href="https://about.zenodo.org/cookie-policy">{{ _('Cookie policy') }}</a></div>
+            <div class="item"><a href="https://about.zenodo.org/terms">{{ _('Terms of use') }}</a></div>
+            <div class="item"><a href="/support">{{ _('Support') }}</a></div>
+          </div>
+          {%- if config.I18N_LANGUAGES %} {% from
+        "invenio_i18n/macros/language_selector.html" import language_selector_dropdown %}
+            {{ language_selector_dropdown() }}
+          {%- endif %}
+        {%- endblock footer_bottom_right %}
+      </div>
+    </div>
+  </div>
+</div>
