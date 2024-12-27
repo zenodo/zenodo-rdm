@@ -15,9 +15,13 @@ from datetime import datetime
 from functools import partial
 
 from flask import current_app, flash, request, session
+from invenio_base.jws import (
+    BadData,
+    JSONWebSignatureSerializer,
+    SignatureExpired,
+    TimedJSONWebSignatureSerializer,
+)
 from invenio_i18n import _
-from itsdangerous import BadData, SignatureExpired
-from itsdangerous.jws import JSONWebSignatureSerializer, TimedJSONWebSignatureSerializer
 
 _Need = namedtuple("Need", ["method", "value"])
 LegacySecretLinkNeed = partial(_Need, "legacy_secret_link")
