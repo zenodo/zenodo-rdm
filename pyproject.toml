@@ -1,0 +1,45 @@
+[project]
+name = "Zenodo"
+version = "15.1.2"
+requires-python = "~=3.9"
+dependencies = [
+    "invenio-app-rdm[opensearch2]~=13.0.0b2.dev3",
+    "sentry-sdk>=1.45,<2.0.0",
+    "zenodo_rdm",
+    "zenodo_legacy",
+    "invenio-swh",
+    "pyuwsgi>=2.0",
+    "uwsgitop>=0.11",
+    "uwsgi-tools>=1.1.1",
+    "pyvips>=2.2.2,<3.0.0",
+
+    # rspack
+    "flask-webpackext",
+    "invenio-assets",
+    "pywebpack",
+]
+
+[tool.setuptools]
+py-modules = [] # necessary to make the packages with setup.py usable with uv
+
+[dependency-groups]
+dev = [
+    "pytest-invenio>=3.0.0,<4.0.0",
+    "pytest-black>=0.6.0",
+    "sphinx>=4.5",
+]
+
+[tool.uv]
+package = false
+
+[[tool.uv.index]]
+name = "pypi"
+url = "https://pypi.org/simple"
+
+[tool.uv.sources]
+zenodo_rdm = { path = "./site", editable = true }
+zenodo_legacy = { path = "./legacy", editable = true }
+invenio-swh = { git = "https://github.com/inveniosoftware/invenio-swh", rev = "v0.13.0" }
+flask-webpackext = { git = "https://github.com/utnapischtim/flask-webpackext", branch = "make-ready-for-rspack" }
+invenio-assets = { git = "https://github.com/slint/invenio-assets", branch = "rspack" }
+pywebpack = { git = "https://github.com/utnapischtim/pywebpack", branch = "add-scripts" }
