@@ -10,7 +10,7 @@ sphinx = ">=4.5"
 isort = "<6.0" # Unpin when isort==6.0.0 is released
 
 [packages]
-invenio-app-rdm = {version = "==13.0.0b1.dev27", extras = ["opensearch2"]}
+invenio-app-rdm = {version = "==13.0.0b1.dev28", extras = ["opensearch2"]}
 sentry-sdk = ">=1.45,<2.0.0"
 zenodo_rdm = {editable="True", path="./site"}
 zenodo_legacy = {editable="True", path="./legacy"}

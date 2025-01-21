@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "174628ba18c07867e4cd3aafe6fb45d1c34da0db4fd654ddd6d17adc09336dcf"
+            "sha256": "c6004ab48e7429969926332e8cda084461fb00c05e9c28734405c6597b99f9db"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -948,11 +948,11 @@
         },
         "importlib-metadata": {
             "hashes": [
-                "sha256:45e54197d28b7a7f1559e60b95e7c567032b602131fbd588f1497f47880aa68b",
-                "sha256:71522656f0abace1d072b9e5481a48f07c138e00f079c38c8f883823f9c26bd7"
+                "sha256:02a89390c1e15fdfdc0d7c6b25cb3e62650d0494005c97d6f148bf5b9787525e",
+                "sha256:310b41d755445d74569f993ccfc22838295d9fe005425094fad953d7f15c8580"
             ],
-            "markers": "python_version >= '3.8'",
-            "version": "==8.5.0"
+            "markers": "python_version >= '3.9'",
+            "version": "==8.6.1"
         },
         "importlib-resources": {
             "hashes": [
@@ -1012,11 +1012,11 @@
                 "opensearch2"
             ],
             "hashes": [
-                "sha256:5c47ee896ac8562c7808a8db782d9a36a6707936c7a0c26f5327009d145dcc4f",
-                "sha256:b573706e2b027a242667b37b6d9c972383cc0435977dbeef2a86c378935589c6"
+                "sha256:5ec80bab54aad9d85589e80110d4f7d143b2fcc309ea5a9e1f4fe73331b03e8f",
+                "sha256:fc698f96829ee03979a457a25a82276eb4c060d43586353018be7f1c5e713b45"
             ],
             "index": "pypi",
-            "version": "==13.0.0b1.dev27"
+            "version": "==13.0.0b1.dev28"
         },
         "invenio-assets": {
             "hashes": [
@@ -1232,11 +1232,11 @@
         },
         "invenio-rdm-records": {
             "hashes": [
-                "sha256:d75d132a573d7aa950102f10e733c1663b526e70753bfe3c8e00786fe92ba657",
-                "sha256:f2e5bb67b37a99bcc250e4bb556da47654c17ada9b44c52da32c6852057981f0"
+                "sha256:7395969ae80c54e4a3df7a5a1751302d0aa05abb37d4d8055b298ea52a43c2d4",
+                "sha256:c8d08705e8a105dd03515f71feb1035ce9ff459997611708f84d3f731ba1e07b"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==16.6.1"
+            "version": "==16.7.0"
         },
         "invenio-records": {
             "hashes": [
@@ -1321,11 +1321,11 @@
         },
         "invenio-stats": {
             "hashes": [
-                "sha256:295746c334df5bdaab46134165e04b2a05c124b69b84526a324254930591866f",
-                "sha256:bafbe2f49926af043535590aa6ac00417d11a83ae6799f9c9f42fd3a81ac885e"
+                "sha256:b360f4e88fd7f60bf8a43a4f1dfb49ae24b7bedfad5baa631262edb188def3dd",
+                "sha256:fdcfb01ab34eb410022a06412b91bac302fa932c0e12d916acf399dec8ced438"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==4.2.1"
+            "version": "==4.3.0"
         },
         "invenio-swh": {
             "git": "https://github.com/inveniosoftware/invenio-swh",
@@ -1333,11 +1333,11 @@
         },
         "invenio-theme": {
             "hashes": [
-                "sha256:a395716cdb28bd16d77dc5f87980556e53c734f9c761137ee9adbccd58ad5ccf",
-                "sha256:ddaed82d60176a0b4308a770dfcbac52e4b3acf857374bac1ab4b8e61d89cf5a"
+                "sha256:7af06ccdb49218245a0a15d625fa8dd51ce1ff0a55c8f813cbe8e5efcecb410e",
+                "sha256:e96719c3c07b222fd4946dd501054be4bf1ff58d2ea99d608ecc5506bd310efb"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==3.5.2"
+            "version": "==3.6.1"
         },
         "invenio-userprofiles": {
             "hashes": [
@@ -1498,11 +1498,11 @@
         },
         "limits": {
             "hashes": [
-                "sha256:0024ebe5a36c905fcff2d30a8e7680840b75ecdb989db10c526e9fabba529b58",
-                "sha256:0516cec7c0803e0e1ecd48ad2f75547b85e2be5fb343a24e033f1316f5487e31"
+                "sha256:67667e669f570cf7be4e2c2bc52f763b3f93bdf66ea945584360bc1a3f251901",
+                "sha256:a54f5c058dfc965319ae3ee78faf222294659e371b46d22cd7456761f7e46d5a"
             ],
             "markers": "python_version >= '3.9'",
-            "version": "==4.0.0"
+            "version": "==4.0.1"
         },
         "luqum": {
             "hashes": [
@@ -2165,11 +2165,11 @@
         },
         "prompt-toolkit": {
             "hashes": [
-                "sha256:d6623ab0477a80df74e646bdbc93621143f5caf104206aa29294d53de1a03d90",
-                "sha256:f49a827f90062e411f1ce1f854f2aedb3c23353244f8108b89283587397ac10e"
+                "sha256:544748f3860a2623ca5cd6d2795e7a14f3d0e1c3c9728359013f79877fc89bab",
+                "sha256:9b6427eb19e479d98acff65196a307c555eb567989e6d88ebbb1b509d9779198"
             ],
-            "markers": "python_full_version >= '3.7.0'",
-            "version": "==3.0.48"
+            "markers": "python_full_version >= '3.8.0'",
+            "version": "==3.0.50"
         },
         "psycopg2-binary": {
             "hashes": [
@@ -2665,11 +2665,11 @@
         },
         "rdflib": {
             "hashes": [
-                "sha256:4fc8f6d50b199dc38fbc5256370f038c1cedca6102ccbde4e37c0fd2b7f36e65",
-                "sha256:5a694a64f48a751079999c37dccf91a6210077d845d09adf7c3ce23a876265a7"
+                "sha256:5402310a9f0f3c07d453d73fd0ad6ba35616286fe95d3670db2b725f3f539673",
+                "sha256:f3dcb4c106a8cd9e060d92f43d593d09ebc3d07adc244f4c7315856a12e383ee"
             ],
-            "markers": "python_version >= '3.9' and python_version < '4'",
-            "version": "==7.1.2"
+            "markers": "python_full_version >= '3.8.1' and python_full_version < '4.0.0'",
+            "version": "==7.1.3"
         },
         "redis": {
             "hashes": [
@@ -3313,11 +3313,11 @@
         },
         "tzdata": {
             "hashes": [
-                "sha256:7d85cc416e9382e69095b7bdf4afd9e3880418a2413feec7069d533d6b4e31cc",
-                "sha256:a48093786cdcde33cad18c2555e8532f34422074448fbc874186f0abd79565cd"
+                "sha256:24894909e88cdb28bd1636c6887801df64cb485bd593f2fd83ef29075a81d694",
+                "sha256:7e127113816800496f027041c570f50bcd464a020098a3b6b199517772303639"
             ],
             "markers": "python_version >= '2'",
-            "version": "==2024.2"
+            "version": "==2025.1"
         },
         "tzlocal": {
             "hashes": [
@@ -3914,11 +3914,11 @@
         },
         "importlib-metadata": {
             "hashes": [
-                "sha256:45e54197d28b7a7f1559e60b95e7c567032b602131fbd588f1497f47880aa68b",
-                "sha256:71522656f0abace1d072b9e5481a48f07c138e00f079c38c8f883823f9c26bd7"
+                "sha256:02a89390c1e15fdfdc0d7c6b25cb3e62650d0494005c97d6f148bf5b9787525e",
+                "sha256:310b41d755445d74569f993ccfc22838295d9fe005425094fad953d7f15c8580"
             ],
-            "markers": "python_version >= '3.8'",
-            "version": "==8.5.0"
+            "markers": "python_version >= '3.9'",
+            "version": "==8.6.1"
         },
         "importlib-resources": {
             "hashes": [
@@ -4141,11 +4141,11 @@
         },
         "pytest-github-actions-annotate-failures": {
             "hashes": [
-                "sha256:844ab626d389496e44f960b42f0a72cce29ae06d363426d17ea9ae1b4bef2288",
-                "sha256:8bcef65fed503faaa0524b59cfeccc8995130972dd7b008d64193cc41b9cde85"
+                "sha256:41ea558ba10c332c0bfc053daeee0c85187507b2034e990f21e4f7e5fef044cf",
+                "sha256:d4c3177c98046c3900a7f8ddebb22ea54b9f6822201b5d3ab8fcdea51e010db7"
             ],
-            "markers": "python_version >= '3.7'",
-            "version": "==0.2.0"
+            "markers": "python_version >= '3.8'",
+            "version": "==0.3.0"
         },
         "pytest-invenio": {
             "hashes": [
