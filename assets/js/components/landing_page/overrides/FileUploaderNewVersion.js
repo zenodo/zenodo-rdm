@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import _get from "lodash/get";
-import { NewVersionButton } from "@js/invenio_rdm_records/";
+import { NewVersionButton } from "@js/invenio_rdm_records";
 import { Grid, Icon, Message } from "semantic-ui-react";
 
 export class FileUploaderNewVersion extends Component {
