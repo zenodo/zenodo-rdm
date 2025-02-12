@@ -117,19 +117,17 @@ class EOSFilesOffload(BaseFileStorage):
             # Content-Type sniffing.
             # (from invenio-files-rest)
             if as_attachment or mimetype == "application/octet-stream":
-                # See https://github.com/pallets/flask/commit/0049922f2e690a6d
+                # see https://github.com/pallets/werkzeug/blob/main/src/werkzeug/utils.py#L456-L465
                 try:
-                    filenames = {"filename": filename.encode("latin-1")}
+                    filename.encode("ascii")
                 except UnicodeEncodeError:
+                    simple = unicodedata.normalize("NFKD", filename)
+                    simple = simple.encode("ascii", "ignore").decode("ascii")
                     # safe = RFC 5987 attr-char
                     quoted = quote(filename, safe="!#$&+-.^_`|~")
-
-                    filenames = {"filename*": "UTF-8''%s" % quoted}
-                    encoded_filename = unicodedata.normalize("NFKD", filename).encode(
-                        "latin-1", "ignore"
-                    )
-                    if encoded_filename:
-                        filenames["filename"] = encoded_filename
+                    filenames = {"filename": simple, "filename*": f"UTF-8''{quoted}"}
+                else:
+                    filenames = {"filename": filename}
                 response.headers.set("Content-Disposition", "attachment", **filenames)
             else:
                 response.headers.set("Content-Disposition", "inline")
