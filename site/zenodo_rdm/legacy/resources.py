@@ -35,6 +35,7 @@ from invenio_records_resources.resources.files.resource import (
     FileResource,
     request_stream,
     request_view_args,
+    set_max_content_length,
 )
 from invenio_records_resources.resources.records.headers import etag_headers
 from invenio_records_resources.services.errors import (
@@ -358,6 +359,7 @@ class LegacyFilesRESTResource(FileResource):
 
         return item.send_file(), 200
 
+    @set_max_content_length
     @request_stream
     @request_files_view_args
     @response_handler()
