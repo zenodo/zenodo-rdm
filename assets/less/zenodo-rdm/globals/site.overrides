@@ -164,8 +164,3 @@ a.inverted {
 .cookie-banner.hidden {
   display: none !important;
 }
-
-.preview-iframe {
-  height:60vh;
-}
-
