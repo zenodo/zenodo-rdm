@@ -12,6 +12,7 @@ from zenodo_rdm.legacy.resources import LegacyRecordResourceConfig
 
 
 @pytest.fixture
-def deposit_url():
+def deposit_url(test_app):
     """Deposit API URL."""
-    return f"/api{LegacyRecordResourceConfig.url_prefix}"
+    host = test_app.config["SITE_API_URL"]
+    return f"{host}{LegacyRecordResourceConfig.url_prefix}"
