@@ -56,6 +56,7 @@ def test_simple_rest_flow(test_app, client, deposit_url, headers, uploader):
     assert response.status_code == 200
 
     # Upload 3 files
+    filenames = []
     for i in range(3):
         name = f"test-{i}"
         file_name = f"{name}.txt"
@@ -63,6 +64,7 @@ def test_simple_rest_flow(test_app, client, deposit_url, headers, uploader):
         response = client.post(links["files"], data={"file": file, "name": name})
         assert response.status_code == 201
         file_url = response.json["links"]["self"]
+        filenames.append(file_name)
 
     # Publish deposition
     response = client.post(links["publish"])
@@ -96,11 +98,9 @@ def test_simple_rest_flow(test_app, client, deposit_url, headers, uploader):
     # Not allowed to sort files
     response = client.get(links["files"], headers=headers)
     data = response.json
+    assert response.status_code == 200, response.json
 
-    # TODO: Should be: 403
-    assert response.status_code == 404, response.json
-
-    files_list = [{"id": file_name}]
+    files_list = [{"id": file_name} for file_name in filenames]
     files_list.reverse()
     response = client.put(links["files"], json=(files_list), headers=headers)
     # TODO: Should be: 403. It's a 405 because sorting is not yet implemented, e.g. the endpoint does not exist
@@ -115,13 +115,11 @@ def test_simple_rest_flow(test_app, client, deposit_url, headers, uploader):
             "name": f"test-{i}.txt",
         },
     )
-    # TODO: Should be: 403
-    assert response.status_code == 404, response.json
+    assert response.status_code == 403, response.json
 
     # Not allowed to delete file
     response = client.delete(file_url, headers=headers)
-    # TODO: Should be: 403
-    assert response.status_code == 404, response.json
+    assert response.status_code == 403, response.json
 
     # Not allowed to rename file
     response = client.put(
@@ -131,8 +129,6 @@ def test_simple_rest_flow(test_app, client, deposit_url, headers, uploader):
     )
     # TODO: Should be: 403. File renaming is not yet implemented in Zenodo-RDM Legacy.
     assert response.status_code == 405, response.json
-
-    uploader.api_logout(client)
 
 
 def test_simple_delete(test_app, client_with_login, deposit_url, headers, test_data):
@@ -231,9 +227,6 @@ def test_update_deposits_owner(
     assert res.status_code == 200, res.json
     assert res.json["metadata"]["title"] == new_title
 
-    # Logout user
-    owner.api_logout(client)
-
 
 def test_update_deposit_not_owner(
     test_app,
@@ -266,9 +259,6 @@ def test_update_deposit_not_owner(
     res = client.put(deposit_url, json=update_metadata, headers=headers)
     assert res.status_code == 403
 
-    # Logout user
-    not_owner.api_logout(client)
-
 
 def test_update_deposit_anonymous(
     test_app,
@@ -291,7 +281,7 @@ def test_update_deposit_anonymous(
     response = client.post(deposit_url, json=test_data, headers=headers)
     assert response.status_code == 201, response.json
     deposit_url = response.json["links"]["self"]
-    owner.api_logout(client)
+    client = owner.api_logout(client)
 
     # Try to udpate a draft with anonymous user
     res = client.put(deposit_url, json=update_metadata, headers=headers)
@@ -355,8 +345,6 @@ def test_delete_deposits_owner(
 
     assert res.status_code == 204, res.json
 
-    owner.api_logout(client)
-
 
 def test_delete_deposits_not_owner(
     test_app, client, headers, deposit_url, test_data, uploader, test_user
@@ -382,8 +370,6 @@ def test_delete_deposits_not_owner(
     )
 
     assert res.status_code == 403, res.json
-
-    not_owner.api_logout(client)
 
 
 def test_delete_deposits_anonymous(
@@ -435,8 +421,6 @@ def test_delete_deposits_superuser(
     )
 
     assert res.status_code == 204, res.json
-
-    superuser.api_logout(client)
 
 
 def test_versioning_rest_flow(
