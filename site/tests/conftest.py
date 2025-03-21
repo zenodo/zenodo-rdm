@@ -40,6 +40,7 @@ from .fake_datacite_client import FakeDataCiteClient
 @pytest.fixture(scope="module")
 def app_config(app_config):
     """Mimic an instance's configuration."""
+    app_config["SESSION_COOKIE_DOMAIN"] = "127.0.0.1"
     app_config["REST_CSRF_ENABLED"] = False
     app_config["DATACITE_ENABLED"] = True
     app_config["RDM_PERSISTENT_IDENTIFIER_PROVIDERS"] = [
