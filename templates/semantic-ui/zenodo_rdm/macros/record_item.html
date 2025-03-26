@@ -134,15 +134,15 @@
             </p>
 
             {# Versions info desktop/tablet #}
-            {% if record.versions.index > 1 %}
-              {% set num_versions = record.versions.index %}
+            {% if record.versions.versions_count > 1 %}
+              {% set num_versions = record.versions.versions_count %}
               {% set text_content = _("more versions exist for this record") %}
               {% if num_versions == 2 %}
                 {% set text_content = _("more version exist for this record") %}
               {% endif %}
 
               <p>
-                <small>{{ record.versions.index - 1 }} {{ text_content }}</small>
+                <small>{{ record.versions.versions_count - 1 }} {{ text_content }}</small>
               </p>
             {% endif %}
           </div>
