@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "f1bd3ac1f49642d4c39239d434acab3937d923023cd4ce12b9e7e9f20f126900"
+            "sha256": "41b732142789cb903000cc7fc6c6cf7cd5106f989e3f5b3456336577510677db"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -1027,11 +1027,11 @@
                 "opensearch2"
             ],
             "hashes": [
-                "sha256:3605a4d03004e6455654ca96ef3c85aacb197bb62eb375c67b073a12916a274c",
-                "sha256:eb9dda6dbbce2a658bdfe553a1c6d0ae41f8c4746011c72575560855a26ab344"
+                "sha256:8fc110d95e8d0796564a7a4923e5742c712627624c1e3a1380ef36602c278192",
+                "sha256:9b3f86afc467ffe54bf0530036fbc15d742dfb85fd3f5dad5174412a1a1934c7"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==13.0.0b2.dev12"
+            "version": "==13.0.0b2.dev13"
         },
         "invenio-assets": {
             "hashes": [
