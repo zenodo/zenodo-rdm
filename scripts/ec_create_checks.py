@@ -73,6 +73,22 @@ def create_eu_checks():
             "award"
         ]["id"]
 
+        # Update the award acronym and number in the message and description
+        award_acronym = funding[0]["award"]["acronym"]
+        award_number = funding[0]["award"]["number"]
+
+        check_message = check_config_params["rules"][0]["message"]
+        check_message = check_message.replace("__AWARD_ACRONYM__", award_acronym)
+        check_message = check_message.replace("__AWARD_NUMBER__", award_number)
+        check_config_params["rules"][0]["message"] = check_message
+
+        check_description = check_config_params["rules"][0]["description"]
+        check_description = check_description.replace(
+            "__AWARD_ACRONYM__", award_acronym
+        )
+        check_description = check_description.replace("__AWARD_NUMBER__", award_number)
+        check_config_params["rules"][0]["description"] = check_description
+
         existing_check = CheckConfig.query.filter_by(
             community_id=sub_community["id"], check_id="metadata"
         ).one_or_none()
@@ -100,8 +116,8 @@ EU_RULES = {
         {
             "id": "access:open/publication",
             "title": "Open Access Publication",
-            "message": "Publication articles must be Open Access",
-            "description": "The EU curation policy requires publication articles must be Open Access",
+            "message": "Journal articles must be open access",
+            "description": 'To comply with Horizon Europe\'s open science requirements, peer-reviewed scientific publications relating to their results must be open access at the time of publication (published version or final peer-reviewed manuscript accepted for publication). <a href="/communities/eu/pages/open-science" target="_blank">Learn more</a>',
             "level": "error",
             "condition": {
                 "type": "comparison",
@@ -121,8 +137,8 @@ EU_RULES = {
         {
             "id": "journal:title/publication",
             "title": "Journal Information",
-            "message": "Publication articles must state the journal it was published in",
-            "description": "The EU curation policy requires publication articles must state the journal it was published in",
+            "message": "Journal articles must specify the publishing venue",
+            "description": 'To comply with Horizon Europe\'s open science requirements, peer-reviewed scientific publications must specify the publishing venue (e.g. journal) it was published in. <a href="/communities/eu/pages/open-science" target="_blank">Learn more</a>',
             "level": "error",
             "condition": {
                 "type": "comparison",
@@ -145,8 +161,8 @@ EU_RULES = {
         {
             "id": "license:exists",
             "title": "Record license",
-            "message": "All records must have a license",
-            "description": "The EU curation policy requires all records to have a license",
+            "message": "All submissions must specify licensing terms",
+            "description": 'To comply with Horizon Europe\'s open science requirements, a submission must specify the licensing terms. <a href="/communities/eu/pages/open-science" target="_blank">Learn more</a>',
             "level": "error",
             "checks": [
                 {
@@ -160,8 +176,8 @@ EU_RULES = {
         {
             "id": "license:cc-by/publication",
             "title": "Journal Article License",
-            "message": "Journal article should have a CC-BY license",
-            "description": "The EU curation policy recommends journal articles to have a CC-BY license",
+            "message": "Journal articles should have a CC-BY license or license with equivalent rights",
+            "description": 'To comply with Horizon Europe\'s open science requirements, peer-reviewed scientific publications must be available under the latest Creative Commons Attribution International license (CC-BY) or a license with equivalent rights. Please ensure the license you have selected provide the same rights as CC-BY. <a href="/communities/eu/pages/open-science" target="_blank">Learn more</a>',
             "level": "info",
             "condition": {
                 "type": "logical",
@@ -206,8 +222,8 @@ EU_RULES = {
         {
             "id": "license:cc-by-nc-nd/book",
             "title": "Book License",
-            "message": "Book  should have a CC BY, NC or SA license",
-            "description": "The EU curation policy recommends books to have a CC BY, NC or SA license",
+            "message": "Books should have a CC-BY, CC-BY-NC or CC-BY-ND license",
+            "description": 'To comply with Horizon Europe\'s open science requirements, monographs or other long-text must be available under the latest Creative Commons Attribution International license (CC-BY) or a license with equivalent rights. Monographs and other long-texts may exclude commercial or derivative works (i.e. CC-BY-NC or CC-BY-ND). <a href="/communities/eu/pages/open-science" target="_blank">Learn more</a>',
             "level": "info",
             "condition": {
                 "type": "logical",
@@ -268,8 +284,8 @@ EU_RULES = {
         {
             "id": "license:osi/software",
             "title": "Software License",
-            "message": "Software must have an appropriate license",
-            "description": "The EU curation policy requires software to have an appropriate license",
+            "message": "Software should have an OSI-approved license",
+            "description": 'To comply with Horizon Europe\'s open science requirements, software should be available under a OSI-approved license (following the principle as open as possible, as closed as necessary and with exceptions possible). <a href="/communities/eu/pages/open-science" target="_blank">Learn more</a>',
             "level": "info",
             "condition": {
                 "type": "logical",
@@ -434,8 +450,8 @@ EU_RULES = {
         {
             "id": "license:cc-by-0/other",
             "title": "Records should be CC-BY or CC-0 License",
-            "message": "Unless the record is a article, book, section or software, it should be CC BY or CC 0",
-            "description": "The EU curation policy suggests records should have a CC BY or CC 0 license",
+            "message": "Submissions (except journal articles, books, or software) should have CC BY license, CC0 dedication or equivalent",
+            "description": 'To comply with Horizon Europe\'s open science requirements, all submission except journal articles, books and software must be available under the latest available Creative Commons Attribution International license (CC-BY), or Creative Commons Public Domain Dedication (CC0) or a license/dedication with equivalent rights (following the principle as open as possible, as closed as necessary and with exceptions possible). <a href="/communities/eu/pages/open-science" target="_blank">Learn more</a>',
             "level": "info",
             "condition": {
                 "type": "logical",
@@ -486,8 +502,8 @@ EU_RULES = {
         {
             "id": "creators:identifier",
             "title": "Creator Identifiers",
-            "message": "All creators must have at least one identifier",
-            "description": "The EU curation policy suggests all creators should have at least one identifier",
+            "message": "All creators should have a persistent identifier (e.g. an ORCID)",
+            "description": 'To comply with Horizon Europe\'s open science requirements, you should provide persistent identifiers for creators (e.g., ORCID, GND, or ISNI). <a href="/communities/eu/pages/open-science" target="_blank">Learn more</a>',
             "level": "info",
             "condition": {
                 "type": "list",
@@ -519,8 +535,8 @@ EU_RULES = {
         {
             "id": "contributors:identifier",
             "title": "Contributor Identifiers",
-            "message": "All contributors must have at least one identifier",
-            "description": "The EU curation policy suggests all contributors should have at least one identifier",
+            "message": "All contributors should have a persistent identifier (e.g. an ORCID)",
+            "description": 'To comply with Horizon Europe\'s open science requirements, you should provide persistent identifiers for contributors (e.g., ORCID, GND, or ISNI). <a href="/communities/eu/pages/open-science" target="_blank">Learn more</a>',
             "level": "info",
             "condition": {
                 "type": "list",
@@ -552,8 +568,8 @@ EU_RULES = {
         {
             "id": "funding:eu",
             "title": "EU Funding",
-            "message": "Records must have at least one EU-funded project",
-            "description": "The EU curation policy requires that funding from the EC is always specified",
+            "message": "Submissions must have a grant/award from the European Commission",
+            "description": 'The EU Open Research Repository only accepts submissions stemming from one of EU’s research and innovation funding programmes, which currently include Horizon Europe (including ERC, MSCA), earlier Framework Programmes (eg Horizon 2020), as well as Euratom. Please ensure you add a standard or custom grant/award stemming from the European Commission. <a href="/communities/eu/pages/open-science" target="_blank">Learn more</a>',
             "level": "error",
             "checks": [
                 {
@@ -577,8 +593,8 @@ SUB_COMMUNITY_RULES = {
         {
             "id": "funding:project",
             "title": "Project Funding",
-            "message": "Records must specify the project's funding",
-            "description": "The EU curation policy requires that funding from the EC is always specified for projects",
+            "message": "Submissions must have the __AWARD_ACRONYM__ (__AWARD_NUMBER__) grant/award",
+            "description": 'You are submitting to an EU project community for __AWARD_ACRONYM__ (__AWARD_NUMBER__) and you must therefore add the grant/award. <a href="/communities/eu/pages/open-science" target="_blank">Learn more</a>',
             "level": "error",
             "checks": [
                 {
