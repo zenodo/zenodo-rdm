@@ -26,91 +26,6 @@ from werkzeug.local import LocalProxy
 community_service = LocalProxy(lambda: current_communities.service)
 
 
-def create_eu_checks():
-    eu_comm = community_service.record_cls.pid.resolve("eu")
-    # Check if there is already a check for the community
-    existing_check = CheckConfig.query.filter_by(
-        community_id=eu_comm.id, check_id="metadata"
-    ).one_or_none()
-    if existing_check:  # If it exists, update it
-        existing_check.params = EU_RULES
-    else:  # ...create it
-        check_config = CheckConfig(
-            community_id=eu_comm.id,
-            check_id="metadata",
-            params=EU_RULES,
-            severity=Severity.INFO,
-            enabled=True,
-        )
-        db.session.add(check_config)
-    db.session.commit()
-    print("EU checks created/updated successfully.")
-
-    sub_communities = community_service._search(
-        "search",
-        system_identity,
-        params={},
-        extra_filter=dsl.query.Bool(
-            "must", must=[dsl.Q("term", **{"parent.id": str(eu_comm.id)})]
-        ),
-        permission_action="read",
-        search_preference=None,
-    ).scan()
-
-    for sub_community in sub_communities:
-        sub_community = sub_community.to_dict()
-        sub_id = sub_community["id"]
-        funding = sub_community.get("metadata", {}).get("funding", [])
-        if len(funding) != 1:
-            print(
-                f"Skipping {sub_id} as it does not have exactly one funding: {funding}"
-            )
-            continue
-
-        check_config_params = deepcopy(SUB_COMMUNITY_RULES)
-        # Update the award ID in the params
-        check_config_params["rules"][0]["checks"][0]["predicate"]["right"] = funding[0][
-            "award"
-        ]["id"]
-
-        # Update the award acronym and number in the message and description
-        award_acronym = funding[0]["award"]["acronym"]
-        award_number = funding[0]["award"]["number"]
-
-        check_message = check_config_params["rules"][0]["message"]
-        check_message = check_message.replace("__AWARD_ACRONYM__", award_acronym)
-        check_message = check_message.replace("__AWARD_NUMBER__", award_number)
-        check_config_params["rules"][0]["message"] = check_message
-
-        check_description = check_config_params["rules"][0]["description"]
-        check_description = check_description.replace(
-            "__AWARD_ACRONYM__", award_acronym
-        )
-        check_description = check_description.replace("__AWARD_NUMBER__", award_number)
-        check_config_params["rules"][0]["description"] = check_description
-
-        existing_check = CheckConfig.query.filter_by(
-            community_id=sub_community["id"], check_id="metadata"
-        ).one_or_none()
-        if existing_check:
-            existing_check.params = check_config_params
-        else:
-            check_config = CheckConfig(
-                community_id=sub_community["id"],
-                check_id="metadata",
-                params=check_config_params,
-                severity=Severity.INFO,
-                enabled=True,
-            )
-            db.session.add(check_config)
-        db.session.commit()
-    print("EU checks created/updated successfully.")
-
-
-if __name__ == "__main__":
-    create_eu_checks()
-
-
 EU_RULES = {
     "rules": [
         {
@@ -612,3 +527,88 @@ SUB_COMMUNITY_RULES = {
         },
     ]
 }
+
+
+def create_eu_checks():
+    eu_comm = community_service.record_cls.pid.resolve("eu")
+    # Check if there is already a check for the community
+    existing_check = CheckConfig.query.filter_by(
+        community_id=eu_comm.id, check_id="metadata"
+    ).one_or_none()
+    if existing_check:  # If it exists, update it
+        existing_check.params = EU_RULES
+    else:  # ...create it
+        check_config = CheckConfig(
+            community_id=eu_comm.id,
+            check_id="metadata",
+            params=EU_RULES,
+            severity=Severity.INFO,
+            enabled=True,
+        )
+        db.session.add(check_config)
+    db.session.commit()
+    print("EU checks created/updated successfully.")
+
+    sub_communities = community_service._search(
+        "search",
+        system_identity,
+        params={},
+        extra_filter=dsl.query.Bool(
+            "must", must=[dsl.Q("term", **{"parent.id": str(eu_comm.id)})]
+        ),
+        permission_action="read",
+        search_preference=None,
+    ).scan()
+
+    for sub_community in sub_communities:
+        sub_community = sub_community.to_dict()
+        sub_id = sub_community["id"]
+        funding = sub_community.get("metadata", {}).get("funding", [])
+        if len(funding) != 1:
+            print(
+                f"Skipping {sub_id} as it does not have exactly one funding: {funding}"
+            )
+            continue
+
+        check_config_params = deepcopy(SUB_COMMUNITY_RULES)
+        # Update the award ID in the params
+        check_config_params["rules"][0]["checks"][0]["predicate"]["right"] = funding[0][
+            "award"
+        ]["id"]
+
+        # Update the award acronym and number in the message and description
+        award_acronym = funding[0]["award"]["acronym"]
+        award_number = funding[0]["award"]["number"]
+
+        check_message = check_config_params["rules"][0]["message"]
+        check_message = check_message.replace("__AWARD_ACRONYM__", award_acronym)
+        check_message = check_message.replace("__AWARD_NUMBER__", award_number)
+        check_config_params["rules"][0]["message"] = check_message
+
+        check_description = check_config_params["rules"][0]["description"]
+        check_description = check_description.replace(
+            "__AWARD_ACRONYM__", award_acronym
+        )
+        check_description = check_description.replace("__AWARD_NUMBER__", award_number)
+        check_config_params["rules"][0]["description"] = check_description
+
+        existing_check = CheckConfig.query.filter_by(
+            community_id=sub_community["id"], check_id="metadata"
+        ).one_or_none()
+        if existing_check:
+            existing_check.params = check_config_params
+        else:
+            check_config = CheckConfig(
+                community_id=sub_community["id"],
+                check_id="metadata",
+                params=check_config_params,
+                severity=Severity.INFO,
+                enabled=True,
+            )
+            db.session.add(check_config)
+        db.session.commit()
+    print("EU checks created/updated successfully.")
+
+
+if __name__ == "__main__":
+    create_eu_checks()
