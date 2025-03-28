@@ -28,27 +28,7 @@ community_service = LocalProxy(lambda: current_communities.service)
 
 EU_RULES = {
     "rules": [
-        {
-            "id": "access:open/publication",
-            "title": "Open Access Publication",
-            "message": "Journal articles must be open access",
-            "description": 'To comply with Horizon Europe\'s open science requirements, peer-reviewed scientific publications relating to their results must be open access at the time of publication (published version or final peer-reviewed manuscript accepted for publication). <a href="/communities/eu/pages/open-science" target="_blank">Learn more</a>',
-            "level": "error",
-            "condition": {
-                "type": "comparison",
-                "left": {"type": "field", "path": "metadata.resource_type.id"},
-                "operator": "==",
-                "right": "publication-article",
-            },
-            "checks": [
-                {
-                    "type": "comparison",
-                    "left": {"type": "field", "path": "access.files"},
-                    "operator": "==",
-                    "right": "public",
-                }
-            ],
-        },
+
         {
             "id": "journal:title/publication",
             "title": "Journal Information",
