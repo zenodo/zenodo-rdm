@@ -6,8 +6,11 @@
 # it under the terms of the MIT License; see LICENSE file for more details.
 """Subcommunities request implementation for ZenodoRDM."""
 
+from copy import deepcopy
+
 import invenio_communities.notifications.builders as notifications
 from invenio_access.permissions import system_identity
+from invenio_checks.models import CheckConfig, Severity
 from invenio_communities.proxies import current_communities
 from invenio_communities.subcommunities.services.request import (
     AcceptSubcommunity,
@@ -23,7 +26,7 @@ from invenio_rdm_records.proxies import (
     current_community_records_service,
     current_rdm_records,
 )
-from invenio_records_resources.services.uow import RecordCommitOp
+from invenio_records_resources.services.uow import ModelCommitOp, RecordCommitOp
 from invenio_requests.customizations import actions
 from invenio_requests.customizations.event_types import CommentEventType
 from invenio_requests.proxies import current_events_service
@@ -40,6 +43,66 @@ def _add_community_records(child_id, parent_id, uow):
     current_rdm_records.record_communities_service.bulk_add(
         system_identity, parent_id, (x["id"] for x in records), uow=uow
     )
+
+
+FUNDING_RULE_TEMPLATE = {
+    "id": "funding:project",
+    "title": "Project Funding",
+    "message": "Records must specify the project's funding",
+    "description": "The EU curation policy requires that funding from the EC is always specified for projects",
+    "level": "error",
+    "checks": [
+        {
+            "type": "list",
+            "operator": "any",
+            "path": "metadata.funding",
+            "predicate": {
+                "type": "comparison",
+                "left": {"type": "field", "path": "award.id"},
+                "operator": "==",
+                "right": None,
+            },
+        }
+    ],
+}
+
+
+def _add_subcommunity_funding_check(request, subcommunity, uow):
+    """Add a check to the subcommunity to ensure project funding is specified."""
+    project_id = request.get("payload", {}).get("project_id")
+    if not project_id:
+        return
+
+    # Update the award ID in the rule template
+    funding_rule = deepcopy(FUNDING_RULE_TEMPLATE)
+    funding_rule["checks"][0]["predicate"]["right"] = project_id
+
+    # Create or update the check config on the subcommunity
+    check_config = CheckConfig.query.filter_by(
+        community_id=subcommunity.id, check_id="metadata"
+    ).one_or_none()
+    if check_config:
+        params = check_config.params or {}
+        rules = params.get("rules", [])
+        for rule in rules:
+            if rule["id"] == funding_rule["id"]:
+                rule.update(funding_rule)
+                break
+        else:  # If the rule was not found, append it
+            rules.append(funding_rule)
+        params["rules"] = rules
+
+        # Set the field on the model to trigger an UPDATE
+        check_config.params = params
+    else:
+        check_config = CheckConfig(
+            community_id=subcommunity.id,
+            check_id="metadata",
+            params={"rules": [funding_rule]},
+            severity=Severity.INFO,
+            enabled=True,
+        )
+    uow.register(ModelCommitOp(check_config))
 
 
 def _update_subcommunity_funding(request, subcommunity, uow):
@@ -67,15 +130,17 @@ class SubcommunityAcceptAction(AcceptSubcommunity):
 
     def execute(self, identity, uow):
         """Execute approve action."""
-        to_be_moved = self.request.topic.resolve().id
-        move_to = self.request.receiver.resolve().id
+        subcommunity = self.request.topic.resolve()
+        parent = self.request.receiver.resolve()
 
-        _add_community_records(to_be_moved, move_to, uow)
+        _add_community_records(subcommunity.id, parent.id, uow)
+        _add_subcommunity_funding_check(self.request, subcommunity, uow)
+
         super().execute(identity, uow)
 
 
 class SubcommunityCreateAction(actions.CreateAndSubmitAction):
-    """Represents an create action used to create a subcommunity request.
+    """Represents a create action used to create a subcommunity request.
 
     Zenodo re-implementation of the create action, to also create the system comment.
     """
@@ -94,7 +159,7 @@ class SubcommunityCreateAction(actions.CreateAndSubmitAction):
             payload={
                 "content": f"""
             <p>
-            We have created your community for your project <a href='/communities/{subcommunity.slug}'>{subcommunity['metadata']['title']}</a>.
+            We have created your community for your project <a href='/communities/{subcommunity.slug}'>{subcommunity["metadata"]["title"]}</a>.
             </p>
 
             <p>
@@ -192,6 +257,7 @@ class SubCommunityInvitationAcceptAction(AcceptSubcommunityInvitation):
 
         _add_community_records(child.id, parent.id, uow)
         _update_subcommunity_funding(self.request, child, uow)
+        _add_subcommunity_funding_check(self.request, child, uow)
         # moving the community is handled by super()
 
         super().execute(identity, uow)
@@ -212,6 +278,7 @@ class SubcommunityInvitationExpireAction(actions.ExpireAction):
         )
 
         _update_subcommunity_funding(self.request, child, uow)
+        _add_subcommunity_funding_check(self.request, child, uow)
 
         super().execute(identity, uow)
 
