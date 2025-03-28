@@ -28,7 +28,6 @@ community_service = LocalProxy(lambda: current_communities.service)
 
 EU_RULES = {
     "rules": [
-
         {
             "id": "journal:title/publication",
             "title": "Journal Information",
@@ -552,6 +551,10 @@ def create_eu_checks():
 
         check_config_params = deepcopy(SUB_COMMUNITY_RULES)
         # Update the award ID in the params
+        if "id" not in funding[0]["award"]:
+            print(f"Skipping {sub_id} as it does not have a funding ID: {funding}")
+            continue
+
         check_config_params["rules"][0]["checks"][0]["predicate"]["right"] = funding[0][
             "award"
         ]["id"]
