@@ -3,12 +3,6 @@ name = "pypi"
 url = "https://pypi.org/simple"
 verify_ssl = true
 
-[dev-packages]
-pytest-invenio = ">=3.2.0,<4.0.0"
-pytest-black = ">=0.4.0"
-sphinx = ">=4.5"
-isort = ">=6.0"
-
 [packages]
 invenio-app-rdm = {version = "==13.0.0b2.dev13", extras = ["opensearch2"]}
 invenio-checks = ">=0.1.0,<1.0.0"

@@ -57,7 +57,7 @@ jobs:
 
           # We're pinning "pipenv" to the same version as in the deployment Docker image
           pip install "pipenv==2023.12.1"
-          [ "${{ matrix.package-dir }}" == "site" ] && pipenv install --dev --deploy --system
+          [ "${{ matrix.package-dir }}" == "site" ] && pipenv install --deploy --system
           pip install "./legacy"
           pip install "./${{ matrix.package-dir }}[$EXTRAS]"
 
