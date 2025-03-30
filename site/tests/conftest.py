@@ -26,6 +26,7 @@ from invenio_vocabularies.contrib.awards.api import Award
 from invenio_vocabularies.contrib.funders.api import Funder
 from invenio_vocabularies.proxies import current_service as vocabulary_service
 from invenio_vocabularies.records.api import Vocabulary
+
 from zenodo_rdm.api import ZenodoRDMDraft, ZenodoRDMRecord
 from zenodo_rdm.custom_fields import CUSTOM_FIELDS, CUSTOM_FIELDS_UI, NAMESPACES
 from zenodo_rdm.generators import media_files_management_action
