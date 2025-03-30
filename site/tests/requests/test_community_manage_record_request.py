@@ -18,6 +18,8 @@ from invenio_requests import current_requests_service
 
 from zenodo_rdm.legacy.requests.utils import submit_community_manage_record_request
 
+BASE_URL = "https://127.0.0.1:5000"
+
 
 @pytest.fixture()
 def service(running_app):
@@ -28,7 +30,7 @@ def service(running_app):
 def _send_post_action(action, request_id, client, headers, expected_status_code):
     """Send http-post request to perform an action on a request"""
     response = client.post(
-        f"/requests/{request_id}/actions/{action}",
+        f"{BASE_URL}/requests/{request_id}/actions/{action}",
         headers=headers,
         json={},
     )
@@ -226,7 +228,10 @@ def test_accept_a_request(
     assert res_record2.parent.permission_flags == {}
 
     # check that comment was added
-    response = record_owner.get(f"/requests/{request.id}/timeline", headers=headers)
+    response = record_owner.get(
+        f"{BASE_URL}/requests/{request.id}/timeline",
+        headers=headers,
+    )
     assert (
         response.json["hits"]["hits"][0]["payload"]["content"]
         == "You accepted the request. The community curators "
@@ -386,7 +391,10 @@ def test_request_expire(
     assert res_record2.parent.permission_flags == {}
 
     # check that comment was added
-    response = record_owner.get(f"/requests/{request.id}/timeline", headers=headers)
+    response = record_owner.get(
+        f"{BASE_URL}/requests/{request.id}/timeline",
+        headers=headers,
+    )
     assert (
         response.json["hits"]["hits"][0]["payload"]["content"]
         == "The request was expired. The community curators "

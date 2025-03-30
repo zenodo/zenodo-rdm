@@ -18,6 +18,8 @@ from invenio_requests import current_requests_service
 
 from zenodo_rdm.legacy.requests.utils import submit_record_upgrade_request
 
+BASE_URL = "https://127.0.0.1:5000"
+
 
 @pytest.fixture()
 def service(running_app):
@@ -28,7 +30,7 @@ def service(running_app):
 def _send_post_action(action, request_id, client, headers, expected_status_code):
     """Send http-post request to perform an action on a request"""
     response = client.post(
-        f"/requests/{request_id}/actions/{action}",
+        f"{BASE_URL}/requests/{request_id}/actions/{action}",
         headers=headers,
         json={},
     )
@@ -40,17 +42,19 @@ def _send_post_action(action, request_id, client, headers, expected_status_code)
 def create_record_w_file(client, record, headers):
     """Create record with a file."""
     # Create draft
-    response = client.post("/records", json=record, headers=headers)
+    response = client.post(f"{BASE_URL}/records", json=record, headers=headers)
     assert response.status_code == 201
     recid = response.json["id"]
 
     # Attach a file to it
     response = client.post(
-        f"/records/{recid}/draft/files", headers=headers, json=[{"key": "test.pdf"}]
+        f"{BASE_URL}/records/{recid}/draft/files",
+        headers=headers,
+        json=[{"key": "test.pdf"}],
     )
     assert response.status_code == 201
     response = client.put(
-        f"/records/{recid}/draft/files/test.pdf/content",
+        f"{BASE_URL}/records/{recid}/draft/files/test.pdf/content",
         headers={
             "content-type": "application/octet-stream",
             "accept": "application/json",
@@ -59,12 +63,16 @@ def create_record_w_file(client, record, headers):
     )
     assert response.status_code == 200
     response = client.post(
-        f"/records/{recid}/draft/files/test.pdf/commit", headers=headers
+        f"{BASE_URL}/records/{recid}/draft/files/test.pdf/commit",
+        headers=headers,
     )
     assert response.status_code == 200
 
     # Publish it
-    response = client.post(f"/records/{recid}/draft/actions/publish", headers=headers)
+    response = client.post(
+        f"{BASE_URL}/records/{recid}/draft/actions/publish",
+        headers=headers,
+    )
     assert response.status_code == 202
 
     return recid
@@ -144,7 +152,7 @@ def test_submit_a_request(
 
     # check permissions
     recid = legacy_record["id"]
-    url = f"/records/{recid}/files"
+    url = f"{BASE_URL}/records/{recid}/files"
 
     # record owner has access to files
     response = record_owner.get(url, headers=headers)
@@ -323,7 +331,10 @@ def test_accept_a_request(
     assert res_record.parent.permission_flags == {}
 
     # check that comment was added
-    response = record_owner.get(f"/requests/{request.id}/timeline", headers=headers)
+    response = record_owner.get(
+        f"{BASE_URL}/requests/{request.id}/timeline",
+        headers=headers,
+    )
     assert (
         response.json["hits"]["hits"][0]["payload"]["content"]
         == "You accepted the request. The record is now upgraded "
@@ -333,7 +344,7 @@ def test_accept_a_request(
 
     # check permissions
     recid = legacy_record["id"]
-    url = f"/records/{recid}/files"
+    url = f"{BASE_URL}/records/{recid}/files"
 
     # record owner has access to files
     response = record_owner.get(url, headers=headers)
@@ -472,14 +483,14 @@ def test_decline_a_request(
 
     # check that no comment was added
     response = record_owner.get(
-        f"/requests/{request.id}/timeline",
+        f"{BASE_URL}/requests/{request.id}/timeline",
         headers=headers,
     )
     assert response.json["hits"]["hits"] == []
 
     # check permissions
     recid = legacy_record["id"]
-    url = f"/records/{recid}/files"
+    url = f"{BASE_URL}/records/{recid}/files"
 
     # record owner has access to files
     response = record_owner.get(url, headers=headers)
@@ -584,7 +595,9 @@ def test_decline_a_request_no_communities(
     assert res_record.parent.permission_flags == {}
 
     # check that comment was added
-    response = record_owner.get(f"/requests/{request.id}/timeline", headers=headers)
+    response = record_owner.get(
+        f"{BASE_URL}/requests/{request.id}/timeline", headers=headers
+    )
     assert response.json["hits"]["hits"][1]["payload"]["event"] == "declined"
     assert (
         response.json["hits"]["hits"][0]["payload"]["content"]
@@ -593,7 +606,7 @@ def test_decline_a_request_no_communities(
 
     # check permissions
     recid = legacy_record["id"]
-    url = f"/records/{recid}/files"
+    url = f"{BASE_URL}/records/{recid}/files"
 
     # record owner has access to files
     response = record_owner.get(url, headers=headers)
@@ -664,7 +677,9 @@ def test_decline_a_request_public_files(
     assert res_record.parent.communities.ids[0] == community.id
 
     # check that comment was added
-    response = record_owner.get(f"/requests/{request.id}/timeline", headers=headers)
+    response = record_owner.get(
+        f"{BASE_URL}/requests/{request.id}/timeline", headers=headers
+    )
     assert response.json["hits"]["hits"][1]["payload"]["event"] == "declined"
     assert (
         response.json["hits"]["hits"][0]["payload"]["content"]
@@ -673,7 +688,7 @@ def test_decline_a_request_public_files(
 
     # check permissions
     recid = legacy_record["id"]
-    url = f"/records/{recid}/files"
+    url = f"{BASE_URL}/records/{recid}/files"
 
     # record owner has access to files
     response = record_owner.get(url, headers=headers)
@@ -755,7 +770,7 @@ def test_request_expire(
 
     # check permissions
     recid = legacy_record["id"]
-    url = f"/records/{recid}/files"
+    url = f"{BASE_URL}/records/{recid}/files"
 
     # record owner has access to files
     record_owner = uploader.login(client)
@@ -828,7 +843,7 @@ def test_expire_a_request_no_communities(
 
     # check permissions
     recid = legacy_record["id"]
-    url = f"/records/{recid}/files"
+    url = f"{BASE_URL}/records/{recid}/files"
 
     # record owner has access to files
     response = record_owner.get(url, headers=headers)
@@ -902,7 +917,7 @@ def test_expire_a_request_public_files(
 
     # check permissions
     recid = legacy_record["id"]
-    url = f"/records/{recid}/files"
+    url = f"{BASE_URL}/records/{recid}/files"
 
     # record owner has access to files
     response = record_owner.get(url, headers=headers)

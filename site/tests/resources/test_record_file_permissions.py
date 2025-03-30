@@ -12,21 +12,25 @@ from io import BytesIO
 from invenio_rdm_records.proxies import current_rdm_records_service
 from invenio_rdm_records.records import RDMRecord
 
+BASE_URL = "https://127.0.0.1:5000"
+
 
 def create_record_w_file(client, record, headers):
     """Create record with a file."""
     # Create draft
-    response = client.post("/records", json=record, headers=headers)
+    response = client.post(f"{BASE_URL}/records", json=record, headers=headers)
     assert response.status_code == 201
     recid = response.json["id"]
 
     # Attach a file to it
     response = client.post(
-        f"/records/{recid}/draft/files", headers=headers, json=[{"key": "test.pdf"}]
+        f"{BASE_URL}/records/{recid}/draft/files",
+        headers=headers,
+        json=[{"key": "test.pdf"}],
     )
     assert response.status_code == 201
     response = client.put(
-        f"/records/{recid}/draft/files/test.pdf/content",
+        f"{BASE_URL}/records/{recid}/draft/files/test.pdf/content",
         headers={
             "content-type": "application/octet-stream",
             "accept": "application/json",
@@ -35,12 +39,16 @@ def create_record_w_file(client, record, headers):
     )
     assert response.status_code == 200
     response = client.post(
-        f"/records/{recid}/draft/files/test.pdf/commit", headers=headers
+        f"{BASE_URL}/records/{recid}/draft/files/test.pdf/commit",
+        headers=headers,
     )
     assert response.status_code == 200
 
     # Publish it
-    response = client.post(f"/records/{recid}/draft/actions/publish", headers=headers)
+    response = client.post(
+        f"{BASE_URL}/records/{recid}/draft/actions/publish",
+        headers=headers,
+    )
     assert response.status_code == 202
 
     return recid
@@ -85,7 +93,7 @@ def test_community_can_not_access_restricted_files(
     _add_permission_flags(False, req_item, db)
 
     _add_to_community(req_item._record, community, service, db)
-    url = f"/records/{recid}/files"
+    url = f"{BASE_URL}/records/{recid}/files"
 
     # record owner has access to files
     response = record_owner.get(url, headers=headers)
@@ -131,7 +139,7 @@ def test_community_can_access_restricted_files(
     _add_permission_flags(True, req_item, db)
 
     _add_to_community(req_item._record, community, service, db)
-    url = f"/records/{recid}/files"
+    url = f"{BASE_URL}/records/{recid}/files"
 
     # record owner has access to files
     response = record_owner.get(url, headers=headers)
@@ -180,7 +188,7 @@ def test_community_can_access_restricted_files_missing_flag(
     db.session.commit()
 
     _add_to_community(req_item._record, community, service, db)
-    url = f"/records/{recid}/files"
+    url = f"{BASE_URL}/records/{recid}/files"
 
     # record owner has access to files
     response = record_owner.get(url, headers=headers)
@@ -223,7 +231,7 @@ def test_community_can_access_restricted_files_missing_field(
     req_item = service.read(uploader.identity, recid)
 
     _add_to_community(req_item._record, community, service, db)
-    url = f"/records/{recid}/files"
+    url = f"{BASE_URL}/records/{recid}/files"
 
     # record owner has access to files
     response = record_owner.get(url, headers=headers)
@@ -270,7 +278,7 @@ def test_everybody_can_access_public_files_flag_is_true(
     _add_permission_flags(True, req_item, db)
 
     _add_to_community(req_item._record, community, service, db)
-    url = f"/records/{recid}/files"
+    url = f"{BASE_URL}/records/{recid}/files"
 
     # record owner has access to files
     response = record_owner.get(url, headers=headers)
@@ -313,7 +321,7 @@ def test_everybody_can_access_public_files_flag_is_false(
     _add_permission_flags(False, req_item, db)
 
     _add_to_community(req_item._record, community, service, db)
-    url = f"/records/{recid}/files"
+    url = f"{BASE_URL}/records/{recid}/files"
 
     # record owner has access to files
     response = record_owner.get(url, headers=headers)
@@ -352,7 +360,7 @@ def test_only_owners_can_download_restricted_file(
     # add permission_flags
     _add_permission_flags(False, req_item, db)
 
-    url = f"/records/{recid}/files/test.pdf/content"
+    url = f"{BASE_URL}/records/{recid}/files/test.pdf/content"
 
     # Owner can download file
     response = record_owner.get(url, headers=headers)
@@ -397,7 +405,7 @@ def test_communinty_can_download_restricted_file(
     # add permission_flags
     _add_permission_flags(True, req_item, db)
 
-    url = f"/records/{recid}/files/test.pdf/content"
+    url = f"{BASE_URL}/records/{recid}/files/test.pdf/content"
 
     # Owner can download file
     response = record_owner.get(url, headers=headers)
@@ -445,7 +453,7 @@ def test_everybody_can_download_public_files_flag_is_true(
     _add_permission_flags(True, req_item, db)
 
     # Unauthenticated user can list files
-    url = f"/records/{recid}/files"
+    url = f"{BASE_URL}/records/{recid}/files"
     response = client.get(url, headers=headers)
     assert response.status_code == 200
     assert response.json["entries"]
@@ -453,7 +461,9 @@ def test_everybody_can_download_public_files_flag_is_true(
     # Check if we can download every file
     for file_entry in response.json["entries"]:
         file_key = file_entry["key"]
-        resp = client.get(f"/records/{recid}/files/{file_key}/content", headers=headers)
+        resp = client.get(
+            f"{BASE_URL}/records/{recid}/files/{file_key}/content", headers=headers
+        )
         assert resp.status_code == 200
 
 
@@ -479,7 +489,7 @@ def test_everybody_can_download_public_files_flag_is_false(
     _add_permission_flags(False, req_item, db)
 
     # Unauthenticated user can list files
-    url = f"/records/{recid}/files"
+    url = f"{BASE_URL}/records/{recid}/files"
     response = client.get(url, headers=headers)
     assert response.status_code == 200
     assert response.json["entries"]
@@ -487,7 +497,9 @@ def test_everybody_can_download_public_files_flag_is_false(
     # Check if we can download every file
     for file_entry in response.json["entries"]:
         file_key = file_entry["key"]
-        resp = client.get(f"/records/{recid}/files/{file_key}/content", headers=headers)
+        resp = client.get(
+            f"{BASE_URL}/records/{recid}/files/{file_key}/content", headers=headers
+        )
         assert resp.status_code == 200
 
 
@@ -512,7 +524,7 @@ def test_community_owner_is_record_owner_flag_false(
     _add_permission_flags(False, req_item, db)
 
     _add_to_community(req_item._record, community_with_uploader_owner, service, db)
-    url = f"/records/{recid}/files"
+    url = f"{BASE_URL}/records/{recid}/files"
 
     # record/community owner has access to files
     response = owner.get(url, headers=headers)
@@ -541,7 +553,7 @@ def test_community_owner_is_record_owner_flag_true(
     _add_permission_flags(True, req_item, db)
 
     _add_to_community(req_item._record, community_with_uploader_owner, service, db)
-    url = f"/records/{recid}/files"
+    url = f"{BASE_URL}/records/{recid}/files"
 
     # record/community owner has access to files
     response = owner.get(url, headers=headers)

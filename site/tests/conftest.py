@@ -26,7 +26,6 @@ from invenio_vocabularies.contrib.awards.api import Award
 from invenio_vocabularies.contrib.funders.api import Funder
 from invenio_vocabularies.proxies import current_service as vocabulary_service
 from invenio_vocabularies.records.api import Vocabulary
-
 from zenodo_rdm.api import ZenodoRDMDraft, ZenodoRDMRecord
 from zenodo_rdm.custom_fields import CUSTOM_FIELDS, CUSTOM_FIELDS_UI, NAMESPACES
 from zenodo_rdm.generators import media_files_management_action
@@ -743,6 +742,7 @@ def test_user(UserFixture, app, db):
     u = UserFixture(
         email="testuser@inveniosoftware.org",
         password="testuser",
+        base_url="https://127.0.0.1:5000",
     )
     u.create(app, db)
     return u
@@ -754,6 +754,7 @@ def uploader(UserFixture, app, db, media_files_role):
     u = UserFixture(
         email="uploader@inveniosoftware.org",
         password="uploader",
+        base_url="https://127.0.0.1:5000",
     )
     u.create(app, db)
 
@@ -769,6 +770,7 @@ def community_owner(UserFixture, app, db):
     u = UserFixture(
         email="community_owner@inveniosoftware.org",
         password="community_owner",
+        base_url="https://127.0.0.1:5000",
     )
     u.create(app, db)
     return u

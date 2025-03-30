@@ -4,7 +4,7 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-pytest-invenio = ">=3.0.0,<4.0.0"
+pytest-invenio = ">=3.2.0,<4.0.0"
 pytest-black = ">=0.4.0"
 sphinx = ">=4.5"
 isort = ">=6.0"
