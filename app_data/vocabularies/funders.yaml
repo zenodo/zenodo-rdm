@@ -1,0 +1,40 @@
+- id: 00k4n6c32
+  name: European Commission
+  title:
+    en: European Commission
+  acronym: EC
+  identifiers:
+    - scheme: ror
+      identifier: 00k4n6c32
+    - scheme: doi
+      identifier: 10.13039/501100000780
+    - scheme: grid
+      identifier: grid.270680.b
+  types:
+    - government
+    - funder
+  country: BE
+  country_name: Belgium
+  location_name: Brussels
+  status: active
+- id: 01cwqze88
+  name: National Institutes of Health
+  title:
+    en: National Institutes of Health
+  acronym: NIH
+  identifiers:
+    - scheme: ror
+      identifier: 01cwqze88
+    - scheme: doi
+      identifier: 10.13039/100000002
+    - scheme: grid
+      identifier: grid.94365.3d
+    - scheme: isni
+      identifier: 0000 0001 2297 5165
+  country: US
+  country_name: United States
+  location_name: Bethesda
+  types:
+    - government
+    - funder
+  status: active
