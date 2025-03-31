@@ -526,7 +526,7 @@ def create_eu_checks():
         )
         db.session.add(check_config)
     db.session.commit()
-    print("EU checks created/updated successfully.")
+    print("EU Open Research Repository community checks created/updated successfully.")
 
     sub_communities = community_service._search(
         "search",
@@ -590,7 +590,7 @@ def create_eu_checks():
             )
             db.session.add(check_config)
         db.session.commit()
-    print("EU checks created/updated successfully.")
+    print("EU subcommunity checks created/updated successfully.")
 
 
 if __name__ == "__main__":
