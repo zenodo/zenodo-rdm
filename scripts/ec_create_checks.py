@@ -517,6 +517,7 @@ def create_eu_checks():
     eu_comm = community_service.record_cls.pid.resolve("eu")
     create_metadata_checks(eu_comm)
     create_file_format_checks(eu_comm)
+    print("EU Open Research Repository community checks created/updated successfully.")
 
     # Create checks for sub-communities
     sub_communities = community_service._search(
@@ -581,7 +582,7 @@ def create_eu_checks():
             )
             db.session.add(check_config)
         db.session.commit()
-    print("EU checks created/updated successfully.")
+    print("EU subcommunity checks created/updated successfully.")
 
 
 def create_metadata_checks(eu_comm):
