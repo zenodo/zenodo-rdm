@@ -48,6 +48,7 @@ def _get_eu_records_query(since):
     """Get dsl query for records to be processed."""
     created_before = datetime.now(timezone.utc) - timedelta(days=30)
     updated_after = datetime.fromisoformat(since) - timedelta(hours=12)
+    time_diff = datetime.now(timezone.utc) - datetime.fromisoformat(since)
 
     # Get records with EC funding and not in EU community already and not created in last 30 days
     ec_funded = dsl.Q(
@@ -93,7 +94,7 @@ def _get_eu_records_query(since):
             dsl.Q(
                 "range",
                 created={
-                    "gte": (created_before - timedelta(days=1, hours=6)).isoformat(),
+                    "gte": (created_before - time_diff).isoformat(),
                 },
             ),
         ],
