@@ -22,10 +22,47 @@ from invenio_rdm_records.resources.serializers import UIJSONSerializer
 from invenio_records_resources.services.errors import PermissionDeniedError
 
 
-THEME_METRICS = {
-    "horizon": ["total_data", "total_grants"],
-    "biosyslit": ["total_views", "total_downloads", "resource_types"],
-}
+def publications_metric_blr(results):
+    """Publications metric for BLR."""
+    resource_types = results._results.aggregations.resource_types.buckets
+    valid_pubication_types = [
+        "publication-article",
+        "publication-book",
+        "publication-section",
+        "publication-datamanagementplan",
+    ]
+    publications = 0
+    for resource_type in resource_types:
+        if resource_type.key in valid_pubication_types:
+            publications += resource_type.doc_count
+    return publications
+
+
+def images_metric_blr(results):
+    """Images metric for BLR."""
+    resource_types = results._results.aggregations.resource_types.buckets
+    images = 0
+    for resource_type in resource_types:
+        if resource_type.key.startswith("image"):
+            images += resource_type.doc_count
+    return images
+
+
+def treatments_metric_blr(results):
+    """Treatments metric for BLR."""
+    resource_types = results._results.aggregations.resource_types.buckets
+    for resource_type in resource_types:
+        if resource_type.key == "publication-taxonomictreatment":
+            return resource_type.doc_count
+
+
+def tables_metric_blr(results):
+    """Tables metric for BLR."""
+    resource_types = results._results.aggregations.resource_types.buckets
+    for resource_type in resource_types:
+        if resource_type.key == "dataset":
+            return resource_type.doc_count
+
 
 METRICS = {
     "total_grants": {
@@ -56,15 +93,22 @@ METRICS = {
 }
 
 
+THEME_METRICS = {
+    "horizon": {"total_data": "total_data", "total_grants": "total_grants"},
+    "biosyslit": {
+        "total_views": "total_views",
+        "total_downloads": "total_downloads",
+        "publications": publications_metric_blr,
+        "images": images_metric_blr,
+        "tables": tables_metric_blr,
+        "treatments": treatments_metric_blr,
+    },
+}
+
+
 def _get_metric_from_search(result, metric):
     """Get metric from search result."""
-    if METRICS[metric]["type"] in ["sum", "cardinality"]:
-        return result._results.aggregations[metric].value
-    elif METRICS[metric]["type"] in ["terms"]:
-        return {
-            bucket["key"]: bucket["doc_count"]
-            for bucket in result._results.aggregations[metric].buckets
-        }
+    return result._results.aggregations[metric].value
 
 
 @pass_community(serialize=True)
@@ -92,14 +136,7 @@ def communities_home(pid_value, community, community_ui):
         recent_uploads = current_community_records_service.search(
             community_id=pid_value,
             identity=g.identity,
-            params={
-                "sort": "newest",
-                "size": 3,
-                "metrics": {
-                    metric: METRICS[metric]
-                    for metric in THEME_METRICS.get(community._record.theme["brand"], [])
-                },
-            },
+            params={"sort": "newest", "size": 3, "metrics": METRICS},
             expand=True,
         )
 
@@ -109,13 +146,13 @@ def communities_home(pid_value, community, community_ui):
         metrics = {
             "total_records": recent_uploads.total,
         }
-        for metric in THEME_METRICS.get(community._record.theme["brand"], []):
-            value = _get_metric_from_search(recent_uploads, metric)
-            if isinstance(value, dict):
-                for key, value in value.items():
-                    metrics[f"{metric}.{key}"] = value
+        for metric, getter in THEME_METRICS.get(
+            community._record.theme["brand"], {}
+        ).items():
+            if type(getter) == str:
+                metrics[metric] = _get_metric_from_search(recent_uploads, getter)
             else:
-                metrics[metric] = value
+                metrics[metric] = getter(recent_uploads) or 0
 
         records_ui = UIJSONSerializer().dump_list(recent_uploads.to_dict())["hits"][
             "hits"
