@@ -17,6 +17,10 @@
   color: {{ theme.primaryColor }} !important;
 }
 
+.theme-secondary-text-direct {
+  color: {{ theme.secondaryColor }} !important;
+}
+
 /* Copied from invenio-communities's community_theme_template.css */
 
 .page-subheader-outer {

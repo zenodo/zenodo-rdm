@@ -1,7 +1,7 @@
 {# -*- coding: utf-8 -*-
 
   This file is part of Invenio.
-  Copyright (C) 2024 CERN.
+  Copyright (C) 2025 CERN.
 
   Invenio is free software; you can redistribute it and/or modify it
   under the terms of the MIT License; see LICENSE file for more details.
@@ -21,8 +21,8 @@
     <div class="ui centered stackable theme-font grid container rel-mt-4 rel-mb-4">
       <div class="thirteen centered wide column">
         <div class=" rel-mt-2 rel-mb-2">
-          <h1 class="ui large header">{{ _("Open repository for EU-funded research") }}</h1>
-          <p class="text-muted ui small header">{{ _("Research outputs from Horizon Europe, Euratom and earlier Framework Programmes") }}</p>
+          <h1 class="ui large header">{{ _("Open repository for liberated data from biodiversity literature") }}</h1>
+          <p class="text-muted ui small header">{{ _("Research data from scientific publications") }}</p>
         </div>
         <div class="ui grid centered rel-mt-2 rel-mb-4">
           <div class="row">
@@ -51,46 +51,129 @@
       </div>
     </div>
 
-  <!--SUMMARY SECTION-->
-  {% macro format_metric_value(key, value) %}
-    {% if key in ("total_records", "total_grants") %}
-      {{ value | compact_number(max_value=1_000_000) }}
-    {% elif key == "total_data" %}
-      {{ value | filesizeformat }}
-    {% else %}
-      {{ value }}
-    {% endif %}
-  {% endmacro %}
-
-  {% set icon_map = {
-    "total_records": {"icon": "file", "title": _("RECORDS")},
-    "total_grants": {"icon": "money", "title": _("GRANTS")},
-    "total_data": {"icon": "database", "title": _("DATA VOLUME")}
-  } %}
-
-  <div class="ui stackable theme-font grid container rel-mt-4">
-    <div class="column">
-      <div class="row item">
-        <h1 class="ui large header inline">{{ _("Summary") }}</h1>
-      </div>
-      <div class="ui divider ml-0"></div>
-      <div class="center aligned ui equal width stackable grid rel-mt-4 rel-mb-2">
-        <div class="row rel-mb-4">
-          {% for key, value in metrics.items() %}
-          <div class="column">
-            <div class="theme-primary-text">
-              <h1 class="ui header header huge">
-                <i class="{{ icon_map[key]['icon'] }} icon" aria-hidden="true"></i>
-                {{ format_metric_value(key, value) }}
-              </h1>
-            </div>
-            <h1 class="text-muted ui header medium">{{ icon_map[key]['title'] }}</h1>
+  <!--ADVANCED SEARCH SECTION-->
+    <div class="ui stackable theme-font grid container rel-mt-4">
+      <div class="row">
+        <div class="column">
+          <div class="row item">
+            <h1 class="ui large header inline">{{ _("Advanced Search") }}</h1>
           </div>
-          {% endfor %}
+          <div class="ui divider ml-0"></div>
+          <div class="center aligned ui equal width stackable grid rel-mt-4 rel-mb-2">
+            <div class="row">
+              <div class="column">
+                <div class="ui wide stretched stackable three column grid">
+                  <!-- First Column -->
+                  <div class="sixteen wide mobile sixteen wide tablet five wide computer column">
+                    <div class="ui raised segment center aligned">
+                      <img class="ui small centered image" src="{{ url_for('static', filename='images/gbif-green-logo.svg')}}" alt="">
+                      <h1 class=" ui medium header rel-m-1">{{ _("Global Biodiversity Information Facility") }}</h1>
+                      <div class="ui bottom attached">
+                        <div class="content">
+                          <div class="item">
+                            <div class="description">
+                              <p>{{_("A global network and data infrastructure providing free access to biodiversity data for conservation efforts worldwide.")}} </p>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="ui container center aligned rel-mb-1">
+                          <a href="https://www.gbif.org/" target="_blank" class="ui positive button labeled icon rel-mt-1 theme-secondary">
+                            <i class="external icon" aria-hidden="true"></i>
+                            {{ _("GBIF") }}
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+    
+                  <!-- Second Column -->
+                  <div class="sixteen wide mobile sixteen wide tablet six wide computer column">
+                    <div class="ui raised segment">
+                      <img class="ui small centered image" src="{{ url_for('static', filename='images/sibils-logo.png')}}" alt="">
+                      <h1 class="center aligned ui medium header rel-m-1">{{ _("BiodiversityPMC") }}</h1>
+                      <div class="ui bottom attached">
+                        <div class="content">
+                          <div class="item">
+                            <div class="description">
+                              <p> {{_("An advanced search platform powered by SIBILS, offering access to scientific literature on biodiversity, ecology, and conservation biology.")}}</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="ui container center aligned rel-mb-1">
+                          <form action="https://biodiversitypmc.dev.sibils.org/" method="GET" target="_blank">
+                            <div class="ui action input rel-mt-1">
+                              <input type="text" name="query" placeholder="Search in SIBILS..." value="{{ request.args.get('query', '') }}">
+                              <button type="submit" class="ui positive button theme-primary">
+                                {{ _("Search") }}
+                              </button>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+    
+                  <!-- Third Column -->
+                  <div class="sixteen wide mobile sixteen wide tablet five wide computer column">
+                    <div class="ui raised segment">
+                      <img class="ui small centered image" src="{{ url_for('static', filename='images/treatmentbank-logo.png')}}" alt="">
+                      <h1 class="center aligned ui medium header rel-m-1">{{ _("Treatment Bank") }}</h1>
+                      <div class="ui bottom attached">
+                        <div class="content">
+                          <div class="item">
+                            <div class="description">
+                              <p>{{_("A repository of structured biodiversity treatments extracted from taxonomic literature, supporting research and data integration in biodiversity science.")}}</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="ui container center aligned rel-mb-1">
+                          <a href="https://tb.plazi.org/" target="_blank" class="ui positive button labeled icon rel-mt-1 theme-secondary">
+                            <i class="external icon" aria-hidden="true"></i>
+                            {{ _("Treatment Bank") }}
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div> 
+        </div> 
+      </div> 
+    </div>
+    
+    
+ <!--SUMMARY SECTION-->
+ {% set icon_map = {
+  "total_records": {"icon": "file", "title": _("RECORDS")},
+  "total_grants": {"icon": "download", "title": _("DOWNLOADS")},
+  "total_data": {"icon": "eye", "title": _("VIEWS")}
+} %}
+
+<div class="ui stackable theme-font grid container rel-mt-4">
+  <div class="column">
+    <div class="row item">
+      <h1 class="ui large header inline">{{ _("Summary") }}</h1>
+    </div>
+    <div class="ui divider ml-0"></div>
+    <div class="center aligned ui equal width stackable grid rel-mt-4 rel-mb-2">
+      <div class="row rel-mb-4">
+        {% for key, value in metrics.items() %}
+        <div class="column">
+          <div class="theme-primary-text">
+            <h1 class="ui header header huge">
+              <i class="{{ icon_map[key]['icon'] }} icon" aria-hidden="true"></i>
+              {{ value | compact_number(max_value=1_000_000) }}
+            </h1>
+          </div>
+          <h1 class="ui header medium theme-secondary-text-direct ">{{ icon_map[key]['title'] }}</h1>
         </div>
+        {% endfor %}
       </div>
     </div>
   </div>
+</div>
 
   <!--BROWSE SECTION-->
   <div class="ui stackable theme-font one column grid container rel-mt-2 rel-mb-4">
@@ -102,7 +185,7 @@
         <div class="ui wide stretched stackable three column grid rel-mt-3">
           <div class="sixteen wide mobile sixteen wide tablet five wide computer column">
             <div class="segment-container rel-p-1 rel-pl-2 rel-pr-2">
-                <h1 class="center aligned ui medium header rel-m-1">{{ _("Subject areas") }} </h1>
+                <h1 class="center aligned ui medium header rel-m-1">{{ _("Taxa") }} </h1>
                 <div class="ui bottom attached"> 
                   {% set subjects = collections.values() | selectattr('slug', 'equalto', 'subjects') | first | default([]) %}
                   {% for collection in subjects.collections %}
@@ -110,7 +193,7 @@
                   {% endfor %}
                   <div class="ui container center aligned rel-mb-1">
                     <a href="{{ url_for('invenio_app_rdm_communities.communities_browse', pid_value=community.slug) }}"
-                    class=" theme-primary-text-direct rel-mt-2">
+                    class=" theme-secondary-text-direct rel-mt-2">
                   {{ _("Browse all") }}
                 </a>
                   </div>
@@ -138,7 +221,7 @@
           </div>
           <div class="sixteen wide mobile sixteen wide tablet five wide computer column">
             <div class="segment-container rel-p-1 rel-pl-2 rel-pr-2">
-                <h1 class="center aligned ui medium header rel-m-1">{{ _("Funding programmes") }} </h1>
+                <h1 class="center aligned ui medium header rel-m-1">{{ _("Collections") }} </h1>
                 <div class="ui bottom attached">
                   {% set programs = collections.values() | selectattr('slug', 'equalto', 'programs') | first | default([]) %}
                   {% for collection in programs.collections %}
@@ -146,7 +229,7 @@
                   {% endfor %}
                   <div class="ui container center aligned rel-mb-1">
                     <a href="{{ url_for('invenio_app_rdm_communities.communities_browse', pid_value=community.slug) }}"
-                      class="ui rel-mt-1 theme-primary-text-direct ">
+                      class="ui rel-mt-1 theme-secondary-text-direct ">
                       {{ _("Browse all") }}
                     </a>
                   </div>
