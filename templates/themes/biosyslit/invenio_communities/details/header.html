@@ -1,0 +1,133 @@
+{# -*- coding: utf-8 -*-
+
+This file is part of Invenio.
+Copyright (C) 2025 CERN.
+
+Invenio is free software; you can redistribute it and/or modify it
+under the terms of the MIT License; see LICENSE file for more details.
+#}
+
+{%- from "invenio_theme/macros/truncate.html" import truncate_text %}
+{%- from "invenio_communities/details/macros/access-status-label.html" import access_status_label -%}
+
+<div
+        class="ui container fluid with-submenu rel-pt-2 ml-0-mobile mr-0-mobile">
+  <div class="ui container fluid mr-0-mobile ml-0-mobile">
+    <div class="ui relaxed container grid">
+      <div class="row pb-0">
+        <div
+                class="sixteen wide mobile sixteen wide tablet ten wide computer column">
+          <div
+                  class="community-header flex align-items-center column-mobile align-items-start-mobile">
+            <div class="flex align-items-center">
+              <div class="ui rounded image community-image mt-5 rel-mr-2">
+                <a href="{{ community.links.self_html }}">
+                  <img
+                          src="{{ community.links.logo | resolve_community_logo(community.id) }}"
+                          alt=""
+                          class="rel-mb-1"
+                  />
+                </a>
+              </div>
+
+              <div class="mobile only">
+                <a class="remove-default-style" href="{{ community.links.self_html }}">
+                  <h1 class="ui medium header mb-5">
+                    {{ community.metadata.title }}
+                  </h1>
+                </a>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex align-items-center mb-5 tablet computer only">
+
+                <a class="remove-default-style" href="{{ community.links.self_html }}">
+                  <h1 class="ui medium header mb-0">
+                    {{ community.metadata.title }}
+                  </h1>
+                </a>
+
+                {% if community.access.visibility == 'restricted' %}
+                  <div class="rel-ml-1">
+                    {{ access_status_label() }}
+                  </div>
+                {% endif %}
+              </div>
+
+              <div class="text-muted">
+                {% if community.access.visibility == 'restricted' %}
+                  <div class="mobile only rel-mb-1">
+                    {{ access_status_label() }}
+                  </div>
+                {% endif %}
+
+                {% if community.metadata.organizations %}
+                {% for org in community.metadata.organizations %}
+                  {% set ror_id = org.id %}
+                  {% set name = org.name %}
+
+                  <div class="inline-computer mt-5 rel-mr-1">
+                    {% if loop.index == 1 %}
+                      by
+                    {% endif %}
+                    {{jdnsknjnd}}
+                    {{ name }}
+
+                    <a target="_blank" class="no-text-decoration" data-tooltip="Verified community" href="https://support.zenodo.org/help/en-gb/11/108">
+                      <i class="green check circle outline link icon"></i>
+                    </a>
+                    {{ ", " if not loop.last }}
+                  </div>
+                {% endfor %}
+              {% endif %}
+
+                {% if community.metadata.website %}
+                  <div class="inline-computer mt-5 rel-mr-1">
+                    <i class="linkify icon" aria-hidden="true"></i>
+                    <a href="{{ community.metadata.website }}">
+                      {{ community.metadata.website }}
+                    </a>
+                  </div>
+                {% endif %}
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+      <div
+        class="sixteen wide mobile sixteen wide tablet six wide computer right aligned middle aligned column">
+          <a href="/uploads/new?community={{ community.slug }}"
+            class="ui positive button labeled icon rel-mt-1 theme-secondary">
+            <i class="upload icon" aria-hidden="true"></i>
+            {{ _("Submit to community") }}
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="ui divider mobile only"></div>
+    <div class="ui container fluid theme-tertiary page-subheader rel-mt-2 p-10 mr-0-mobile ml-0-mobile">
+      <h5 class="ui container">
+        Liberated Data
+      </h5>
+    </div>
+    <div
+            class="ui container fluid secondary pointing stackable menu pl-0 pr-0 theme-primary mt-0 mr-0-mobile ml-0-mobile">
+      {% if community_menu_active %}
+        <div class="ui container">
+          {% for item in current_menu.submenu('communities').children
+        if (item.permissions == True or permissions[item.permissions]) and item.visible %}
+            <a
+                    class="item {{ 'active' if active_community_header_menu_item == item.name }} {{ 'disabled' if not item.url }}"
+                    href="{{ item.url }}"
+            >
+              <i aria-hidden="true" class="{{ item.icon }} icon"></i>
+              {{ item.text }}
+            </a>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>

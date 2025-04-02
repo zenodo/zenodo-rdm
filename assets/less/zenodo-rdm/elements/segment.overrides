@@ -109,3 +109,10 @@
     border-radius: 0 0 0.8rem 0.8rem;
   }
 }
+
+.ui.raised.segment{
+  .ui.small.image {
+    height: 80px; 
+    object-fit: contain; 
+  }
+}
