@@ -24,7 +24,7 @@ from invenio_records_resources.services.errors import PermissionDeniedError
 
 THEME_METRICS = {
     "horizon": ["total_data", "total_grants"],
-    "blr": ["total_views", "total_downloads", "resource_types"],
+    "biosyslit": ["total_views", "total_downloads", "resource_types"],
 }
 
 METRICS = {
@@ -97,7 +97,7 @@ def communities_home(pid_value, community, community_ui):
                 "size": 3,
                 "metrics": {
                     metric: METRICS[metric]
-                    for metric in THEME_METRICS[community._record.theme["brand"]]
+                    for metric in THEME_METRICS.get(community._record.theme["brand"], [])
                 },
             },
             expand=True,
@@ -108,11 +108,14 @@ def communities_home(pid_value, community, community_ui):
         # TODO resultitem does not expose aggregations except labelled facets
         metrics = {
             "total_records": recent_uploads.total,
-            **{
-                metric: _get_metric_from_search(recent_uploads, metric)
-                for metric in THEME_METRICS[community._record.theme["brand"]]
-            },
         }
+        for metric in THEME_METRICS.get(community._record.theme["brand"], []):
+            value = _get_metric_from_search(recent_uploads, metric)
+            if isinstance(value, dict):
+                for key, value in value.items():
+                    metrics[f"{metric}.{key}"] = value
+            else:
+                metrics[metric] = value
 
         records_ui = UIJSONSerializer().dump_list(recent_uploads.to_dict())["hits"][
             "hits"
