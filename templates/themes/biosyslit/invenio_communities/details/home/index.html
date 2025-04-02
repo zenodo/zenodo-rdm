@@ -52,86 +52,85 @@
     </div>
 
   <!--ADVANCED SEARCH SECTION-->
-    <div class="ui stackable theme-font grid container rel-mt-4">
-      <div class="row">
-        <div class="column">
-          <div class="row item">
-            <h1 class="ui large header inline">{{ _("Advanced Search") }}</h1>
-          </div>
-          <div class="ui divider ml-0"></div>
-          <div class="center aligned ui equal width stackable grid rel-mt-4 rel-mb-2">
-            <div class="row">
-              <div class="column">
-                <div class="ui wide stretched stackable three column grid">
-                  <!-- First Column -->
-                  <div class="sixteen wide mobile sixteen wide tablet five wide computer column">
-                    <div class="ui raised segment center aligned">
-                      <img class="ui small centered image" src="{{ url_for('static', filename='images/gbif-green-logo.svg')}}" alt="">
-                      <h1 class=" ui medium header rel-m-1">{{ _("Global Biodiversity Information Facility") }}</h1>
-                      <div class="ui bottom attached">
-                        <div class="content">
-                          <div class="item">
-                            <div class="description">
-                              <p>{{_("A global network and data infrastructure providing free access to biodiversity data for conservation efforts worldwide.")}} </p>
-                            </div>
+  <div class="ui stackable theme-font grid container rel-mt-4">
+    <div class="row">
+      <div class="column">
+        <div class="row item">
+          <h1 class="ui large header inline">{{ _("Advanced Search") }}</h1>
+        </div>
+        <div class="ui divider ml-0"></div>
+        <div class="center aligned ui equal width stackable grid rel-mt-4 rel-mb-2">
+          <div class="row">
+            <div class="column">
+              <div class="ui wide stretched stackable three column grid">
+                <!-- First Column -->
+                <div class="sixteen wide mobile sixteen wide tablet five wide computer column">
+                  <div class="ui resource-card segment rel-p-2">
+                    <img class="ui small centered image" src="{{ url_for('static', filename='images/gbif-green-logo.svg')}}" alt="">
+                    <h1 class="ui medium header rel-m-1">{{ _("Global Biodiversity Information Facility") }}</h1>
+                    <div class="ui bottom attached">
+                      <div class="content">
+                        <div class="item">
+                          <div class="description">
+                            <p>{{_("A global network and data infrastructure providing free access to biodiversity data for conservation efforts worldwide.")}} </p>
                           </div>
                         </div>
-                        <div class="ui container center aligned rel-mb-1">
-                          <a href="https://www.gbif.org/" target="_blank" class="ui positive button labeled icon rel-mt-1 theme-secondary">
-                            <i class="external icon" aria-hidden="true"></i>
-                            {{ _("GBIF") }}
-                          </a>
-                        </div>
+                      </div>
+                      <div class="ui container center aligned">
+                        <a href="https://www.gbif.org/" target="_blank" class="ui positive button labeled icon rel-mt-1 theme-secondary">
+                          <i class="external icon" aria-hidden="true"></i>
+                          {{ _("GBIF") }}
+                        </a>
                       </div>
                     </div>
                   </div>
-
-                  <!-- Second Column -->
-                  <div class="sixteen wide mobile sixteen wide tablet six wide computer column">
-                    <div class="ui raised segment">
-                      <img class="ui small centered image" src="{{ url_for('static', filename='images/sibils-logo.png')}}" alt="">
-                      <h1 class="center aligned ui medium header rel-m-1">{{ _("BiodiversityPMC") }}</h1>
-                      <div class="ui bottom attached">
-                        <div class="content">
-                          <div class="item">
-                            <div class="description">
-                              <p> {{_("An advanced search platform powered by SIBILS, offering access to scientific literature on biodiversity, ecology, and conservation biology.")}}</p>
-                            </div>
+                </div>
+  
+                <!-- Second Column -->
+                <div class="sixteen wide mobile sixteen wide tablet six wide computer column">
+                  <div class="ui resource-card segment rel-p-2">
+                    <img class="ui small centered image" src="{{ url_for('static', filename='images/sibils-logo.png')}}" alt="">
+                    <h1 class="center aligned ui medium header rel-m-1">{{ _("BiodiversityPMC") }}</h1>
+                    <div class="ui bottom attached">
+                      <div class="content">
+                        <div class="item">
+                          <div class="description">
+                            <p> {{_("An advanced search platform powered by SIBILS, offering access to scientific literature on biodiversity, ecology, and conservation biology.")}}</p>
                           </div>
                         </div>
-                        <div class="ui container center aligned rel-mb-1">
-                          <form action="https://biodiversitypmc.dev.sibils.org/" method="GET" target="_blank">
-                            <div class="ui action input rel-mt-1">
-                              <input type="text" name="query" placeholder="Search in SIBILS..." value="{{ request.args.get('query', '') }}">
-                              <button type="submit" class="ui positive button theme-primary">
-                                {{ _("Search") }}
-                              </button>
-                            </div>
-                          </form>
-                        </div>
+                      </div>
+                      <div class="ui container center aligned">
+                        <form action="https://biodiversitypmc.dev.sibils.org/" method="GET" target="_blank">
+                          <div class="ui action input rel-mt-1">
+                            <input type="text" name="query" placeholder="Search in SIBILS..." value="{{ request.args.get('query', '') }}">
+                            <button type="submit" class="ui positive button theme-primary">
+                              {{ _("Search") }}
+                            </button>
+                          </div>
+                        </form>
                       </div>
                     </div>
                   </div>
-
-                  <!-- Third Column -->
-                  <div class="sixteen wide mobile sixteen wide tablet five wide computer column">
-                    <div class="ui raised segment">
-                      <img class="ui small centered image" src="{{ url_for('static', filename='images/treatmentbank-logo.png')}}" alt="">
-                      <h1 class="center aligned ui medium header rel-m-1">{{ _("Treatment Bank") }}</h1>
-                      <div class="ui bottom attached">
-                        <div class="content">
-                          <div class="item">
-                            <div class="description">
-                              <p>{{_("A repository of structured biodiversity treatments extracted from taxonomic literature, supporting research and data integration in biodiversity science.")}}</p>
-                            </div>
+                </div>
+  
+                <!-- Third Column -->
+                <div class="sixteen wide mobile sixteen wide tablet five wide computer column">
+                  <div class="ui resource-card segment rel-p-2">
+                    <img class="ui small centered image" src="{{ url_for('static', filename='images/treatmentbank-logo.png')}}" alt="">
+                    <h1 class="center aligned ui medium header rel-m-1">{{ _("Treatment Bank") }}</h1>
+                    <div class="ui bottom attached">
+                      <div class="content">
+                        <div class="item">
+                          <div class="description">
+                            <p>{{_("A repository of structured biodiversity treatments extracted from taxonomic literature, supporting research and data integration in biodiversity science.")}}</p>
                           </div>
                         </div>
-                        <div class="ui container center aligned rel-mb-1">
-                          <a href="https://tb.plazi.org/" target="_blank" class="ui positive button labeled icon rel-mt-1 theme-secondary">
-                            <i class="external icon" aria-hidden="true"></i>
-                            {{ _("Treatment Bank") }}
-                          </a>
-                        </div>
+                      </div>
+                      <div class="ui container center aligned">
+                        <a href="https://tb.plazi.org/" target="_blank" class="ui positive button labeled icon rel-mt-1 theme-secondary">
+                          <i class="external icon" aria-hidden="true"></i>
+                          {{ _("Treatment Bank") }}
+                        </a>
                       </div>
                     </div>
                   </div>
@@ -139,45 +138,51 @@
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-
-
+        </div> 
+      </div> 
+    </div> 
+  </div>
+  
+  
+    
  <!--SUMMARY SECTION-->
- {% set icon_map = {
-  "total_records": {"icon": "file", "title": _("RECORDS")},
-  "total_views": {"icon": "eye", "title": _("VIEWS")},
-  "total_downloads": {"icon": "download", "title": _("DOWNLOADS")},
-  "publications": {"icon": "book", "title": _("PUBLICATIONS")},
-  "treatments": {"icon": "newspaper outline", "title": _("TREATMENTS")},
-  "images": {"icon": "images", "title": _("FIGURES")},
-  "tables": {"icon": "database", "title": _("DATASETS")},
+{% set icon_map = {
+  "total_records": {"icon": "file", "title": _( "RECORDS"), "row": 1},
+  "total_views": {"icon": "eye", "title": _( "VIEWS"), "row": 1},
+  "total_downloads": {"icon": "download", "title": _( "DOWNLOADS"), "row": 1},
+  "publications": {"icon": "book", "title": _( "PUBLICATIONS"), "row": 2},
+  "treatments": {"icon": "newspaper outline", "title": _( "TREATMENTS"), "row": 2},
+  "images": {"icon": "images", "title": _( "FIGURES"), "row": 2},
+  "tables": {"icon": "table", "title": _( "TABLES"), "row": 2},
 } %}
 
 <div class="ui stackable theme-font grid container rel-mt-4">
   <div class="column">
     <div class="row item">
-      <h1 class="ui large header inline">{{ _("Summary") }}</h1>
+      <h1 class="ui large header inline">{{ _( "Summary") }}</h1>
     </div>
     <div class="ui divider ml-0"></div>
-    <div class="center aligned ui equal width stackable grid rel-mt-4 rel-mb-2">
+    
+    {% for row_number in [1, 2] %}
+    <div class="center aligned ui  equal width stackable grid rel-mt-4 rel-mb-2">
       <div class="row rel-mb-4">
-        {% for key, value in metrics.items() %}
+        {% for key, value in icon_map.items() if value['row'] == row_number and key in metrics %}
         <div class="column">
           <div class="theme-primary-text">
-            <h1 class="ui header header huge">
-              <i class="{{ icon_map[key]['icon'] }} icon" aria-hidden="true"></i>
-              {{ value | compact_number(max_value=1_000_000) }}
+            <h1 class="ui header huge">
+              <i class="{{ value['icon'] }} icon" aria-hidden="true"></i>
+              {{ metrics[key] | compact_number(max_value=1_000_000) }}
             </h1>
           </div>
-          <h1 class="ui header medium theme-secondary-text-direct ">{{ icon_map[key]['title'] }}</h1>
+          <h1 class="ui header small theme-secondary-text-direct">{{ value['title'] }}</h1>
         </div>
         {% endfor %}
       </div>
     </div>
+    {% endfor %}
   </div>
 </div>
+
 
   <!--BROWSE SECTION-->
   <div class="ui stackable theme-font one column grid container rel-mt-2 rel-mb-4">
@@ -275,22 +280,9 @@
               <div class="segment-container rel-p-1">
                   <h1 class="center aligned ui medium header rel-m-1">{{ _("Submit your research") }} </h1>
                   <div class="ui bottom attached">
-                    <ul class="rel-pr-2">
-                      <li>
-                        <strong>{{ _("Eligibility") }}</strong> — {{ _("Any research output (data, software, posters, presentation, deliverables, ...) stemming from Horizon Europe (including ERC and MCSA), as well as earlier Framework Programmes and Euratom across all subject areas.") }}
-                      </li>
-                      <li>
-                        <strong>{{ _("Curation") }}</strong> — All submissions are <a href="/communities/eu/curation-policy">curated</a>. Submissions are NOT peer- reviewed (for papers please consider to publish through Open Research Europe platform).
-                      </li>
-                      <li>
-                        <strong>{{ _("Compliance") }}</strong> — {{ _("the EU Open Research Repository makes it easy to comply with the related open science requirements of the Horizon Europe grant agreement.") }}
-                      </li>
-                      <li>
-                        <strong>{{ _("Zenodo") }}</strong> — {{ _("EU Open Research Repository is community inside Zenodo which is managed and hosted by CERN.") }}
-                      </li>
-                    </ul>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus urna nisi, ultrices id condimentum ut, fringilla eget justo. Mauris lobortis diam sit amet efficitur porta. Aliquam imperdiet ligula nec turpis mattis lobortis. Integer pulvinar orci id massa fermentum, id ornare enim accumsan. Sed molestie mauris non ligula consequat, a laoreet est ultrices. Nulla fermentum eget lorem a rutrum. Phasellus eget augue et dui pretium sollicitudin eget sit amet ipsum. Cras a viverra odio. Donec eu pretium nulla, ut ornare nibh. Aenean consequat leo libero, eu mattis sapien tristique vel.
                     <div class="ui container center aligned rel-mb-1">
-                      <a href="/communities/{{ community.slug }}/pages/how-to-submit"
+                      <a href="/"
                       class="ui positive button labeled theme-secondary icon rel-mt-2">
                     <i class="upload icon" aria-hidden="true"></i>
                     {{ _("How to submit") }}
@@ -301,27 +293,14 @@
             </div>
             <div class="column">
               <div class="segment-container rel-p-1">
-                  <h1 class="center aligned ui medium header rel-m-1">{{ _("Get an EU project community") }} </h1>
+                  <h1 class="center aligned ui medium header rel-m-1">{{ _("Get a BLR project community") }} </h1>
                   <div class="ui bottom attached">
-                    <ul class="rel-pr-2">
-                      <li>
-                        <strong>{{ _("Manage your project's research outputs") }}</strong> — {{ _("An EU project community provides you with a common space to manage research outputs from your project and from all your partners.") }}
-                      </li>
-                      <li>
-                        <strong>{{ _("Eligibility") }}</strong> — {{ _("Any EU-funded project stemming from Horizon Europe and/or Euratom can get a project community. Request must be made by a beneficiary of a grant.") }}
-                      </li>
-                      <li>
-                        <strong>{{ _("Members") }}</strong> — {{ _("Allows you to manage members from across all the project's partners and determine who can submit, who can review and who can manage.") }}
-                      </li>
-                      <li>
-                        <strong>{{ _("200GB") }}</strong> — {{ _("EU project communities gets a quota per record of 200GB instead of the normal 50GB.") }}
-                      </li>
-                    </ul>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus urna nisi, ultrices id condimentum ut, fringilla eget justo. Mauris lobortis diam sit amet efficitur porta. Aliquam imperdiet ligula nec turpis mattis lobortis. Integer pulvinar orci id massa fermentum, id ornare enim accumsan. Sed molestie mauris non ligula consequat, a laoreet est ultrices. Nulla fermentum eget lorem a rutrum. Phasellus eget augue et dui pretium sollicitudin eget sit amet ipsum. Cras a viverra odio. Donec eu pretium nulla, ut ornare nibh. Aenean consequat leo libero, eu mattis sapien tristique vel.
                     <div class="ui container center aligned rel-mb-1">
-                      <a href="/communities/{{ community.slug }}/pages/join"
+                      <a href="/"
                       class="ui positive button labeled theme-primary icon rel-mt-2">
                     <i class="users icon" aria-hidden="true"></i>
-                    {{ _("Join with your EU project") }}
+                    {{ _("Join with your BLR project") }}
                   </a>
                     </div>
                   </div>
@@ -331,20 +310,7 @@
               <div class="segment-container rel-p-1">
                   <h1 class="center aligned ui medium header rel-m-1">{{ _("About") }} </h1>
                   <div class="ui bottom attached">
-                    <ul class="rel-pr-2">
-                      <li>
-                        <strong>{{ _("European Commission & CERN") }}</strong> — {{ _("the EU Open Research Community is managed by CERN on behalf of the European Commission.") }}
-                      </li>
-                      <li>
-                        <strong>{{ _("Become an early adopter") }}</strong> — do you manage an EU project and want to help test the new features of the repository? <a href="/support">Reach out to us</a>.
-                      </li>
-                      <li>
-                        <strong>{{ _("Upcoming") }}</strong> — We're working on integrating automated basic curation checks and FAIR assistance directly into the submission workflow. Subscribe to the <a href="https://newsletters.zenodo.org/subscription/form">Zenodo newsletter</a> to learn about the new features as soon as they are out.
-                      </li>
-                      <li>
-                        <strong>{{ _("Funded by") }}</strong> — {{ _("the work is funded by the European Union under grant agreement no. 101122956 (HORIZON-ZEN).") }}
-                      </li>
-                    </ul>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus urna nisi, ultrices id condimentum ut, fringilla eget justo. Mauris lobortis diam sit amet efficitur porta. Aliquam imperdiet ligula nec turpis mattis lobortis. Integer pulvinar orci id massa fermentum, id ornare enim accumsan. Sed molestie mauris non ligula consequat, a laoreet est ultrices. Nulla fermentum eget lorem a rutrum. Phasellus eget augue et dui pretium sollicitudin eget sit amet ipsum. Cras a viverra odio. Donec eu pretium nulla, ut ornare nibh. Aenean consequat leo libero, eu mattis sapien tristique vel.
                     <div class="ui container center aligned rel-mb-1">
                       <a href="about"
                         class="ui button labeled icon rel-mt-1">

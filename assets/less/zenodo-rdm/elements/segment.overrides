@@ -110,7 +110,11 @@
   }
 }
 
-.ui.raised.segment{
+.ui.resource-card{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
   .ui.small.image {
     height: 80px; 
     object-fit: contain; 
