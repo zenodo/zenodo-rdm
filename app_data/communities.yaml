@@ -53,6 +53,23 @@
     type:
       id: "topic"
     website: "https://www.biolitrepo.org/"
+  theme:
+    brand: "biosyslit"
+    enabled: true
+    style:
+      primaryColor: "#636363"
+      tertiaryColor: "#7eb13e"
+      secondaryColor: "#7eb13e"
+      primaryTextColor: "#FFFFFF"
+      tertiaryTextColor: "#FFFFFF"
+      secondaryTextColor: "#FFFFFF"
+      mainHeaderBackgroundColor: "#FFFFFF"
+      font:
+        size: "16px"
+        family: "Arial, sans-serif"
+        weight: 600
+  children:
+    allow: true
   access:
     visibility: "public"
     members_visibility: "public"
