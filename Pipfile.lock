@@ -131,6 +131,9 @@
             "version": "==4.2.1"
         },
         "bleach": {
+            "extras": [
+                "css"
+            ],
             "hashes": [
                 "sha256:117d9c6097a7c3d22fd578fcd8d35ff1e125df6736f554da4e432fdd63f31e5e",
                 "sha256:123e894118b8a599fd80d3ec1a6d4cc7ce4e5882b1317a7e1ba69b56e95f991f"
@@ -1734,11 +1737,11 @@
         },
         "marshmallow-utils": {
             "hashes": [
-                "sha256:20364ec5e881933f84d8dc6e84df7e74e5fb9de62568dda607b038f4fce4f531",
-                "sha256:7d51a0a61ba1c3f926673ea06361ec32c3d207965e7a468a63f9d000a3f3516d"
+                "sha256:d2202f45458e488d4046113e1cafbe64563bb84d1933e37ddfd954f7b90aba68",
+                "sha256:da82b5f950ff6d95142110c194512e272ca3b8cfffa83c2a28e33b4b3c5645cf"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==0.10.0"
+            "version": "==0.11.1"
         },
         "matplotlib-inline": {
             "hashes": [
@@ -3234,7 +3237,6 @@
                 "sha256:10c0972f6fc0fbee87c3edb76549357415e94548c1ae10ebccdea16fb404a9b7",
                 "sha256:3a49cf47b7675da0b15d0c6e1df8df4ebd96e9394bb905a5775adb0d884c5289"
             ],
-            "markers": "python_version >= '3.8'",
             "version": "==1.4.0"
         },
         "tomli": {
