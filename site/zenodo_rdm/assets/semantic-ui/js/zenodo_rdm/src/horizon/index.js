@@ -5,6 +5,8 @@ import { CommunitySelectionSearch } from "@js/invenio_rdm_records";
 
 const projectSearchContainer = document.getElementById("project-search-menu");
 const isUserAuthenticated = JSON.parse(projectSearchContainer.dataset.isAuthenticated);
+const communitySlug = projectSearchContainer.dataset.communitySlug;
+
 
 const defaultProps = {
   isInitialSubmission: true,
@@ -13,7 +15,7 @@ const defaultProps = {
       initialQueryState: { size: 6, page: 1, sortBy: "newest" },
       searchApi: {
         axios: {
-          url: "/api/communities/eu/subcommunities",
+          url: `/api/communities/${communitySlug}/subcommunities`,
           headers: { Accept: "application/vnd.inveniordm.v1+json" },
         },
       },

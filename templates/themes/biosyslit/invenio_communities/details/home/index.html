@@ -26,7 +26,7 @@
         </div>
         <div class="ui grid centered rel-mt-2 rel-mb-4">
           <div class="row">
-            <div class="column eight wide">
+            <div class="sixteen wide mobile sixteen wide tablet eight wide computer column">
               <form action="{{ url_for('invenio_app_rdm_communities.communities_detail', pid_value=community.slug) }}" class="ui form" role="search">
               <div class="ui fluid action input">
                 <input
@@ -90,7 +90,7 @@
                 <div class="sixteen wide mobile sixteen wide tablet six wide computer column">
                   <div class="ui resource-card segment rel-p-2">
                     <img class="ui small centered image" src="{{ url_for('static', filename='images/sibils-logo.png')}}" alt="">
-                    <h1 class="center aligned ui medium header rel-m-1">{{ _("BiodiversityPMC") }}</h1>
+                    <h1 class="center aligned ui medium header rel-mb-2">{{ _("BiodiversityPMC") }}</h1>
                     <div class="ui bottom attached">
                       <div class="content">
                         <div class="item">
@@ -101,14 +101,14 @@
                       </div>
                       <div class="ui container center aligned">
                         <form action="https://biodiversitypmc.dev.sibils.org/" method="GET" target="_blank">
-                          <div class="ui action input rel-mt-1">
+                          <div class="ui fluid action input rel-mt-1">
                             <input type="text" name="query" placeholder="Search in SIBILS..." value="{{ request.args.get('query', '') }}">
                             <button type="submit" class="ui positive button theme-primary">
                               {{ _("Search") }}
                             </button>
                           </div>
                         </form>
-                      </div>
+                      </div>                      
                     </div>
                   </div>
                 </div>
@@ -217,6 +217,7 @@
                   <div
                     id="project-search-menu"
                     data-is-authenticated='{{ is_user_authenticated | tojson }}'
+                    data-community-slug="{{ community.slug }}"
                     class="rel-p-1">
                   </div>
                   <div class="ui container center aligned rel-mb-1">
