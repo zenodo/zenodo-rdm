@@ -9,6 +9,7 @@
 """Community custom views."""
 
 from flask import g, redirect, request, url_for
+from invenio_cache import current_cache
 from invenio_communities.views.communities import (
     HEADER_PERMISSIONS,
     render_community_theme_template,
@@ -58,30 +59,41 @@ def communities_home(pid_value, community, community_ui):
         return redirect(url)
 
     if theme_enabled:
+        metrics = current_cache.get(f"community_metrics:{community.id}")
+
+        params = {
+            "sort": "newest",
+            "size": 3,
+        }
+        if not metrics:
+            params["metrics"] = THEME_METRICS_QUERY[community._record.theme["brand"]]
+
         recent_uploads = current_community_records_service.search(
             community_id=pid_value,
             identity=g.identity,
-            params={
-                "sort": "newest",
-                "size": 3,
-                "metrics": THEME_METRICS_QUERY[community._record.theme["brand"]],
-            },
+            params=params,
             expand=True,
         )
 
         collections = collections_service.list_trees(g.identity, community.id, depth=0)
 
         # TODO resultitem does not expose aggregations except labelled facets
-        metrics = {
-            "total_records": recent_uploads.total,
-        }
-        for metric, getter in THEME_METRICS.get(
-            community._record.theme["brand"], {}
-        ).items():
-            if type(getter) == str:
-                metrics[metric] = _get_metric_from_search(recent_uploads, getter)
-            else:
-                metrics[metric] = getter(recent_uploads) or 0
+        if not metrics:
+            metrics = {
+                "total_records": recent_uploads.total,
+            }
+            for metric, getter in THEME_METRICS.get(
+                community._record.theme["brand"], {}
+            ).items():
+                if type(getter) == str:
+                    metrics[metric] = _get_metric_from_search(recent_uploads, getter)
+                else:
+                    metrics[metric] = getter(recent_uploads) or 0
+            current_cache.set(
+                f"community_metrics:{community.id}",
+                metrics,
+                timeout=60 * 60 * 4,
+            )
 
         records_ui = UIJSONSerializer().dump_list(recent_uploads.to_dict())["hits"][
             "hits"
