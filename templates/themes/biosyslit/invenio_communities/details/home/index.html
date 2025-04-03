@@ -146,7 +146,7 @@
   
     
  <!--SUMMARY SECTION-->
-{% set icon_map = {
+ {% set icon_map = {
   "total_records": {"icon": "file", "title": _( "RECORDS"), "row": 1},
   "total_views": {"icon": "eye", "title": _( "VIEWS"), "row": 1},
   "total_downloads": {"icon": "download", "title": _( "DOWNLOADS"), "row": 1},
@@ -156,33 +156,68 @@
   "tables": {"icon": "table", "title": _( "TABLES"), "row": 2},
 } %}
 
+
+
 <div class="ui stackable theme-font grid container rel-mt-4">
   <div class="column">
-    <div class="row item">
+    <div class="row item"> 
       <h1 class="ui large header inline">{{ _( "Summary") }}</h1>
     </div>
     <div class="ui divider ml-0"></div>
     
-    {% for row_number in [1, 2] %}
-    <div class="center aligned ui  equal width stackable grid rel-mt-4 rel-mb-2">
+    {% for row_number in [1] %}
+    <div class="ui equal width stackable grid rel-mt-4">
       <div class="row rel-mb-4">
         {% for key, value in icon_map.items() if value['row'] == row_number and key in metrics %}
         <div class="column">
-          <div class="theme-primary-text">
+          <div class="ui container theme-primary-text" style="display: flex; justify-content: center; align-items: center; height: 100%;">
             <h1 class="ui header huge">
               <i class="{{ value['icon'] }} icon" aria-hidden="true"></i>
-              {{ metrics[key] | compact_number(max_value=1_000_000) }}
+              <div class="content theme-secondary-text-direct">
+                {{ metrics[key] | compact_number(max_value=1_000_000) }}
+                <h3 class="ui header theme-primary-text-direct">{{ value['title'] }}</h3>
+              </div>
             </h1>
           </div>
-          <h1 class="ui header small theme-secondary-text-direct">{{ value['title'] }}</h1>
         </div>
         {% endfor %}
       </div>
     </div>
-    {% endfor %}
+    {% endfor %}    
+
+    <div class="ui equal width stackable grid rel-mt-4 rel-mb-2">
+      <div class="row">
+      {% for key, value in icon_map.items() if value['row'] == 2 and key in metrics %}
+      <div class="sixteen wide mobile sixteen wide tablet four wide computer column rel-pr-4 rel-pl-4">
+        <div class="content rel-mb-1 theme-primary-text">
+          <h1 class="ui header huge">
+            <i class="{{ value['icon'] }} icon" aria-hidden="true"></i>
+            <div class="content">
+              {{ metrics[key] | compact_number(max_value=1_000_000) }}
+              <div class="sub header">{{ value['title'] }}</div>
+            </div>
+          </h1>
+        </div>
+        <div class="extra content">
+          {% set openness_key = "open_" + key %}
+          {% if openness_key in metrics and metrics[key] > 0 %}
+            {% set openness_percentage = (metrics[openness_key] / metrics[key]) * 100 %}
+          {% else %}
+            {% set openness_percentage = 0 %}
+          {% endif %}
+          <div class="ui progress" data-percent="{{ openness_percentage }}">
+            <div class="bar theme-secondary" style="width:{{ openness_percentage | int }}%">
+              <div class="progress">{{ openness_percentage|round(2) }}%</div>
+            </div>
+            <div class="label theme-primary-text-direct">Openness</div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+      </div>
+    </div>
   </div>
 </div>
-
 
   <!--BROWSE SECTION-->
   <div class="ui stackable theme-font one column grid container rel-mt-2 rel-mb-4">
@@ -196,9 +231,9 @@
             <div class="segment-container rel-p-1 rel-pl-2 rel-pr-2">
                 <h1 class="center aligned ui medium header rel-m-1">{{ _("Taxa") }} </h1>
                 <div class="ui bottom attached">
-                  {% set subjects = collections.values() | selectattr('slug', 'equalto', 'subjects') | first | default([]) %}
-                  {% for collection in subjects.collections %}
-                    {{ render_depth_one_collection(community, subjects, collection) }}
+                  {% set taxa = collections.values() | selectattr('slug', 'equalto', 'taxa') | first | default([]) %}
+                  {% for collection in taxa.collections %}
+                    {{ render_depth_one_collection(community, taxa, collection) }}
                   {% endfor %}
                   <div class="ui container center aligned rel-mb-1">
                     <a href="{{ url_for('invenio_app_rdm_communities.communities_browse', pid_value=community.slug) }}"
@@ -233,9 +268,9 @@
             <div class="segment-container rel-p-1 rel-pl-2 rel-pr-2">
                 <h1 class="center aligned ui medium header rel-m-1">{{ _("Collections") }} </h1>
                 <div class="ui bottom attached">
-                  {% set programs = collections.values() | selectattr('slug', 'equalto', 'programs') | first | default([]) %}
-                  {% for collection in programs.collections %}
-                    {{ render_depth_one_collection(community, programs, collection) }}
+                  {% set collections = collections.values() | selectattr('slug', 'equalto', 'collections') | first | default([]) %}
+                  {% for collection in collections.collections %}
+                    {{ render_depth_one_collection(community, collections, collection) }}
                   {% endfor %}
                   <div class="ui container center aligned rel-mb-1">
                     <a href="{{ url_for('invenio_app_rdm_communities.communities_browse', pid_value=community.slug) }}"
@@ -281,13 +316,20 @@
               <div class="segment-container rel-p-1">
                   <h1 class="center aligned ui medium header rel-m-1">{{ _("Submit your research") }} </h1>
                   <div class="ui bottom attached">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus urna nisi, ultrices id condimentum ut, fringilla eget justo. Mauris lobortis diam sit amet efficitur porta. Aliquam imperdiet ligula nec turpis mattis lobortis. Integer pulvinar orci id massa fermentum, id ornare enim accumsan. Sed molestie mauris non ligula consequat, a laoreet est ultrices. Nulla fermentum eget lorem a rutrum. Phasellus eget augue et dui pretium sollicitudin eget sit amet ipsum. Cras a viverra odio. Donec eu pretium nulla, ut ornare nibh. Aenean consequat leo libero, eu mattis sapien tristique vel.
+                    {{_("Plazi is a non-profit organisation founded in 2008 to promote the free accessibility of scientific data, in particular taxonomic treatments and images.")}}
+                    <ul class="rel-pr-2">
+                      <li>
+                        {{_(" If an uploaded document has an existing DOI, it will be kept. If there is no DOI, a Zenodo DOI will be minted for the item.")}}
+                      </li>
+                      <li>
+                        {{_("Items with Open Access remain Open Access.")}}
+                      </li>
+                      <li>
+                        {{_("Items with closed access remain closed. If they are published on 31.12.1999 or earlier, they are made accessible for reading. Please consult your national copyright law for conditions of reuse.")}}
+                      </li>
+                    </ul>
+                    To upload publications, please contact <a href="mailto:info@plazi.org">info@plazi.org</a>
                     <div class="ui container center aligned rel-mb-1">
-                      <a href="/"
-                      class="ui positive button labeled theme-secondary icon rel-mt-2">
-                    <i class="upload icon" aria-hidden="true"></i>
-                    {{ _("How to submit") }}
-                  </a>
                     </div>
                   </div>
               </div>
@@ -296,12 +338,24 @@
               <div class="segment-container rel-p-1">
                   <h1 class="center aligned ui medium header rel-m-1">{{ _("Get a BLR project community") }} </h1>
                   <div class="ui bottom attached">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus urna nisi, ultrices id condimentum ut, fringilla eget justo. Mauris lobortis diam sit amet efficitur porta. Aliquam imperdiet ligula nec turpis mattis lobortis. Integer pulvinar orci id massa fermentum, id ornare enim accumsan. Sed molestie mauris non ligula consequat, a laoreet est ultrices. Nulla fermentum eget lorem a rutrum. Phasellus eget augue et dui pretium sollicitudin eget sit amet ipsum. Cras a viverra odio. Donec eu pretium nulla, ut ornare nibh. Aenean consequat leo libero, eu mattis sapien tristique vel.
+                    {{_("The Biodiversity Literature Repository (BLR) is to share publications related to bio-systematics. The goal is to provide")}}
+                    <ul class="rel-pr-2">
+                      <li>
+                        {{_("Open access to publications cited in publications or in combination with scientific names.")}}
+                      </li>
+                      <li>
+                        {{_("Open access FAIR data with focus on taxon treatments and figures liberated from publications.")}}
+                      </li>
+                      <li>
+                        {{_("A digital object identifier (DOI) to enable citation of the publications and data including direct access to its digital representation.")}}
+                      </li>
+                    </ul>
+                    {{_("For additional search functionality refindit  can be used. This includes also searches in CrossRef, DataCite, PubMed, RefBank, GNUB and Mendeley.")}}
                     <div class="ui container center aligned rel-mb-1">
-                      <a href="/"
+                      <a href="mailto:info@plazi.org" 
                       class="ui positive button labeled theme-primary icon rel-mt-2">
-                    <i class="users icon" aria-hidden="true"></i>
-                    {{ _("Join with your BLR project") }}
+                    <i class="paper plane icon" aria-hidden="true"></i>
+                    {{ _("Contact Us") }}
                   </a>
                     </div>
                   </div>
@@ -311,7 +365,18 @@
               <div class="segment-container rel-p-1">
                   <h1 class="center aligned ui medium header rel-m-1">{{ _("About") }} </h1>
                   <div class="ui bottom attached">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus urna nisi, ultrices id condimentum ut, fringilla eget justo. Mauris lobortis diam sit amet efficitur porta. Aliquam imperdiet ligula nec turpis mattis lobortis. Integer pulvinar orci id massa fermentum, id ornare enim accumsan. Sed molestie mauris non ligula consequat, a laoreet est ultrices. Nulla fermentum eget lorem a rutrum. Phasellus eget augue et dui pretium sollicitudin eget sit amet ipsum. Cras a viverra odio. Donec eu pretium nulla, ut ornare nibh. Aenean consequat leo libero, eu mattis sapien tristique vel.
+                    {{_("Plazi supports and promotes the development of persistent and openly accessible digital taxonomic literature. To this end Plazi:")}}
+                    <ul class="rel-pr-2">
+                      <li>
+                        {{_("Maintains a digital taxonomic literature repository to enable archiving of taxonomic treatments.")}}
+                      </li>
+                      <li>
+                        {{_("Enhances submitted taxonomic treatments by creating TaxonX and Taxpub XML versions.")}}
+                      </li>
+                      <li>
+                        {{_("Participates in the development of new models for publishing taxonomic treatments in order to maximize interoperability with relevant cyberinfrastructure components (e.g., name servers, biodiversity resources, etc…)")}}
+                      </li>
+                    </ul>
                     <div class="ui container center aligned rel-mb-1">
                       <a href="about"
                         class="ui button labeled icon rel-mt-1">

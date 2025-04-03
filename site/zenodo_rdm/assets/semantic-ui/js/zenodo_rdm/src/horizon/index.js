@@ -7,7 +7,6 @@ const projectSearchContainer = document.getElementById("project-search-menu");
 const isUserAuthenticated = JSON.parse(projectSearchContainer.dataset.isAuthenticated);
 const communitySlug = projectSearchContainer.dataset.communitySlug;
 
-
 const defaultProps = {
   isInitialSubmission: true,
   apiConfigs: {

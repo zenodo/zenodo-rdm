@@ -21,7 +21,10 @@ from invenio_rdm_records.proxies import (
 from invenio_rdm_records.resources.serializers import UIJSONSerializer
 from invenio_records_resources.services.errors import PermissionDeniedError
 
-from .metrics_config import THEME_METRICS, THEME_METRICS_QUERY
+from zenodo_rdm.communities_ui.views.metrics_config import (
+    THEME_METRICS,
+    THEME_METRICS_QUERY,
+)
 
 
 def _get_metric_from_search(result, accessor):
