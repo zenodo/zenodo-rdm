@@ -30,6 +30,6 @@ class EURecordCuration(JobType):
         if since is None and job_obj.last_runs["success"]:
             since = job_obj.last_runs["success"].started_at
         else:
-            since = since or datetime.now(timezone.utc)
+            since = since or datetime.utcnow()
 
         return {"since": str(since)}
