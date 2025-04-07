@@ -51,87 +51,129 @@
       </div>
     </div>
 
-  <!--ADVANCED SEARCH SECTION-->
+  <!--EXPLORE SECTION-->
   <div class="ui stackable theme-font grid container rel-mt-4">
     <div class="row">
       <div class="column">
         <div class="row item">
-          <h1 class="ui large header inline">{{ _("Advanced Search") }}</h1>
+          <h1 class="ui large header inline">{{ _("Explore more at") }}</h1>
         </div>
         <div class="ui divider ml-0"></div>
-        <div class="center aligned ui equal width stackable grid rel-mt-4 rel-mb-2">
+        <div class="ui equal width stackable grid rel-mt-4 rel-mb-2">
           <div class="row">
             <div class="column">
               <div class="ui wide stretched stackable three column grid">
                 <!-- First Column -->
-                <div class="sixteen wide mobile sixteen wide tablet five wide computer column">
+                <div class="sixteen wide mobile sixteen wide tablet four wide computer column">
                   <div class="ui resource-card segment rel-p-2">
-                    <img class="ui small centered image" src="{{ url_for('static', filename='images/gbif-green-logo.svg')}}" alt="">
-                    <h1 class="ui medium header rel-m-1">{{ _("Global Biodiversity Information Facility") }}</h1>
-                    <div class="ui bottom attached">
+                    <div>
+                      <img class="ui small centered image" src="{{ url_for('static', filename='images/gbif-full-logo-green.png')}}" alt="">
+                      <h1 class="center aligned ui medium header mt-0">{{ _("GBIF") }}</h1>
                       <div class="content">
-                        <div class="item">
-                          <div class="description">
-                            <p>{{_("A global network and data infrastructure providing free access to biodiversity data for conservation efforts worldwide.")}} </p>
-                          </div>
-                        </div>
+                        <ul>
+                          <li>
+                            {{_("Search using occurrences, taxonomic names and datasets")}}
+                          </li>
+                          <li>
+                            {{_("Data from 3 billion occurrences and 112,000 datasets")}}
+                          </li>
+                          <li>
+                            {{_("Access to occurrences, species and datasets")}}
+                          </li>
+                        </ul>
                       </div>
-                      <div class="ui container center aligned">
-                        <a href="https://www.gbif.org/" target="_blank" class="ui positive button labeled icon rel-mt-1 theme-secondary">
-                          <i class="external icon" aria-hidden="true"></i>
-                          {{ _("GBIF") }}
-                        </a>
-                      </div>
+                    </div>
+                    <div class="ui container center aligned">
+                      <a href="https://www.gbif.org/" target="_blank" class="ui positive button labeled icon theme-secondary">
+                        <i class="external icon" aria-hidden="true"></i>
+                        {{ _("GBIF") }}
+                      </a>
                     </div>
                   </div>
                 </div>
-  
+
                 <!-- Second Column -->
-                <div class="sixteen wide mobile sixteen wide tablet six wide computer column">
+                <div class="sixteen wide mobile sixteen wide tablet four wide computer column">
                   <div class="ui resource-card segment rel-p-2">
-                    <img class="ui small centered image" src="{{ url_for('static', filename='images/sibils-logo.png')}}" alt="">
-                    <h1 class="center aligned ui medium header rel-mb-2">{{ _("BiodiversityPMC") }}</h1>
-                    <div class="ui bottom attached">
+                    <div>
+                      <img class="ui small centered image" src="{{ url_for('static', filename='images/sibils-logo.png')}}" alt="">
+                      <h1 class="center aligned ui medium header mt-0">{{ _("BiodiversityPMC") }}</h1>
                       <div class="content">
-                        <div class="item">
-                          <div class="description">
-                            <p> {{_("An advanced search platform powered by SIBILS, offering access to scientific literature on biodiversity, ecology, and conservation biology.")}}</p>
-                          </div>
-                        </div>
+                        <ul>
+                          <li>
+                            {{_("Full-text search in publications and taxonomic treatments")}}
+                          </li>
+                          <li>
+                            {{_("Query for taxonomic names, vernacular names, questions or other services")}}
+                          </li>
+                        </ul>
                       </div>
-                      <div class="ui container center aligned">
-                        <form action="https://biodiversitypmc.dev.sibils.org/" method="GET" target="_blank">
-                          <div class="ui fluid action input rel-mt-1">
-                            <input type="text" name="query" placeholder="Search in SIBILS..." value="{{ request.args.get('query', '') }}">
-                            <button type="submit" class="ui positive button theme-primary">
-                              {{ _("Search") }}
-                            </button>
-                          </div>
-                        </form>
-                      </div>                      
+                    </div>
+                    <div class="ui container center aligned" >
+                      <form action="https://biodiversitypmc.dev.sibils.org/" method="GET" target="_blank">
+                        <div class="ui fluid action input">
+                          <input type="text" name="query" placeholder="Search in BiodiversityPMC..." value="{{ request.args.get('query', '') }}">
+                          <button type="submit" class="ui positive button theme-primary">
+                            {{ _("Search") }}
+                          </button>
+                        </div>
+                      </form>
+                    </div>                      
+                  </div>
+                </div>
+            
+                <!-- Third Column -->
+                <div class="sixteen wide mobile sixteen wide tablet four wide computer column">
+                  <div class="ui resource-card segment rel-p-2">
+                    <div>
+                      <img class="ui small centered image" src="{{ url_for('static', filename='images/checklistbank-logo.png')}}" alt="">
+                      <h1 class="center aligned ui medium header mt-0">{{ _("Checklist Bank") }}</h1>
+                      <div class="content">
+                        <ul>
+                          <li>
+                            {{_("Search using datasets")}}
+                          </li>
+                          <li>
+                            {{_("Search in the context of the Catalogue of Life and GBIF")}}
+                          </li>
+                          <li>
+                            {{ _("Supports data comparison, integration, and reuse for biodiversity research") }}
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                    <div class="ui container center aligned">
+                      <a href="https://www.checklistbank.org/" target="_blank" class="ui positive theme-secondary button labeled icon">
+                        <i class="external icon" aria-hidden="true"></i>
+                        {{ _("Checklist Bank") }}
+                      </a>
                     </div>
                   </div>
                 </div>
-  
-                <!-- Third Column -->
-                <div class="sixteen wide mobile sixteen wide tablet five wide computer column">
+
+
+                <!-- Fourth Column -->
+                <div class="sixteen wide mobile sixteen wide tablet four wide computer column">
                   <div class="ui resource-card segment rel-p-2">
-                    <img class="ui small centered image" src="{{ url_for('static', filename='images/treatmentbank-logo.png')}}" alt="">
-                    <h1 class="center aligned ui medium header rel-m-1">{{ _("Treatment Bank") }}</h1>
-                    <div class="ui bottom attached">
+                    <div>
+                      <img class="ui small centered image" src="{{ url_for('static', filename='images/treatmentbank-logo.png')}}" alt="">
+                      <h1 class="center aligned ui medium header mt-0">{{ _("Treatment Bank") }}</h1>
                       <div class="content">
-                        <div class="item">
-                          <div class="description">
-                            <p>{{_("A repository of structured biodiversity treatments extracted from taxonomic literature, supporting research and data integration in biodiversity science.")}}</p>
-                          </div>
-                        </div>
+                        <ul>
+                          <li>
+                            {{_("Search through metadata, annotations and respective attributes")}}
+                          </li>
+                          <li>
+                            {{_("Over 1 million treatments and 1.8 million materials citations, from more than 80 thousand publications")}}
+                          </li>
+                        </ul>
                       </div>
-                      <div class="ui container center aligned">
-                        <a href="https://tb.plazi.org/" target="_blank" class="ui positive button labeled icon rel-mt-1 theme-secondary">
-                          <i class="external icon" aria-hidden="true"></i>
-                          {{ _("Treatment Bank") }}
-                        </a>
-                      </div>
+                    </div>
+                    <div class="ui container center aligned" >
+                      <a href="https://tb.plazi.org/" target="_blank" class="ui positive button labeled icon theme-primary">
+                        <i class="external icon" aria-hidden="true"></i>
+                        {{ _("Treatment Bank") }}
+                      </a>
                     </div>
                   </div>
                 </div>
@@ -314,21 +356,22 @@
           <div class="ui wide stretched stackable three column grid rel-mt-3">
             <div class="column">
               <div class="segment-container rel-p-1">
-                  <h1 class="center aligned ui medium header rel-m-1">{{ _("Submit your research") }} </h1>
-                  <div class="ui bottom attached">
-                    {{_("Plazi is a non-profit organisation founded in 2008 to promote the free accessibility of scientific data, in particular taxonomic treatments and images.")}}
-                    <ul class="rel-pr-2">
-                      <li>
-                        {{_(" If an uploaded document has an existing DOI, it will be kept. If there is no DOI, a Zenodo DOI will be minted for the item.")}}
-                      </li>
-                      <li>
-                        {{_("Items with Open Access remain Open Access.")}}
-                      </li>
-                      <li>
-                        {{_("Items with closed access remain closed. If they are published on 31.12.1999 or earlier, they are made accessible for reading. Please consult your national copyright law for conditions of reuse.")}}
-                      </li>
-                    </ul>
-                    To upload publications, please contact <a href="mailto:info@plazi.org">info@plazi.org</a>
+                <h1 class="center aligned ui medium header rel-m-1">{{ _("Submit your research") }} </h1>
+                <div class="ui bottom attached">
+                  <ul class="rel-pr-2">
+                    <li>
+                      <strong>{{ _("Eligibility") }}</strong> — {{ _("Any research output (data, software, posters, presentation, deliverables, ...) containing biodiversity related content, e.g. taxonomy, ecology, genetics") }}
+                    </li>
+                    <li>
+                      <strong>{{ _("Curation") }}</strong> — {{ _("Submissions are NOT curated. Submissions are NOT peer- reviewed.")}}
+                    </li>
+                    <li>
+                      <strong>{{ _("Compliance") }}</strong> — {{ _("Biodiversity Literature Repository makes it easy to comply with the related FAIR data principles.") }}
+                    </li>
+                    <li>
+                      <strong>{{ _("Zenodo") }}</strong> — {{ _("Biodiversity Literature Repository is a community inside Zenodo which is managed and hosted by CERN.") }}
+                    </li>
+                  </ul>
                     <div class="ui container center aligned rel-mb-1">
                     </div>
                   </div>
@@ -338,19 +381,14 @@
               <div class="segment-container rel-p-1">
                   <h1 class="center aligned ui medium header rel-m-1">{{ _("Get a BLR project community") }} </h1>
                   <div class="ui bottom attached">
-                    {{_("The Biodiversity Literature Repository (BLR) is to share publications related to bio-systematics. The goal is to provide")}}
                     <ul class="rel-pr-2">
                       <li>
-                        {{_("Open access to publications cited in publications or in combination with scientific names.")}}
+                        <strong>{{ _("Manage your project's research outputs") }}</strong> — {{ _("A BLR sub-community provides you with a common space to manage research outputs from your project and from all your partners.") }}
                       </li>
                       <li>
-                        {{_("Open access FAIR data with focus on taxon treatments and figures liberated from publications.")}}
-                      </li>
-                      <li>
-                        {{_("A digital object identifier (DOI) to enable citation of the publications and data including direct access to its digital representation.")}}
+                        <strong>{{ _("Members") }}</strong> — {{ _("Allows you to manage members from across all the project's partners and determine who can submit, who can review and who can manage.")}}
                       </li>
                     </ul>
-                    {{_("For additional search functionality refindit  can be used. This includes also searches in CrossRef, DataCite, PubMed, RefBank, GNUB and Mendeley.")}}
                     <div class="ui container center aligned rel-mb-1">
                       <a href="mailto:info@plazi.org" 
                       class="ui positive button labeled theme-primary icon rel-mt-2">
@@ -368,13 +406,10 @@
                     {{_("Plazi supports and promotes the development of persistent and openly accessible digital taxonomic literature. To this end Plazi:")}}
                     <ul class="rel-pr-2">
                       <li>
-                        {{_("Maintains a digital taxonomic literature repository to enable archiving of taxonomic treatments.")}}
+                        <strong>{{ _("Plazi & CERN") }}</strong> — {{ _("the Biodiversity Literature Repository Community is managed by Plazi in collaboration with CERN.") }}
                       </li>
                       <li>
-                        {{_("Enhances submitted taxonomic treatments by creating TaxonX and Taxpub XML versions.")}}
-                      </li>
-                      <li>
-                        {{_("Participates in the development of new models for publishing taxonomic treatments in order to maximize interoperability with relevant cyberinfrastructure components (e.g., name servers, biodiversity resources, etc…)")}}
+                        <strong>{{ _("Funded by") }}</strong> — {{ _("the work is funded by the European Commission and the Arcadia Fund.") }}.
                       </li>
                     </ul>
                     <div class="ui container center aligned rel-mb-1">
@@ -395,5 +430,5 @@
 
 {%- block javascript %}
   {{ super() }}
-  {{ webpack['zenodo-rdm-horizon-frontpage.js'] }}
+  {{ webpack['zenodo-rdm-branded-community-frontpage.js'] }}
 {%- endblock %}

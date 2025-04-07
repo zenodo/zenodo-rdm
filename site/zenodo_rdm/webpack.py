@@ -24,7 +24,7 @@ theme = WebpackThemeBundle(
                 "zenodo-rdm-citations": "./js/zenodo_rdm/src/citations/index.js",
                 "zenodo-rdm-communities-carousel": "./js/zenodo_rdm/src/communities-carousel.js",
                 "zenodo-rdm-blr-search": "./js/zenodo_rdm/src/blr-related-works/index.js",
-                "zenodo-rdm-horizon-frontpage": "./js/zenodo_rdm/src/horizon/index.js",
+                "zenodo-rdm-branded-community-frontpage": "./js/zenodo_rdm/src/branded-community/index.js",
                 "image-previewer": "./less/zenodo_rdm/previewer/image-previewer.less",
             },
             dependencies={
