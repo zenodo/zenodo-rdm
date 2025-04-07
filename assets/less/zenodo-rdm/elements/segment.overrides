@@ -113,10 +113,13 @@
 .ui.resource-card{
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   height: 100%;
-  .ui.small.image {
-    height: 80px; 
+  .small.image {
+    height: 8vh; 
     object-fit: contain; 
+    width: 50%
+  }
+  .container {
+    margin-top: auto;
   }
 }

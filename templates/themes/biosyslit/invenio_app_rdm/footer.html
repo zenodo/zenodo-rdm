@@ -1,1 +1,44 @@
-<!---Need to update-->
+{# -*- coding: utf-8 -*-
+
+  This file is part of Invenio.
+  Copyright (C) 2025 CERN.
+
+  Invenio is free software; you can redistribute it and/or modify it
+  under the terms of the MIT License; see LICENSE file for more details.
+#}
+
+  <div class="footer-top theme-primary horizon-footer">
+    <div class="ui container">
+
+      <div class="ui grid divided relaxed">
+        <div class="row">
+
+            <div
+              class="rdm-footer five wide tablet three wide computer sixteen wide mobile column rel-mb-2">
+              <h2 class="ui small header">{{ _("Managed by") }}</h2>
+              {% trans ec_open_research="https://plazi.org/" %}
+                <a href="{{ ec_open_research }}">Plazi</a>
+                <i class="green check circle outline icon"></i>
+              {% endtrans %}
+            </div>
+            <div
+              class="rdm-footer eleven wide tablet thirteen wide computer sixteen wide mobile column">
+              <div class="ui equal width stackable grid">
+                <div class="column">
+                  <h2 class="ui small header">{{ _("About") }}</h2>
+                     <p><a href="/communities/{{ community.slug }}/about">About the Biodiversity Literature Repository</a></p>
+                     <p><a href="/communities/{{ community.slug }}/curation-policy">Curation policy</a></p>
+                </div>
+                <div class="right aligned column">
+                  <h2 class="ui small header">{{ _("Funded by") }}</h2>
+                     <a href="https://www.arcadiafund.org.uk/" aria-label="ARCADIA">
+                      <img src="{{ url_for('static', filename='images/arcadia-logo.svg') }}" alt="" />
+                    </a>
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+
+  </div>

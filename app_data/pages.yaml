@@ -38,4 +38,4 @@
 - url: /communities/biosyslit/pages/how-to-submit
   title: BLR Repository - How to Submit
   description: Learn how to submit to the BLR community
-  template: invenio_app_rdm/default_static_page.html
+  template: biosyslit/how-to-submit.html
