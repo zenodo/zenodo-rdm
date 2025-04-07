@@ -46,6 +46,8 @@ from .publishing import PUBLISHING_FIELDS_UI
 NAMESPACES = {
     "dwc": "http://rs.tdwg.org/dwc/terms/",
     "gbif-dwc": "http://rs.gbif.org/terms/1.0/",
+    "gbif": "http://rs.gbif.org/terms/1.0/DNADerivedData#",
+    "mixs": "https://w3id.org/mixs/",
     "ac": "http://rs.tdwg.org/ac/terms/",
     "openbiodiv": "http://openbiodiv.net/ontology#",
     "obo": "http://purl.obolibrary.org/obo/",
