@@ -39,3 +39,8 @@
   title: BLR Repository - How to Submit
   description: Learn how to submit to the BLR community
   template: biosyslit/how-to-submit.html
+
+- url: /communities/nih/pages/how-to-submit
+  title: NIH Repository - How to Submit
+  description: Learn how to submit to the NIH community
+  template: nih/how-to-submit.html
