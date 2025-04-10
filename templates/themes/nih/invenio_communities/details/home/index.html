@@ -1,0 +1,275 @@
+{# -*- coding: utf-8 -*-
+
+  This file is part of Invenio.
+  Copyright (C) 2025 CERN.
+
+  Invenio is free software; you can redistribute it and/or modify it
+  under the terms of the MIT License; see LICENSE file for more details.
+#}
+
+{% extends "invenio_communities/details/base.html" %}
+{% from "zenodo_rdm/macros/record_item.html" import record_item %}
+
+{%- set title = community.metadata.title -%}
+{% set active_community_header_menu_item = 'home' %}
+{% from "invenio_communities/collections/macros.html" import render_depth_one_collection %}
+
+
+{%- block page_body %}
+  {{ super() }}
+  <div class="ui rel-m-2 rel-pt-1">
+    <div class="ui centered stackable theme-font grid container rel-mt-4 rel-mb-4">
+      <div class="thirteen centered wide column">
+        <div class=" rel-mt-2 rel-mb-2">
+          <h1 class="ui large header">{{ _("Open repository for NIH-Funded research") }}</h1>
+          <p class="text-muted ui small header">{{ _("Access data and results from NIH-funded research advancing innovation and medical discovery") }}</p>
+        </div>
+        <div class="ui grid centered rel-mt-2 rel-mb-4">
+          <div class="row">
+            <div class="sixteen wide mobile sixteen wide tablet eight wide computer column">
+              <form action="{{ url_for('invenio_app_rdm_communities.communities_detail', pid_value=community.slug) }}" class="ui form" role="search">
+              <div class="ui fluid action input">
+                <input
+                  type="text"
+                  name="q"
+                  class="form-control"
+                  placeholder="{{ _('Search...') }}"
+                  aria-label="{{ _('Search') }}"
+                >
+                <button
+                  type="submit"
+                  class="ui icon search button"
+                  aria-label="{{ _('Search') }}"
+                >
+                {{ _('Search') }}
+                </button>
+              </div>
+            </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  
+  
+    
+
+   <!--SUMMARY SECTION-->
+   {% macro format_metric_value(key, value) %}
+   {% if key in ("total_records", "total_grants") %}
+     {{ value | compact_number(max_value=1_000_000) }}
+   {% elif key == "total_data" %}
+     {{ value | filesizeformat }}
+   {% else %}
+     {{ value }}
+   {% endif %}
+ {% endmacro %}
+
+ {% set icon_map = {
+   "total_records": {"icon": "file", "title": _("RECORDS")},
+   "total_grants": {"icon": "money", "title": _("GRANTS")},
+   "total_data": {"icon": "database", "title": _("DATA VOLUME")}
+ } %}
+
+ <div class="ui stackable theme-font grid container rel-mt-4">
+   <div class="column">
+     <div class="row item">
+       <h1 class="ui large header inline">{{ _("Summary") }}</h1>
+     </div>
+     <div class="ui divider ml-0"></div>
+     <div class="center aligned ui equal width stackable grid rel-mt-4 rel-mb-2">
+       <div class="row rel-mb-4">
+         {% for key, value in metrics.items() %}
+         <div class="column">
+           <div class="theme-tertiary-text">
+             <h1 class="ui header header huge">
+               <i class="{{ icon_map[key]['icon'] }} icon theme-primary-text-direct" aria-hidden="true"></i>
+               {{ format_metric_value(key, value) }}
+             </h1>
+           </div>
+           <h1 class="text-muted ui header medium">{{ icon_map[key]['title'] }}</h1>
+         </div>
+         {% endfor %}
+       </div>
+     </div>
+   </div>
+ </div>
+
+
+
+  <!--BROWSE SECTION-->
+  <div class="ui stackable theme-font one column grid container rel-mt-2 rel-mb-4">
+    <div class="column">
+        <div class="row item">
+          <h1 class="ui large header">{{ _("Browse") }}</h1>
+        </div>
+        <div class="ui divider ml-0"></div>
+        <div class="ui wide stretched stackable three column grid rel-mt-3">
+          <div class="sixteen wide mobile sixteen wide tablet five wide computer column">
+            <div class="segment-container rel-p-1 rel-pl-2 rel-pr-2">
+                <h1 class="center aligned ui medium header rel-m-1">{{ _("Institutes") }} </h1>
+                <div class="ui bottom attached">
+                  {% set institutes = collections.values() | selectattr('slug', 'equalto', 'institutes') | first | default([]) %}
+                  {% for collection in institutes.collections %}
+                    {{ render_depth_one_collection(community, institutes, collection) }}
+                  {% endfor %}
+                  <div class="ui container center aligned rel-mb-1">
+                    <a href="{{ url_for('invenio_app_rdm_communities.communities_browse', pid_value=community.slug) }}"
+                    class=" theme-secondary-text-direct rel-mt-2">
+                  {{ _("Browse all") }}
+                </a>
+                  </div>
+                </div>
+            </div>
+          </div>
+          <div class="sixteen wide mobile sixteen wide tablet six wide computer  column">
+            <div class="segment-container rel-p-1">
+                <h1 class="center aligned ui medium header rel-m-1">{{ _("Projects") }} </h1>
+                <div class="ui bottom attached">
+                  {%- set is_user_authenticated = current_user.is_authenticated %}
+                  <div
+                    id="project-search-menu"
+                    data-is-authenticated='{{ is_user_authenticated | tojson }}'
+                    data-community-slug="{{ community.slug }}"
+                    class="rel-p-1">
+                  </div>
+                  <div class="ui container center aligned rel-mb-1">
+                    <a href="{{ url_for('invenio_communities.communities_subcommunities', pid_value=community.slug) }}"
+                    class="rel-mt-1 theme-secondary-text-direct">
+                  {{ _("See all") }}
+                </a>
+                  </div>
+                </div>
+            </div>
+          </div>
+          <div class="sixteen wide mobile sixteen wide tablet five wide computer column">
+            <div class="segment-container rel-p-1 rel-pl-2 rel-pr-2">
+                <h1 class="center aligned ui medium header rel-m-1">{{ _("Subjects") }} </h1>
+                <div class="ui bottom attached">
+                  {% set subjects = collections.values() | selectattr('slug', 'equalto', 'subjects') | first | default([]) %}
+                  {% for collection in subjects.collections %}
+                    {{ render_depth_one_collection(community, subjects, collection) }}
+                  {% endfor %}
+                  <div class="ui container center aligned rel-mb-1">
+                    <a href="{{ url_for('invenio_app_rdm_communities.communities_browse', pid_value=community.slug) }}"
+                      class="ui rel-mt-1 theme-secondary-text-direct ">
+                      {{ _("Browse all") }}
+                    </a>
+                  </div>
+                </div>
+            </div>
+          </div>
+        </div>
+    </div>
+  </div>
+
+
+    {% if records %}
+      <div class="ui stackable theme-font grid container rel-mt-4">
+        <div class="column rel-mb-4">
+          <div class="row item">
+            <h1 class="ui large header">{{ _("Recent uploads") }}</h1>
+          </div>
+          <div class="ui divider ml-0"></div>
+
+          <div class="ui fluid stackable three column grid">
+            {% for record in records %}
+              <ul class="ui column items m-0">
+                {{ record_item(record=record, themed_community=community) }}
+              </ul>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    {% endif %}
+
+    <div class="ui stackable theme-font one column grid container rel-mt-2">
+      
+      <div class="column">
+          <div class="row item">
+            <h1 class="ui large header">{{ _("How it works") }}</h1>
+          </div>
+          <div class="ui divider ml-0"></div>
+          <div class="ui wide stretched stackable three column grid rel-mt-3">
+            <div class="column">
+              <div class="segment-container rel-p-1">
+                <h1 class="center aligned ui medium header rel-m-1">{{ _("Submit your research") }} </h1>
+                <div class="ui bottom attached">
+                  <ul class="rel-pr-2">
+                    <li>
+                      <strong>{{ _("Eligibility") }}</strong> — {{ _("Any research output (data, software, posters, presentation, deliverables, ...)") }}
+                    </li>
+                    <li>
+                      <strong>{{ _("Compliance") }}</strong> — {{ _("NIH Repository makes it easy to comply with the related FAIR data principles.") }}
+                    </li>
+                    <li>
+                      <strong>{{ _("Zenodo") }}</strong> — {{ _("NIH Repository is a community inside Zenodo which is managed and hosted by CERN.") }}
+                    </li>
+                  </ul>
+                  <div class="ui container center aligned rel-mb-1">
+                    <a href="/uploads/new?community={{ community.slug }}"
+                      class="ui positive button labeled icon rel-mt-1 theme-secondary">
+                      <i class="info icon" aria-hidden="true"></i>
+                      {{ _("Submit") }}
+                    </a>
+                  </div>
+                  </div>
+              </div>
+            </div>
+            <div class="column">
+              <div class="segment-container rel-p-1">
+                  <h1 class="center aligned ui medium header rel-m-1">{{ _("About") }} </h1>
+                  <div class="ui bottom attached">
+                    {{_("NIH supports and promotes the development of persistent and openly accessible data.")}}
+                    <ul class="rel-pr-2">
+                      <li>
+                        <strong>{{ _("NIH & CERN") }}</strong> — {{ _("the National Intitute of Health Repository is managed by NIH in collaboration with CERN.") }}
+                      </li>
+                      <li>
+                        <strong>{{ _("Funded by") }}</strong> — {{ _("the work is funded by the NIH.") }}.
+                      </li>
+                    </ul>
+                    <div class="ui container center aligned rel-mb-1">
+                      <a href="about"
+                        class="ui button labeled icon rel-mt-1">
+                        <i class="info icon" aria-hidden="true"></i>
+                        {{ _("Learn More") }}
+                      </a>
+                    </div>
+                  </div>
+              </div>
+            </div>
+            <div class="column">
+              <div class="segment-container rel-p-1">
+                  <h1 class="center aligned ui medium header rel-m-1">{{ _("Get an NIH project community") }} </h1>
+                  <div class="ui bottom attached">
+                    <ul class="rel-pr-2">
+                      <li>
+                        <strong>{{ _("Manage your project's research outputs") }}</strong> — {{ _("An NIH sub-community provides you with a common space to manage research outputs from your project and from all your partners.") }}
+                      </li>
+                      <li>
+                        <strong>{{ _("Members") }}</strong> — {{ _("Allows you to manage members from across all the project's partners and determine who can submit, who can review and who can manage.")}}
+                      </li>
+                    </ul>
+                    <div class="ui container center aligned rel-mb-1">
+                      <a href="https://www.nih.gov/about-nih/ask-nih" 
+                      class="ui positive button labeled theme-primary icon rel-mt-2">
+                    <i class="paper plane icon" aria-hidden="true"></i>
+                    {{ _("Contact Us") }}
+                  </a>
+                    </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+{%- endblock page_body -%}
+
+{%- block javascript %}
+  {{ super() }}
+  {{ webpack['zenodo-rdm-branded-community-frontpage.js'] }}
+{%- endblock %}
