@@ -65,10 +65,23 @@ THEME_METRICS_QUERY = {
             },
         },
     },
+    "nih": {
+        "total_grants": {
+            "name": "total_grants",
+            "type": "cardinality",
+            "kwargs": {"field": "metadata.funding.award.id"},
+        },
+        "total_data": {
+            "name": "total_data",
+            "type": "sum",
+            "kwargs": {"field": "files.totalbytes"},
+        },
+    },
 }
 
 THEME_METRICS = {
     "horizon": {"total_data": "total_data.value", "total_grants": "total_grants.value"},
+    "nih": {"total_data": "total_data.value", "total_grants": "total_grants.value"},
     "biosyslit": {
         "total_views": "total_views.value",
         "total_downloads": "total_downloads.value",

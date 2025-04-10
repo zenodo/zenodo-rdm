@@ -64,6 +64,10 @@
   color: {{ theme.primaryColor }} !important;
 }
 
+.theme-tertiary-text h1 {
+  color: {{ theme.tertiaryColor }} !important;
+}
+
 .theme-tertiary, .ui.tertiary.button {
   background-color: {{ theme.tertiaryColor }} !important;
   color: {{ theme.tertiaryTextColor }};

@@ -16,8 +16,8 @@
             <div
               class="rdm-footer five wide tablet three wide computer sixteen wide mobile column rel-mb-2">
               <h2 class="ui small header">{{ _("Managed by") }}</h2>
-              {% trans plazi="https://plazi.org/" %}
-                <a href="{{ plazi }}">Plazi</a>
+              {% trans nih ="https://www.nih.gov/" %}
+                <a href="{{ nih }}">NIH</a>
                 <i class="green check circle outline icon"></i>
               {% endtrans %}
             </div>
@@ -26,14 +26,8 @@
               <div class="ui equal width stackable grid">
                 <div class="column">
                   <h2 class="ui small header">{{ _("About") }}</h2>
-                     <p><a href="/communities/{{ community.slug }}/about">About the Biodiversity Literature Repository</a></p>
+                     <p><a href="/communities/{{ community.slug }}/about">About the NIH Repository</a></p>
                      <p><a href="/communities/{{ community.slug }}/curation-policy">Curation policy</a></p>
-                </div>
-                <div class="right aligned column">
-                  <h2 class="ui small header">{{ _("Funded by") }}</h2>
-                     <a href="https://www.arcadiafund.org.uk/" aria-label="ARCADIA">
-                      <img src="{{ url_for('static', filename='images/arcadia-logo.svg') }}" alt="" />
-                    </a>
                 </div>
               </div>
             </div>
