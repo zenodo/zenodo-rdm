@@ -69,7 +69,7 @@
 
  {% set icon_map = {
    "total_records": {"icon": "file", "title": _("RECORDS")},
-   "total_grants": {"icon": "money", "title": _("GRANTS")},
+   "total_grants": {"icon": "trophy", "title": _("GRANTS")},
    "total_data": {"icon": "database", "title": _("DATA VOLUME")}
  } %}
 
@@ -117,7 +117,7 @@
                   {% endfor %}
                   <div class="ui container center aligned rel-mb-1">
                     <a href="{{ url_for('invenio_app_rdm_communities.communities_browse', pid_value=community.slug) }}"
-                    class=" theme-secondary-text-direct rel-mt-2">
+                    class=" theme-primary-text-direct rel-mt-2">
                   {{ _("Browse all") }}
                 </a>
                   </div>
@@ -137,7 +137,7 @@
                   </div>
                   <div class="ui container center aligned rel-mb-1">
                     <a href="{{ url_for('invenio_communities.communities_subcommunities', pid_value=community.slug) }}"
-                    class="rel-mt-1 theme-secondary-text-direct">
+                    class="rel-mt-1 theme-primary-text-direct">
                   {{ _("See all") }}
                 </a>
                   </div>
@@ -154,7 +154,7 @@
                   {% endfor %}
                   <div class="ui container center aligned rel-mb-1">
                     <a href="{{ url_for('invenio_app_rdm_communities.communities_browse', pid_value=community.slug) }}"
-                      class="ui rel-mt-1 theme-secondary-text-direct ">
+                      class="ui rel-mt-1 theme-primary-text-direct">
                       {{ _("Browse all") }}
                     </a>
                   </div>
