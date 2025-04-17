@@ -41,7 +41,7 @@ from .domain_fields import (
     BIODIVERSITY_FIELDS_UI,
 )
 from .legacy import LEGACY_CUSTOM_FIELDS
-from .publishing import PUBLISHING_FIELDS_UI
+from .publishing import DEPRECATED_THESIS_CUSTOM_FIELDS, PUBLISHING_FIELDS_UI
 
 NAMESPACES = {
     "dwc": "http://rs.tdwg.org/dwc/terms/",
@@ -75,6 +75,8 @@ CUSTOM_FIELDS = [
     *IMPRINT_CUSTOM_FIELDS,
     # thesis
     *THESIS_CUSTOM_FIELDS,
+    # added for migration from old format
+    *DEPRECATED_THESIS_CUSTOM_FIELDS,
     # legacy
     *LEGACY_CUSTOM_FIELDS,
 ]
