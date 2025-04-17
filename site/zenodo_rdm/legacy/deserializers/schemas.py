@@ -126,7 +126,9 @@ class LegacySchema(Schema):
             "journal:journal": journal,
             "meeting:meeting": meeting,
             "imprint:imprint": imprint,
+            # Adding both for migration to support old and new format
             "thesis:university": university,
+            "thesis:thesis": {"university": university},
         }
 
         # Add the legacy custom fields
