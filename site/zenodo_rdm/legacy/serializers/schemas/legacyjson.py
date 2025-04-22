@@ -67,7 +67,9 @@ class MetadataSchema(common.MetadataSchema):
     partof_pages = SanitizedUnicode(attribute="custom_fields.imprint:imprint.pages")
     partof_title = SanitizedUnicode(attribute="custom_fields.imprint:imprint.title")
 
-    thesis_university = SanitizedUnicode(attribute="custom_fields.thesis:university")
+    thesis_university = SanitizedUnicode(
+        attribute="custom_fields.thesis:thesis.university"
+    )
 
     embargo_date = fields.String(attribute="access.embargo.until")
 
