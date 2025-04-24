@@ -90,3 +90,13 @@ class ZenodoLegacy:
             service=self.legacy_records_service.draft_files,
             config=LegacyFilesRESTResourceConfig,
         )
+
+
+def register_services(app):
+    """Register the legacy services (to be used in ``invenio_base.finalize_app``)."""
+    sregistry = app.extensions["invenio-records-resources"].registry
+    ext = app.extensions["zenodo-rdm-legacy"]
+    sregistry.register(ext.legacy_records_service, service_id="legacy-records")
+    sregistry.register(
+        ext.legacy_records_service.draft_files, service_id="legacy-draft-files"
+    )

@@ -7,28 +7,12 @@
 
 """Zenodo legacy views."""
 
-from flask import Blueprint
-
 from .resources import (
     DraftExtraFormatsResource,
     DraftExtraFormatsResourceConfig,
     RecordExtraFormatsResource,
     RecordExtraFormatsResourceConfig,
 )
-
-blueprint = Blueprint("zenodo_rdm_legacy", __name__)
-
-
-@blueprint.record_once
-def init(state):
-    """Init app."""
-    app = state.app
-    sregistry = app.extensions["invenio-records-resources"].registry
-    ext = app.extensions["zenodo-rdm-legacy"]
-    sregistry.register(ext.legacy_records_service, service_id="legacy-records")
-    sregistry.register(
-        ext.legacy_records_service.draft_files, service_id="legacy-draft-files"
-    )
 
 
 def create_legacy_records_bp(app):
