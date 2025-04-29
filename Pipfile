@@ -4,7 +4,7 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [packages]
-invenio-app-rdm = {version = "~=13.0.0b3.dev4", extras = ["opensearch2"]}
+invenio-app-rdm = {version = "~=13.0.0b3.dev5", extras = ["opensearch2"]}
 invenio-checks = ">=0.1.0,<1.0.0"
 sentry-sdk = ">=1.45,<2.0.0"
 zenodo_rdm = {editable="True", path="./site"}
