@@ -13,6 +13,7 @@ env_names = ", ".join(ENVS.keys())
 DEPLOYMENTS = {
     "web": ["web", "copy-web-assets"],
     "worker": ["worker"],
+    "worker-indexing": ["worker-indexing"],
     "worker-low": ["worker-low"],
     "worker-spam": ["worker-spam"],
     "worker-beat": ["worker-beat"],
