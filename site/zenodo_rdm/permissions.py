@@ -14,7 +14,6 @@ from invenio_rdm_records.services.generators import (
     CommunityInclusionReviewers,
     IfDeleted,
     IfExternalDOIRecord,
-    IfFileIsLocal,
     IfNewRecord,
     IfRecordDeleted,
     IfRestricted,
@@ -30,6 +29,10 @@ from invenio_records_permissions.generators import (
     Generator,
     IfConfig,
     SystemProcess,
+)
+from invenio_records_resources.services.files.generators import IfTransferType
+from invenio_records_resources.services.files.transfer import (
+    LOCAL_TRANSFER_TYPE,
 )
 from invenio_users_resources.services.permissions import UserManager
 
@@ -118,15 +121,18 @@ class ZenodoRDMRecordPermissionPolicy(RDMRecordPermissionPolicy):
     can_draft_create_files = can_review
     can_draft_set_content_files = [
         # review is the same as create_files
-        IfFileIsLocal(then_=can_review, else_=[SystemProcess()])
+        IfTransferType(LOCAL_TRANSFER_TYPE, can_review),
+        SystemProcess(),
     ]
     can_draft_get_content_files = [
         # preview is same as read_files
-        IfFileIsLocal(then_=can_draft_read_files, else_=[SystemProcess()])
+        IfTransferType(LOCAL_TRANSFER_TYPE, can_draft_read_files),
+        SystemProcess(),
     ]
     can_draft_commit_files = [
         # review is the same as create_files
-        IfFileIsLocal(then_=can_review, else_=[SystemProcess()])
+        IfTransferType(LOCAL_TRANSFER_TYPE, can_review),
+        SystemProcess(),
     ]
     can_draft_update_files = can_review
     can_draft_delete_files = can_review
@@ -209,22 +215,26 @@ class ZenodoRDMRecordPermissionPolicy(RDMRecordPermissionPolicy):
     can_get_content_files = [
         # note: even though this is closer to business logic than permissions,
         # it was simpler and less coupling to implement this as permission check
-        IfFileIsLocal(then_=can_read_files, else_=[SystemProcess()])
+        IfTransferType(LOCAL_TRANSFER_TYPE, can_read_files),
+        SystemProcess(),
     ]
 
     # Media files
     can_draft_media_create_files = [MediaFilesManager(), SystemProcess()]
     can_draft_media_read_files = can_draft_media_create_files
     can_draft_media_set_content_files = [
-        IfFileIsLocal(then_=can_draft_media_create_files, else_=[SystemProcess()])
+        IfTransferType(LOCAL_TRANSFER_TYPE, can_draft_media_create_files),
+        SystemProcess(),
     ]
     can_draft_media_get_content_files = [
         # preview is same as read_files
-        IfFileIsLocal(then_=can_get_content_files, else_=[SystemProcess()])
+        IfTransferType(LOCAL_TRANSFER_TYPE, can_get_content_files),
+        SystemProcess(),
     ]
     can_draft_media_commit_files = [
         # review is the same as create_files
-        IfFileIsLocal(then_=can_draft_media_create_files, else_=[SystemProcess()])
+        IfTransferType(LOCAL_TRANSFER_TYPE, can_draft_media_create_files),
+        SystemProcess(),
     ]
     can_draft_media_update_files = can_draft_media_create_files
     # from the core
@@ -240,7 +250,8 @@ class ZenodoRDMRecordPermissionPolicy(RDMRecordPermissionPolicy):
     can_media_get_content_files = [
         # note: even though this is closer to business logic than permissions,
         # it was simpler and less coupling to implement this as permission check
-        IfFileIsLocal(then_=can_read, else_=[SystemProcess()])
+        IfTransferType(LOCAL_TRANSFER_TYPE, can_read_files),
+        SystemProcess(),
     ]
 
     can_moderate = [
