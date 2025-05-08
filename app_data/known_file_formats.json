@@ -1,0 +1,17 @@
+{
+  "portable_document_format": {
+    "name": "Portable Document Format",
+    "extensions": ["pdf"],
+    "classifiers": ["open", "long_term"]
+  },
+  "step_file_iso_10303_21": {
+    "name": "STEP File (ISO 10303-21)",
+    "extensions": ["stp", "step"],
+    "classifiers": ["open", "long_term"]
+  },
+  "stl_stereolithography_format": {
+    "name": "STL Stereolithography Format",
+    "extensions": ["stl"],
+    "classifiers": ["open", "long_term"]
+  }
+}
