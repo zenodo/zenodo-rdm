@@ -67,6 +67,9 @@ def _export_records_to_files(format, community_slug, records_file, deleted_file)
         [
             "record_id",
             "doi",
+            "parent_id",
+            "parent_doi",
+            "removal_note",
             "removal_reason",
             "removal_date",
             "citation_text",
@@ -80,13 +83,26 @@ def _export_records_to_files(format, community_slug, records_file, deleted_file)
 
         is_deleted = record.get("deletion_status", {}).get("is_deleted", False)
         if is_deleted:
+            removal_reason = (
+                record.get("tombstone", {}).get("removal_reason", {}).get("id")
+            )
             deleted_writer.writerow(
                 [
                     record_id,
                     record["pids"]["doi"]["identifier"],
-                    record.get("tombstone", {}).get("removal_reason", {}).get("id"),
+                    record.get("parent", {}).get("id"),
+                    record.get("parent", {})
+                    .get("pids", {})
+                    .get("doi", {})
+                    .get("identifier"),
+                    record.get("tombstone", {}).get("note"),
+                    removal_reason,
                     record.get("tombstone", {}).get("removal_date"),
-                    record.get("tombstone", {}).get("citation_text"),
+                    (
+                        record.get("tombstone", {}).get("citation_text")
+                        if removal_reason != "spam"
+                        else None
+                    ),
                 ]
             )
             continue
