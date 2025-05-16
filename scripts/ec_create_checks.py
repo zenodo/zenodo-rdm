@@ -507,27 +507,18 @@ SUB_COMMUNITY_RULES = {
     ]
 }
 
+FILE_FORMAT_CONFIG = {
+    # TODO: Link needs to be updated
+    "closed_format_description": "Using closed or proprietary formats hinders reusability and preservation of published files. <a href='https://support.zenodo.org/help/en-gb/28' target='_blank' >Learn more</a>",
+}
+
 
 def create_eu_checks():
     eu_comm = community_service.record_cls.pid.resolve("eu")
-    # Check if there is already a check for the community
-    existing_check = CheckConfig.query.filter_by(
-        community_id=eu_comm.id, check_id="metadata"
-    ).one_or_none()
-    if existing_check:  # If it exists, update it
-        existing_check.params = EU_RULES
-    else:  # ...create it
-        check_config = CheckConfig(
-            community_id=eu_comm.id,
-            check_id="metadata",
-            params=EU_RULES,
-            severity=Severity.INFO,
-            enabled=True,
-        )
-        db.session.add(check_config)
-    db.session.commit()
-    print("EU checks created/updated successfully.")
+    create_metadata_checks(eu_comm)
+    create_file_format_checks(eu_comm)
 
+    # Create checks for sub-communities
     sub_communities = community_service._search(
         "search",
         system_identity,
@@ -591,6 +582,46 @@ def create_eu_checks():
             db.session.add(check_config)
         db.session.commit()
     print("EU checks created/updated successfully.")
+
+
+def create_metadata_checks(eu_comm):
+    existing_check = CheckConfig.query.filter_by(
+        community_id=eu_comm.id, check_id="metadata"
+    ).one_or_none()
+    if existing_check:  # If it exists, update it
+        existing_check.params = EU_RULES
+    else:  # ...create it
+        check_config = CheckConfig(
+            community_id=eu_comm.id,
+            check_id="metadata",
+            params=EU_RULES,
+            severity=Severity.INFO,
+            enabled=True,
+        )
+        db.session.add(check_config)
+    db.session.commit()
+    print(f"Metadata checks created/updated successfully for community {eu_comm.slug}.")
+
+
+def create_file_format_checks(eu_comm):
+    existing_check = CheckConfig.query.filter_by(
+        community_id=eu_comm.id, check_id="file_formats"
+    ).one_or_none()
+    if existing_check:  # If it exists, update it
+        existing_check.params = FILE_FORMAT_CONFIG
+    else:  # ...create it
+        check_config = CheckConfig(
+            community_id=eu_comm.id,
+            check_id="file_formats",
+            params=FILE_FORMAT_CONFIG,
+            severity=Severity.INFO,
+            enabled=True,
+        )
+        db.session.add(check_config)
+    db.session.commit()
+    print(
+        f"File format checks created/updated successfully for community {eu_comm.slug}."
+    )
 
 
 if __name__ == "__main__":

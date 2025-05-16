@@ -1,0 +1,665 @@
+anndata_format:
+  classifiers:
+  - scientific format
+  extensions:
+  - h5ad
+  name: Annotated Data Format (AnnData)
+
+apache_arrow_format:
+  classifiers:
+  - scientific format
+  - open format
+  extensions:
+  - arrow
+  name: Apache Arrow
+
+apache_avro_format:
+  classifiers:
+  - scientific format
+  - open format
+  extensions:
+  - avro
+  name: Apache Avro
+
+apache_feather_format:
+  classifiers:
+  - scientific format
+  - open format
+  extensions:
+  - feather
+  name: Apache Feather
+
+apache_orc_format:
+  classifiers:
+  - scientific format
+  - open format
+  extensions:
+  - orc
+  name: Apache ORC (Optimized Row Columnar)
+
+arduino_sketch:
+  classifiers:
+  - open format
+  extensions:
+  - ino
+  name: Arduino Sketch
+
+ascii_text:
+  classifiers:
+  - open format
+  extensions:
+  - asc
+  name: ASCII Text
+
+atom_format:
+  classifiers:
+  - open format
+  extensions:
+  - atom
+  name: Atom Feed
+
+bam_index:
+  classifiers:
+  - scientific format
+  extensions:
+  - bai
+  name: BAM Index Format
+
+bibtex:
+  classifiers:
+  - scientific format
+  - open format
+  extensions:
+  - bib
+  name: BibTeX Bibliography
+
+binary_alignment_map_format:
+  classifiers:
+  - scientific format
+  extensions:
+  - bam
+  name: Binary Alignment Map (BAM)
+
+c_cpp_source_code:
+  classifiers:
+  - scientific format
+  extensions:
+  - cpp
+  - h
+  - hpp
+  name: C/C++ Source Code
+
+citation_file_format:
+  classifiers:
+  - open format
+  extensions:
+  - cff
+  name: Citation File Format
+
+compression_formats:
+  classifiers:
+  - open format
+  extensions:
+  - gz
+  - tgz
+  - xz
+  - bz2
+  - 7z
+  - tar
+  - rar
+  - zst
+  name: Archive and Compression Formats
+
+css_format:
+  classifiers:
+  - open format
+  extensions:
+  - css
+  name: Cascading Style Sheets (CSS)
+
+elan_annotation_format:
+  classifiers:
+  - scientific format
+  extensions:
+  - eaf
+  name: ELAN Annotation Format
+
+epub_format:
+  classifiers:
+  - open format
+  - long term format
+  extensions:
+  - epub
+  name: Electronic Publication (EPUB)
+
+flac_audio_format:
+  classifiers:
+  - open format
+  - long term format
+  extensions:
+  - flac
+  name: Free Lossless Audio Codec (FLAC)
+
+flow_cytometry_standard:
+  classifiers:
+  - scientific format
+  extensions:
+  - fcs
+  name: Flow Cytometry Standard
+
+fortran_source:
+  classifiers:
+  - scientific format
+  extensions:
+  - f
+  - f90
+  name: Fortran Source Code
+
+geopackage_format:
+  classifiers:
+  - scientific format
+  - open format
+  extensions:
+  - gpkg
+  name: GeoPackage
+
+gl_transmission_format:
+  classifiers:
+  - open format
+  extensions:
+  - glb
+  - gltf
+  name: GL Transmission Format
+
+graphml_format:
+  classifiers:
+  - scientific format
+  - open format
+  extensions:
+  - graphml
+  name: GraphML
+
+graphpad_prism_format:
+  classifiers:
+  - scientific format
+  extensions:
+  - pzfx
+  name: GraphPad Prism Format
+
+gromacs_formats:
+  classifiers:
+  - scientific format
+  extensions:
+  - xtc
+  - tpr
+  - gro
+  - top
+  - mdp
+  - edr
+  - ndx
+  - itp
+  - trr
+  name: GROMACS Molecular Dynamics Formats
+
+html_format:
+  classifiers:
+  - open format
+  extensions:
+  - html
+  - htm
+  name: HyperText Markup Language (HTML)
+
+image_metadata:
+  classifiers:
+  - scientific format
+  extensions:
+  - img
+  name: Image Metadata
+
+imagej_macro:
+  classifiers:
+  - scientific format
+  extensions:
+  - ijm
+  name: ImageJ Macro
+
+jar_archive:
+  classifiers:
+  - open format
+  extensions:
+  - jar
+  name: Java Archive (JAR)
+
+javascript_format:
+  classifiers:
+  - open format
+  extensions:
+  - js
+  name: JavaScript
+
+json_format:
+  classifiers:
+  - open format
+  extensions:
+  - json
+  name: JavaScript Object Notation (JSON)
+
+julia_script:
+  classifiers:
+  - scientific format
+  extensions:
+  - jl
+  name: Julia Script
+
+keyhole_markup_language:
+  classifiers:
+  - open format
+  extensions:
+  - kml
+  - kmz
+  name: Keyhole Markup Language
+
+latex_document_format:
+  classifiers:
+  - scientific format
+  - open format
+  extensions:
+  - tex
+  name: LaTeX Document Format
+
+markdown_format:
+  classifiers:
+  - open format
+  extensions:
+  - md
+  - markdown
+  name: Markdown
+
+matlab_figure_format:
+  classifiers:
+  - scientific format
+  extensions:
+  - fig
+  name: MATLAB Figure
+
+matroska_format:
+  classifiers:
+  - open format
+  extensions:
+  - mkv
+  - mka
+  - mks
+  - mk3d
+  name: Matroska Multimedia Container
+
+microsoft_powerpoint_legacy:
+  classifiers:
+  - scientific format
+  extensions:
+  - ppt
+  name: Microsoft PowerPoint Legacy Format
+
+microsoft_powerpoint_open_xml:
+  classifiers:
+  - scientific format
+  extensions:
+  - pptx
+  - ppsx
+  name: Microsoft PowerPoint Open XML Format
+
+microsoft_word_legacy:
+  classifiers:
+  - scientific format
+  extensions:
+  - doc
+  name: Microsoft Word Legacy Format
+
+microsoft_word_open_xml:
+  classifiers:
+  - scientific format
+  extensions:
+  - docx
+  name: Microsoft Word Open XML Format
+
+mobipocket_ebook:
+  classifiers:
+  - open format
+  extensions:
+  - mobi
+  name: Mobipocket E-book Format
+
+molecular_dynamics_simulation:
+  classifiers:
+  - scientific format
+  extensions:
+  - dcd
+  - psf
+  name: Molecular Dynamics Simulation Formats
+
+netcdf4_format:
+  classifiers:
+  - scientific format
+  - open format
+  extensions:
+  - nc4
+  name: NetCDF-4 Format
+
+neural_network_exchange:
+  classifiers:
+  - open format
+  extensions:
+  - onnx
+  name: Open Neural Network Exchange
+
+nifti_format:
+  classifiers:
+  - scientific format
+  extensions:
+  - nii
+  - nii.gz
+  name: Neuroimaging Informatics Technology Initiative (NIfTI)
+
+numpy_array:
+  classifiers:
+  - scientific format
+  extensions:
+  - npy
+  - npz
+  name: NumPy Array
+
+opendocument_presentation:
+  classifiers:
+  - open format
+  - long term format
+  extensions:
+  - odp
+  name: OpenDocument Presentation
+
+opendocument_text:
+  classifiers:
+  - open format
+  - long term format
+  extensions:
+  - odt
+  name: OpenDocument Text
+
+origin_data_format:
+  classifiers:
+  - scientific format
+  extensions:
+  - opj
+  - opju
+  name: Origin Data Format
+
+parquet_file_format:
+  classifiers:
+  - scientific format
+  - open format
+  extensions:
+  - parquet
+  name: Apache Parquet
+
+perl_script:
+  classifiers:
+  - scientific format
+  extensions:
+  - perl
+  - pl
+  name: Perl Script
+
+plink_genetic_format:
+  classifiers:
+  - scientific format
+  extensions:
+  - ped
+  name: PLINK Genetic Data Format
+
+polygon_file_format:
+  classifiers:
+  - scientific format
+  - open format
+  extensions:
+  - ply
+  name: Polygon File Format (PLY)
+
+python_pickle_format:
+  classifiers:
+  - scientific format
+  extensions:
+  - pkl
+  - pickle
+  name: Python Pickle
+
+pytorch_model:
+  classifiers:
+  - scientific format
+  extensions:
+  - pt
+  - pth
+  - ckpt
+  name: PyTorch Model
+
+quarto_document:
+  classifiers:
+  - scientific format
+  - open format
+  extensions:
+  - qmd
+  name: Quarto Document
+
+quicktime_video:
+  classifiers:
+  - long term format
+  extensions:
+  - mov
+  name: QuickTime Video Format
+
+r_data_formats:
+  classifiers:
+  - scientific format
+  extensions:
+  - rds
+  - rda
+  name: R Data Formats
+
+r_markdown:
+  classifiers:
+  - scientific format
+  - open format
+  extensions:
+  - rmd
+  name: R Markdown Document
+
+rdf_formats:
+  classifiers:
+  - open format
+  extensions:
+  - nq
+  - nt
+  - trig
+  - owl
+  name: RDF/OWL Semantic Web Formats
+
+reference_manager_format:
+  classifiers:
+  - scientific format
+  extensions:
+  - ris
+  name: Reference Manager Format
+
+rich_text_format:
+  classifiers:
+  - open format
+  extensions:
+  - rtf
+  name: Rich Text Format
+
+rss_format:
+  classifiers:
+  - open format
+  extensions:
+  - rss
+  name: RSS Feed
+
+sequence_alignment_map_format:
+  classifiers:
+  - scientific format
+  extensions:
+  - sam
+  name: Sequence Alignment Map (SAM)
+
+shell_script:
+  classifiers:
+  - open format
+  extensions:
+  - sh
+  name: Shell Script
+
+sif_image_format:
+  classifiers:
+  - scientific format
+  extensions:
+  - sif
+  name: Simple/Singularity Image Format
+
+sql_script:
+  classifiers:
+  - open format
+  extensions:
+  - sql
+  name: SQL Script
+
+sqlite_database_format:
+  classifiers:
+  - scientific format
+  - open format
+  extensions:
+  - sqlite
+  - sqlite3
+  - db
+  name: SQLite Database
+
+subtitle_format:
+  classifiers:
+  - open format
+  extensions:
+  - srt
+  name: SubRip Subtitle Format
+
+tabix_index:
+  classifiers:
+  - scientific format
+  extensions:
+  - tbi
+  name: Tabix Index
+
+text_tabular_formats:
+  classifiers:
+  - scientific format
+  - open format
+  extensions:
+  - csv
+  - tsv
+  - tab
+  - txt
+  - dat
+  - data
+  - psv
+  - ssv
+  - dsv
+  name: Text Tabular Formats (CSV, TSV, etc.)
+toml_format:
+  classifiers:
+  - open format
+  extensions:
+  - toml
+  name: Tom's Obvious, Minimal Language (TOML)
+
+tps_morphometrics_format:
+  classifiers:
+  - scientific format
+  extensions:
+  - tps
+  name: TPS Morphometrics Format
+
+turtle_format:
+  classifiers:
+  - open format
+  extensions:
+  - ttl
+  name: Turtle (RDF Serialization)
+
+typescript_file:
+  classifiers:
+  - open format
+  extensions:
+  - ts
+  name: TypeScript
+
+variant_call_format:
+  classifiers:
+  - scientific format
+  extensions:
+  - vcf
+  - vcf.gz
+  name: Variant Call Format (VCF)
+
+wavefront_3d_object:
+  classifiers:
+  - open format
+  extensions:
+  - obj
+  - mtl
+  name: Wavefront 3D Object
+
+web_open_font_format:
+  classifiers:
+  - open format
+  extensions:
+  - woff
+  - woff2
+  name: Web Open Font Format
+
+webm_format:
+  classifiers:
+  - open format
+  extensions:
+  - webm
+  name: WebM Video Format
+
+world_file:
+  classifiers:
+  - scientific format
+  extensions:
+  - tfw
+  name: World File (for geospatial images)
+
+xml_format:
+  classifiers:
+  - open format
+  extensions:
+  - xml
+  name: Extensible Markup Language (XML)
+
+xyz_chemical_format:
+  classifiers:
+  - scientific format
+  extensions:
+  - xyz
+  name: Chemical XYZ Format
+
+yaml_format:
+  classifiers:
+  - open format
+  extensions:
+  - yml
+  - yaml
+  name: YAML Ain't Markup Language (YAML)
+
+zeiss_microscopy_format:
+  classifiers:
+  - scientific format
+  extensions:
+  - czi
+  name: Zeiss Microscopy Format
+
