@@ -14,6 +14,7 @@ from flask import current_app
 from invenio_app_rdm.records_ui.previewer.iiif_simple import (
     previewable_extensions as image_extensions,
 )
+from invenio_base.urls import invenio_url_for
 from invenio_db import db
 from invenio_drafts_resources.services.records.config import is_record
 from invenio_files_rest.models import FileInstance, ObjectVersion
@@ -25,13 +26,14 @@ from invenio_rdm_records.services import (
     RDMRecordService,
     RDMRecordServiceConfig,
 )
-from invenio_rdm_records.services.config import has_doi
+from invenio_rdm_records.services.config import RecordPIDLink, WithFileLinks, has_doi
 from invenio_records_resources.services import ConditionalLink
 from invenio_records_resources.services.base.config import FromConfig
 from invenio_records_resources.services.base.links import preprocess_vars
 from invenio_records_resources.services.errors import FileKeyNotFoundError
-from invenio_records_resources.services.files import FileLink, FileService
-from invenio_records_resources.services.records.links import RecordLink
+from invenio_records_resources.services.files import FileService
+from invenio_records_resources.services.files.links import FileEndpointLink
+from invenio_records_resources.services.records.links import RecordEndpointLink
 from invenio_records_resources.services.uow import (
     IndexRefreshOp,
     RecordCommitOp,
@@ -61,7 +63,7 @@ def is_published_file(file, ctx):
     return not file.record.is_draft
 
 
-class LegacyRecordLink(RecordLink):
+class LegacyRecordEndpointLink(RecordEndpointLink):
     """Legacy record links with bucket information."""
 
     @staticmethod
@@ -75,10 +77,10 @@ class LegacyRecordLink(RecordLink):
         )
 
 
-class LegacyThumbsLink(RecordLink):
+class LegacyThumbsLink(RecordEndpointLink):
     """Legacy thumbnail links dictionary."""
 
-    def __init__(self, *args, sizes=None, **kwargs):
+    def __init__(self, *args, sizes, **kwargs):
         """Constructor."""
         self._sizes = sizes
         super().__init__(*args, **kwargs)
@@ -91,7 +93,9 @@ class LegacyThumbsLink(RecordLink):
         if self._vars_func:
             self._vars_func(obj, vars)
         vars = preprocess_vars(vars)
-        return {str(s): self._uritemplate.expand(size=s, **vars) for s in self._sizes}
+        return {
+            str(s): invenio_url_for(self._endpoint, size=s, **vars) for s in self._sizes
+        }
 
 
 def is_iiif_compatible(record, ctx):
@@ -111,29 +115,12 @@ def has_bucket_id(record, ctx):
     return getattr(record, "bucket_id") is not None
 
 
-class RecordPIDLink(RecordLink):
-    """Record PID links."""
+def has_file(file_record, ctx):
+    """Check if record has bucket_id.
 
-    @staticmethod
-    def vars(record, vars):
-        """Variables for the URI template."""
-        vars.update(
-            {f"pid_{scheme}": pid["identifier"] for scheme, pid in record.pids.items()}
-        )
-
-
-class RecordParentPIDLink(RecordLink):
-    """Record parent PID links."""
-
-    @staticmethod
-    def vars(record, vars):
-        """Variables for the URI template."""
-        vars.update(
-            {
-                f"pid_{scheme}": pid["identifier"]
-                for scheme, pid in record.parent.pids.items()
-            }
-        )
+    This is needed because we don't index the bucket_id information.
+    """
+    return getattr(file_record, "file") is not None
 
 
 class LegacyRecordServiceConfig(RDMRecordServiceConfig):
@@ -142,22 +129,22 @@ class LegacyRecordServiceConfig(RDMRecordServiceConfig):
     links_item = {
         "self": ConditionalLink(
             cond=is_record,
-            if_=RecordLink("{+api}/records/{id}"),
-            else_=RecordLink("{+api}/deposit/depositions/{id}"),
+            if_=RecordEndpointLink("records.read"),
+            else_=RecordEndpointLink("legacy_records.read_draft"),
         ),
         "html": ConditionalLink(
             cond=is_record,
-            if_=RecordLink("{+ui}/records/{id}"),
-            else_=RecordLink("{+ui}/deposit/{id}"),
+            if_=RecordEndpointLink("invenio_app_rdm_records.record_detail"),
+            else_=RecordEndpointLink("invenio_redirector.redirect_deposit_id"),
         ),
         "doi": RecordPIDLink("https://doi.org/{+pid_doi}", when=has_doi),
-        "parent_doi": RecordParentPIDLink(
-            "https://doi.org/{+pid_doi}",
+        "parent_doi": RecordPIDLink(
+            "https://doi.org/{+parent_pid_doi}",
             when=is_record_and_has_parent_doi,
         ),
         "badge": RecordPIDLink("{+ui}/badge/doi/{pid_doi}.svg"),
-        "conceptbadge": RecordParentPIDLink(
-            "{+ui}/badge/doi/{pid_doi}.svg",
+        "conceptbadge": RecordPIDLink(
+            "{+ui}/badge/doi/{parent_pid_doi}.svg",
             when=is_record_and_has_parent_doi,
         ),
         #
@@ -165,40 +152,49 @@ class LegacyRecordServiceConfig(RDMRecordServiceConfig):
         #
         "files": ConditionalLink(
             cond=is_record,
-            if_=RecordLink("{+api}/records/{id}/files"),
-            else_=RecordLink("{+api}/deposit/depositions/{id}/files"),
+            if_=RecordEndpointLink("record_files.search"),
+            else_=RecordEndpointLink("legacy_draft_files.search"),
         ),
-        "bucket": LegacyRecordLink("{+api}/files/{bucket_id}", when=has_bucket_id),
+        "bucket": LegacyRecordEndpointLink(
+            "legacy_files_rest.search", params=["bucket_id"], when=has_bucket_id
+        ),
         #
         # Thumbnails
         #
-        "thumb250": RecordLink("{+ui}/record/{id}/thumb250", when=is_iiif_compatible),
-        "thumbs": LegacyThumbsLink(
-            "{+ui}/record/{id}/thumb{size}",
+        "thumb250": RecordEndpointLink(
+            "invenio_redirector.redirect_record_thumbnail",
+            vars=lambda _, v: v.update({"size": "250"}),
             when=is_iiif_compatible,
+        ),
+        "thumbs": LegacyThumbsLink(
+            "invenio_redirector.redirect_record_thumbnail",
             sizes=record_thumbnail_sizes,
+            when=is_iiif_compatible,
         ),
         # Versioning
-        "latest_draft": RecordLink("{+api}/deposit/depositions/{id}"),
-        "latest_draft_html": RecordLink("{+ui}/deposit/{id}"),
+        "latest_draft": RecordEndpointLink("legacy_records.read_draft"),
+        "latest_draft_html": RecordEndpointLink(
+            "invenio_redirector.redirect_deposit_id"
+        ),
         #
         # Actions
         #
-        "publish": RecordLink("{+api}/deposit/depositions/{id}/actions/publish"),
-        "edit": RecordLink("{+api}/deposit/depositions/{id}/actions/edit"),
-        "discard": RecordLink("{+api}/deposit/depositions/{id}/actions/discard"),
-        "newversion": RecordLink("{+api}/deposit/depositions/{id}/actions/newversion"),
-        "registerconceptdoi": RecordLink(
-            "{+api}/deposit/depositions/{id}/actions/registerconceptdoi"
-        ),
+        "publish": RecordEndpointLink("legacy_records.publish"),
+        "edit": RecordEndpointLink("legacy_records.edit"),
+        "discard": RecordEndpointLink("legacy_records.discard_draft"),
+        "newversion": RecordEndpointLink("legacy_records.new_version"),
+        # TODO: Implement this
+        # "registerconceptdoi": RecordEndpointLink("legacy_records.register_concept_doi"),
         #
         # Published draft
         #
-        "record": RecordLink("{+api}/records/{id}", when=is_published),
-        "record_html": RecordLink("{+ui}/record/{id}", when=is_published),
-        "latest": RecordLink("{+api}/records/{id}/versions/latest", when=is_published),
-        "latest_html": RecordLink(
-            "{+ui}/record/{id}/versions/latest", when=is_published
+        "record": RecordEndpointLink("records.read", when=is_published),
+        "record_html": RecordEndpointLink(
+            "invenio_redirector.redirect_record_detail", when=is_published
+        ),
+        "latest": RecordEndpointLink("records.read_latest", when=is_published),
+        "latest_html": RecordEndpointLink(
+            "invenio_app_rdm_records.record_latest", when=is_published
         ),
     }
 
@@ -263,7 +259,7 @@ class LegacyRecordService(RDMRecordService):
         return res
 
 
-class LegacyFileLink(FileLink):
+class LegacyFileLink(FileEndpointLink):
     """Legacy file link."""
 
     @staticmethod
@@ -273,13 +269,23 @@ class LegacyFileLink(FileLink):
             {
                 "key": file_record.key,
                 "bucket_id": file_record.record.bucket_id,
-                "version_id": file_record.object_version_id,
                 "file_id": file_record.file.id if file_record.file else None,
             }
         )
 
 
-class LegacyFileDraftServiceConfig(RDMFileDraftServiceConfig):
+class IngoreFileLinkMeta(WithFileLinks):
+    """Metaclass to ignore the existing WithFileLinks base class."""
+
+    def __init__(cls, *args, **kwargs):
+        """Ignore the WithFileLinks base class."""
+        # Do nothing, we'll handle links ourselves
+        pass
+
+
+class LegacyFileDraftServiceConfig(
+    RDMFileDraftServiceConfig, metaclass=IngoreFileLinkMeta
+):
     """Configuration for legacy draft files."""
 
     service_id = "legacy-draft-files"
@@ -287,23 +293,45 @@ class LegacyFileDraftServiceConfig(RDMFileDraftServiceConfig):
     published_record_cls = FromConfig("RDM_RECORD_CLS", default=RDMRecord)
 
     file_links_list = {
-        "self": RecordLink("{+api}/deposit/depositions/{id}/files"),
+        "self": RecordEndpointLink("legacy_draft_files.search"),
     }
 
     file_links_item = {
         "draft_files.self": LegacyFileLink(
-            "{+api}/deposit/depositions/{id}/files/{file_id}"
+            "legacy_draft_files.read",
+            params=["pid_value", "file_id"],
+            when=has_file,
         ),
         "draft_files.download": ConditionalLink(
             cond=is_published_file,
-            if_=LegacyFileLink("{+api}/records/{id}/files/{key}/content"),
-            else_=LegacyFileLink("{+api}/records/{id}/draft/files/{key}/content"),
+            if_=LegacyFileLink(
+                "record_files.read_content",
+                params=["pid_value", "key"],
+                when=has_file,
+            ),
+            else_=LegacyFileLink(
+                "draft_files.read_content",
+                params=["pid_value", "key"],
+                when=has_file,
+            ),
         ),
-        "files_rest.self": LegacyFileLink("{+api}/files/{bucket_id}/{key}"),
+        "files_rest.self": LegacyFileLink(
+            "legacy_files_rest.get_object",
+            params=["bucket_id", "key"],
+            when=has_file,
+        ),
         "files_rest.version": LegacyFileLink(
-            "{+api}/files/{bucket_id}/{key}?versionId={version_id}"
+            "legacy_files_rest.get_object",
+            params=["bucket_id", "key"],
+            vars=lambda o, v: v.update({"args": {"version_id": o.object_version_id}}),
+            when=has_file,
         ),
-        "files_rest.uploads": LegacyFileLink("{+api}/files/{bucket_id}/{key}?uploads"),
+        "files_rest.uploads": LegacyFileLink(
+            "legacy_files_rest.get_object",
+            params=["bucket_id", "key"],
+            vars=lambda o, v: v.update({"args": {"uploads": "1"}}),
+            when=has_file,
+        ),
     }
 
 
