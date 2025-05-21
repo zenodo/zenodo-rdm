@@ -164,6 +164,7 @@ class LegacyRecordServiceConfig(RDMRecordServiceConfig):
         "thumb250": RecordEndpointLink(
             "invenio_redirector.redirect_record_thumbnail",
             vars=lambda _, v: v.update({"size": "250"}),
+            params=["pid_value", "size"],
             when=is_iiif_compatible,
         ),
         "thumbs": LegacyThumbsLink(
