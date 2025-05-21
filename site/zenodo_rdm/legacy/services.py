@@ -29,7 +29,6 @@ from invenio_rdm_records.services import (
 from invenio_rdm_records.services.config import RecordPIDLink, WithFileLinks, has_doi
 from invenio_records_resources.services import ConditionalLink
 from invenio_records_resources.services.base.config import FromConfig
-from invenio_records_resources.services.base.links import preprocess_vars
 from invenio_records_resources.services.errors import FileKeyNotFoundError
 from invenio_records_resources.services.files import FileService
 from invenio_records_resources.services.files.links import FileEndpointLink
@@ -92,9 +91,16 @@ class LegacyThumbsLink(RecordEndpointLink):
         self.vars(obj, vars)
         if self._vars_func:
             self._vars_func(obj, vars)
-        vars = preprocess_vars(vars)
+
+        # Filter out vars that are not in the params
+        values = {k: v for k, v in vars.items() if k in self._params}
+
+        # Add any querystring arguments
+        values.update(vars.get("args", {}))
+        values = dict(sorted(values.items()))  # keep sorted interface
         return {
-            str(s): invenio_url_for(self._endpoint, size=s, **vars) for s in self._sizes
+            str(s): invenio_url_for(self._endpoint, size=s, **values)
+            for s in self._sizes
         }
 
 
