@@ -1342,8 +1342,12 @@ subtitle_format:
   classifiers:
   - open format
   extensions:
+  - vtt
   - srt
-  name: SubRip Subtitle Format
+  - ass
+  - ssa
+  - sub
+  name: Subtitle Formats (VTT, SRT, etc.)
 swissprot_sequence_format:
   classifiers:
   - scientific format
