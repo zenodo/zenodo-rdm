@@ -10,6 +10,7 @@
 
 from flask import g, redirect, request, url_for
 from invenio_cache import current_cache
+from invenio_collections.proxies import current_collections
 from invenio_communities.views.communities import (
     HEADER_PERMISSIONS,
     render_community_theme_template,
@@ -17,7 +18,6 @@ from invenio_communities.views.communities import (
 from invenio_communities.views.decorators import pass_community
 from invenio_rdm_records.proxies import (
     current_community_records_service,
-    current_rdm_records,
 )
 from invenio_rdm_records.resources.serializers import UIJSONSerializer
 from invenio_records_resources.services.errors import PermissionDeniedError
@@ -41,7 +41,7 @@ def _get_metric_from_search(result, accessor):
 def communities_home(pid_value, community, community_ui):
     """Community home page."""
     query_params = request.args
-    collections_service = current_rdm_records.collections_service
+    collections_service = current_collections.service
     permissions = community.has_permissions_to(HEADER_PERMISSIONS)
     if not permissions["can_read"]:
         raise PermissionDeniedError()
