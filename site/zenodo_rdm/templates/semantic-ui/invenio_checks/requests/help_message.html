@@ -7,6 +7,16 @@ Invenio is free software; you can redistribute it and/or modify it
 under the terms of the MIT License; see LICENSE file for more details.
 #}
 
+{% if has_draft %}
+<div class="ui warning message">
+    <div class="header"><i class="attention icon"></i> Editing in progress</div>
+    <p>You're viewing checks and feedback results for unpublished changes.</p>
+    {% if is_published %}
+    <p>The published version available to users may differ from what's shown here.</p>
+    {% endif %}
+</div>
+{% endif %}
+
 <div class="ui info message">
     <div class="header">What is this about?</div>
     <p>These checks help ensure that your submission is compliant with the related open science requirements in Horizon
