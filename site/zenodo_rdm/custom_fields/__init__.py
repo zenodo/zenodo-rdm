@@ -82,6 +82,13 @@ CUSTOM_FIELDS = [
 
 # hide meeting section from Additional details in landing page
 MEETING_CUSTOM_FIELDS_UI["hide_from_landing_page"] = True
+# NOTE: This has been fixed in a later version of invenio-rdm-records
+MEETING_CUSTOM_FIELDS_UI["fields"][0]["props"].pop("identifiers", None)
+MEETING_CUSTOM_FIELDS_UI["fields"][0]["props"]["url"] = {
+    "label": "Website",
+    "placeholder": "",
+    "description": "",
+}
 
 # Custom fields UI components
 CUSTOM_FIELDS_UI = [
