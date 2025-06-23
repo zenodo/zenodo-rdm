@@ -1,0 +1,48 @@
+[project]
+name = "Zenodo"
+version = "19.0.1"
+authors = [
+    { name = "CERN" }
+]
+license = "GPL-3.0"
+requires-python = ">=3.9"
+dependencies = [
+    "invenio-app-rdm[opensearch2]~=13.0.0rc2",
+    "zenodo-legacy",
+    "zenodo-rdm",
+    "commonmeta-py==0.8.6",
+    "github3.py>=3.0.0",
+    "nameparser>=1.1.1",
+    "pyinstrument>=4.5.1",
+    "sqltap>=0.3.11",
+    "zammad-py>=3.0.0,<4.0.0",
+    "pyvips>=2.2.2,<3.0.0",
+    "invenio-swh",
+
+    "pyuwsgi>=2.0",
+    "uwsgitop>=0.11",
+    "uwsgi-tools>=1.1.1",
+]
+
+[tool.uv.sources]
+zenodo-rdm = { workspace = true }
+zenodo-legacy = { workspace = true }
+invenio-swh = { git = "https://github.com/inveniosoftware/invenio-swh", rev = "v0.13.1" }
+
+[tool.uv.workspace]
+members = [
+    "site",
+    "legacy",
+]
+
+[dependency-groups]
+dev = [
+    "pytest-invenio>=3.0.0,<4.0.0",
+]
+sentry = [
+    "sentry-sdk>=1.45,<2.0.0",
+]
+xrootd = [
+    "invenio-xrootd==2.0.0a2",
+    "requests-kerberos==0.14.0",
+]

@@ -1,6 +1,7 @@
 [cli]
 flavour = RDM
 logfile = /logs/invenio-cli.log
+python_package_manager = uv
 
 [cookiecutter]
 project_name = Zenodo RDM

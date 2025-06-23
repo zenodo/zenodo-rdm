@@ -4,14 +4,13 @@
 # on Almalinux (https://github.com/inveniosoftware/docker-invenio)
 # and includes Pip, Pipenv, Node.js, NPM and some few standard libraries
 # Invenio usually needs.
-#
-# Note: It is important to keep the commands in this file in sync with your
-# bootstrap script located in ./scripts/bootstrap.
 
 FROM registry.cern.ch/inveniosoftware/almalinux:1
 
+
 RUN dnf install -y epel-release
 RUN dnf update -y
+
 # XRootD
 ARG xrootd_version="5.5.5"
 # Repo required to find all the releases of XRootD
@@ -37,15 +36,35 @@ RUN dnf install -y http://rpms.remirepo.net/enterprise/remi-release-9.rpm
 RUN dnf install -y vips
 # /VIPS
 
-# XRootD
-RUN pip install "requests-kerberos==0.14.0"
-RUN pip install "invenio-xrootd==2.0.0a2"
-# /XRootD
+# Python and uv configuration
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    UV_CACHE_DIR=/opt/.cache/uv \
+    UV_COMPILE_BYTECODE=1 \
+    UV_FROZEN=1 \
+    UV_LINK_MODE=copy \
+    UV_NO_MANAGED_PYTHON=1 \
+    UV_SYSTEM_PYTHON=1 \
+    # Tell uv to use system Python
+    UV_PROJECT_ENVIRONMENT=/usr/ \
+    UV_PYTHON_DOWNLOADS=never \
+    UV_REQUIRE_HASHES=1 \
+    UV_VERIFY_HASHES=1
+
+# Get latest version of uv
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+
+# Install Python dependencies using uv
+RUN --mount=type=cache,target=/opt/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --no-install-workspace --no-editable \
+        --group=sentry --group=xrootd \
+        # (py)xrootd is already installed above using dnf
+        --no-install-package=xrootd
 
 COPY site ./site
 COPY legacy ./legacy
-COPY Pipfile Pipfile.lock ./
-RUN pipenv install --deploy --system
 
 COPY ./docker/uwsgi/ ${INVENIO_INSTANCE_PATH}
 COPY ./invenio.cfg ${INVENIO_INSTANCE_PATH}
@@ -53,6 +72,10 @@ COPY ./templates/ ${INVENIO_INSTANCE_PATH}/templates/
 COPY ./app_data/ ${INVENIO_INSTANCE_PATH}/app_data/
 COPY ./translations ${INVENIO_INSTANCE_PATH}/translations
 COPY ./ .
+
+# Make sure workspace packages are installed (zenodo-rdm, zenodo-legacy)
+RUN --mount=type=cache,target=/opt/.cache/uv \
+    uv sync --frozen --no-install-package=xrootd
 
 # application build args to be exposed as environment variables
 ARG IMAGE_BUILD_TIMESTAMP

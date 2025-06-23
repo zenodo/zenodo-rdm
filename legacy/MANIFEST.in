@@ -1,5 +1,0 @@
-include *.sh
-recursive-include tests *.py
-recursive-include zenodo_legacy *.md
-recursive-include zenodo_legacy *.json
-recursive-include zenodo_legacy *.py
