@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio.
-# Copyright (C) 2016-2021 CERN.
+# Copyright (C) 2016-2025 CERN.
 # Copyright (C) 2022 Graz University of Technology.
 #
 # Invenio is free software; you can redistribute it and/or modify
@@ -17,21 +17,19 @@ on:
     branches:
       - master
   schedule:
-    # * is a special character in YAML so you have to quote this string
-    - cron:  '0 3 * * 6'
+    - cron: "0 3 * * 6"
   workflow_dispatch:
     inputs:
       reason:
-        description: 'Reason'
+        description: "Reason"
         required: false
-        default: 'Manual trigger'
+        default: "Manual trigger"
 
 jobs:
   Python:
     runs-on: ubuntu-24.04
     strategy:
       matrix:
-          package-dir: ["site", "legacy"]
           python-version: ["3.9"]
           db-service: [postgresql14]
           search-service: [opensearch2]
@@ -43,29 +41,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
         with:
           python-version: ${{ matrix.python-version }}
-          cache: pip
-          cache-dependency-path: Pipfile.lock
+          enable-cache: true
 
       - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get -y install libkrb5-dev libvips-dev
 
-          # We're pinning "pipenv" to the same version as in the deployment Docker image
-          pip install "pipenv==2023.12.1"
-          [ "${{ matrix.package-dir }}" == "site" ] && pipenv install --deploy --system
-          pip install "./legacy"
-          pip install "./${{ matrix.package-dir }}[$EXTRAS]"
-
-          pip freeze
-          docker --version
+          uv sync --locked
+          uv pip list
 
       - name: Run tests
-        working-directory: ./${{ matrix.package-dir }}
+        working-directory: ./site
         run: ./run-tests.sh
 
   JS:

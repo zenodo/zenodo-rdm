@@ -1,0 +1,25 @@
+[project]
+name = "zenodo-legacy"
+version = "1.0.0"
+description = "Zenodo legacy module."
+authors = [
+    { name = "CERN" }
+]
+license = "GPL-3.0"
+requires-python = ">=3.9"
+dependencies = []
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.isort]
+profile = "black"
+
+[tool.pydocstyle]
+add_ignore = ["D401", "D403"]
+
+[tool.pytest.ini_options]
+addopts = ["--isort", "--pydocstyle", "--doctest-glob=\"*.rst\"", "--doctest-modules", "--exclude-warning-annotations"]
+testpaths = "tests zenodo_rdm"
+live_server_scope = "module"

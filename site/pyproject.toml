@@ -1,3 +1,109 @@
+[project]
+name = "zenodo-rdm"
+version = "1.0.0"
+description = "Zenodo customizations for Invenio RDM."
+license = "GPL-3.0"
+requires-python = ">=3.9"
+dependencies = []
+
+[project.entry-points."flask.commands"]
+zenodo-admin = "zenodo_rdm.cli:zenodo_admin"
+moderation = "zenodo_rdm.cli:moderation_cli"
+exporter = "zenodo_rdm.exporter.cli:exporter"
+
+[project.entry-points."invenio_base.blueprints"]
+zenodo_rdm_support = "zenodo_rdm.views:create_blueprint"
+zenodo_rdm_sitemap = "zenodo_rdm.sitemap.views:blueprint"
+
+[project.entry-points."invenio_base.apps"]
+zenodo_rdm_legacy = "zenodo_rdm.legacy.ext:ZenodoLegacy"
+zenodo_rdm_sitemap = "zenodo_rdm.sitemap.ext:ZenodoSitemap"
+profiler = "zenodo_rdm.profiler:Profiler"
+zenodo_rdm_metrics = "zenodo_rdm.metrics.ext:ZenodoMetrics"
+zenodo_rdm_moderation = "zenodo_rdm.moderation.ext:ZenodoModeration"
+invenio_openaire = "zenodo_rdm.openaire.ext:OpenAIRE"
+zenodo_rdm_stats = "zenodo_rdm.stats.ext:ZenodoStats"
+zenodo_rdm_curation = "zenodo_rdm.curation.ext:ZenodoCuration"
+zenodo_rdm_exporter = "zenodo_rdm.exporter.ext:ZenodoExporter"
+
+[project.entry-points."invenio_base.api_apps"]
+zenodo_rdm_legacy = "zenodo_rdm.legacy.ext:ZenodoLegacy"
+profiler = "zenodo_rdm.profiler:Profiler"
+zenodo_rdm_metrics = "zenodo_rdm.metrics.ext:ZenodoMetrics"
+zenodo_rdm_moderation = "zenodo_rdm.moderation.ext:ZenodoModeration"
+invenio_openaire = "zenodo_rdm.openaire.ext:OpenAIRE"
+zenodo_rdm_curation = "zenodo_rdm.curation.ext:ZenodoCuration"
+zenodo_rdm_exporter = "zenodo_rdm.exporter.ext:ZenodoExporter"
+
+[project.entry-points."invenio_base.api_blueprints"]
+zenodo_rdm_legacy_records = "zenodo_rdm.legacy.views:create_legacy_records_bp"
+zenodo_rdm_legacy_draft_files = "zenodo_rdm.legacy.views:create_draft_files_bp"
+zenodo_rdm_legacy_files_rest = "zenodo_rdm.legacy.views:create_files_rest_bp"
+zenodo_rdm_legacy_draft_extra_formats = "zenodo_rdm.legacy.views:create_legacy_draft_extra_formats_bp"
+zenodo_rdm_legacy_record_extra_formats = "zenodo_rdm.legacy.views:create_legacy_record_extra_formats_bp"
+zenodo_rdm_metrics = "zenodo_rdm.metrics.views:blueprint"
+zenodo_rdm_redirector_api = "zenodo_rdm.redirector:create_blueprint"
+zenodo_rdm_exporter = "zenodo_rdm.exporter.views:blueprint"
+
+[project.entry-points."invenio_base.finalize_app"]
+zenodo_legacy = "zenodo_rdm.legacy.ext:register_services"
+
+[project.entry-points."invenio_base.api_finalize_app"]
+zenodo_legacy = "zenodo_rdm.legacy.ext:register_services"
+
+[project.entry-points."invenio_celery.tasks"]
+zenodo_rdm_metrics = "zenodo_rdm.metrics.tasks"
+zenodo_rdm_sitemap = "zenodo_rdm.sitemap.tasks"
+zenodo_rdm_openaire = "zenodo_rdm.openaire.tasks"
+zenodo_rdm_moderation = "zenodo_rdm.moderation.tasks"
+zenodo_stats = "zenodo_rdm.stats.tasks"
+zenodo_rdm_curation = "zenodo_rdm.curation.tasks"
+
+[project.entry-points."invenio_oauth2server.scopes"]
+deposit_write_scope = "zenodo_rdm.legacy.scopes:deposit_write_scope"
+deposit_actions_scope = "zenodo_rdm.legacy.scopes:deposit_actions_scope"
+
+[project.entry-points."invenio_db.models"]
+zenodo_rdm_moderation = "zenodo_rdm.moderation.models"
+
+[project.entry-points."invenio_assets.webpack"]
+zenodo_rdm_theme = "zenodo_rdm.webpack:theme"
+
+[project.entry-points."invenio_config.module"]
+zenodo_rdm = "zenodo_rdm.config"
+
+[project.entry-points."invenio_requests.types"]
+legacy_record_upgrade = "zenodo_rdm.legacy.requests:LegacyRecordUpgrade"
+community_manage_record = "zenodo_rdm.legacy.requests:CommunityManageRecord"
+
+[project.entry-points."invenio_access.actions"]
+media_files_management_action = "zenodo_rdm.generators:media_files_management_action"
+manage_external_doi_files_action = "zenodo_rdm.generators:manage_external_doi_files_action"
+
+[project.entry-points."invenio_previewer.previewers"]
+image_previewer = "zenodo_rdm.previewer.image_previewer"
+
+[project.entry-points."invenio_search.index_templates"]
+zenodo_rdm = "zenodo_rdm.index_templates"
+
+[project.entry-points."idutils.custom_schemes"]
+edmo = "zenodo_rdm.custom_schemes:get_scheme_config_func"
+
+[project.entry-points."invenio_jobs.jobs"]
+eu_records_curation = "zenodo_rdm.curation.jobs:EURecordCuration"
+export_records = "zenodo_rdm.exporter.jobs:ExportRecords"
+
 [build-system]
-requires = ["setuptools", "wheel", "babel>2.8"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.isort]
+profile = "black"
+
+[tool.pydocstyle]
+add_ignore = ["D401", "D403"]
+
+[tool.pytest.ini_options]
+addopts = ["--isort", "--pydocstyle", "--doctest-glob=\"*.rst\"", "--doctest-modules", "--cov=zenodo_rdm", "--cov-report=term-missing", "--exclude-warning-annotations"]
+testpaths = "tests zenodo_rdm"
+live_server_scope = "module"
