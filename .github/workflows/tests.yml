@@ -30,9 +30,16 @@ jobs:
     runs-on: ubuntu-24.04
     strategy:
       matrix:
-          python-version: ["3.9"]
-          db-service: [postgresql14]
-          search-service: [opensearch2]
+        python-version: ["3.9"]
+        db-service: [postgresql14]
+        search-service: [opensearch2]
+        experimental: [false]
+        include:
+          - python-version: "3.12"
+            db-service: postgresql14
+            search-service: opensearch2
+            experimental: true
+    continue-on-error: ${{ matrix.experimental }}
     env:
       DB: ${{ matrix.db-service }}
       SEARCH: ${{ matrix.search-service }}
@@ -72,3 +79,17 @@ jobs:
       - name: Run eslint test
         run: ./run-js-linter.sh -i
 
+  required-checks-pass:
+      if: always()
+
+      needs:
+        - Python
+        - JS
+
+      runs-on: ubuntu-latest
+
+      steps:
+        - name: Decide whether the needed jobs succeeded or failed
+          uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe # v1.2.2
+          with:
+            jobs: ${{ toJSON(needs) }}
