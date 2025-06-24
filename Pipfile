@@ -4,7 +4,7 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [packages]
-invenio-app-rdm = {version = "==13.0.0b4.dev2", extras = ["opensearch2"]}
+invenio-app-rdm = {version = "==13.0.0rc2", extras = ["opensearch2"]}
 # ORCID Public Data Sync depends on s3fs
 invenio-vocabularies = {extras = ["s3fs"]}
 sentry-sdk = ">=1.45,<2.0.0"
