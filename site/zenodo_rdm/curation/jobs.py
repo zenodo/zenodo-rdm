@@ -10,8 +10,6 @@ from datetime import datetime, timezone
 
 from invenio_i18n import lazy_gettext as _
 from invenio_jobs.jobs import JobType
-from marshmallow import Schema, fields
-from marshmallow_utils.fields import ISODateString
 
 from zenodo_rdm.curation.tasks import run_eu_record_curation
 
@@ -30,6 +28,6 @@ class EURecordCuration(JobType):
         if since is None and job_obj.last_runs["success"]:
             since = job_obj.last_runs["success"].started_at
         else:
-            since = since or datetime.utcnow()
+            since = since or datetime.now(timezone.utc)
 
-        return {"since": str(since)}
+        return {"since": since}
