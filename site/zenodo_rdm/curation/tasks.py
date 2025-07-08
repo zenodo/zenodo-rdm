@@ -47,8 +47,17 @@ def _send_result_email(content):
 def _get_eu_records_query(since):
     """Get dsl query for records to be processed."""
     created_before = datetime.now(timezone.utc) - timedelta(days=30)
-    updated_after = datetime.fromisoformat(since) - timedelta(hours=12)
-    time_diff = datetime.now(timezone.utc) - datetime.fromisoformat(since)
+
+    """
+    In Python <3.10, `fromisoformat` does not support the `Z` suffix which is a part of ISO 8601 and is commonly used.
+    We replace the Z with the compatible and equivalent +00:00 suffix instead to ensure compatibility.
+    """
+    updated_after = datetime.fromisoformat(since.replace("Z", "+00:00")) - timedelta(
+        hours=12
+    )
+    time_diff = datetime.now(timezone.utc) - datetime.fromisoformat(
+        since.replace("Z", "+00:00")
+    )
 
     # Get records with EC funding and not in EU community already and not created in last 30 days
     ec_funded = dsl.Q(
