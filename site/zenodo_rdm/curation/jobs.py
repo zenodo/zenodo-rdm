@@ -24,10 +24,4 @@ class EURecordCuration(JobType):
 
     @classmethod
     def build_task_arguments(cls, job_obj, since=None, **kwargs):
-        """Generate default job arguments here."""
-        if since is None and job_obj.last_runs["success"]:
-            since = job_obj.last_runs["success"].started_at
-        else:
-            since = since or datetime.now(timezone.utc)
-
-        return {"since": since}
+        return {"since": since or datetime.now(timezone.utc)}
