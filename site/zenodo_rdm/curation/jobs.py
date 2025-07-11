@@ -24,4 +24,5 @@ class EURecordCuration(JobType):
 
     @classmethod
     def build_task_arguments(cls, job_obj, since=None, **kwargs):
+        """We only need the since argument."""
         return {"since": since or datetime.now(timezone.utc)}
