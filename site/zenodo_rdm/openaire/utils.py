@@ -146,12 +146,10 @@ def openaire_request_factory(headers=None, auth=None):
 
 
 def openaire_link(record):
-    """Compute an OpenAIRE link."""
-    oatype = openaire_type(record)
+    """Generate an OpenAIRE link."""
     doi = record.get("pids", {}).get("doi", {}).get("identifier")
-
     openaire_url = current_app.config["OPENAIRE_PORTAL_URL"]
 
-    if oatype and doi:
-        return f"{openaire_url}/search/{oatype}?pid={urllib.parse.quote(str(doi))}"
+    if doi:
+        return f"{openaire_url}/search/result?pid={urllib.parse.quote(str(doi))}"
     return None

@@ -108,4 +108,4 @@ def test_openaire_link(running_app, minimal_open_record, resource_type, oatype):
         "oai": {"identifier": "oai:zenodo.org:123"},
     }
     r["metadata"]["resource_type"] = {"id": resource_type}
-    assert openaire_link(r) == f"https://explore.openaire.eu/search/{oatype}?pid={doi}"
+    assert openaire_link(r) == f"https://explore.openaire.eu/search/result?pid={doi}"
