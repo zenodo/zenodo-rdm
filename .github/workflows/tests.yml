@@ -47,11 +47,13 @@ jobs:
           python-version: ${{ matrix.python-version }}
           enable-cache: true
 
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get -y install libkrb5-dev libvips-dev
+      - name: Install system dependencies
+        uses: awalsh128/cache-apt-pkgs-action@4c82c3ccdc1344ee11e9775dbdbdf43aa8a5614e  # v1.5.1
+        with:
+          packages: libkrb5-dev libvips-dev
 
+      - name: Install Python dependencies
+        run: |
           uv sync --locked
           uv pip list
 
