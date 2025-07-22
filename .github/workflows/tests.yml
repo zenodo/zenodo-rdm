@@ -41,6 +41,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Cache Docker images
+        # We're using the fork by AndreKurait, which has bumped the "cache" action
+        uses: AndreKurait/docker-cache@0fe76702a40db986d9663c24954fc14c6a6031b7  # 0.6.0
+        with:
+          key: docker-${{ runner.os }}-${{ hashFiles('docker-services.yml') }}
+
       - name: Install uv
         uses: astral-sh/setup-uv@v5
         with:
