@@ -52,15 +52,9 @@ for further installation options.
 
 ### Update dependencies
 
-To update dependencies you need to run `pipenv lock` in the target deployment
-environment:
 
-```shell
-# Run the container with x86_64 architecture
-docker run -it --platform="linux/amd64" --rm -v $(pwd):/app \
-    registry.cern.ch/inveniosoftware/almalinux:1
+To update dependencies you need to:
 
-# Inside the container update the Pipfile.lock
-[root@3954486e4a37]# cd /app
-[root@3954486e4a37]# pipenv lock
-```
+1. Run `invenio-cli packages lock`
+2. (Optional) Use [`changelog.py`](https://github.com/slint/changelog.py) to generate the commit message via `changelog.py --package-filter "^invenio" --show-major-bumps --since HEAD`
+3. Commit the updated `uv.lock`
