@@ -7,7 +7,7 @@ authors = [
 license = "GPL-3.0"
 requires-python = ">=3.9"
 dependencies = [
-    "invenio-app-rdm[opensearch2]~=13.0.0rc2",
+    "invenio-app-rdm[opensearch2]~=13.0.0",
     "zenodo-legacy",
     "zenodo-rdm",
     "commonmeta-py==0.8.6",

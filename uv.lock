@@ -9,9 +9,9 @@ resolution-markers = [
 
 [manifest]
 members = [
-    "zenodo",
     "zenodo-legacy",
     "zenodo-rdm",
+    "zenodo-rdm-app",
 ]
 
 [[package]]
@@ -760,7 +760,7 @@ wheels = [
 
 [[package]]
 name = "datacite"
-version = "1.3.0"
+version = "1.3.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "idutils" },
@@ -769,9 +769,9 @@ dependencies = [
     { name = "lxml" },
     { name = "requests" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/fd/7d/827221ddc94f3f2983a0a977e2128ba20efefe769c9df051806e1c479a5f/datacite-1.3.0.tar.gz", hash = "sha256:09582a13f44a9d93da94d5b444beff60a3379a3c82261da0dd18c8b8af38a4cf", size = 141915, upload-time = "2025-07-03T16:57:03.936Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/c4/b1/e1eea3dde063722327e53deb7a71c371511cceac649b9e9ff2fada594a86/datacite-1.3.1.tar.gz", hash = "sha256:6514d6c87493e040d46d55113776410a142e6eec9c8ebe9e89513d0ed084fb94", size = 147801, upload-time = "2025-07-23T15:49:08.805Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/67/47/f960ff9a49eac7005625609c577c4c8e429a7ad479a73716536b98783329/datacite-1.3.0-py2.py3-none-any.whl", hash = "sha256:91d831ce211ff8840b9780da48742f70b5e49c897c1534ff55d5f35a37f9e2c5", size = 45681, upload-time = "2025-07-03T16:57:02.62Z" },
+    { url = "https://files.pythonhosted.org/packages/82/c0/cfda389daa82515357c12c472b1e02c01241ba7b7e7f3b38bcdb1345f8a8/datacite-1.3.1-py2.py3-none-any.whl", hash = "sha256:9117a4906748b90a3e437f3f9e1f330ddd273f13e3c69e56cafdf2d59b9030fe", size = 45758, upload-time = "2025-07-23T15:49:07.544Z" },
 ]
 
 [[package]]
@@ -1665,7 +1665,7 @@ wheels = [
 
 [[package]]
 name = "invenio-app-rdm"
-version = "13.0.0rc6"
+version = "13.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cairosvg" },
@@ -1706,9 +1706,9 @@ dependencies = [
     { name = "invenio-theme" },
     { name = "invenio-userprofiles" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/1b/83/f1523956f83875a16f1ecad05ce0f92621e7eb9863e23c1341983d388230/invenio_app_rdm-13.0.0rc6.tar.gz", hash = "sha256:8cdbb4d315b2b0b5962bc665140a75ea0862cba0b0dc54dbd9dd46548b08efee", size = 713530, upload-time = "2025-07-21T08:49:37.765Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/de/91/82dee70e2a664c2f52e20c9251723d160224b8ec572bf179a3a472eb8da7/invenio_app_rdm-13.0.0.tar.gz", hash = "sha256:8d1702e2bd21b978ef03c8bc5fca067f0216b0c2e119fb404f6e7f6998c27022", size = 714270, upload-time = "2025-07-23T12:39:01.218Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/6e/de/f36a1b638f4f35f548ab3a975c518ed76bf83fe531810226387aa5c74820/invenio_app_rdm-13.0.0rc6-py2.py3-none-any.whl", hash = "sha256:e2931a8836ec5fd9a788f1a05e04cc8575d638f54e786dd8bf5b88cb5a6f102d", size = 1137906, upload-time = "2025-07-21T08:49:35.254Z" },
+    { url = "https://files.pythonhosted.org/packages/4b/c8/00bc4a4093c757b50e633f44f6fc5012c668c7f3e5f141e5c95179bf62fb/invenio_app_rdm-13.0.0-py2.py3-none-any.whl", hash = "sha256:16e3306d8f343e04fc329fa976711a573aae775273cfe703f49fca81df2627db", size = 1138784, upload-time = "2025-07-23T12:38:59.122Z" },
 ]
 
 [package.optional-dependencies]
@@ -4212,50 +4212,50 @@ wheels = [
 
 [[package]]
 name = "pyuwsgi"
-version = "2.0.29"
+version = "2.0.30"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/18/f7/a5cb5d8eb418c7e4a57275c5229791424ff646585d5c521d74d1eec572e8/pyuwsgi-2.0.29.tar.gz", hash = "sha256:197064b97e755d35ca0fbe3a7ccc9560d3197ed25125fc888c9f90d86d55d47b", size = 877780, upload-time = "2025-04-26T17:06:21.324Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/91/1c/f7b48d3c0587c1e70737f2d40c26b98b5b52e9b4179bc6507bc4b7ea7d04/pyuwsgi-2.0.30.tar.gz", hash = "sha256:1c9f226a9278f8a2ecc08d4445a7eb776bda53f44721c565c499131ebe5ff0ce", size = 877731, upload-time = "2025-07-22T21:12:50.378Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/94/4f/051027c4ad64d2abbf1fe51cc13c50411449e8ba7432b40c09529ec8c246/pyuwsgi-2.0.29-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:3b920160d8b4c4652aa8bac319a811a82aa6086650c8a3c86a7a3cb2b0d83942", size = 661518, upload-time = "2025-04-26T17:04:39.778Z" },
-    { url = "https://files.pythonhosted.org/packages/1c/b1/87bbaff5d8de2563dd7a75711db1385417296f1e89469b13937cb0eb77a9/pyuwsgi-2.0.29-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:e7c28bebc7439e3e8818bffd40214ef4fce2ed3357c9cbc8edca0e6bafe842e2", size = 588712, upload-time = "2025-04-26T17:04:42.15Z" },
-    { url = "https://files.pythonhosted.org/packages/fe/9d/49895d5f8f8df3f2ee685680fbc81820dc4851b9ecc4775603de071d136a/pyuwsgi-2.0.29-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:22e6a1527bde478fca4ab8024fb0b7078be2bf249bfad4bd39ab2e6b68ad889c", size = 880935, upload-time = "2025-04-26T17:04:43.765Z" },
-    { url = "https://files.pythonhosted.org/packages/03/47/c5aae2b09b37a6ce466b936355f22b37ab84f6cf08c9baa14b88e704f546/pyuwsgi-2.0.29-cp310-cp310-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:da8d89d5f70453b517335e84fab921614ad0a6658b5d17e72b00866ad2d3c3b3", size = 939113, upload-time = "2025-04-26T17:04:46.06Z" },
-    { url = "https://files.pythonhosted.org/packages/96/4d/7f8edec2370be89dca9d84221e1fbcd65951377bb410ad0f685d244f0410/pyuwsgi-2.0.29-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:fed19621f2924157fd86ca28f8f9665f9e812fc7c065580550e1fd7c2d3bb5f9", size = 888224, upload-time = "2025-04-26T17:04:47.87Z" },
-    { url = "https://files.pythonhosted.org/packages/89/e0/6e52f1f8d06448dde10d0f6f303ce66b0297d1b0b0c5f3bd9ff6bdea6a04/pyuwsgi-2.0.29-cp310-cp310-musllinux_1_2_aarch64.whl", hash = "sha256:6f160046b6b3be568e55087da4807ef369503debbe3f5fbec368c0de70ca84e7", size = 861310, upload-time = "2025-04-26T17:04:50.036Z" },
-    { url = "https://files.pythonhosted.org/packages/f7/a1/0af6eeee4719254a0113f497f138df5420ce0445bc8689a335af07b97397/pyuwsgi-2.0.29-cp310-cp310-musllinux_1_2_i686.whl", hash = "sha256:72828d451ab83684560a3da9f5186a8c5d561ac9478937324cd3b2dd4db9171d", size = 932285, upload-time = "2025-04-26T17:04:51.679Z" },
-    { url = "https://files.pythonhosted.org/packages/c3/1c/dc564cc2b9ef6c8bbd84ee4b4cea6638edb40f8412be7090b82506c653f8/pyuwsgi-2.0.29-cp310-cp310-musllinux_1_2_x86_64.whl", hash = "sha256:14964c1b55335cd1d84eb2bb65bc503a3c261df8adffab38364fb51a338eab21", size = 869787, upload-time = "2025-04-26T17:04:53.823Z" },
-    { url = "https://files.pythonhosted.org/packages/d0/7c/38eb4c5ec43ace4b80ff6127fa05441dad2ab92fc2f6beb95cdbe0480c44/pyuwsgi-2.0.29-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:267358f4b6698ed554e03c1167e74063438de84563a2a271f3b37bdaba51fbd4", size = 661395, upload-time = "2025-04-26T17:04:55.97Z" },
-    { url = "https://files.pythonhosted.org/packages/ab/72/3316593c2f43bab1bd766e922537020ccb0afa02a26609b77c3e2fdaedab/pyuwsgi-2.0.29-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:22f476d5d0fecb637076f81d4d94cc2ad905979adf81b56f2d49545c25c37eee", size = 588758, upload-time = "2025-04-26T17:04:58.074Z" },
-    { url = "https://files.pythonhosted.org/packages/b0/d9/0f84ff42435477fae2d8eb100505c2a8415fafdfff0cab5fc3e28392abe1/pyuwsgi-2.0.29-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:b993d332edeb880c8377e33a25f3ef11af49e3c28d53e18aba6d4c8067725e03", size = 880927, upload-time = "2025-04-26T17:04:59.659Z" },
-    { url = "https://files.pythonhosted.org/packages/03/f6/043b3700fbcbe5f6f2de7338780eab48f9450b89f679f04a74f4d416576d/pyuwsgi-2.0.29-cp311-cp311-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:053541d0581655da50a669e05ef7463092f50af5e1c082f560d49049a6706b02", size = 939056, upload-time = "2025-04-26T17:05:01.296Z" },
-    { url = "https://files.pythonhosted.org/packages/cb/c2/9c1caae27405a0b5be6212c835ccef3840d09953f67d4f8c3eede27b835c/pyuwsgi-2.0.29-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:e2110d9564c640060093d3b8b91ddc0170915029122ae545d590328bd4a9ff8d", size = 888128, upload-time = "2025-04-26T17:05:03.072Z" },
-    { url = "https://files.pythonhosted.org/packages/c7/03/bbe0e4cb1bd9ad0ef6d4a0191b1ae1780857682a15814248fedac3faec32/pyuwsgi-2.0.29-cp311-cp311-musllinux_1_2_aarch64.whl", hash = "sha256:409b83f0ab9e3a9dece91d95b57cc8518805beabfddfe6aeedad091f245e06ec", size = 861275, upload-time = "2025-04-26T17:05:05.211Z" },
-    { url = "https://files.pythonhosted.org/packages/76/42/17eddf29a8526421f847f86934bea536c9b42681e1213f7d47cf16b13435/pyuwsgi-2.0.29-cp311-cp311-musllinux_1_2_i686.whl", hash = "sha256:e91d38909a6141efcda17f08f4afa6fd87005d57b33b8b25acfedefab356b85e", size = 932212, upload-time = "2025-04-26T17:05:06.959Z" },
-    { url = "https://files.pythonhosted.org/packages/a4/94/183f3fc7051bd112e78cf309a096fe72a850c3689b1247af28026880ef80/pyuwsgi-2.0.29-cp311-cp311-musllinux_1_2_x86_64.whl", hash = "sha256:496fe13eaafb9a175840a8c9f343d37671d7015c7370fb48d89efccfbbc7865d", size = 869797, upload-time = "2025-04-26T17:05:08.684Z" },
-    { url = "https://files.pythonhosted.org/packages/32/2a/6f2971b88ef2964b530c5230212bff58f88253150ca36de1133b7cbe2661/pyuwsgi-2.0.29-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:d7e2ecea41de3f4d9cc6a6dad624c664f25ac2dd1bf13c682c61a9038f5658ec", size = 663745, upload-time = "2025-04-26T17:05:10.766Z" },
-    { url = "https://files.pythonhosted.org/packages/9d/2c/1738fd0b20abf592bab30b0b0c1cfe183c368e2ea5cfc7ca24e3c6a57012/pyuwsgi-2.0.29-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:f944bff248399e08da485fb6c71d575bd93f7dd320b3ef43a38cc43f030b7742", size = 589597, upload-time = "2025-04-26T17:05:12.299Z" },
-    { url = "https://files.pythonhosted.org/packages/6b/97/ed6045ca22f2ecf459529cbb5ee57099abebaa58e3a64a57839718f27c72/pyuwsgi-2.0.29-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:e41bcf4a1ccce908eb3c1ef98cf3126ab4ab289712f09e74505c1853c6252cf8", size = 881627, upload-time = "2025-04-26T17:05:14.427Z" },
-    { url = "https://files.pythonhosted.org/packages/64/e7/d7a75670f8ffc2c921e7b4877cfdd5ace80a25edac9620d73f8a17e888b0/pyuwsgi-2.0.29-cp312-cp312-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:60cda910ab51cf5a2bb79cf57d6e972e85250c0188de2184eb32a72f84e00a72", size = 940292, upload-time = "2025-04-26T17:05:16.229Z" },
-    { url = "https://files.pythonhosted.org/packages/5c/a5/db11f774ca2cb4e31307021f16a60041ef02d586312a5f75218b2781f8f8/pyuwsgi-2.0.29-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:224a70a158e7c2a125f57e66608a3b7e621178ba666ccf718ecfb39400bdecbc", size = 889276, upload-time = "2025-04-26T17:05:18.143Z" },
-    { url = "https://files.pythonhosted.org/packages/75/90/365b47c76c88627d326b5c4233d1721fb0160b4c91ece2fbc8910d6265c9/pyuwsgi-2.0.29-cp312-cp312-musllinux_1_2_aarch64.whl", hash = "sha256:ff45fa3452f51c68de18e1a90c944b366c0ed858e96bd2a85ba754ae832cb929", size = 861787, upload-time = "2025-04-26T17:05:19.769Z" },
-    { url = "https://files.pythonhosted.org/packages/f9/63/81f5f1ecf1f107c71d964d99bf4f78e5c0a7bc8f3fea4cd5ee4dec235a08/pyuwsgi-2.0.29-cp312-cp312-musllinux_1_2_i686.whl", hash = "sha256:0f75e66a5a1fa6f03445eef906797557878d243bd55d7a76428ebc7cbcc7e865", size = 933072, upload-time = "2025-04-26T17:05:21.964Z" },
-    { url = "https://files.pythonhosted.org/packages/90/f1/0eb9415f04685b55771a1beb09bc6b3e03285403a0814563b8defbe6a347/pyuwsgi-2.0.29-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:00e9f26731e891647422a54426344c703bdad22cde7ddb4a3b7fc623d2d5696a", size = 871072, upload-time = "2025-04-26T17:05:23.609Z" },
-    { url = "https://files.pythonhosted.org/packages/33/14/c67e73312f441f2bcd3bcd4d67ff2b5b9c8b9ad37dc55180937f7557b093/pyuwsgi-2.0.29-cp313-cp313-macosx_10_13_x86_64.whl", hash = "sha256:fc5141adae24778eeb5c3f510a6457dcfdaccbc62410c988c688be65c54c9dee", size = 658030, upload-time = "2025-04-26T17:05:25.168Z" },
-    { url = "https://files.pythonhosted.org/packages/a2/80/f694ce32ea3663af4dce778cd0e449eb8400dfe61e782e30ac68a6189b6a/pyuwsgi-2.0.29-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:54e47e93d8c2b87eed7e1216a3bf8618885c697bc378c23290205ccb293e77c2", size = 589566, upload-time = "2025-04-26T17:05:27.201Z" },
-    { url = "https://files.pythonhosted.org/packages/d1/12/85367676874c12459c9bcaa86bb6e91ad1a85a07b493247c6ea1524aa47f/pyuwsgi-2.0.29-cp313-cp313-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:46cc00c034191cf86e09e1ef1611099a95a0d1e2fb1219500ecaf73b22543c09", size = 881779, upload-time = "2025-04-26T17:05:29.021Z" },
-    { url = "https://files.pythonhosted.org/packages/1b/b6/ea1ba24c05ac42df24c2ad5d5c06a2fcc5416d7841c175cd7b39c66a456e/pyuwsgi-2.0.29-cp313-cp313-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:882f2d2a8c4f6749177fd2e3f7f15c53ab969bb2beb9c613b62f79b7c3bae96c", size = 940466, upload-time = "2025-04-26T17:05:31.147Z" },
-    { url = "https://files.pythonhosted.org/packages/91/41/a53b8eb1ddd1bdca1ae120b7dac15260ba1eb32befcb4751949682325592/pyuwsgi-2.0.29-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:e1cc7a60f1c5a2080cc349916cfa2e66b5cd3505c4fb38c799b8a3ba34b00c35", size = 889534, upload-time = "2025-04-26T17:05:33.225Z" },
-    { url = "https://files.pythonhosted.org/packages/35/fa/f3965aeb5f9c967d82996dbc4df6ba1dc15e5997fe78288236c0a913f593/pyuwsgi-2.0.29-cp313-cp313-musllinux_1_2_aarch64.whl", hash = "sha256:d2261b3b7c00efad1e15fc766e6daefc2d684ec96db136868ee4139ed7c0442c", size = 862036, upload-time = "2025-04-26T17:05:34.852Z" },
-    { url = "https://files.pythonhosted.org/packages/87/4a/b94feb0ea711ee104830b8288bf6ab9045a59cecb498a6540ca4ca124c98/pyuwsgi-2.0.29-cp313-cp313-musllinux_1_2_i686.whl", hash = "sha256:1e72d6e7c79ad480fe1a7c80698c37376a5e5013567258007b989eae47d66608", size = 933311, upload-time = "2025-04-26T17:05:36.858Z" },
-    { url = "https://files.pythonhosted.org/packages/11/58/9fb518391d3d4959b5c3fd50af314f7269cbc448202a1773079fdfe577eb/pyuwsgi-2.0.29-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:cda8d6b56acfeccf1e5b750ea23eeb7df7736b855c4080cd7e270c6dc6a060be", size = 871251, upload-time = "2025-04-26T17:05:38.416Z" },
-    { url = "https://files.pythonhosted.org/packages/ab/f5/158b2ee389cbf09eca4c9b499d279904b0b65bbf37d08af1eb6182450f78/pyuwsgi-2.0.29-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:a2be51658fd6e16e11c0c6e0c5c74ec34592749c03d2793671e98f5ca7b9ca0a", size = 661527, upload-time = "2025-04-26T17:06:05.407Z" },
-    { url = "https://files.pythonhosted.org/packages/41/78/621f6416a65492accb5344705bef580892bee2cb7ec1172ca670c70201b7/pyuwsgi-2.0.29-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:dc60543e3f5e7ccdc8023153c3df7de629032d83dd9b42492ea5d5c36f5027c9", size = 588710, upload-time = "2025-04-26T17:06:07.076Z" },
-    { url = "https://files.pythonhosted.org/packages/af/32/ef223a67d60b703a7d6e653aa4d41b8eb745e75e9ffefd565fbe620df655/pyuwsgi-2.0.29-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:8679c4026ce69ef2ddd35f6bbaccba4064abb5bd0fa733b2443b6aa323075a66", size = 880938, upload-time = "2025-04-26T17:06:09.383Z" },
-    { url = "https://files.pythonhosted.org/packages/d6/ae/af7c6a306d4e54bf398854b42a6d522773d69108e443078c2bd7350373f6/pyuwsgi-2.0.29-cp39-cp39-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:f5333a987bcbc354d9e5fd942fa52670004cf661df8043670743b526f8373d0a", size = 939111, upload-time = "2025-04-26T17:06:11.475Z" },
-    { url = "https://files.pythonhosted.org/packages/7c/9d/8f9dfdb96eabda4a84fe6b678b0c37babc6c97aecbce385321b0ec9fcb74/pyuwsgi-2.0.29-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:9271f77b6306724a44444ac96679e1a0355b87896691669961cdfb2697bdd2eb", size = 888230, upload-time = "2025-04-26T17:06:13.821Z" },
-    { url = "https://files.pythonhosted.org/packages/44/2a/4ff76a5b7a73a1440bb6ccede4794f396c9fc5d05dfe80fa241831026bc7/pyuwsgi-2.0.29-cp39-cp39-musllinux_1_2_aarch64.whl", hash = "sha256:2a67492ea579121285825042725c00ad35945d2f91b0b77829473caf7f96e71c", size = 861311, upload-time = "2025-04-26T17:06:15.586Z" },
-    { url = "https://files.pythonhosted.org/packages/ba/dd/bcabcbf12908ac4062ed1bfc10c6f208214d7f0c380d53a25605273ba598/pyuwsgi-2.0.29-cp39-cp39-musllinux_1_2_i686.whl", hash = "sha256:d03d63dd30021541b1d2aaed1a01dea1ff1b8256bd014f8c69dc0501a0f63627", size = 932285, upload-time = "2025-04-26T17:06:17.897Z" },
-    { url = "https://files.pythonhosted.org/packages/43/00/18e1b07658ff96ef1cce2293c908afa398f83e352df845e4fd136e1a154f/pyuwsgi-2.0.29-cp39-cp39-musllinux_1_2_x86_64.whl", hash = "sha256:bc6ba6625299065c39c7a35d7d2a5ab74cb7b50838bb4178dbd89e58da9dc289", size = 869800, upload-time = "2025-04-26T17:06:19.579Z" },
+    { url = "https://files.pythonhosted.org/packages/2a/71/69bafcd40d7fa49e926257856ec9804b2a6721345a945d8b26cbd2ed03f9/pyuwsgi-2.0.30-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:4b9a7e0672739647b9d178a7e4b7cd7270ae0e29a89ca8eb499715277a20cd2d", size = 661447, upload-time = "2025-07-22T21:11:20.894Z" },
+    { url = "https://files.pythonhosted.org/packages/25/55/ee90d0c961e8960eea3866037895137faaa1557151d31d86fa9ad46e4530/pyuwsgi-2.0.30-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:9fafa09c25bcfa51a5eccdbd5985eee85f6480cd8adf147c6b064a3511ffb5c0", size = 588696, upload-time = "2025-07-22T21:11:22.779Z" },
+    { url = "https://files.pythonhosted.org/packages/e8/95/9301306a376566d524118dd0014e87926bc74246a43f37e61bb6b642325a/pyuwsgi-2.0.30-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:371d02e47cc02bd1c1e664a9e1d17cacd67eaaf29be21238d9d9399811c682f1", size = 880923, upload-time = "2025-07-22T21:11:24.234Z" },
+    { url = "https://files.pythonhosted.org/packages/94/18/d41eb4411e9a35859d789578ad9c1852baefb31271a71495417c7b256c59/pyuwsgi-2.0.30-cp310-cp310-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:4b010a8ee1c75b165b007108bcae3a21d2667c5c4c3152e012395a24c7c71bb6", size = 939054, upload-time = "2025-07-22T21:11:26.334Z" },
+    { url = "https://files.pythonhosted.org/packages/aa/01/f37faa6572c9855c64a8b0f6c432017af8084b8549022faa718e1b99ac8c/pyuwsgi-2.0.30-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:6f6c74a8a4d82c8c711547680b1b44a5880221622e8fc840ab337cd030815502", size = 888217, upload-time = "2025-07-22T21:11:28.181Z" },
+    { url = "https://files.pythonhosted.org/packages/97/62/5c687f7d11c905a3f4e3334070700293d71aca5770478b71eac096c826fc/pyuwsgi-2.0.30-cp310-cp310-musllinux_1_2_aarch64.whl", hash = "sha256:d7820ecd6a4628d379685b4df784a32f888d05e56384aeb02dc30d5f22a40d08", size = 861289, upload-time = "2025-07-22T21:11:29.976Z" },
+    { url = "https://files.pythonhosted.org/packages/8a/de/1fb6f7013c2c9d937eeb5343845e1f50b6d098f840e8e02be6c6121e73d9/pyuwsgi-2.0.30-cp310-cp310-musllinux_1_2_i686.whl", hash = "sha256:2a7bf98b82c2a93689f5dfd23bcb4842d9ff644cb44b78e8bf8e34668807f4d4", size = 932291, upload-time = "2025-07-22T21:11:31.466Z" },
+    { url = "https://files.pythonhosted.org/packages/58/56/8dfed5330bc48dc433d49efa8c1d59ad6d255632427ef3df79d6a5a37659/pyuwsgi-2.0.30-cp310-cp310-musllinux_1_2_x86_64.whl", hash = "sha256:cf59ed38184810a65b4b7861c040070a0efbfce243d04e616580b1d13788a6e8", size = 869798, upload-time = "2025-07-22T21:11:33.043Z" },
+    { url = "https://files.pythonhosted.org/packages/9a/7a/4f2949c84c5219f0641e2518841e5345b5fd6aa524db2bffc64e3ce5efdf/pyuwsgi-2.0.30-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:a68fbdb0889bddbfca98e409062dd7235e18fa4ed22264ea5d78cfbb9e80ed6c", size = 661398, upload-time = "2025-07-22T21:11:34.829Z" },
+    { url = "https://files.pythonhosted.org/packages/30/17/9230c02372f5585e42159c15f2c07298c9f4b868bf04b3ce8bc98b542e2d/pyuwsgi-2.0.30-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:6695182b8b3761e761120262b2ce413efa70d14681b2a882438c9b5b8ec1b7ef", size = 588787, upload-time = "2025-07-22T21:11:36.41Z" },
+    { url = "https://files.pythonhosted.org/packages/44/d1/e147d13ee5e94a1079a3e8869f12f9644fcc5345a989474b8a1396ead831/pyuwsgi-2.0.30-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:775aef6be12c0723dc95d2396dd6fab5559e666a2ca4655baa60b634358086a3", size = 880908, upload-time = "2025-07-22T21:11:37.796Z" },
+    { url = "https://files.pythonhosted.org/packages/0e/28/fe5b568627bb60125e2fb5aa0c984936c4bcec64fdf947620dbd1502130f/pyuwsgi-2.0.30-cp311-cp311-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:7c164e41cf8e9ea92e19150d5ba33f0255a71877b4f4d4333a2b65b859d350da", size = 938999, upload-time = "2025-07-22T21:11:39.634Z" },
+    { url = "https://files.pythonhosted.org/packages/39/c7/025b9774a31e21cb533fc2d49e9379e083cfd8d7bdbfa27878d0975fdee1/pyuwsgi-2.0.30-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:e6a0e8758e3af94431fd8045e28e5593e42314f4ec139ed38742c1ef16334f8d", size = 888097, upload-time = "2025-07-22T21:11:41.389Z" },
+    { url = "https://files.pythonhosted.org/packages/ad/2a/78d6df42f9c960b9000db9c9f5bee38059ab3cb991e234ea0fd0a0f3feb5/pyuwsgi-2.0.30-cp311-cp311-musllinux_1_2_aarch64.whl", hash = "sha256:0383b6edea4aff6e4eca79a3c9ae243dad822a3219e157c7e1343eb4dbb5202a", size = 861245, upload-time = "2025-07-22T21:11:43.271Z" },
+    { url = "https://files.pythonhosted.org/packages/45/69/dde6692e1908f78df3b13733d8e2127f5f987a807967db41e4e1d866b1c3/pyuwsgi-2.0.30-cp311-cp311-musllinux_1_2_i686.whl", hash = "sha256:6c9b2a5de84fd4ba6ebce9a39e9496bb4d3dc7f3611d0035fc162e4e6e2ce82a", size = 932165, upload-time = "2025-07-22T21:11:45.254Z" },
+    { url = "https://files.pythonhosted.org/packages/04/cd/6676ee1c118bf89cba51872c54dcb505e7abc20b9a9c11b7c9ad3e06230c/pyuwsgi-2.0.30-cp311-cp311-musllinux_1_2_x86_64.whl", hash = "sha256:a6d034c70a8764448ef635cda8ce87e14024befcd4fa5e1ca00bcec354e35a43", size = 869772, upload-time = "2025-07-22T21:11:46.611Z" },
+    { url = "https://files.pythonhosted.org/packages/91/ae/1ec9a42741fb3afcb6666d2fc491bd3678fa0a7f5cd871ada2c05967153b/pyuwsgi-2.0.30-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:a547faaecac24f53897e06cd4dd86e9cc6f5c7a295689ca0299220af0263eccf", size = 663783, upload-time = "2025-07-22T21:11:47.955Z" },
+    { url = "https://files.pythonhosted.org/packages/13/1a/7921113f27644d4f2be74b33b93130b3fdf69b1d6c4670dd9fb6b3560f58/pyuwsgi-2.0.30-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:aa33721e944378ce1ce240eb29e989bf5101740bd446b274f5c6c3509f40a9f3", size = 589581, upload-time = "2025-07-22T21:11:49.382Z" },
+    { url = "https://files.pythonhosted.org/packages/c9/76/18843506888b7ddfe1dea95ca46e370cbeee7528d5ec0258a06c24782a7a/pyuwsgi-2.0.30-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:fba9cb052e044338890d6f6a510d6102d041527fdd06459cf49b4025b21d2601", size = 881621, upload-time = "2025-07-22T21:11:50.785Z" },
+    { url = "https://files.pythonhosted.org/packages/f5/20/b96714349cb4746915818ffd377cd0292591a36f7cfd3903a0b72e286f85/pyuwsgi-2.0.30-cp312-cp312-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:52074062cc8ef1f3f3c93f0f3df3110ac629ee4555330fd7f054dcae41bc6be2", size = 940257, upload-time = "2025-07-22T21:11:52.223Z" },
+    { url = "https://files.pythonhosted.org/packages/7d/f7/1ec2e9ca30be8bb508f31a051d8e7a492830b040504df83a6690289ad552/pyuwsgi-2.0.30-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:7fda414c554c27227342464cb27495b46dc201cf0837fe8ee04d0b7878568beb", size = 889332, upload-time = "2025-07-22T21:11:53.688Z" },
+    { url = "https://files.pythonhosted.org/packages/d2/71/d9aba55a595c767bfb8af3d77a4b92995d8300e4216d4d53c29d8438de82/pyuwsgi-2.0.30-cp312-cp312-musllinux_1_2_aarch64.whl", hash = "sha256:bf5fb28b67ab2d9f3bc2f6bdb1b4aebf67b5f5f9792be26adbbecf575a29fa2e", size = 861777, upload-time = "2025-07-22T21:11:55.136Z" },
+    { url = "https://files.pythonhosted.org/packages/fd/a9/b0c2a70f7993c6694bed8c7281c504ba51d70e0d0ac2b6197279194cb2a1/pyuwsgi-2.0.30-cp312-cp312-musllinux_1_2_i686.whl", hash = "sha256:71eec3501e213d2d7c43e3a8e297e92745a69bc6e965fdbb442509e1392c0dc1", size = 933119, upload-time = "2025-07-22T21:11:56.924Z" },
+    { url = "https://files.pythonhosted.org/packages/2c/49/321573b57fb55f3f4b61034f5a9bc6ba483564d3943da685e199bb6bf931/pyuwsgi-2.0.30-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:651242a88910a251ff811025fba71cc208858ce6a7861090f1f8d333c4162f99", size = 871023, upload-time = "2025-07-22T21:11:58.775Z" },
+    { url = "https://files.pythonhosted.org/packages/a9/04/ff24d82e418148e30043305c2e17252ace4578c588bb39338c559387418a/pyuwsgi-2.0.30-cp313-cp313-macosx_10_13_x86_64.whl", hash = "sha256:ed7574812ead2bb6f9d150c4e3d0b57c514a65a9905145dbfabd3e0189a71887", size = 658121, upload-time = "2025-07-22T21:12:00.236Z" },
+    { url = "https://files.pythonhosted.org/packages/83/da/a372334b95c7992d71bfb78cc6fa548ec31555576bfa07497d752cdd2ff3/pyuwsgi-2.0.30-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:8444c80c693f7949beea14d5ddaba39c8983d50b3f5c84868fbec65dc2233ef5", size = 589545, upload-time = "2025-07-22T21:12:01.617Z" },
+    { url = "https://files.pythonhosted.org/packages/dd/e9/8f0c2f3055bd00979d9f826037d082dee1c7e83d1e91c9d6d32a84d9cc6b/pyuwsgi-2.0.30-cp313-cp313-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:f1fe142fd163c4e03a1f415180cffdc444fd7b912b065bb10517ca44e923ba7e", size = 881781, upload-time = "2025-07-22T21:12:03.413Z" },
+    { url = "https://files.pythonhosted.org/packages/46/a8/31ff97b1bf95f35dba735d6c5efa701455e6ab75b2effddc068260d0e065/pyuwsgi-2.0.30-cp313-cp313-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:92ca2ee6d2463ecdab9e1d548b28afab23c2222349d79520b071ef58431526fd", size = 940438, upload-time = "2025-07-22T21:12:05.246Z" },
+    { url = "https://files.pythonhosted.org/packages/16/75/77cc52a9d1e130ec75ed62330c2c2001d92be4673590ad89052d6ab29f73/pyuwsgi-2.0.30-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:3b8dfe829bdd5c1a2a8c7571fd4bec0575e335d340a84ec7c039a97c1f41d9a7", size = 889580, upload-time = "2025-07-22T21:12:07.131Z" },
+    { url = "https://files.pythonhosted.org/packages/8b/86/f9f62cb6bfb320500de1b6b38fa8181013e18361906f29680b2dbf100e0e/pyuwsgi-2.0.30-cp313-cp313-musllinux_1_2_aarch64.whl", hash = "sha256:79a0c37b66c9e4bdde920f016548ae536b1e3c144639bd9e0b65ab5509d27b9f", size = 862031, upload-time = "2025-07-22T21:12:09.078Z" },
+    { url = "https://files.pythonhosted.org/packages/fe/21/ad6f8b9ef59c49a476d39e8321efdf1dd58ab96852785800a5c5b94aee5e/pyuwsgi-2.0.30-cp313-cp313-musllinux_1_2_i686.whl", hash = "sha256:842cdae10afccf7bc43b61800be2127f1ba1f4a340e29a9b756ed623f0079c62", size = 933329, upload-time = "2025-07-22T21:12:11.033Z" },
+    { url = "https://files.pythonhosted.org/packages/d7/98/f844cbb84303d3110a291f205b0befa854c2fa904ffeacd46d2f6f2c899e/pyuwsgi-2.0.30-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:36cc5e86ee31aee0feb1e2f493f14623beb38df194dc74a5cd9634e4ccf0a7bb", size = 871160, upload-time = "2025-07-22T21:12:12.986Z" },
+    { url = "https://files.pythonhosted.org/packages/50/67/52833c48f590054132cbd5d517aeaa384e6a29f56874c4f19f52ab71fbbd/pyuwsgi-2.0.30-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:f1a86088f56869e5d9d1b0309b30f1b4bfdd8453497ef17f982a7dbb618051ff", size = 661450, upload-time = "2025-07-22T21:12:37.831Z" },
+    { url = "https://files.pythonhosted.org/packages/81/5f/6a4ddac7a9066ff9c8762c91a0838b63351a6ad0348ba54fcb2958a5138d/pyuwsgi-2.0.30-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:5ce4a832b2c2f45c1a1821cc3b9bbdab7deb50793a1bc772edce32a4a4164c8a", size = 588695, upload-time = "2025-07-22T21:12:39.484Z" },
+    { url = "https://files.pythonhosted.org/packages/7d/a4/0cadde376532e82656695d99424987c57d26eb98b130059d0bff385f6ea1/pyuwsgi-2.0.30-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:13b6a5ea369a57cf87f2e227d9e3e853f2d4f18025583bfc0386cd54760e256d", size = 880924, upload-time = "2025-07-22T21:12:41.122Z" },
+    { url = "https://files.pythonhosted.org/packages/92/42/31225ddc6e8ec20760814da7728e1974745a31021202d737f3682f76bcc7/pyuwsgi-2.0.30-cp39-cp39-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:db9df9e7f8c0f3e5c3b77bc3e966fd2f7f1b22517797f406f95de7658064f2d8", size = 939052, upload-time = "2025-07-22T21:12:42.573Z" },
+    { url = "https://files.pythonhosted.org/packages/44/47/a1a8b6a2b92e4550cc66e041981b80d3f54dc429c147736a4fc8832afa58/pyuwsgi-2.0.30-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:bfdc7c4129ed2153c34a6ca541cc81782c66c640216570a386cdc574d12952fe", size = 888220, upload-time = "2025-07-22T21:12:44.327Z" },
+    { url = "https://files.pythonhosted.org/packages/7d/32/6c8a8d6b855c24454f1d9c11353919ec79be625a6a9c1dc3706216ff8561/pyuwsgi-2.0.30-cp39-cp39-musllinux_1_2_aarch64.whl", hash = "sha256:638b6197df74ffa4cff15af00e4b9c4a1a0faa9b8a5cf0040a7075f634c62e21", size = 861292, upload-time = "2025-07-22T21:12:46.202Z" },
+    { url = "https://files.pythonhosted.org/packages/fd/80/2a9738100c1f5edb9b852e2bd5d4f90e79960986f53de687e5bea44fca1e/pyuwsgi-2.0.30-cp39-cp39-musllinux_1_2_i686.whl", hash = "sha256:177996483274dabf33331fafa4cb722f45e83f1a5acd7b1a2df9e62982438404", size = 932281, upload-time = "2025-07-22T21:12:47.562Z" },
+    { url = "https://files.pythonhosted.org/packages/7b/50/17776b1da1979113facaea6df962a1ed36984ec958888317da6a95607243/pyuwsgi-2.0.30-cp39-cp39-musllinux_1_2_x86_64.whl", hash = "sha256:ea77de48ad618e88c35ec7b912e20d032cf5d30dd78d817a8a2ceb748125bd51", size = 869801, upload-time = "2025-07-22T21:12:48.957Z" },
 ]
 
 [[package]]
@@ -5815,7 +5815,17 @@ wheels = [
 ]
 
 [[package]]
-name = "zenodo"
+name = "zenodo-legacy"
+version = "1.0.0"
+source = { editable = "legacy" }
+
+[[package]]
+name = "zenodo-rdm"
+version = "1.0.0"
+source = { editable = "site" }
+
+[[package]]
+name = "zenodo-rdm-app"
 version = "19.0.1"
 source = { virtual = "." }
 dependencies = [
@@ -5851,7 +5861,7 @@ xrootd = [
 requires-dist = [
     { name = "commonmeta-py", specifier = "==0.8.6" },
     { name = "github3-py", specifier = ">=3.0.0" },
-    { name = "invenio-app-rdm", extras = ["opensearch2"], specifier = "~=13.0.0rc2" },
+    { name = "invenio-app-rdm", extras = ["opensearch2"], specifier = "~=13.0.0" },
     { name = "invenio-swh", git = "https://github.com/inveniosoftware/invenio-swh?rev=v0.13.1" },
     { name = "nameparser", specifier = ">=1.1.1" },
     { name = "pyinstrument", specifier = ">=4.5.1" },
@@ -5872,16 +5882,6 @@ xrootd = [
     { name = "invenio-xrootd", specifier = "==2.0.0a2" },
     { name = "requests-kerberos", specifier = "==0.14.0" },
 ]
-
-[[package]]
-name = "zenodo-legacy"
-version = "1.0.0"
-source = { editable = "legacy" }
-
-[[package]]
-name = "zenodo-rdm"
-version = "1.0.0"
-source = { editable = "site" }
 
 [[package]]
 name = "zipp"
