@@ -10,11 +10,9 @@ exporter = "zenodo_rdm.exporter.cli:exporter"
 
 [project.entry-points."invenio_base.blueprints"]
 zenodo_rdm_support = "zenodo_rdm.views:create_blueprint"
-zenodo_rdm_sitemap = "zenodo_rdm.sitemap.views:blueprint"
 
 [project.entry-points."invenio_base.apps"]
 zenodo_rdm_legacy = "zenodo_rdm.legacy.ext:ZenodoLegacy"
-zenodo_rdm_sitemap = "zenodo_rdm.sitemap.ext:ZenodoSitemap"
 profiler = "zenodo_rdm.profiler:Profiler"
 zenodo_rdm_metrics = "zenodo_rdm.metrics.ext:ZenodoMetrics"
 zenodo_rdm_moderation = "zenodo_rdm.moderation.ext:ZenodoModeration"
@@ -50,7 +48,6 @@ zenodo_legacy = "zenodo_rdm.legacy.ext:register_services"
 
 [project.entry-points."invenio_celery.tasks"]
 zenodo_rdm_metrics = "zenodo_rdm.metrics.tasks"
-zenodo_rdm_sitemap = "zenodo_rdm.sitemap.tasks"
 zenodo_rdm_openaire = "zenodo_rdm.openaire.tasks"
 zenodo_rdm_moderation = "zenodo_rdm.moderation.tasks"
 zenodo_stats = "zenodo_rdm.stats.tasks"
