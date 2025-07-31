@@ -55,11 +55,11 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
 # Install Python dependencies using uv
+ARG BUILD_EXTRAS="--extra sentry --extra xrootd"
 RUN --mount=type=cache,target=/opt/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    uv sync --no-install-workspace --no-editable \
-        --group=sentry --group=xrootd \
+    uv sync --no-dev --no-install-workspace --no-editable $BUILD_EXTRAS \
         # (py)xrootd is already installed above using dnf
         --no-install-package=xrootd
 
@@ -75,7 +75,13 @@ COPY ./ .
 
 # Make sure workspace packages are installed (zenodo-rdm, zenodo-legacy)
 RUN --mount=type=cache,target=/opt/.cache/uv \
-    uv sync --frozen --no-install-package=xrootd
+    uv sync --frozen --no-dev $BUILD_EXTRAS \
+    # (py)xrootd is already installed above using dnf
+    --no-install-package=xrootd
+
+# We're caching on a mount, so for any commands that run after this we
+# don't want to use the cache (for image filesystem permission reasons)
+ENV UV_NO_CACHE=1
 
 # application build args to be exposed as environment variables
 ARG IMAGE_BUILD_TIMESTAMP

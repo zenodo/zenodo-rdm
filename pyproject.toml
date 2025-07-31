@@ -39,6 +39,8 @@ members = [
 dev = [
     "pytest-invenio>=3.0.0,<4.0.0",
 ]
+
+[project.optional-dependencies]
 sentry = [
     "sentry-sdk>=1.45,<2.0.0",
 ]
