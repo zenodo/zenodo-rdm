@@ -10,8 +10,6 @@ from datetime import datetime, timezone
 
 from invenio_i18n import lazy_gettext as _
 from invenio_jobs.jobs import JobType
-from marshmallow import Schema, fields
-from marshmallow_utils.fields import ISODateString
 
 from zenodo_rdm.curation.tasks import run_eu_record_curation
 
@@ -26,10 +24,5 @@ class EURecordCuration(JobType):
 
     @classmethod
     def build_task_arguments(cls, job_obj, since=None, **kwargs):
-        """Generate default job arguments here."""
-        if since is None and job_obj.last_runs["success"]:
-            since = job_obj.last_runs["success"].started_at
-        else:
-            since = since or datetime.utcnow()
-
-        return {"since": str(since)}
+        """We only need the since argument."""
+        return {"since": since or datetime.now(timezone.utc)}
