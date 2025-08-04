@@ -1,7 +1,7 @@
-#!/usr/bin/env python
+#!/usr/bin/env -S uv run --no-project --script
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2024 CERN.
+# Copyright (C) 2024-2025 CERN.
 #
 # Invenio-RDM is free software; you can redistribute it and/or modify
 # it under the terms of the MIT License; see LICENSE file for more details.
