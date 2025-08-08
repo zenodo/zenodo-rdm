@@ -7,7 +7,7 @@ authors = [
 license = "GPL-3.0"
 requires-python = ">=3.9"
 dependencies = [
-    "invenio-app-rdm[opensearch2]~=13.0.0",
+    "invenio-app-rdm[opensearch2]~=14.0.0b0.dev2",
     "zenodo-legacy",
     "zenodo-rdm",
     "commonmeta-py==0.8.6",
@@ -18,16 +18,19 @@ dependencies = [
     "zammad-py>=3.0.0,<4.0.0",
     "pyvips>=2.2.2,<3.0.0",
     "invenio-swh",
-
     "pyuwsgi>=2.0",
     "uwsgitop>=0.11",
     "uwsgi-tools>=1.1.1",
+    "invenio-records-resources",
+    "invenio-users-resources",
 ]
 
 [tool.uv.sources]
 zenodo-rdm = { workspace = true }
 zenodo-legacy = { workspace = true }
 invenio-swh = { git = "https://github.com/inveniosoftware/invenio-swh", rev = "v0.13.1" }
+invenio-records-resources = { git = "https://github.com/inveniosoftware/invenio-records-resources", branch = "fix-read-many" }
+invenio-users-resources = { git = "https://github.com/inveniosoftware/invenio-users-resources", rev = "d421cb341c23539f3f7376103128b990706fd168" }
 
 [tool.uv.workspace]
 members = [
