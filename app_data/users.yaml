@@ -4,10 +4,13 @@
   active: true
   confirmed: true
   password: "123456"
+
+# Only used in local development
 - email: admin@zenodo.org
   username: "admin"
   full_name: "Zenodo Admin"
   active: true
   confirmed: true
-  # Defined via RDM_RECORDS_USER_FIXTURE_PASSWORDS
-  # password: "123456"
+  password: "123456"
+  roles:
+    - "admin"
