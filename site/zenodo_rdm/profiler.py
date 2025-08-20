@@ -174,7 +174,7 @@ class Profiler:
             reports = {}
             if hasattr(g, "base_profiler"):
                 g.base_profiler.stop()
-                report_html = g.base_profiler.output_html(timeline=True)
+                report_html = g.base_profiler.output_html()
                 reports["base"] = report_html
             if hasattr(g, "sql_profiler"):
                 g.sql_profiler.stop()
@@ -251,11 +251,13 @@ class Profiler:
     @property
     def profiler_sessions(self):
         """List profiler sessions information."""
-        return {
-            sess_db.stem: self.get_session_entries(sess_db.stem).all()
-            for sess_db in self.storage_dir.iterdir()
-            if sess_db.is_file() and sess_db.suffix == ".db"
-        }
+        if self.storage_dir.exists():
+            return {
+                sess_db.stem: self.get_session_entries(sess_db.stem).all()
+                for sess_db in self.storage_dir.iterdir()
+                if sess_db.is_file() and sess_db.suffix == ".db"
+            }
+        return {}
 
     def clear_sessions(self):
         """Delete all profiling sesions files from storage."""
