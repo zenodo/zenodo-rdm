@@ -28,13 +28,13 @@ services:
       - "80"
       - "443"
   cache:
-    image: registry.cern.ch/docker.io/library/redis:7.2.1
+    image: redis:7.2.1
     restart: "unless-stopped"
     read_only: true
     ports:
       - "6379:6379"
   db:
-    image: registry.cern.ch/docker.io/library/postgres:14.15
+    image: postgres:14.15
     restart: "unless-stopped"
     environment:
       - "POSTGRES_USER=zenodo"
@@ -45,7 +45,7 @@ services:
     volumes:
       - ./docker/db/init-readonly-user.sql:/docker-entrypoint-initdb.d/init-readonly-user.sql
   pgadmin:
-    image: registry.cern.ch/docker.io/dpage/pgadmin4:7.7
+    image: dpage/pgadmin4:7.7
     restart: "unless-stopped"
     ports:
       - "5050:80"
@@ -64,13 +64,13 @@ services:
       - ./docker/pgbouncer/pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini
       - ./docker/pgbouncer/userlist.txt:/etc/pgbouncer/userlist.txt
   mq:
-    image: registry.cern.ch/docker.io/library/rabbitmq:3.12.6-management
+    image: rabbitmq:3.12.6-management
     restart: "unless-stopped"
     ports:
       - "15672:15672"
       - "5672:5672"
   search:
-    image: registry.cern.ch/docker.io/opensearchproject/opensearch:2.15.0
+    image: opensearchproject/opensearch:2.15.0
     restart: "unless-stopped"
     environment:
       - bootstrap.memory_lock=true
@@ -98,7 +98,7 @@ services:
       - "9200:9200"
       - "9300:9300"
   opensearch-dashboards:
-    image: registry.cern.ch/docker.io/opensearchproject/opensearch-dashboards:2.15.0
+    image: opensearchproject/opensearch-dashboards:2.15.0
     ports:
       - "5601:5601"
     expose:
@@ -107,7 +107,7 @@ services:
       - "OPENSEARCH_HOSTS=http://search:9200"
       - "DISABLE_SECURITY_DASHBOARDS_PLUGIN=true"
   iipserver:
-    image: registry.cern.ch/docker.io/iipsrv/iipsrv:latest
+    image: iipsrv/iipsrv:latest
     ports:
       - "8080:80"
       - "9000:9000"
