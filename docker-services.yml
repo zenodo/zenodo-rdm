@@ -34,7 +34,7 @@ services:
     ports:
       - "6379:6379"
   db:
-    image: registry.cern.ch/docker.io/library/postgres:12.4
+    image: registry.cern.ch/docker.io/library/postgres:14.15
     restart: "unless-stopped"
     environment:
       - "POSTGRES_USER=zenodo"
@@ -42,6 +42,8 @@ services:
       - "POSTGRES_DB=zenodo"
     ports:
       - "5432:5432"
+    volumes:
+      - ./docker/db/init-readonly-user.sql:/docker-entrypoint-initdb.d/init-readonly-user.sql
   pgadmin:
     image: registry.cern.ch/docker.io/dpage/pgadmin4:7.7
     restart: "unless-stopped"

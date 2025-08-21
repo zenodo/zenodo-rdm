@@ -1,1 +1,2 @@
 "zenodo" "md538915355fbe7028464f6a1e36870f98e"
+"zenodo_ro" "md5c13a1f5f14c2bb9fdcb1a2b095736e9c"
