@@ -28,7 +28,7 @@ services:
       - "80"
       - "443"
   cache:
-    image: registry.cern.ch/docker.io/library/redis
+    image: registry.cern.ch/docker.io/library/redis:7.2.1
     restart: "unless-stopped"
     read_only: true
     ports:
@@ -64,7 +64,7 @@ services:
       - ./docker/pgbouncer/pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini
       - ./docker/pgbouncer/userlist.txt:/etc/pgbouncer/userlist.txt
   mq:
-    image: registry.cern.ch/docker.io/library/rabbitmq:3-management
+    image: registry.cern.ch/docker.io/library/rabbitmq:3.12.6-management
     restart: "unless-stopped"
     ports:
       - "15672:15672"
