@@ -6,6 +6,8 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 """Custom code config."""
 
+from invenio_search.api import dsl
+
 from .params import ZenodoArgsSchema, ZenodoSearchOptions
 from .redirector import (
     communities_detail_view_function,
@@ -147,7 +149,25 @@ SUPPORT_ENDPOINT = "/support"
 
 # Search query of recent uploads
 # Defaults to newest records search
-ZENODO_FRONTPAGE_RECENT_UPLOADS_QUERY = "type:(dataset OR software OR poster OR presentation) AND _exists_:parent.communities AND access.files:public"
+
+ZENODO_FRONTPAGE_RECENT_UPLOADS_QUERY = dsl.query.Bool(
+    must=[
+        dsl.Q(
+            "terms",
+            **{
+                "metadata.resource_type.id": [
+                    "dataset",
+                    "software",
+                    "poster",
+                    "presentation",
+                ]
+            },
+        ),
+        dsl.Q("exists", field="parent.communities"),
+        dsl.Q("term", **{"access.files": "public"}),
+    ]
+)
+
 
 # Citations
 # =========

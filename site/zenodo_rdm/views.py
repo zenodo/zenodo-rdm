@@ -11,6 +11,7 @@ from invenio_communities.proxies import current_communities
 from invenio_rdm_records.proxies import current_rdm_records
 from invenio_rdm_records.resources.serializers import UIJSONSerializer
 from invenio_records_resources.resources.records.utils import search_preference
+from invenio_search.api import dsl
 
 from .decorators import cached_unless_authenticated_or_flashes
 from .filters import is_blr_related_record, is_verified_community, is_verified_record
@@ -22,15 +23,21 @@ from .filters import is_blr_related_record, is_verified_community, is_verified_r
 @cached_unless_authenticated_or_flashes(timeout=600, key_prefix="frontpage")
 def frontpage_view_function():
     """Zenodo frontpage view."""
+    search_kwargs = {
+        "params": {"sort": "newest", "size": 10},
+    }
+
+    query = current_app.config["ZENODO_FRONTPAGE_RECENT_UPLOADS_QUERY"]
+    if isinstance(query, str):
+        search_kwargs["params"]["q"] = query
+    elif isinstance(query, dsl.query.Query):
+        search_kwargs["extra_filter"] = query
+
     recent_uploads = current_rdm_records.records_service.search(
         identity=g.identity,
-        params={
-            "sort": "newest",
-            "size": 10,
-            "q": current_app.config["ZENODO_FRONTPAGE_RECENT_UPLOADS_QUERY"],
-        },
         search_preference=search_preference(),
         expand=False,
+        **search_kwargs,
     )
 
     records_ui = []
