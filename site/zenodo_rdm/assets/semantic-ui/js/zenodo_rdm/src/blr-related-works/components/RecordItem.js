@@ -41,13 +41,11 @@ const layoutProps = (result) => ({
 
 export const RecordGridItem = ({ result }) => {
   const { title, creators, resourceType, typeIcon, link } = layoutProps(result);
+  const thumbnailUrl = result.links.self.thumbnails?.["250"];
 
   return (
     <Grid.Column className="flex column">
-      <Image
-        src={`${result.links.self_html}/thumb250`}
-        className="thumbnail-image mb-10"
-      />
+      <Image src={thumbnailUrl} className="thumbnail-image mb-10" loadFallbackFirst />
       <div>
         <div className="pb-10">
           <Label horizontal size="small">
@@ -82,13 +80,15 @@ export const RecordListItem = ({ result }) => {
     typeIcon,
     link,
   } = layoutProps(result);
+  const thumbnailUrl = result.links.self.thumbnails?.["250"];
 
   return (
     <Item>
       <Image
         size="tiny"
-        src={`${result.links.self_html}/thumb250`}
+        src={thumbnailUrl}
         className="thumbnail-image"
+        loadFallbackFirst
       />
 
       <Item.Content>
