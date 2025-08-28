@@ -2477,8 +2477,8 @@ wheels = [
 
 [[package]]
 name = "invenio-swh"
-version = "0.13.2"
-source = { git = "https://github.com/inveniosoftware/invenio-swh?rev=v0.13.2#42dcd6848442315f915a4e9fa01870002dbec789" }
+version = "0.13.3"
+source = { git = "https://github.com/inveniosoftware/invenio-swh?rev=v0.13.3#c102421e2bbc99a08d5df73ceb7b31e72f12bbed" }
 dependencies = [
     { name = "invenio-access" },
     { name = "invenio-db" },
@@ -5896,7 +5896,7 @@ source = { editable = "site" }
 
 [[package]]
 name = "zenodo-rdm-app"
-version = "20.2.2"
+version = "20.2.3"
 source = { virtual = "." }
 dependencies = [
     { name = "commonmeta-py" },
@@ -5937,7 +5937,7 @@ requires-dist = [
     { name = "github3-py", specifier = ">=3.0.0" },
     { name = "invenio-app-rdm", extras = ["opensearch2"], specifier = "~=14.0.0b0.dev2" },
     { name = "invenio-records-resources", git = "https://github.com/inveniosoftware/invenio-records-resources?branch=fix-read-many" },
-    { name = "invenio-swh", git = "https://github.com/inveniosoftware/invenio-swh?rev=v0.13.2" },
+    { name = "invenio-swh", git = "https://github.com/inveniosoftware/invenio-swh?rev=v0.13.3" },
     { name = "invenio-users-resources", git = "https://github.com/inveniosoftware/invenio-users-resources?rev=d421cb341c23539f3f7376103128b990706fd168" },
     { name = "invenio-xrootd", marker = "extra == 'xrootd'", specifier = "==2.0.0a2" },
     { name = "nameparser", specifier = ">=1.1.1" },
