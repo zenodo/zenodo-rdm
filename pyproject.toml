@@ -1,6 +1,6 @@
 [project]
 name = "zenodo-rdm-app"
-version = "20.2.0"
+version = "20.2.2"
 authors = [
     { name = "CERN" }
 ]
@@ -28,7 +28,7 @@ dependencies = [
 [tool.uv.sources]
 zenodo-rdm = { workspace = true }
 zenodo-legacy = { workspace = true }
-invenio-swh = { git = "https://github.com/inveniosoftware/invenio-swh", rev = "v0.13.1" }
+invenio-swh = { git = "https://github.com/inveniosoftware/invenio-swh", rev = "v0.13.2" }
 invenio-records-resources = { git = "https://github.com/inveniosoftware/invenio-records-resources", branch = "fix-read-many" }
 invenio-users-resources = { git = "https://github.com/inveniosoftware/invenio-users-resources", rev = "d421cb341c23539f3f7376103128b990706fd168" }
 
