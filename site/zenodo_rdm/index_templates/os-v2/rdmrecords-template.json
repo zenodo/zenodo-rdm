@@ -1,9 +1,23 @@
 {
   "priority": 100,
-  "index_patterns": ["__SEARCH_INDEX_PREFIX__rdmrecords-*"],
+  "index_patterns": [
+    "__SEARCH_INDEX_PREFIX__rdmrecords-*"
+  ],
   "template": {
     "settings": {
-        "number_of_shards": 3
+      "number_of_shards": 3
+    },
+    "mappings": {
+      "properties": {
+        "swh": {
+          "type": "object",
+          "properties": {
+            "swhid": {
+              "type": "keyword"
+            }
+          }
+        }
+      }
     }
   }
 }
