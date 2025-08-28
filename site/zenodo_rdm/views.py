@@ -11,11 +11,9 @@ from invenio_communities.proxies import current_communities
 from invenio_rdm_records.proxies import current_rdm_records
 from invenio_rdm_records.resources.serializers import UIJSONSerializer
 from invenio_records_resources.resources.records.utils import search_preference
-from marshmallow import ValidationError
 
 from .decorators import cached_unless_authenticated_or_flashes
 from .filters import is_blr_related_record, is_verified_community, is_verified_record
-from .support.support import ZenodoSupport
 
 
 #
@@ -60,33 +58,11 @@ def frontpage_view_function():
 #
 def create_blueprint(app):
     """Register blueprint routes on app."""
-
-    @app.errorhandler(ValidationError)
-    def handle_validation_errors(e):
-        if isinstance(e, ValidationError):
-            dic = e.messages
-            deserialized = []
-            for error_tuple in dic.items():
-                field, value = error_tuple
-                deserialized.append({"field": field, "messages": value})
-            return {"errors": deserialized}, 400
-        return e.message, 400
-
     blueprint = Blueprint(
         "zenodo_rdm",
         __name__,
         template_folder="./templates",
     )
-
-    # Support URL rule
-    support_endpoint = app.config["SUPPORT_ENDPOINT"] or "/support"
-    blueprint.add_url_rule(
-        support_endpoint,
-        view_func=ZenodoSupport.as_view("support_form"),
-        strict_slashes=False,
-    )
-
-    app.register_error_handler(400, handle_validation_errors)
 
     # Register template filters
     blueprint.add_app_template_filter(is_blr_related_record)

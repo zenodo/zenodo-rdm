@@ -10,7 +10,7 @@
 import pytest
 from marshmallow import ValidationError
 
-from zenodo_rdm.support.support import ZenodoSupport
+from zenodo_rdm.support.views import ZenodoSupport
 
 
 @pytest.fixture
@@ -40,7 +40,7 @@ def test_form_validation_valid(form_json_data, support_view, test_app):
     """Tests form with valid data."""
     validated_data = support_view.validate_form(form_json_data)
     assert validated_data
-    assert type(validated_data) == dict
+    assert isinstance(validated_data, dict)
     assert validated_data == form_json_data
 
 

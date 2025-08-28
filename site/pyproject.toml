@@ -9,7 +9,8 @@ moderation = "zenodo_rdm.cli:moderation_cli"
 exporter = "zenodo_rdm.exporter.cli:exporter"
 
 [project.entry-points."invenio_base.blueprints"]
-zenodo_rdm_support = "zenodo_rdm.views:create_blueprint"
+zenodo_rdm = "zenodo_rdm.views:create_blueprint"
+zenodo_support = "zenodo_rdm.support.views:create_blueprint"
 
 [project.entry-points."invenio_base.apps"]
 zenodo_rdm_legacy = "zenodo_rdm.legacy.ext:ZenodoLegacy"

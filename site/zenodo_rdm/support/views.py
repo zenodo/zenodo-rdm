@@ -11,11 +11,20 @@ import mimetypes
 from base64 import b64encode
 from collections import OrderedDict
 
-from flask import current_app, flash, redirect, render_template, request, url_for
+from flask import (
+    Blueprint,
+    current_app,
+    flash,
+    redirect,
+    render_template,
+    request,
+    url_for,
+)
 from flask.views import MethodView
 from flask_login import current_user
 from invenio_accounts.sessions import _extract_info_from_useragent
 from invenio_i18n import _
+from marshmallow import ValidationError
 from requests.exceptions import RequestException
 from werkzeug.utils import cached_property
 from zammad_py import ZammadAPI
@@ -191,3 +200,27 @@ class ZenodoSupport(MethodView):
         return OrderedDict(
             (c["key"], c) for c in current_app.config["SUPPORT_ISSUE_CATEGORIES"]
         )
+
+
+def create_blueprint(app):
+    """Register blueprint routes on app."""
+    blueprint = Blueprint("zenodo_support", __name__)
+
+    support_endpoint = app.config.get("SUPPORT_ENDPOINT", "/support")
+    blueprint.add_url_rule(
+        support_endpoint,
+        view_func=ZenodoSupport.as_view("index"),
+        strict_slashes=False,
+    )
+
+    @blueprint.errorhandler(ValidationError)
+    def handle_validation_errors(e):
+        """Handle Marshmallow validation errors."""
+        messages = e.messages
+        deserialized = []
+        for error_tuple in messages.items():
+            field, value = error_tuple
+            deserialized.append({"field": field, "messages": value})
+        return {"errors": deserialized}, 400
+
+    return blueprint
