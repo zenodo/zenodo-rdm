@@ -16,9 +16,7 @@ from invenio_communities.views.communities import (
     render_community_theme_template,
 )
 from invenio_communities.views.decorators import pass_community
-from invenio_rdm_records.proxies import (
-    current_community_records_service,
-)
+from invenio_rdm_records.proxies import current_community_records_service
 from invenio_rdm_records.resources.serializers import UIJSONSerializer
 from invenio_records_resources.services.errors import PermissionDeniedError
 

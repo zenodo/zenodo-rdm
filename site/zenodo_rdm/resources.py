@@ -5,6 +5,8 @@
 # Zenodo is free software; you can redistribute it and/or modify
 # it under the terms of the MIT License; see LICENSE file for more details.
 
+"""Zenodo resources config."""
+
 import copy
 
 from flask_resources import ResponseHandler

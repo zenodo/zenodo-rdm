@@ -11,7 +11,6 @@ import csv
 import gzip
 import json
 import tarfile
-from datetime import datetime
 from io import BytesIO, TextIOWrapper
 
 from celery import shared_task
@@ -20,12 +19,7 @@ from flask_principal import AnonymousIdentity, identity_changed
 from invenio_access.permissions import any_user
 from invenio_communities.communities.records.models import CommunityMetadata
 from invenio_db import db
-from invenio_files_rest.models import (
-    Bucket,
-    Location,
-    ObjectVersion,
-    as_bucket,
-)
+from invenio_files_rest.models import Bucket, Location, ObjectVersion, as_bucket
 from invenio_rdm_records.oai import oai_datacite_etree
 from invenio_rdm_records.proxies import current_rdm_records_service as service
 from lxml import etree
@@ -43,7 +37,6 @@ def _get_anonymous_identity():
 
 
 def _export_records_to_files(format, community_slug, records_file, deleted_file):
-
     community_uuid = None
 
     if community_slug:
@@ -183,11 +176,10 @@ def export_records(format, community_slug):
     records_file_stream = BytesIO()
     deleted_file_stream = BytesIO()
 
-    with tarfile.open(
-        fileobj=records_file_stream, mode="w|gz"
-    ) as records_file, gzip.GzipFile(
-        fileobj=deleted_file_stream, mode="w"
-    ) as deleted_file:
+    with (
+        tarfile.open(fileobj=records_file_stream, mode="w|gz") as records_file,
+        gzip.GzipFile(fileobj=deleted_file_stream, mode="w") as deleted_file,
+    ):
         _export_records_to_files(format, community_slug, records_file, deleted_file)
 
     records_file_stream.seek(0)

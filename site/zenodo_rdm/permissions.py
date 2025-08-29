@@ -31,9 +31,7 @@ from invenio_records_permissions.generators import (
     SystemProcess,
 )
 from invenio_records_resources.services.files.generators import IfTransferType
-from invenio_records_resources.services.files.transfer import (
-    LOCAL_TRANSFER_TYPE,
-)
+from invenio_records_resources.services.files.transfer import LOCAL_TRANSFER_TYPE
 from invenio_users_resources.services.permissions import UserManager
 
 from .generators import (
