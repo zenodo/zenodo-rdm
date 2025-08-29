@@ -7,7 +7,6 @@
 
 """Zenodo legacy resources."""
 
-import copy
 from functools import partial, wraps
 
 import marshmallow as ma
@@ -26,9 +25,6 @@ from invenio_rdm_records.resources.config import (
     RDMDraftFilesResourceConfig,
     RDMRecordMediaFilesResourceConfig,
     RDMRecordResourceConfig,
-)
-from invenio_rdm_records.resources.config import (
-    record_serializers as default_record_serializers,
 )
 from invenio_rdm_records.resources.resources import RDMRecordResource
 from invenio_records_resources.resources.files.resource import (
@@ -51,23 +47,6 @@ from .serializers import (
     LegacyDraftFileJSONSerializer,
     LegacyFilesRESTJSONSerializer,
     LegacyJSONSerializer,
-    ZenodoJSONSerializer,
-)
-
-record_serializers = copy.deepcopy(default_record_serializers)
-record_serializers.update(
-    {
-        "application/json": ResponseHandler(
-            ZenodoJSONSerializer(), headers=etag_headers
-        ),
-        "application/vnd.zenodo.v1+json": ResponseHandler(
-            ZenodoJSONSerializer(), headers=etag_headers
-        ),
-        # Alias for the DataCite XML serializer
-        "application/x-datacite+xml": record_serializers[
-            "application/vnd.datacite.datacite+xml"
-        ],
-    }
 )
 
 

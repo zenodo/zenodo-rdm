@@ -31,8 +31,8 @@ from zenodo_rdm.api import ZenodoRDMDraft, ZenodoRDMRecord
 from zenodo_rdm.custom_fields import CUSTOM_FIELDS, CUSTOM_FIELDS_UI, NAMESPACES
 from zenodo_rdm.generators import media_files_management_action
 from zenodo_rdm.legacy.requests.record_upgrade import LegacyRecordUpgrade
-from zenodo_rdm.legacy.resources import record_serializers
 from zenodo_rdm.permissions import ZenodoRDMRecordPermissionPolicy
+from zenodo_rdm.resources import record_serializers
 
 from .fake_datacite_client import FakeDataCiteClient
 

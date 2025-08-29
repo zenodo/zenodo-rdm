@@ -9,8 +9,12 @@
 
 import copy
 
+from invenio_i18n import lazy_gettext as _
 from invenio_rdm_records import config as rdm_records_config
+from invenio_rdm_records.services.pids import providers as rdm_providers
 from invenio_rdm_records.services.pids.providers.base import PIDProvider
+
+from .serializers import ZenodoDataciteJSONSerializer
 
 
 class NoParentDOIPID:
@@ -167,12 +171,37 @@ class LegacyParentDOIProvider(PIDProvider):
         return True, []
 
 
-RDM_PARENT_PERSISTENT_IDENTIFIER_PROVIDERS = [
-    *rdm_records_config.RDM_PARENT_PERSISTENT_IDENTIFIER_PROVIDERS,
-    # Legacy provider for old records without a concept DOI
-    LegacyParentDOIProvider("legacy", pid_type="doi"),
+RDM_PERSISTENT_IDENTIFIER_PROVIDERS = [
+    # DataCite DOI provider
+    rdm_providers.DataCitePIDProvider(
+        "datacite",
+        client=rdm_providers.DataCiteClient("datacite", config_prefix="DATACITE"),
+        label=_("DOI"),
+        serializer=ZenodoDataciteJSONSerializer(),
+    ),
+    # DOI provider for externally managed DOIs
+    rdm_providers.ExternalPIDProvider(
+        "external",
+        "doi",
+        validators=[rdm_providers.BlockedPrefixes(config_names=["DATACITE_PREFIX"])],
+        label=_("DOI"),
+    ),
+    # OAI identifier
+    rdm_providers.OAIPIDProvider(
+        "oai",
+        label=_("OAI ID"),
+    ),
 ]
 
+RDM_PARENT_PERSISTENT_IDENTIFIER_PROVIDERS = [
+    rdm_providers.DataCitePIDProvider(
+        "datacite",
+        client=rdm_providers.DataCiteClient("datacite", config_prefix="DATACITE"),
+        serializer=ZenodoDataciteJSONSerializer(schema_context={"is_parent": True}),
+        label=_("Concept DOI"),
+    ),
+    LegacyParentDOIProvider("legacy", pid_type="doi"),
+]
 
 RDM_PARENT_PERSISTENT_IDENTIFIERS = copy.deepcopy(
     rdm_records_config.RDM_PARENT_PERSISTENT_IDENTIFIERS
