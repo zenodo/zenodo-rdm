@@ -23,14 +23,21 @@ dependencies = [
     "uwsgi-tools>=1.1.1",
     "invenio-records-resources",
     "invenio-users-resources",
+    "invenio-rdm-records",
+    "invenio-requests",
 ]
 
 [tool.uv.sources]
 zenodo-rdm = { workspace = true }
 zenodo-legacy = { workspace = true }
 invenio-swh = { git = "https://github.com/inveniosoftware/invenio-swh", rev = "v0.13.4" }
+# User profile fixes
 invenio-records-resources = { git = "https://github.com/inveniosoftware/invenio-records-resources", branch = "fix-read-many" }
 invenio-users-resources = { git = "https://github.com/inveniosoftware/invenio-users-resources", rev = "d421cb341c23539f3f7376103128b990706fd168" }
+# Record deletion feature
+invenio-rdm-records = { git = "https://github.com/inveniosoftware/invenio-rdm-records", branch = "feature/record-deletion" }
+invenio-app-rdm = { git = "https://github.com/inveniosoftware/invenio-app-rdm", branch = "feature/record-deletion" }
+invenio-requests = { git = "https://github.com/inveniosoftware/invenio-requests", branch = "feature/computed-fields" }
 
 [tool.uv.workspace]
 members = [
