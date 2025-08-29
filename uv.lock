@@ -206,7 +206,8 @@ source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "colorama", marker = "os_name == 'nt'" },
     { name = "importlib-metadata", marker = "python_full_version < '3.10.2'" },
-    { name = "packaging" },
+    { name = "packaging", version = "24.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
+    { name = "packaging", version = "25.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
     { name = "pyproject-hooks" },
     { name = "tomli", marker = "python_full_version < '3.11'" },
 ]
@@ -846,7 +847,7 @@ name = "deprecated"
 version = "1.2.18"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "wrapt", marker = "python_full_version >= '3.10'" },
+    { name = "wrapt" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/98/97/06afe62762c9a8a86af0cfb7bfdab22a43ad17138b07af5b1a58442690a2/deprecated-1.2.18.tar.gz", hash = "sha256:422b6f6d859da6f2ef57857761bfb392480502a64c3028ca9bbe86085d72115d", size = 2928744, upload-time = "2025-01-27T10:46:25.7Z" }
 wheels = [
@@ -1131,37 +1132,15 @@ wheels = [
 
 [[package]]
 name = "flask-limiter"
-version = "2.9.0"
-source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "python_full_version < '3.10'",
-]
-dependencies = [
-    { name = "flask", marker = "python_full_version < '3.10'" },
-    { name = "limits", version = "2.4.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
-    { name = "ordered-set", marker = "python_full_version < '3.10'" },
-    { name = "rich", marker = "python_full_version < '3.10'" },
-    { name = "typing-extensions", marker = "python_full_version < '3.10'" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/41/02/7c05969240ffccd70e206e8a69b1adbc78bcf5817bce58972aa8c96a1089/Flask-Limiter-2.9.0.tar.gz", hash = "sha256:1169ebebd4dffc2b2e9102edd4907b287cbea8ef465565604c6d251f29810019", size = 286128, upload-time = "2022-12-24T18:42:47.734Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/cf/b4/eec2b68adb19a3dc2fa3b22b1b56e3d47aba66c19d0b431cb3d6446418c9/Flask_Limiter-2.9.0-py3-none-any.whl", hash = "sha256:7a646c439ee8c9b340879078ffc7d4a06e0edda66855f7c6e022f2c925551f9f", size = 27427, upload-time = "2022-12-24T18:42:45.888Z" },
-]
-
-[[package]]
-name = "flask-limiter"
 version = "2.9.2"
 source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "python_full_version >= '3.11'",
-    "python_full_version == '3.10.*'",
-]
 dependencies = [
-    { name = "flask", marker = "python_full_version >= '3.10'" },
+    { name = "flask" },
+    { name = "limits", version = "4.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
     { name = "limits", version = "5.5.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
-    { name = "ordered-set", marker = "python_full_version >= '3.10'" },
-    { name = "rich", marker = "python_full_version >= '3.10'" },
-    { name = "typing-extensions", marker = "python_full_version >= '3.10'" },
+    { name = "ordered-set" },
+    { name = "rich" },
+    { name = "typing-extensions" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/28/87/83bc93c0a3186df3b38587e6b1d9bed41be4abbae01edad7843ac5059d1c/Flask-Limiter-2.9.2.tar.gz", hash = "sha256:041bf0d72c8c62d2cb54c772de1ad842c82bdefeddfadc1c9171739f296484e2", size = 286145, upload-time = "2022-12-26T22:06:22.968Z" }
 wheels = [
@@ -1289,7 +1268,7 @@ dependencies = [
     { name = "flask" },
     { name = "ipython", version = "8.18.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
     { name = "ipython", version = "8.37.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version == '3.10.*'" },
-    { name = "ipython", version = "9.4.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
+    { name = "ipython", version = "9.5.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/14/85/cd1341451be9f34a5ab8895b596ca606aef6ce643452d47148c17d4a96a9/flask_shell_ipython-0.5.3.tar.gz", hash = "sha256:1a8bb90da18c34d15bc4ad817820101fffa93507a7eb685532ed518aea280848", size = 4001, upload-time = "2024-09-05T21:17:17.691Z" }
 wheels = [
@@ -1683,8 +1662,7 @@ version = "2.3.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "flask" },
-    { name = "flask-limiter", version = "2.9.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
-    { name = "flask-limiter", version = "2.9.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
+    { name = "flask-limiter" },
     { name = "flask-shell-ipython" },
     { name = "flask-talisman" },
     { name = "invenio-base" },
@@ -1701,7 +1679,7 @@ wheels = [
 [[package]]
 name = "invenio-app-rdm"
 version = "14.0.0b0.dev3"
-source = { registry = "https://pypi.org/simple" }
+source = { git = "https://github.com/inveniosoftware/invenio-app-rdm?branch=feature%2Frecord-deletion#cf907f45581cb11d94e0e752486d0de7f20dc93a" }
 dependencies = [
     { name = "cairosvg" },
     { name = "invenio-access" },
@@ -1740,10 +1718,6 @@ dependencies = [
     { name = "invenio-sitemap" },
     { name = "invenio-theme" },
     { name = "invenio-userprofiles" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/c0/63/ebe1d298451899d735e360a130b7ed5793fea99a989d7b5164a04a2a91a2/invenio_app_rdm-14.0.0b0.dev3.tar.gz", hash = "sha256:8373bdee11e1fcb8c7b5ecdc54d08a44687f33ed9272db0281db7d2119d756af", size = 713558, upload-time = "2025-08-26T12:25:52.745Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/1d/ea/1036ed225ed38ed76c732f802e7d008f4b6fe63a9f932726eae706a8aca3/invenio_app_rdm-14.0.0b0.dev3-py2.py3-none-any.whl", hash = "sha256:1530da78bb8ee51ae5ce341e4a47693535a843377089f718654fca072b29ff94", size = 1139988, upload-time = "2025-08-26T12:25:50.597Z" },
 ]
 
 [package.optional-dependencies]
@@ -2096,15 +2070,15 @@ wheels = [
 
 [[package]]
 name = "invenio-notifications"
-version = "1.2.0"
+version = "1.2.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "invenio-base" },
     { name = "invenio-i18n" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/26/79/a8eb5579f8e3c76f6d9608de84c5029beda2639fcef22a5508a95767b751/invenio_notifications-1.2.0.tar.gz", hash = "sha256:ec8b06c6afcb56c9c576ab52a40bc9d078c2cdccd6ee17f2cc6685c90d9043ba", size = 21136, upload-time = "2025-07-17T20:16:39.532Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/74/dd/9ccfe323a03ffe7f1090211e7544b5cffce395c59d10e9558bf8b93a40e4/invenio_notifications-1.2.1.tar.gz", hash = "sha256:958105c046b0a066d150f2cd89f198e1817dec6e0a77d56e1229551c28fd2c1c", size = 21196, upload-time = "2025-08-29T12:26:47.504Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/39/83/f5dba97c45319b282436fb565d1ee73a4918182f31d88151a7383517ba8c/invenio_notifications-1.2.0-py2.py3-none-any.whl", hash = "sha256:2fcd06d6fbaddc4b6ab4860b08fa1174d8bfcdea0097380de7eace5303fbadec", size = 61714, upload-time = "2025-07-17T20:16:38.36Z" },
+    { url = "https://files.pythonhosted.org/packages/dc/ad/46e94507dcc36f39af715ea4340708b8635e1ad2c392c0c86b84e7e6872b/invenio_notifications-1.2.1-py2.py3-none-any.whl", hash = "sha256:c8e4ff4917242c9f407ab4f51f216408abc0470ae6c696841ce74a50b0581bc8", size = 61753, upload-time = "2025-08-29T12:26:46.425Z" },
 ]
 
 [[package]]
@@ -2244,7 +2218,7 @@ wheels = [
 [[package]]
 name = "invenio-rdm-records"
 version = "20.0.1"
-source = { registry = "https://pypi.org/simple" }
+source = { git = "https://github.com/inveniosoftware/invenio-rdm-records?branch=feature%2Frecord-deletion#a126d1d546381539b8188244dc50b4a77f9d6f19" }
 dependencies = [
     { name = "arrow" },
     { name = "babel-edtf" },
@@ -2275,10 +2249,6 @@ dependencies = [
     { name = "python-slugify" },
     { name = "pytz" },
     { name = "pyyaml" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/64/1c/ae12abdcc6f7b01cb9d1e9eecc48bdbcce9c03e947bec8238d24f3164e30/invenio_rdm_records-20.0.1.tar.gz", hash = "sha256:3957e9cd5aaa3f2045f4770895fbff6a6f650c33ed7720d0724d348a5fe5d9eb", size = 1230238, upload-time = "2025-08-27T08:49:51.67Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/0c/fa/cebd185d7777829be7f65ffd59f97b06c906b3a4a986555223aa2d9adfb1/invenio_rdm_records-20.0.1-py2.py3-none-any.whl", hash = "sha256:74392a0ac6a35029bf2a778db5efd835476aa628780709bb293be72b0d6693ed", size = 1755202, upload-time = "2025-08-27T08:49:49.091Z" },
 ]
 
 [[package]]
@@ -2389,16 +2359,12 @@ wheels = [
 
 [[package]]
 name = "invenio-requests"
-version = "8.0.1"
-source = { registry = "https://pypi.org/simple" }
+version = "8.1.0"
+source = { git = "https://github.com/inveniosoftware/invenio-requests?branch=feature%2Fcomputed-fields#d7380e8ba87fff8cb37862967e8fc3e0afba8f30" }
 dependencies = [
     { name = "invenio-records-resources" },
     { name = "invenio-theme" },
     { name = "invenio-users-resources" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/18/aa/e072cab0cb21ea24b6aafe1cc46db17eb077e0afc02aab4bd9ea2c996167/invenio_requests-8.0.1.tar.gz", hash = "sha256:b0f5b09bde877111bff015095024c56d0c676ae1bace3a1c276b1f63a268a029", size = 139604, upload-time = "2025-08-26T11:33:57.199Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/d7/47/47897d74a6598611391ec606337262dfb92692ff89f8c01a571d121d20f6/invenio_requests-8.0.1-py2.py3-none-any.whl", hash = "sha256:1157e3ee71c525745df3f6b6308543b2cf8ff2108e269949fe46fe9048d5b13b", size = 333308, upload-time = "2025-08-26T11:33:55.673Z" },
 ]
 
 [[package]]
@@ -2645,7 +2611,7 @@ wheels = [
 
 [[package]]
 name = "ipython"
-version = "9.4.0"
+version = "9.5.0"
 source = { registry = "https://pypi.org/simple" }
 resolution-markers = [
     "python_full_version >= '3.11'",
@@ -2663,9 +2629,9 @@ dependencies = [
     { name = "traitlets", marker = "python_full_version >= '3.11'" },
     { name = "typing-extensions", marker = "python_full_version == '3.11.*'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/54/80/406f9e3bde1c1fd9bf5a0be9d090f8ae623e401b7670d8f6fdf2ab679891/ipython-9.4.0.tar.gz", hash = "sha256:c033c6d4e7914c3d9768aabe76bbe87ba1dc66a92a05db6bfa1125d81f2ee270", size = 4385338, upload-time = "2025-07-01T11:11:30.606Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/6e/71/a86262bf5a68bf211bcc71fe302af7e05f18a2852fdc610a854d20d085e6/ipython-9.5.0.tar.gz", hash = "sha256:129c44b941fe6d9b82d36fc7a7c18127ddb1d6f02f78f867f402e2e3adde3113", size = 4389137, upload-time = "2025-08-29T12:15:21.519Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/63/f8/0031ee2b906a15a33d6bfc12dd09c3dfa966b3cb5b284ecfb7549e6ac3c4/ipython-9.4.0-py3-none-any.whl", hash = "sha256:25850f025a446d9b359e8d296ba175a36aedd32e83ca9b5060430fe16801f066", size = 611021, upload-time = "2025-07-01T11:11:27.85Z" },
+    { url = "https://files.pythonhosted.org/packages/08/2a/5628a99d04acb2d2f2e749cdf4ea571d2575e898df0528a090948018b726/ipython-9.5.0-py3-none-any.whl", hash = "sha256:88369ffa1d5817d609120daa523a6da06d02518e582347c29f8451732a9c5e72", size = 612426, upload-time = "2025-08-29T12:15:18.866Z" },
 ]
 
 [[package]]
@@ -2862,7 +2828,8 @@ version = "5.5.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "amqp" },
-    { name = "packaging" },
+    { name = "packaging", version = "24.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
+    { name = "packaging", version = "25.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
     { name = "tzdata" },
     { name = "vine" },
 ]
@@ -2891,17 +2858,19 @@ wheels = [
 
 [[package]]
 name = "limits"
-version = "2.4.0"
+version = "4.2"
 source = { registry = "https://pypi.org/simple" }
 resolution-markers = [
     "python_full_version < '3.10'",
 ]
 dependencies = [
-    { name = "setuptools", marker = "python_full_version < '3.10'" },
+    { name = "deprecated", marker = "python_full_version < '3.10'" },
+    { name = "packaging", version = "24.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
+    { name = "typing-extensions", marker = "python_full_version < '3.10'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/f8/80/75fd44518566d0f3a17ed27a9d41f1d21c105cb562f685d6c55b2a199ff1/limits-2.4.0.tar.gz", hash = "sha256:8e22b63df26310207a77b75bd474599f0a4613a7d9163650ed3a428e9cc7ae35", size = 57260, upload-time = "2022-03-11T02:21:09.751Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/7b/54/f73e4810332f500b46b3fbf01d3258e0cbf1508d1be8d2438a1e174208c3/limits-4.2.tar.gz", hash = "sha256:d602ceae5d6b71063d5f9338904e32d569efaa84a7dd0399cde7ca6ff1a8fc9b", size = 85710, upload-time = "2025-03-11T18:55:13.637Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a8/31/3fae8c488aa64d9542e2e2f7bc43e8d7063d8a30fe993ffe3f06066e79cc/limits-2.4.0-py3-none-any.whl", hash = "sha256:21b9d7ddebbe90ad23cce724c9f3e8ad62f132cef6051ec910249421679cb4db", size = 36714, upload-time = "2022-03-11T02:21:07.99Z" },
+    { url = "https://files.pythonhosted.org/packages/94/85/8bea229501a81c9faf5c13aff158edcb523be011a1a4b9cb8a6d49605f54/limits-4.2-py3-none-any.whl", hash = "sha256:e6b66078dfb11b971fc3a2a794c598697bce3d9cf7bff242fa0b413875b86dea", size = 60504, upload-time = "2025-03-11T18:55:12.283Z" },
 ]
 
 [[package]]
@@ -2914,7 +2883,7 @@ resolution-markers = [
 ]
 dependencies = [
     { name = "deprecated", marker = "python_full_version >= '3.10'" },
-    { name = "packaging", marker = "python_full_version >= '3.10'" },
+    { name = "packaging", version = "25.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
     { name = "typing-extensions", marker = "python_full_version >= '3.10'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/76/17/7a2e9378c8b8bd4efe3573fd18d2793ad2a37051af5ccce94550a4e5d62d/limits-5.5.0.tar.gz", hash = "sha256:ee269fedb078a904608b264424d9ef4ab10555acc8d090b6fc1db70e913327ea", size = 95514, upload-time = "2025-08-05T18:23:54.771Z" }
@@ -3096,7 +3065,8 @@ name = "marshmallow"
 version = "3.26.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "packaging" },
+    { name = "packaging", version = "24.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
+    { name = "packaging", version = "25.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/ab/5e/5e53d26b42ab75491cda89b871dab9e97c840bf12c63ec58a1919710cd06/marshmallow-3.26.1.tar.gz", hash = "sha256:e6d8affb6cb61d39d26402096dc0aee12d5a26d490a121f118d2e81dc0719dc6", size = 221825, upload-time = "2025-02-03T15:32:25.093Z" }
 wheels = [
@@ -3295,7 +3265,8 @@ dependencies = [
     { name = "markupsafe" },
     { name = "mergedeep" },
     { name = "mkdocs-get-deps" },
-    { name = "packaging" },
+    { name = "packaging", version = "24.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
+    { name = "packaging", version = "25.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
     { name = "pathspec" },
     { name = "pyyaml" },
     { name = "pyyaml-env-tag" },
@@ -3328,7 +3299,7 @@ source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "ipython", version = "8.18.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
     { name = "ipython", version = "8.37.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version == '3.10.*'" },
-    { name = "ipython", version = "9.4.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
+    { name = "ipython", version = "9.5.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
     { name = "mkdocs" },
     { name = "nbconvert" },
 ]
@@ -3459,7 +3430,8 @@ dependencies = [
     { name = "mistune" },
     { name = "nbclient" },
     { name = "nbformat" },
-    { name = "packaging" },
+    { name = "packaging", version = "24.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
+    { name = "packaging", version = "25.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
     { name = "pandocfilters" },
     { name = "pygments" },
     { name = "traitlets" },
@@ -3582,8 +3554,24 @@ wheels = [
 
 [[package]]
 name = "packaging"
+version = "24.2"
+source = { registry = "https://pypi.org/simple" }
+resolution-markers = [
+    "python_full_version < '3.10'",
+]
+sdist = { url = "https://files.pythonhosted.org/packages/d0/63/68dbb6eb2de9cb10ee4c9c14a0148804425e13c4fb20d61cce69f53106da/packaging-24.2.tar.gz", hash = "sha256:c228a6dc5e932d346bc5739379109d49e8853dd8223571c7c5b55260edc0b97f", size = 163950, upload-time = "2024-11-08T09:47:47.202Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/88/ef/eb23f262cca3c0c4eb7ab1933c3b1f03d021f2c48f54763065b6f0e321be/packaging-24.2-py3-none-any.whl", hash = "sha256:09abb1bccd265c01f4a3aa3f7a7db064b36514d2cba19a2f694fe6150451a759", size = 65451, upload-time = "2024-11-08T09:47:44.722Z" },
+]
+
+[[package]]
+name = "packaging"
 version = "25.0"
 source = { registry = "https://pypi.org/simple" }
+resolution-markers = [
+    "python_full_version >= '3.11'",
+    "python_full_version == '3.10.*'",
+]
 sdist = { url = "https://files.pythonhosted.org/packages/a1/d4/1fc4078c65507b51b96ca8f8c3ba19e6a61c8253c72794544580a7b6c24d/packaging-25.0.tar.gz", hash = "sha256:d443872c98d677bf60f6a1f2f8c1cb748e8fe762d2bf9d3148b5599295b0fc4f", size = 165727, upload-time = "2025-04-19T11:48:59.673Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/20/12/38679034af332785aac8774540895e234f4d07f7545804097de4b666afd8/packaging-25.0-py3-none-any.whl", hash = "sha256:29572ef2b1f17581046b3a2227d5c611fb25ec70ca1ba8554b24b0e69331a484", size = 66469, upload-time = "2025-04-19T11:48:57.875Z" },
@@ -4142,7 +4130,8 @@ dependencies = [
     { name = "colorama", marker = "sys_platform == 'win32'" },
     { name = "exceptiongroup", marker = "python_full_version < '3.11'" },
     { name = "iniconfig" },
-    { name = "packaging" },
+    { name = "packaging", version = "24.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
+    { name = "packaging", version = "25.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
     { name = "pluggy" },
     { name = "pygments" },
     { name = "tomli", marker = "python_full_version < '3.11'" },
@@ -5082,7 +5071,8 @@ dependencies = [
     { name = "imagesize" },
     { name = "importlib-metadata", marker = "python_full_version < '3.10'" },
     { name = "jinja2" },
-    { name = "packaging" },
+    { name = "packaging", version = "24.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
+    { name = "packaging", version = "25.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
     { name = "pygments" },
     { name = "requests" },
     { name = "snowballstemmer" },
@@ -5946,7 +5936,9 @@ dependencies = [
     { name = "commonmeta-py" },
     { name = "github3-py" },
     { name = "invenio-app-rdm", extra = ["opensearch2"] },
+    { name = "invenio-rdm-records" },
     { name = "invenio-records-resources" },
+    { name = "invenio-requests" },
     { name = "invenio-swh" },
     { name = "invenio-users-resources" },
     { name = "nameparser" },
@@ -5980,8 +5972,10 @@ dev = [
 requires-dist = [
     { name = "commonmeta-py", specifier = "==0.8.6" },
     { name = "github3-py", specifier = ">=3.0.0" },
-    { name = "invenio-app-rdm", extras = ["opensearch2"], specifier = "~=14.0.0b0.dev2" },
+    { name = "invenio-app-rdm", extras = ["opensearch2"], git = "https://github.com/inveniosoftware/invenio-app-rdm?branch=feature%2Frecord-deletion" },
+    { name = "invenio-rdm-records", git = "https://github.com/inveniosoftware/invenio-rdm-records?branch=feature%2Frecord-deletion" },
     { name = "invenio-records-resources", git = "https://github.com/inveniosoftware/invenio-records-resources?branch=fix-read-many" },
+    { name = "invenio-requests", git = "https://github.com/inveniosoftware/invenio-requests?branch=feature%2Fcomputed-fields" },
     { name = "invenio-swh", git = "https://github.com/inveniosoftware/invenio-swh?rev=v0.13.4" },
     { name = "invenio-users-resources", git = "https://github.com/inveniosoftware/invenio-users-resources?rev=d421cb341c23539f3f7376103128b990706fd168" },
     { name = "invenio-xrootd", marker = "extra == 'xrootd'", specifier = "==2.0.0a2" },
