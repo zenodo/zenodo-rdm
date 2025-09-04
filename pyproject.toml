@@ -52,3 +52,10 @@ xrootd = [
     "requests-kerberos==0.14.0",
     "xrootd==5.9.6",
 ]
+
+[tool.codespell]
+# Ref: https://github.com/codespell-project/codespell#using-a-config-file
+skip = '.git*,*.svg,*.lock,*.css,static'
+check-hidden = true
+# ignore-regex = ''
+# ignore-words-list = ''
