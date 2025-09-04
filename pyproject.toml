@@ -52,3 +52,10 @@ xrootd = [
     "invenio-xrootd==2.0.0a2",
     "requests-kerberos==0.14.0",
 ]
+
+[tool.codespell]
+# Ref: https://github.com/codespell-project/codespell#using-a-config-file
+skip = '.git*,*.svg,*.lock,*.css,static'
+check-hidden = true
+# ignore-regex = ''
+# ignore-words-list = ''
