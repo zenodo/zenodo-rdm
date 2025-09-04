@@ -45,7 +45,7 @@ class UserRegistrationAction(TransformAction):
         for operation in self.tx.operations:
             payload = {**payload, **operation["after"]}
 
-        # it comes in milliseonds
+        # it comes in milliseconds
         ts = self.tx.operations[0]["source"]["ts_ms"]
         payload["created"] = ts
         payload["updated"] = ts

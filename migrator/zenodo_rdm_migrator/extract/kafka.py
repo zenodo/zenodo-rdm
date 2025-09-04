@@ -124,7 +124,7 @@ class KafkaExtract(Extract):
         "key_deserializer": _load_json,
         # If we don't receive messages after 3sec, we stop (to try again later)
         "consumer_timeout_ms": 3000,
-        # We will handle commiting offsets ourselves
+        # We will handle committing offsets ourselves
         "enable_auto_commit": False,
         # We want to explicitly set the offsets we're starting from
         "auto_offset_reset": "none",
@@ -238,7 +238,7 @@ class KafkaExtract(Extract):
         )
 
     def iter_tx_info(self):
-        """Yield commited transactions info."""
+        """Yield committed transactions info."""
         consumer = self._tx_consumer
         for tx_msg in consumer:
             self._dump_msg(self.tx_topic, tx_msg)
@@ -287,7 +287,7 @@ class KafkaExtract(Extract):
     def _yield_completed_tx(self, min_batch=None, max_batch=None):
         """Yields completed transactions.
 
-        Important: we only yield the "earliest" commited transactions for which we have
+        Important: we only yield the "earliest" committed transactions for which we have
         complete data/ops. The commit order of transactions is defined by the COMMIT
         operation's LSN. For example:
 
