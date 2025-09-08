@@ -62,6 +62,7 @@ class SupportForm extends Component {
       rejectedFiles: [],
       loading: false,
       errorStatus: null,
+      successMessage: null,
     };
   }
 
@@ -89,12 +90,15 @@ class SupportForm extends Component {
     this.setState({
       loading: true,
       errorStatus: null,
+      successMessage: null,
     });
     try {
       const formData = formikToFormData(values);
       const response = await http.post(apiEndpoint, formData, requestConfig);
-      this.setState({ loading: false });
-      window.location = response.request.responseURL;
+      this.setState({
+        loading: false,
+        successMessage: response.data.message,
+      });
     } catch (error) {
       // API errors need to be deserialised to highlight fields.
       const apiResponse = error?.response?.data;
@@ -133,7 +137,17 @@ class SupportForm extends Component {
     };
 
     const sysInfo = `Browser: ${userBrowser} Operating System: ${userPlatform}`;
-    const { fileErrorMessage, rejectedFiles, loading, errorStatus } = this.state;
+    const { fileErrorMessage, rejectedFiles, loading, errorStatus, successMessage } =
+      this.state;
+
+    if (successMessage) {
+      return (
+        <Message success>
+          <MessageHeader>Request created</MessageHeader>
+          <p>{successMessage}</p>
+        </Message>
+      );
+    }
 
     return (
       <Formik
