@@ -61,7 +61,7 @@ class SupportForm extends Component {
       totalFileSize: 0,
       rejectedFiles: [],
       loading: false,
-      errorMessage: null,
+      errorStatus: null,
     };
   }
 
@@ -88,7 +88,7 @@ class SupportForm extends Component {
     const { apiEndpoint } = this.props;
     this.setState({
       loading: true,
-      errorMessage: null,
+      errorStatus: null,
     });
     try {
       const formData = formikToFormData(values);
@@ -96,8 +96,6 @@ class SupportForm extends Component {
       this.setState({ loading: false });
       window.location = response.request.responseURL;
     } catch (error) {
-      let errorMessage = error.message;
-
       // API errors need to be deserialised to highlight fields.
       const apiResponse = error?.response?.data;
       if (apiResponse) {
@@ -106,11 +104,9 @@ class SupportForm extends Component {
 
         // Highlight errors using formik
         formikBag.setErrors(deserializedErrors);
-        errorMessage = apiResponse.message || errorMessage;
       }
 
-      console.error(errorMessage);
-      this.setState({ errorMessage: errorMessage });
+      this.setState({ errorStatus: error.status });
     }
     this.setState({ loading: false });
   };
@@ -137,7 +133,7 @@ class SupportForm extends Component {
     };
 
     const sysInfo = `Browser: ${userBrowser} Operating System: ${userPlatform}`;
-    const { fileErrorMessage, rejectedFiles, loading, errorMessage } = this.state;
+    const { fileErrorMessage, rejectedFiles, loading, errorStatus } = this.state;
 
     return (
       <Formik
@@ -252,15 +248,23 @@ class SupportForm extends Component {
                 </Button>
               </Modal.Actions>
 
-              {errorMessage && (
+              {errorStatus && (
                 <Message negative>
                   <MessageHeader>
-                    Sorry, an error prevented the support ticket from being created
+                    {errorStatus === 400
+                      ? "Validation errors"
+                      : "Sorry, an error prevented the support ticket from being created"}
                   </MessageHeader>
                   <p>
-                    We kindly ask you to send an email to{" "}
-                    <a href="mailto:support@zenodo.org">support@zenodo.org</a> with the
-                    same information as in the form above.
+                    {errorStatus === 400 ? (
+                      "Please fix the validation errors indicated above."
+                    ) : (
+                      <>
+                        We kindly ask you to send an email to{" "}
+                        <a href="mailto:support@zenodo.org">support@zenodo.org</a> with
+                        the same information as in the form above.
+                      </>
+                    )}
                   </p>
                 </Message>
               )}
