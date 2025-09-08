@@ -63,13 +63,12 @@ class ZenodoSupport(MethodView):
         input_data = {**request.form.to_dict(), "files": request.files.getlist("files")}
         data = self.validate_form(input_data)
         try:
-            self.handle_form(data)
+            return self.handle_form(data)
         except RequestException:
             # Any error from Zammad being down to badly formatted requests.
             raise Exception(
                 "The request could not be sent to the support system due to an internal error."
             )
-        return redirect(url_for("invenio_app_rdm.frontpage_view_function"))
 
     def validate_form(self, form_data):
         """Validates form using a schema."""
@@ -118,13 +117,12 @@ class ZenodoSupport(MethodView):
             params["article"]["body"] += f"\n\nBrowser: {browser_string} OS: {platform}"
 
         new_ticket = self.client.ticket.create(params=params)
-        flash(
-            _(
+        return {
+            "message": _(
                 "You support request #%(ticket_id)s was created. You will receive a confirmation email shortly."
             )
             % {"ticket_id": new_ticket["id"]},
-            "info",
-        )
+        }
 
     def find_customer(self, email):
         """Find a customer."""
