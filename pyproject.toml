@@ -25,6 +25,7 @@ dependencies = [
     "invenio-users-resources",
     "invenio-rdm-records",
     "invenio-requests",
+    "invenio-oauthclient",
 ]
 
 [tool.uv.sources]
@@ -38,6 +39,7 @@ invenio-users-resources = { git = "https://github.com/inveniosoftware/invenio-us
 invenio-rdm-records = { git = "https://github.com/inveniosoftware/invenio-rdm-records", branch = "feature/record-deletion" }
 invenio-app-rdm = { git = "https://github.com/inveniosoftware/invenio-app-rdm", branch = "feature/record-deletion" }
 invenio-requests = { git = "https://github.com/inveniosoftware/invenio-requests", branch = "feature/computed-fields" }
+invenio-oauthclient = { git = "https://github.com/inveniosoftware/invenio-oauthclient", branch = "feature/eosc-aai" }
 
 [tool.uv.workspace]
 members = [
