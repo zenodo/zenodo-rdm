@@ -948,7 +948,7 @@ name = "exceptiongroup"
 version = "1.3.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "typing-extensions", marker = "python_full_version < '3.13'" },
+    { name = "typing-extensions", marker = "python_full_version < '3.11'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/0b/9f/a65090624ecf468cdca03533906e7c69ed7588582240cfe7cc9e770b50eb/exceptiongroup-1.3.0.tar.gz", hash = "sha256:b241f5885f560bc56a59ee63ca4c6a8bfa46ae4ad651af316d4e81817bb9fd88", size = 29749, upload-time = "2025-05-10T17:42:51.123Z" }
 wheels = [
@@ -2129,7 +2129,7 @@ wheels = [
 [[package]]
 name = "invenio-oauthclient"
 version = "5.2.0"
-source = { registry = "https://pypi.org/simple" }
+source = { git = "https://github.com/inveniosoftware/invenio-oauthclient?branch=feature%2Feosc-aai#6c41bcd494c0ba3cc8509e5d0f5a4f3e7521dd69" }
 dependencies = [
     { name = "blinker" },
     { name = "flask-oauthlib-invenio" },
@@ -2144,10 +2144,6 @@ dependencies = [
     { name = "requests-oauthlib" },
     { name = "uritemplate" },
     { name = "uritools" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/b6/ff/0f14e8775787f3b269cb3e658b90fcecd31c201e5c0b66b07eea30470b65/invenio_oauthclient-5.2.0.tar.gz", hash = "sha256:d4f1cea3263ea6cc6dad66ad972747b32a64beee50c14d1bd40a17be4e277427", size = 92818, upload-time = "2025-07-17T20:20:02.184Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/6d/d2/92584c2169083bde97a04f9ce1e19fcd3fce0e5e4d951f461fb77d3f83dd/invenio_oauthclient-5.2.0-py2.py3-none-any.whl", hash = "sha256:3bd1107e152c1510608fb5b02b18a0a1fe5536a776675a6b0c1eac7df32e71cd", size = 204511, upload-time = "2025-07-17T20:20:00.204Z" },
 ]
 
 [[package]]
@@ -5943,6 +5939,7 @@ dependencies = [
     { name = "commonmeta-py" },
     { name = "github3-py" },
     { name = "invenio-app-rdm", extra = ["opensearch2"] },
+    { name = "invenio-oauthclient" },
     { name = "invenio-rdm-records" },
     { name = "invenio-records-resources" },
     { name = "invenio-requests" },
@@ -5980,6 +5977,7 @@ requires-dist = [
     { name = "commonmeta-py", specifier = "==0.8.6" },
     { name = "github3-py", specifier = ">=3.0.0" },
     { name = "invenio-app-rdm", extras = ["opensearch2"], git = "https://github.com/inveniosoftware/invenio-app-rdm?branch=feature%2Frecord-deletion" },
+    { name = "invenio-oauthclient", git = "https://github.com/inveniosoftware/invenio-oauthclient?branch=feature%2Feosc-aai" },
     { name = "invenio-rdm-records", git = "https://github.com/inveniosoftware/invenio-rdm-records?branch=feature%2Frecord-deletion" },
     { name = "invenio-records-resources", git = "https://github.com/inveniosoftware/invenio-records-resources?branch=fix-read-many" },
     { name = "invenio-requests", git = "https://github.com/inveniosoftware/invenio-requests?branch=feature%2Fcomputed-fields" },
