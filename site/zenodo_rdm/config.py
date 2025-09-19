@@ -79,17 +79,13 @@ SUPPORT_ISSUE_CATEGORIES = [
         "key": "record-deletion",
         "title": "Record deletion",
         "description": (
-            "<p>The request must be made by the uploader (if you're not the uploader, choose <em>take-down notice</em> instead).</p>"
-            "<p>Record deletion is possible within a short grace period after publishing:</p>"
-            "<ul>"
-            "<li><strong>Published <=30 days (accepted):</strong> Record deletions are accepted within a 30 days grace period after publishing your record.</li>"
-            '<li><strong>Published >30 days (declined):</strong> Please use our <a href="https://help.zenodo.org/docs/deposit/manage-versions/">versioning feature</a> for records published >30 days ago. File modification requests made after the 30-day grace period are declined.</li>'
-            "</ul>"
-            "<p>Please provide:</p>"
-            "<ul>"
-            "<li><strong>Record URL:</strong> A direct link to the record you would like to delete (e.g. https://zenodo.org/records/1234). If multiple versions should be deleted, please include one link per version.</li>"
-            "</ul>"
+            '<div class="ui warning visible message">'
+            '<div class="header">Delete your record yourself</div>'
+            '<p>Please follow the documentation on <a href="https://help.zenodo.org/docs/deposit/manage-records/#delete">how to delete records</a> instead of creating a support ticket here.</p>'
+            "<p>Note: if you are not able to delete the record as you are not the uploader, choose <em>take-down notice</em> instead</p>"
+            "</div>"
         ),
+        "form_disabled": True,
     },
     {
         "key": "user-deletion",

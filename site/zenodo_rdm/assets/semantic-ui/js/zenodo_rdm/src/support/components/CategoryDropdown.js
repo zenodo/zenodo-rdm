@@ -6,12 +6,9 @@ class CategoryDropdown extends Component {
   constructor(props) {
     super(props);
 
-    const { categories, defaultCategory } = props;
+    const { categories, defaultCategory, onCategoryChange } = props;
     const activeCategory = categories?.find((el) => el.key === defaultCategory);
-
-    this.state = {
-      activeCategory: activeCategory,
-    };
+    onCategoryChange(activeCategory);
   }
 
   serializeCategory(category) {
@@ -25,18 +22,15 @@ class CategoryDropdown extends Component {
   }
 
   onChange = ({ data, formikProps }) => {
-    const { categories } = this.props;
+    const { categories, onCategoryChange } = this.props;
     const activeCategory = categories.find((el) => el.key === data.value);
 
-    this.setState({
-      activeCategory: activeCategory,
-    });
+    onCategoryChange(activeCategory);
     formikProps.form.setFieldValue("category", data.value);
   };
 
   render() {
-    const { categories, className } = this.props;
-    const { activeCategory } = this.state;
+    const { categories, activeCategory, className } = this.props;
 
     const serializedCategories = categories.map((cat) => this.serializeCategory(cat));
 
@@ -63,12 +57,16 @@ class CategoryDropdown extends Component {
 CategoryDropdown.propTypes = {
   categories: PropTypes.array,
   defaultCategory: PropTypes.string,
+  activeCategory: PropTypes.string,
+  onCategoryChange: PropTypes.func,
   className: PropTypes.string,
 };
 
 CategoryDropdown.defaultProps = {
   categories: [],
   defaultCategory: "",
+  activeCategory: "",
+  onCategoryChange: null,
   className: "",
 };
 

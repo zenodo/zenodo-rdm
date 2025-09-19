@@ -63,8 +63,15 @@ class SupportForm extends Component {
       loading: false,
       errorStatus: null,
       successMessage: null,
+      activeCategory: null,
     };
   }
+
+  onCategoryChange = (activeCategory) => {
+    this.setState({
+      activeCategory: activeCategory,
+    });
+  };
 
   deserializeFieldErrors = (errors) => {
     /**
@@ -137,8 +144,14 @@ class SupportForm extends Component {
     };
 
     const sysInfo = `Browser: ${userBrowser} Operating System: ${userPlatform}`;
-    const { fileErrorMessage, rejectedFiles, loading, errorStatus, successMessage } =
-      this.state;
+    const {
+      fileErrorMessage,
+      rejectedFiles,
+      loading,
+      errorStatus,
+      successMessage,
+      activeCategory,
+    } = this.state;
 
     if (successMessage) {
       return (
@@ -148,6 +161,8 @@ class SupportForm extends Component {
         </Message>
       );
     }
+
+    const formDisabledForCategory = activeCategory?.form_disabled;
 
     return (
       <Formik
@@ -209,9 +224,12 @@ class SupportForm extends Component {
               <CategoryDropdown
                 categories={categories}
                 defaultCategory={defaultCategory}
+                activeCategory={activeCategory}
+                onCategoryChange={this.onCategoryChange}
                 className="eight wide field flex"
               />
               <TextField
+                disabled={formDisabledForCategory}
                 label="Subject"
                 fieldPath="subject"
                 fluid={false}
@@ -219,6 +237,7 @@ class SupportForm extends Component {
                 required
               />
               <TextAreaField
+                disabled={formDisabledForCategory}
                 label="How can we help?"
                 fieldPath="description"
                 className="field flex"
@@ -257,7 +276,12 @@ class SupportForm extends Component {
               </div>
 
               <Modal.Actions className="label-padding">
-                <Button type="submit" positive loading={loading} disabled={loading}>
+                <Button
+                  type="submit"
+                  positive
+                  loading={loading}
+                  disabled={loading || formDisabledForCategory}
+                >
                   Send request
                 </Button>
               </Modal.Actions>
