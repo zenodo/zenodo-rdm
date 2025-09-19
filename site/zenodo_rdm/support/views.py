@@ -122,6 +122,9 @@ class ZenodoSupport(MethodView):
                 "You support request #%(ticket_id)s was created. You will receive a confirmation email shortly."
             )
             % {"ticket_id": new_ticket["id"]},
+            "type": self.categories[params["type"]]["title"],
+            "subject": params["article"]["subject"],
+            "body": params["article"]["body"],
         }
 
     def find_customer(self, email):

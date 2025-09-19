@@ -62,7 +62,7 @@ class SupportForm extends Component {
       rejectedFiles: [],
       loading: false,
       errorStatus: null,
-      successMessage: null,
+      responseData: null,
       activeCategory: null,
     };
   }
@@ -97,14 +97,14 @@ class SupportForm extends Component {
     this.setState({
       loading: true,
       errorStatus: null,
-      successMessage: null,
+      responseData: null,
     });
     try {
       const formData = formikToFormData(values);
       const response = await http.post(apiEndpoint, formData, requestConfig);
       this.setState({
         loading: false,
-        successMessage: response.data.message,
+        responseData: response.data,
       });
     } catch (error) {
       // API errors need to be deserialised to highlight fields.
@@ -149,15 +149,27 @@ class SupportForm extends Component {
       rejectedFiles,
       loading,
       errorStatus,
-      successMessage,
+      responseData,
       activeCategory,
     } = this.state;
 
-    if (successMessage) {
+    if (responseData) {
       return (
         <Message success>
-          <MessageHeader>Request created</MessageHeader>
-          <p>{successMessage}</p>
+          <MessageHeader>{responseData.message}</MessageHeader>
+          <p>The content of your message is:</p>
+          <ul>
+            <li>
+              <strong>Category</strong>: {responseData.type}
+            </li>
+            <li>
+              <strong>Subject</strong>: {responseData.subject}
+            </li>
+            <li>
+              <strong>Content</strong>: <br />
+              <span style={{ whiteSpace: "pre-line" }}>{responseData.body}</span>
+            </li>
+          </ul>
         </Message>
       );
     }
