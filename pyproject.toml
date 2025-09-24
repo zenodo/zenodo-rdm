@@ -7,10 +7,10 @@ authors = [
 license = "GPL-3.0"
 requires-python = ">=3.9"
 dependencies = [
-    "invenio-app-rdm[opensearch2]~=14.0.0b0.dev2",
+    "invenio-app-rdm[opensearch2]~=14.0.0b1.dev1",
     "zenodo-legacy",
     "zenodo-rdm",
-    "commonmeta-py==0.8.6",
+    # "commonmeta-py==0.8.6",
     "github3.py>=3.0.0",
     "nameparser>=1.1.1",
     "pyinstrument>=5.0.0,<6",
@@ -22,10 +22,6 @@ dependencies = [
     "uwsgitop>=0.11",
     "uwsgi-tools>=1.1.1",
     "invenio-records-resources",
-    "invenio-users-resources",
-    "invenio-rdm-records",
-    "invenio-requests",
-    "invenio-oauthclient",
 ]
 
 [tool.uv.sources]
@@ -34,12 +30,6 @@ zenodo-legacy = { workspace = true }
 invenio-swh = { git = "https://github.com/inveniosoftware/invenio-swh", rev = "v0.13.4" }
 # User profile fixes
 invenio-records-resources = { git = "https://github.com/inveniosoftware/invenio-records-resources", branch = "fix-read-many" }
-invenio-users-resources = { git = "https://github.com/inveniosoftware/invenio-users-resources", rev = "d421cb341c23539f3f7376103128b990706fd168" }
-# Record deletion feature
-invenio-rdm-records = { git = "https://github.com/inveniosoftware/invenio-rdm-records", branch = "feature/record-deletion" }
-invenio-app-rdm = { git = "https://github.com/inveniosoftware/invenio-app-rdm", branch = "feature/record-deletion" }
-invenio-requests = { git = "https://github.com/inveniosoftware/invenio-requests", branch = "feature/computed-fields" }
-invenio-oauthclient = { git = "https://github.com/inveniosoftware/invenio-oauthclient", branch = "feature/eosc-aai" }
 
 [tool.uv.workspace]
 members = [
