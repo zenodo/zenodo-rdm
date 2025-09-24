@@ -8,8 +8,9 @@
             </td>
         </tr>
         <tr>
+            {% set name = user.profile.full_name if user.profile and user.profile.full_name else user.username %}
             <td style="padding:5px 15px 10px 15px;">
-                <p>{{ _('Hello, %(username)s!', username=user.username) }}</p>
+                <p>{{ _('Hello, %(name)s!', name=name) }}</p>
                 <p>{{ _('Your password has been successfully changed!') }}</p>
             </td>
         </tr>
