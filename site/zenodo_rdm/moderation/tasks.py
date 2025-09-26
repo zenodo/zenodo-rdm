@@ -51,7 +51,7 @@ def update_moderation_request(user_id, action_ctx):
     )
     request_id = next(results.hits)["id"] if results.total > 0 else None
 
-    # NOTE: We only need the unit of work becase we might need to create a new request
+    # NOTE: We only need the unit of work because we might need to create a new request
     with UnitOfWork() as uow:
         # If no request exists, create a new one
         if request_id is None:

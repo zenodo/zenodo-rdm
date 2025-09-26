@@ -260,7 +260,7 @@ class Profiler:
         return {}
 
     def clear_sessions(self):
-        """Delete all profiling sesions files from storage."""
+        """Delete all profiling sessions files from storage."""
         for sess_db in self.storage_dir.iterdir():
             if sess_db.is_file() and sess_db.suffix == ".db":
                 sess_db.unlink(missing_ok=True)

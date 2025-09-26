@@ -363,7 +363,7 @@ class LegacyFileService(FileService):
                 id_, registered_only=True
             )
             # FIXME: This is a horrible hack to make sure that we can check permissions
-            # based on the published record. We "unset" this everytime at the top of
+            # based on the published record. We "unset" this every time at the top of
             # this method.
             self.config.permission_action_prefix = ""
 
