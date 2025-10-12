@@ -25,14 +25,14 @@ services:
     image: zenodo-frontend
     restart: "unless-stopped"
     ports:
-      - "80"
-      - "443"
+      - "${DOCKER_SERVICES_IP_BIND:-127.0.0.1}:80:80"
+      - "${DOCKER_SERVICES_IP_BIND:-127.0.0.1}:443:443"
   cache:
     image: redis:7.2.1
     restart: "unless-stopped"
     read_only: true
     ports:
-      - "6379:6379"
+      - "${DOCKER_SERVICES_IP_BIND:-127.0.0.1}:6379:6379"
   db:
     image: postgres:14.15
     restart: "unless-stopped"
@@ -41,15 +41,15 @@ services:
       - "POSTGRES_PASSWORD=zenodo"
       - "POSTGRES_DB=zenodo"
     ports:
-      - "5432:5432"
+      - "${DOCKER_SERVICES_IP_BIND:-127.0.0.1}:5432:5432"
     volumes:
       - ./docker/db/init-readonly-user.sql:/docker-entrypoint-initdb.d/init-readonly-user.sql
   pgadmin:
     image: dpage/pgadmin4:7.7
     restart: "unless-stopped"
     ports:
-      - "5050:80"
-      - "5051:443"
+      - "${DOCKER_SERVICES_IP_BIND:-127.0.0.1}:5050:80"
+      - "${DOCKER_SERVICES_IP_BIND:-127.0.0.1}:5051:443"
     environment:
       PGADMIN_DEFAULT_EMAIL: "info@zenodo.org"
       PGADMIN_DEFAULT_PASSWORD: "zenodo"
@@ -59,7 +59,7 @@ services:
     image: registry.cern.ch/pgbouncer/pgbouncer:1.19.1
     restart: "unless-stopped"
     ports:
-      - "6432:6432"
+      - "${DOCKER_SERVICES_IP_BIND:-127.0.0.1}:6432:6432"
     volumes:
       - ./docker/pgbouncer/pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini
       - ./docker/pgbouncer/userlist.txt:/etc/pgbouncer/userlist.txt
@@ -67,8 +67,8 @@ services:
     image: rabbitmq:3.12.6-management
     restart: "unless-stopped"
     ports:
-      - "15672:15672"
-      - "5672:5672"
+      - "${DOCKER_SERVICES_IP_BIND:-127.0.0.1}:15672:15672"
+      - "${DOCKER_SERVICES_IP_BIND:-127.0.0.1}:5672:5672"
   search:
     image: opensearchproject/opensearch:2.15.0
     restart: "unless-stopped"
@@ -95,12 +95,12 @@ services:
         hard: -1
     mem_limit: 2g
     ports:
-      - "9200:9200"
-      - "9300:9300"
+      - "${DOCKER_SERVICES_IP_BIND:-127.0.0.1}:9200:9200"
+      - "${DOCKER_SERVICES_IP_BIND:-127.0.0.1}:9300:9300"
   opensearch-dashboards:
     image: opensearchproject/opensearch-dashboards:2.15.0
     ports:
-      - "5601:5601"
+      - "${DOCKER_SERVICES_IP_BIND:-127.0.0.1}:5601:5601"
     expose:
       - "5601"
     environment:
@@ -109,8 +109,8 @@ services:
   iipserver:
     image: iipsrv/iipsrv:latest
     ports:
-      - "8080:80"
-      - "9000:9000"
+      - "${DOCKER_SERVICES_IP_BIND:-127.0.0.1}:8080:80"
+      - "${DOCKER_SERVICES_IP_BIND:-127.0.0.1}:9000:9000"
     expose:
       - "8080"
       - "9000"
