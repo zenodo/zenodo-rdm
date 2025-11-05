@@ -219,7 +219,7 @@ class ZenodoRDMRecordPermissionPolicy(RDMRecordPermissionPolicy):
 
     # Media files
     can_draft_media_create_files = [MediaFilesManager(), SystemProcess()]
-    can_draft_media_read_files = can_draft_media_create_files
+    can_draft_media_read_files = can_draft_read_files
     can_draft_media_set_content_files = [
         IfTransferType(LOCAL_TRANSFER_TYPE, can_draft_media_create_files),
         SystemProcess(),
