@@ -11,11 +11,11 @@ from flask import current_app
 from flask_resources import BaseListSchema, MarshmallowSerializer
 from flask_resources.serializers import JSONSerializer, SimpleSerializer
 from invenio_rdm_records.contrib.journal.processors import JournalDataciteDumper
-from invenio_rdm_records.resources.serializers.datacite.schema import DataCite43Schema
+from invenio_rdm_records.resources.serializers.datacite.schema import DataCite45Schema
 from marshmallow import missing
 
 
-class ZenodoDataciteSchema(DataCite43Schema):
+class ZenodoDataciteSchema(DataCite45Schema):
     """Zenodo Datacite schema."""
 
     def get_related_identifiers(self, obj):
