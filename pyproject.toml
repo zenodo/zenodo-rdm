@@ -1,6 +1,6 @@
 [project]
 name = "zenodo-rdm-app"
-version = "21.1.5"
+version = "21.1.6"
 authors = [
     { name = "CERN" }
 ]
@@ -22,6 +22,7 @@ dependencies = [
     "uwsgitop>=0.11",
     "uwsgi-tools>=1.1.1",
     "invenio-records-resources",
+    "invenio-previewer",
 ]
 
 [tool.uv.sources]
@@ -30,6 +31,7 @@ zenodo-legacy = { workspace = true }
 invenio-swh = { git = "https://github.com/inveniosoftware/invenio-swh", rev = "v0.13.4" }
 # User profile fixes
 invenio-records-resources = { git = "https://github.com/inveniosoftware/invenio-records-resources", branch = "fix-read-many" }
+invenio-previewer = { git = "https://github.com/inveniosoftware/invenio-previewer", branch = "pdfjs-disable-range-stream" }
 
 [tool.uv.workspace]
 members = [
