@@ -70,7 +70,7 @@ services:
       - "${DOCKER_SERVICES_IP_BIND:-127.0.0.1}:15672:15672"
       - "${DOCKER_SERVICES_IP_BIND:-127.0.0.1}:5672:5672"
   search:
-    image: opensearchproject/opensearch:2.15.0
+    image: opensearchproject/opensearch:3.2.0
     restart: "unless-stopped"
     environment:
       - bootstrap.memory_lock=true
@@ -98,7 +98,7 @@ services:
       - "${DOCKER_SERVICES_IP_BIND:-127.0.0.1}:9200:9200"
       - "${DOCKER_SERVICES_IP_BIND:-127.0.0.1}:9300:9300"
   opensearch-dashboards:
-    image: opensearchproject/opensearch-dashboards:2.15.0
+    image: opensearchproject/opensearch-dashboards:3.2.0
     ports:
       - "${DOCKER_SERVICES_IP_BIND:-127.0.0.1}:5601:5601"
     expose:
