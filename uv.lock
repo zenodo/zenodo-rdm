@@ -2301,8 +2301,8 @@ wheels = [
 
 [[package]]
 name = "invenio-previewer"
-version = "3.4.2"
-source = { git = "https://github.com/inveniosoftware/invenio-previewer?branch=pdfjs-disable-range-stream#982b7579491648ffa3f4b80e379678a780c05919" }
+version = "3.5.0"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "charset-normalizer" },
     { name = "invenio-assets" },
@@ -2315,6 +2315,10 @@ dependencies = [
     { name = "mistune" },
     { name = "nbconvert" },
     { name = "nbformat" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/02/c0/5000b76f004a2b76583a503b99621b93b1d09e5c62f68e88a6b15637da06/invenio_previewer-3.5.0.tar.gz", hash = "sha256:d9a81be5b1db19d33bc8939da2c4b8a84e33238f836f4b9143a8aecd8e76fa29", size = 156853, upload-time = "2025-11-12T16:14:09.713Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/fa/38/d597631b1295bfab30579feb8e3a88824dac02515d244034702b43d5ff57/invenio_previewer-3.5.0-py2.py3-none-any.whl", hash = "sha256:ea41186c7cae69458e72841626f19af3411c5bbc7fa4a249509a566038536bf8", size = 206139, upload-time = "2025-11-12T16:14:07.681Z" },
 ]
 
 [[package]]
@@ -6272,7 +6276,7 @@ dev = [
 requires-dist = [
     { name = "github3-py", specifier = ">=3.0.0" },
     { name = "invenio-app-rdm", extras = ["opensearch2"], specifier = "~=14.0.0b1.dev2" },
-    { name = "invenio-previewer", git = "https://github.com/inveniosoftware/invenio-previewer?branch=pdfjs-disable-range-stream" },
+    { name = "invenio-previewer" },
     { name = "invenio-records-resources", git = "https://github.com/inveniosoftware/invenio-records-resources?branch=fix-read-many" },
     { name = "invenio-swh", git = "https://github.com/inveniosoftware/invenio-swh?rev=v0.13.4" },
     { name = "invenio-xrootd", marker = "extra == 'xrootd'", specifier = "==2.0.0a2" },
