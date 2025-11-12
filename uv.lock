@@ -2419,7 +2419,7 @@ wheels = [
 [[package]]
 name = "invenio-records-resources"
 version = "8.6.0"
-source = { git = "https://github.com/inveniosoftware/invenio-records-resources?branch=fix-read-many#b93c3440c50bdd13a4cfe3a58d9a6188ecfed4e3" }
+source = { git = "https://github.com/inveniosoftware/invenio-records-resources?branch=fix-read-many#010cd4f36304cb2f9dff8baf019445a6d8cbae91" }
 dependencies = [
     { name = "babel-edtf" },
     { name = "flask-resources" },
