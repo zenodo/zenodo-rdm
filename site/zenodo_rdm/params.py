@@ -9,6 +9,8 @@
 
 from functools import partial
 
+from flask import request
+from flask_login import current_user
 from invenio_rdm_records.resources.config import RDMSearchRequestArgsSchema
 from invenio_rdm_records.services.config import RDMSearchOptions
 from invenio_records_resources.services.records.params.base import ParamInterpreter
@@ -49,7 +51,7 @@ class LegacyCommunitiesParam(ParamInterpreter):
             try:
                 community = Community.pid.resolve(slug)  # Ensure community's existence
                 community_ids.append(community.id)
-            except:
+            except Exception:
                 # we show only results from communities that resolve
                 pass
 
@@ -98,6 +100,13 @@ class ZenodoArgsSchema(RDMSearchRequestArgsSchema):
     status = fields.String()
     type = fields.String()
     subtype = fields.String()
+
+    @property
+    def max_page_size(self):
+        """Max page size depending on user authentication."""
+        if request and current_user.is_authenticated:
+            return 200
+        return 100
 
     @pre_load
     def load_all_versions(self, data, **kwargs):
