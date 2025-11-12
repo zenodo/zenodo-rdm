@@ -31,7 +31,6 @@ zenodo-legacy = { workspace = true }
 invenio-swh = { git = "https://github.com/inveniosoftware/invenio-swh", rev = "v0.13.4" }
 # User profile fixes
 invenio-records-resources = { git = "https://github.com/inveniosoftware/invenio-records-resources", branch = "fix-read-many" }
-invenio-previewer = { git = "https://github.com/inveniosoftware/invenio-previewer", branch = "pdfjs-disable-range-stream" }
 
 [tool.uv.workspace]
 members = [
