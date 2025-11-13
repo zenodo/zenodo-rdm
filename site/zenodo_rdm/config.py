@@ -53,18 +53,11 @@ SUPPORT_ISSUE_CATEGORIES = [
         "key": "file-modification",
         "title": "File modification",
         "description": (
-            "File modifications are possible within a short grace period after publishing:"
-            "<ul>"
-            "<li><strong>Published <=30 days (accepted):</strong> File modifications are accepted within a 30 days grace period after publishing your record.</li>"
-            '<li><strong>Published >30 days (declined):</strong> Please use our <a href="https://help.zenodo.org/docs/deposit/manage-versions/">versioning feature</a> for records published >30 days ago. File modification requests made after the 30-day grace period are declined.</li>'
-            "</ul>"
-            "Please provide the following information:"
-            "<ul>"
-            "<li><strong>Justification:</strong> Short justification for the file change.</li>"
-            "<li><strong>Record URL:</strong> Please provide a direct link to the record you would like to modify (e.g. https://zenodo.org/records/1234).</li>"
-            "<li><strong>Actions:</strong> Please specify all changes you would like to perform (add/replace/delete/rename). Please specify the exact <strong>filename</strong> for each action.</li>"
-            "<li><strong>Files:</strong> Please provide the files on a publicly-accessible URL(s) or for smaller files attach them on the form.</li>"
-            "</ul>"
+            '<div class="ui warning visible message">'
+            '<div class="header">Modify the files yourself</div>'
+            '<p>Please follow the documentation to <a href="https://help.zenodo.org/docs/deposit/manage-files/#modify">edit your published files</a> first. Requests within 30 days of publication will be automatically declined.</p>'
+            "<p>Note: If over 30 days have passed since publication, please enquire below.</p>"
+            "</div>"
         ),
     },
     {

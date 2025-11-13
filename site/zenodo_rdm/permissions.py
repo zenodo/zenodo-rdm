@@ -264,8 +264,6 @@ class ZenodoRDMRecordPermissionPolicy(RDMRecordPermissionPolicy):
     can_media_delete_files = [SystemProcess()]
 
     can_modify_locked_files = [
-        Administration(),
-        UserManager,
         SystemProcess(),
         IfExternalDOIRecord(then_=[ExternalDOIFilesManager()], else_=[]),
     ]
