@@ -1793,7 +1793,7 @@ wheels = [
 
 [[package]]
 name = "invenio-app-rdm"
-version = "14.0.0b1.dev5"
+version = "14.0.0b1.dev6"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cairosvg" },
@@ -1834,9 +1834,9 @@ dependencies = [
     { name = "invenio-theme" },
     { name = "invenio-userprofiles" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/20/60/34d66e9b56d90df6bf998a6111349bb2ab83d3e6749ae3ef370c3c1a6ea2/invenio_app_rdm-14.0.0b1.dev5.tar.gz", hash = "sha256:85237f61f493c91f1ac50b8d60fee5babdeef20462b2100b1228335079f2411b", size = 724462, upload-time = "2025-10-14T08:15:00.51Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/64/87/459f2639f7383556fa8c14069cc919d1238eed71f7ed2b3a8375bc875708/invenio_app_rdm-14.0.0b1.dev6.tar.gz", hash = "sha256:7a63b7f45c9e733dfb57c24dc512d69b7c685490a96c18b2d7f5e507c22cf079", size = 725385, upload-time = "2025-11-13T13:35:15.519Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/78/ca/9aa5b242ff9dca099bc9e6935ba36bb6a279b718dad96c46a328d915b7c3/invenio_app_rdm-14.0.0b1.dev5-py2.py3-none-any.whl", hash = "sha256:cdb4bbe0267a661b7fd8216562b21be5c9880defb1ee8b7bf6964082a80ed5b2", size = 1157302, upload-time = "2025-10-14T08:14:58.15Z" },
+    { url = "https://files.pythonhosted.org/packages/c3/3a/220d6f8f88a0c0f4838fb59866f3a0f7d7575320dde9ebb7645f32af8875/invenio_app_rdm-14.0.0b1.dev6-py2.py3-none-any.whl", hash = "sha256:ac8147821dcc51d9ae542f9d776452cc9ca0c7bba6f54a608b7166a00936a2c8", size = 1157409, upload-time = "2025-11-13T13:35:11.66Z" },
 ]
 
 [package.optional-dependencies]
@@ -2246,7 +2246,7 @@ wheels = [
 
 [[package]]
 name = "invenio-oauthclient"
-version = "5.3.0"
+version = "5.3.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "blinker" },
@@ -2263,9 +2263,9 @@ dependencies = [
     { name = "uritemplate" },
     { name = "uritools" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/00/33/29342891f44ea38d734acc0e4da8252d309499d7bd1b7fcf71389cac7335/invenio_oauthclient-5.3.0.tar.gz", hash = "sha256:262a7c29c3c2c7a46033d4cd30ac10a22977394dae6c81039e37f0eea430ce31", size = 94716, upload-time = "2025-09-24T13:04:48.565Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/2f/b7/8b8ca35d432ed8d97e45d187efa552a75e36db1925eadfc6bf5434efdea3/invenio_oauthclient-5.3.1.tar.gz", hash = "sha256:580ef881b922a0b5e446e9a688d93e1214311bfc18888cdc1b6c6deac2937d58", size = 96991, upload-time = "2025-10-21T11:51:36.703Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/38/5f/8762272624a71fe453b200e3e686f04d8990513777ae4df0aa6010db6df3/invenio_oauthclient-5.3.0-py2.py3-none-any.whl", hash = "sha256:b6ff3d226664908c8ae3431765ec0af9861f3f2fba155aa15daa7299e8321cfc", size = 208522, upload-time = "2025-09-24T13:04:47.189Z" },
+    { url = "https://files.pythonhosted.org/packages/97/4f/75812f59856452523f1e6cd0216310a90c0c9fb51bf9a3f31682d395b496/invenio_oauthclient-5.3.1-py2.py3-none-any.whl", hash = "sha256:669e724b39cab9e4cf35cbe82c72d9e212223c116b1409102a5e3f6facebaa31", size = 214232, upload-time = "2025-10-21T11:51:35.149Z" },
 ]
 
 [[package]]
@@ -2337,7 +2337,7 @@ wheels = [
 
 [[package]]
 name = "invenio-rdm-records"
-version = "21.3.0"
+version = "21.3.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "arrow" },
@@ -2369,9 +2369,9 @@ dependencies = [
     { name = "pytz" },
     { name = "pyyaml" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/27/38/c369ed9067ae84a2f12576774990a54ab2b7e5fc761478a9a7e6d3c47287/invenio_rdm_records-21.3.0.tar.gz", hash = "sha256:ca5349448d0cdbae5c6bc2a0e326a8c406d783900fbc9a1bd0ba57f47c0ce48c", size = 1243529, upload-time = "2025-10-20T13:53:42.481Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ea/1e/e4001488d62a9e49f01d6314ba4476125719f23699d55ce53781da86749d/invenio_rdm_records-21.3.2.tar.gz", hash = "sha256:2a2c88d66a85b2959edd0abb935678e9bdc7d740ddb03416259c1ea33ec38e44", size = 1243426, upload-time = "2025-11-13T10:00:24.838Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/bf/01/dbb2331a0ba997ea3de66d2dc1ee024013c4690f3f6eff9be6a620c0df1d/invenio_rdm_records-21.3.0-py2.py3-none-any.whl", hash = "sha256:7b5373f5ff046cb9304fa8d9f991d35533b87da34b3313fb19bbfdb4fcfe346b", size = 1769537, upload-time = "2025-10-20T13:53:39.875Z" },
+    { url = "https://files.pythonhosted.org/packages/6e/a0/8299f9c855ae933e78ac0dfb15949e9c6ed4ba2217b7934f55351924bcef/invenio_rdm_records-21.3.2-py2.py3-none-any.whl", hash = "sha256:d48bc43899a59df7955d82cba0c0762d49fa8895b7614caaba882d9a5c18e478", size = 1769960, upload-time = "2025-11-13T10:00:21.546Z" },
 ]
 
 [[package]]
@@ -6237,7 +6237,7 @@ source = { editable = "site" }
 
 [[package]]
 name = "zenodo-rdm-app"
-version = "21.1.6"
+version = "21.1.7"
 source = { virtual = "." }
 dependencies = [
     { name = "github3-py" },
@@ -6275,7 +6275,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "github3-py", specifier = ">=3.0.0" },
-    { name = "invenio-app-rdm", extras = ["opensearch2"], specifier = "~=14.0.0b1.dev2" },
+    { name = "invenio-app-rdm", extras = ["opensearch2"], specifier = "==14.0.0b1.dev6" },
     { name = "invenio-previewer" },
     { name = "invenio-records-resources", git = "https://github.com/inveniosoftware/invenio-records-resources?branch=fix-read-many" },
     { name = "invenio-swh", git = "https://github.com/inveniosoftware/invenio-swh?rev=v0.13.4" },
