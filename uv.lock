@@ -2301,7 +2301,7 @@ wheels = [
 
 [[package]]
 name = "invenio-previewer"
-version = "3.5.0"
+version = "3.5.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "charset-normalizer" },
@@ -2316,9 +2316,9 @@ dependencies = [
     { name = "nbconvert" },
     { name = "nbformat" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/02/c0/5000b76f004a2b76583a503b99621b93b1d09e5c62f68e88a6b15637da06/invenio_previewer-3.5.0.tar.gz", hash = "sha256:d9a81be5b1db19d33bc8939da2c4b8a84e33238f836f4b9143a8aecd8e76fa29", size = 156853, upload-time = "2025-11-12T16:14:09.713Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/5b/6c/6a01bbefb52b86e0f8ab6c1a6ad85241db0d3499dd82ce3b80c18c5e4865/invenio_previewer-3.5.1.tar.gz", hash = "sha256:04185b04af00f29a2345d10a8d118d23c47d85fda1255402d98786364e0c27a7", size = 156819, upload-time = "2025-11-20T08:18:41.887Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/fa/38/d597631b1295bfab30579feb8e3a88824dac02515d244034702b43d5ff57/invenio_previewer-3.5.0-py2.py3-none-any.whl", hash = "sha256:ea41186c7cae69458e72841626f19af3411c5bbc7fa4a249509a566038536bf8", size = 206139, upload-time = "2025-11-12T16:14:07.681Z" },
+    { url = "https://files.pythonhosted.org/packages/10/10/c8ccb762f9b54ca22f18ff155efeffc20a8b5f9fa5e353c8fb96398f5f5c/invenio_previewer-3.5.1-py2.py3-none-any.whl", hash = "sha256:294a2945b5615de072b199701c78af1a28584b500879f4c1a1e459615b2dbdf2", size = 206168, upload-time = "2025-11-20T08:18:40.204Z" },
 ]
 
 [[package]]
@@ -6237,7 +6237,7 @@ source = { editable = "site" }
 
 [[package]]
 name = "zenodo-rdm-app"
-version = "21.1.8"
+version = "21.1.9"
 source = { virtual = "." }
 dependencies = [
     { name = "github3-py" },
