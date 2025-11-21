@@ -54,7 +54,7 @@ SUPPORT_ISSUE_CATEGORIES = [
         "title": "File modification",
         "description": (
             '<div class="ui warning visible message">'
-            '<div class="header">Modify the files yourself</div>'
+            '<div class="header">You can modify your files</div>'
             '<p>Please follow the documentation to <a href="https://help.zenodo.org/docs/deposit/manage-files/#modify">edit your published files</a> first. Requests for records within 30 days of publication will be automatically declined.</p>'
             "<p>Note: If over 30 days have passed since publication, please enquire below.</p>"
             "</div>"
@@ -73,7 +73,7 @@ SUPPORT_ISSUE_CATEGORIES = [
         "title": "Record deletion",
         "description": (
             '<div class="ui warning visible message">'
-            '<div class="header">Delete your record yourself</div>'
+            '<div class="header">You can delete your record</div>'
             '<p>Please follow the documentation on <a href="https://help.zenodo.org/docs/deposit/manage-records/#delete">how to delete records</a> instead of creating a support ticket here.</p>'
             "<p>Note: if you are not able to delete the record as you are not the uploader, choose <em>take-down notice</em> instead</p>"
             "</div>"
