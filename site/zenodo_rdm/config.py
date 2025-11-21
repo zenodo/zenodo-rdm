@@ -55,7 +55,7 @@ SUPPORT_ISSUE_CATEGORIES = [
         "description": (
             '<div class="ui warning visible message">'
             '<div class="header">Modify the files yourself</div>'
-            '<p>Please follow the documentation to <a href="https://help.zenodo.org/docs/deposit/manage-files/#modify">edit your published files</a> first. Requests within 30 days of publication will be automatically declined.</p>'
+            '<p>Please follow the documentation to <a href="https://help.zenodo.org/docs/deposit/manage-files/#modify">edit your published files</a> first. Requests for records within 30 days of publication will be automatically declined.</p>'
             "<p>Note: If over 30 days have passed since publication, please enquire below.</p>"
             "</div>"
         ),
