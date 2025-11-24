@@ -6,6 +6,7 @@
 
 import { UpgradeLegacyRecordButton } from "../../components/landing_page/overrides/UpgradeLegacyRecordButton";
 import SubcommunityCreateForm from "../../components/community/overrides/SubcommunityCreateForm";
+import FileModificationModalMessage from "../../components/community/overrides/FileModificationModalMessage";
 import { CustomAffiliationsSuggestions } from "../../components/react_invenio_forms/CustomAffiliationsSuggestions";
 
 export const overriddenComponents = {
@@ -13,4 +14,5 @@ export const overriddenComponents = {
     UpgradeLegacyRecordButton,
   "ReactInvenioForms.AffiliationsSuggestions.content": CustomAffiliationsSuggestions,
   "InvenioCommunities.CommunityCreateForm.layout": SubcommunityCreateForm,
+  "InvenioAppRdm.Deposit.ModificationModal.message": FileModificationModalMessage,
 };
