@@ -1982,7 +1982,7 @@ wheels = [
 
 [[package]]
 name = "invenio-app-rdm"
-version = "14.0.0b1.dev8"
+version = "14.0.0b1.dev9"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cairosvg" },
@@ -2023,9 +2023,9 @@ dependencies = [
     { name = "invenio-theme" },
     { name = "invenio-userprofiles" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/7b/72/bf1ab89e20bb9c7675e18b44551b7fe68c7c870e5c920a400ffa9d385a05/invenio_app_rdm-14.0.0b1.dev8.tar.gz", hash = "sha256:2d04169da3a8e5f7f1c0227a8a7659e5d07500ff96a0820fc36ce7df439d08fd", size = 726371, upload-time = "2025-11-21T10:14:01.364Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/49/91/10d1cca24beed982d60468f07287fbbb21c3bab38e9dcdf72ebcd7cc8028/invenio_app_rdm-14.0.0b1.dev9.tar.gz", hash = "sha256:08e563f2265ef9978eeee347c85b4c0b3136b5456c18b37131619ee138528ea5", size = 726894, upload-time = "2025-11-24T09:23:34.577Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f6/be/079a992c4b891bc477863b4127da072f3fdd34852ad15cb7a28e2422d15c/invenio_app_rdm-14.0.0b1.dev8-py2.py3-none-any.whl", hash = "sha256:2c59ce96c1009a5310782dde633e67a1cb41d69cbc54d158656c19b6564252d9", size = 1160126, upload-time = "2025-11-21T10:13:59.416Z" },
+    { url = "https://files.pythonhosted.org/packages/ec/6a/564a4cd8e2fac40e7c1574a324818b9837570f68ed5a26d6590080024f1c/invenio_app_rdm-14.0.0b1.dev9-py2.py3-none-any.whl", hash = "sha256:995eed16d9c456f2e3bedb4e83d41929bf83f94a2176f0bbba39ca0dbb6231cb", size = 1160152, upload-time = "2025-11-24T09:23:32.412Z" },
 ]
 
 [package.optional-dependencies]
@@ -6913,7 +6913,7 @@ source = { editable = "site" }
 
 [[package]]
 name = "zenodo-rdm-app"
-version = "21.3.0"
+version = "21.4.0"
 source = { virtual = "." }
 dependencies = [
     { name = "github3-py" },
@@ -6951,7 +6951,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "github3-py", specifier = ">=3.0.0" },
-    { name = "invenio-app-rdm", extras = ["opensearch2"], specifier = "==14.0.0b1.dev8" },
+    { name = "invenio-app-rdm", extras = ["opensearch2"], specifier = "==14.0.0b1.dev9" },
     { name = "invenio-previewer" },
     { name = "invenio-records-resources", git = "https://github.com/inveniosoftware/invenio-records-resources?branch=fix-read-many" },
     { name = "invenio-swh", git = "https://github.com/inveniosoftware/invenio-swh?rev=v0.13.4" },
