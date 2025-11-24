@@ -9,6 +9,7 @@
 import json
 
 import dictdiffer
+import pytest
 
 
 def test_invalid_create(test_app, client_with_login, deposit_url, headers):
@@ -76,3 +77,96 @@ def test_input_output(
     )
 
     assert not differences
+
+
+@pytest.mark.parametrize(
+    "related_identifiers,expected_field,expected_message",
+    [
+        (
+            "not-a-list",
+            "metadata.related_identifiers",
+            "related_identifiers must be a list",
+        ),
+        (
+            ["not-a-dict"],
+            "metadata.related_identifiers.0",
+            "Each related identifier must be an object",
+        ),
+        (
+            [{"identifier": "10.1234/foo", "relation": 123}],
+            "metadata.related_identifiers.0.relation",
+            "relation must be a string",
+        ),
+    ],
+)
+def test_malformed_related_identifiers(
+    test_app,
+    client_with_login,
+    deposit_url,
+    headers,
+    related_identifiers,
+    expected_field,
+    expected_message,
+):
+    """Test malformed related_identifiers validation."""
+    data = {
+        "metadata": {
+            "title": "Test",
+            "upload_type": "dataset",
+            "description": "Test description",
+            "creators": [{"name": "Test User"}],
+            "related_identifiers": related_identifiers,
+        }
+    }
+    res = client_with_login.post(deposit_url, json=data, headers=headers)
+    assert res.status_code == 400
+    errors = res.json["errors"]
+    assert len(errors) == 1
+    assert errors[0]["field"] == expected_field
+    assert expected_message in errors[0]["messages"][0]
+
+
+@pytest.mark.parametrize(
+    "license_value,expected_message",
+    [
+        (123, "Invalid license value provided"),
+        (["cc-by-4.0"], "Invalid license value provided"),
+    ],
+)
+def test_malformed_license(
+    test_app, client_with_login, deposit_url, headers, license_value, expected_message
+):
+    """Test malformed license validation."""
+    data = {
+        "metadata": {
+            "title": "Test",
+            "upload_type": "dataset",
+            "description": "Test description",
+            "creators": [{"name": "Test User"}],
+            "license": license_value,
+        }
+    }
+    res = client_with_login.post(deposit_url, json=data, headers=headers)
+    assert res.status_code == 400
+    errors = res.json["errors"]
+    assert len(errors) == 1
+    assert errors[0]["field"] == "metadata.license"
+    assert expected_message in errors[0]["messages"][0]
+
+
+@pytest.mark.parametrize("license_value", ["cc-by-4.0", {"id": "cc-by-4.0"}])
+def test_valid_license(
+    test_app, client_with_login, deposit_url, headers, license_value
+):
+    """Test valid license formats (string and dict with id)."""
+    data = {
+        "metadata": {
+            "title": "Test",
+            "upload_type": "dataset",
+            "description": "Test description",
+            "creators": [{"name": "Test User"}],
+            "license": license_value,
+        }
+    }
+    res = client_with_login.post(deposit_url, json=data, headers=headers)
+    assert res.status_code == 201

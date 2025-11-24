@@ -132,15 +132,36 @@ class MetadataSchema(Schema):
         """Splits alternate and related identifiers."""
         # Some identifiers are alternate identifiers if the relation is "isAlternateIdentifier"
         input_identifiers = data.get("related_identifiers", [])
+
+        if not isinstance(input_identifiers, list):
+            raise ValidationError(
+                message="related_identifiers must be a list",
+                field_name="related_identifiers",
+            )
+
         alternate_identifiers = []
         related_identifiers = []
-        for identifier in input_identifiers:
-            if identifier.get("relation") == "isAlternateIdentifier":
+
+        for idx, identifier in enumerate(input_identifiers):
+            if not isinstance(identifier, dict):
+                raise ValidationError(
+                    message="Each related identifier must be an object",
+                    field_name=f"related_identifiers.{idx}",
+                )
+
+            relation = identifier.get("relation")
+            if relation is not None and not isinstance(relation, str):
+                raise ValidationError(
+                    message="relation must be a string",
+                    field_name=f"related_identifiers.{idx}.relation",
+                )
+
+            if relation == "isAlternateIdentifier":
                 alternate_identifiers.append(identifier)
             else:
                 related_identifiers.append(identifier)
 
-        # A single alternate identifier will need ot set
+        # Update data with split identifiers
         if input_identifiers:
             if related_identifiers:
                 data["related_identifiers"] = related_identifiers
@@ -248,25 +269,35 @@ class MetadataSchema(Schema):
 
     def load_rights(self, obj):
         """Loads rights."""
+        if not isinstance(obj, (dict, str)):
+            raise ValidationError(
+                message=f"Invalid license value provided (expected string, or object with 'id' key): {obj}",
+                field_name="license",
+            )
+
         rdm_license = legacy_to_rdm(obj)
 
         ret = {}
         if rdm_license:
             ret = {"id": rdm_license}
         else:
-            if isinstance(obj, dict) and "id" in obj:
-                license_id = obj.get("id")
-            elif isinstance(obj, str):
-                license_id = obj
+            if isinstance(obj, dict):
+                if "id" not in obj:
+                    raise ValidationError(
+                        message=f"Invalid license object provided (missing 'id' key): {obj}",
+                        field_name="license",
+                    )
+                license_id = obj["id"]
             else:
-                raise ValidationError(
-                    f"Invalid license value provided (expected string or object with 'id' key): {obj}"
-                )
+                license_id = obj
 
             # If license does not exist in RDM, it is added as custom
             legacy_license = LEGACY_LICENSES.get(license_id)
             if not legacy_license:
-                raise ValidationError(f"Invalid license provided: {license_id}")
+                raise ValidationError(
+                    message=f"Invalid license provided: {license_id}",
+                    field_name="license",
+                )
             ret = {"title": {"en": legacy_license["title"]}}
 
         return [ret]
