@@ -14,11 +14,8 @@ from collections import OrderedDict
 from flask import (
     Blueprint,
     current_app,
-    flash,
-    redirect,
     render_template,
     request,
-    url_for,
 )
 from flask.views import MethodView
 from flask_login import current_user

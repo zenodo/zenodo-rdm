@@ -374,7 +374,6 @@ def test_delete_deposits_anonymous(
 ):
     """Test read deposit by users."""
     owner = uploader
-    not_owner = test_user
 
     # Create a draft using the owner user
     client = owner.api_login(client)

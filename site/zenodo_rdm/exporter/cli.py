@@ -37,6 +37,6 @@ def export_records_command(format, community_slug):
     """Export records."""
     try:
         export_records(format, community_slug)
-        click.secho(f"Records exported successfully.", fg="green")
+        click.secho("Records exported successfully.", fg="green")
     except Exception as e:
         click.secho(f"Error exporting records: {e}", fg="red")

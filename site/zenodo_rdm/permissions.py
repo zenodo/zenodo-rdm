@@ -7,7 +7,6 @@
 
 """Zenodo permissions."""
 
-from invenio_administration.generators import Administration
 from invenio_communities.permissions import CommunityPermissionPolicy
 from invenio_rdm_records.services.generators import (
     AccessGrant,

@@ -253,7 +253,7 @@ def test_accept_a_request(
 
     # random user can't lift embargo
     _add_embargo(res_record1, db)
-    with pytest.raises(PermissionDeniedError) as e:
+    with pytest.raises(PermissionDeniedError):
         service.lift_embargo(_id=recid, identity=test_user.identity)
 
 
@@ -330,12 +330,12 @@ def test_decline_a_request(
 
     # community owner can't lift embargo
     _add_embargo(res_record1, db)
-    with pytest.raises(PermissionDeniedError) as e:
+    with pytest.raises(PermissionDeniedError):
         service.lift_embargo(_id=recid, identity=community_owner.identity)
 
     # random user can't lift embargo
     _add_embargo(res_record1, db)
-    with pytest.raises(PermissionDeniedError) as e:
+    with pytest.raises(PermissionDeniedError):
         service.lift_embargo(_id=recid, identity=test_user.identity)
 
 
@@ -416,5 +416,5 @@ def test_request_expire(
 
     # random user can't lift embargo
     _add_embargo(res_record1, db)
-    with pytest.raises(PermissionDeniedError) as e:
+    with pytest.raises(PermissionDeniedError):
         service.lift_embargo(_id=recid, identity=test_user.identity)
