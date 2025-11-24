@@ -14,7 +14,7 @@ from flask_login import current_user
 from invenio_rdm_records.resources.config import RDMSearchRequestArgsSchema
 from invenio_rdm_records.services.config import RDMSearchOptions
 from invenio_records_resources.services.records.params.base import ParamInterpreter
-from marshmallow import fields, pre_load
+from marshmallow import ValidationError, fields, pre_load, validates
 
 
 class LegacyAllVersionsParam(ParamInterpreter):
@@ -101,12 +101,23 @@ class ZenodoArgsSchema(RDMSearchRequestArgsSchema):
     type = fields.String()
     subtype = fields.String()
 
-    @property
-    def max_page_size(self):
-        """Max page size depending on user authentication."""
+    MAX_PAGE_SIZE_AUTHENTICATED = 100
+    MAX_PAGE_SIZE_GUEST = 25
+
+    @validates("size")
+    def validate_max_page_size(self, value):
+        """Validate maximum page size based on user authentication."""
         if request and current_user.is_authenticated:
-            return 200
-        return 100
+            if value > self.MAX_PAGE_SIZE_AUTHENTICATED:
+                raise ValidationError(
+                    f"Page size cannot be greater than {self.MAX_PAGE_SIZE_AUTHENTICATED}."
+                )
+        else:
+            if value > self.MAX_PAGE_SIZE_GUEST:
+                raise ValidationError(
+                    f"Page size cannot be greater than {self.MAX_PAGE_SIZE_GUEST}. "
+                    f"Please use authenticated requests to increase the limit to {self.MAX_PAGE_SIZE_AUTHENTICATED}."
+                )
 
     @pre_load
     def load_all_versions(self, data, **kwargs):
