@@ -2264,7 +2264,7 @@ wheels = [
 
 [[package]]
 name = "invenio-github"
-version = "3.0.1"
+version = "3.0.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "email-validator" },
@@ -2289,9 +2289,9 @@ dependencies = [
     { name = "six" },
     { name = "uritemplate" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/a7/ea/dad0f851e168424377f527726efade5bfbfd932758cbdd012e476ea12361/invenio_github-3.0.1.tar.gz", hash = "sha256:eadc631d3dd86acc7c46431ef2cd6f6189a202996ea995203ca3d5f83a567677", size = 45783, upload-time = "2025-07-30T10:44:13.784Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/46/ea/0acd2c5a0e552e193f7666fb4cbefa8d121e6ca3b343d403a3e08d95a48f/invenio_github-3.0.2.tar.gz", hash = "sha256:097007f626815d593393bc18ad447bc6fc2660c6c9efc9c122dca22a1a4f4306", size = 46310, upload-time = "2025-11-26T15:27:03.771Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/2c/d6/b64ad925f4a5997ed67d3471070f876ba072dd43a374bd2f23a74bcf9bca/invenio_github-3.0.1-py2.py3-none-any.whl", hash = "sha256:baac653d3d37097df1b43d4db8cd2fd1c84f079d1c015ca8f9cb3943751273c1", size = 64153, upload-time = "2025-07-30T10:44:12.655Z" },
+    { url = "https://files.pythonhosted.org/packages/20/64/b4345fbdcb4dcc24ca5e18dda3051c4e0c54165ed0a222d80d02655e34fb/invenio_github-3.0.2-py2.py3-none-any.whl", hash = "sha256:d11f0562cfc681f8250e96dcc3d11221c0482f70bbf5310614b17ed9f297141b", size = 64630, upload-time = "2025-11-26T15:27:02.541Z" },
 ]
 
 [[package]]
