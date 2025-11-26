@@ -6,6 +6,7 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 """Custom code config."""
 
+from invenio_administration.permissions import administration_permission
 from invenio_search.api import dsl
 
 from .params import ZenodoArgsSchema, ZenodoSearchOptions
@@ -349,6 +350,14 @@ def lock_edit_record_published_files(service, identity, record=None, draft=None)
     can_modify = service.check_permission(
         identity, "modify_locked_files", record=record
     )
+
+    # Admins SHOULD NOT be allowed to automatically unlock files on edit, but instead
+    # go through an explicit file modification process that is logged and tracked.
+    # NOTE: We have to be explicit here, since admins usually have "superuser-access"
+    # permissions, which bypass the above check.
+    if administration_permission.allows(identity):
+        return True
+
     if can_modify:
         return False
 
