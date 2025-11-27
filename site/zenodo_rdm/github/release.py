@@ -61,9 +61,10 @@ class ZenodoReleaseMetadata(RDMReleaseMetadata):
             rdm_data = LegacySchema().load(legacy_data)
             return rdm_data["metadata"]
         except Exception as exc:
-            current_app.logger.exception(str(exc))
+            exc_str = str(exc)
+            current_app.logger.exception(exc_str)
             raise CustomGitHubMetadataError(
-                file=citation_file_name, message="Citation metadata load failed"
+                file=citation_file_name, message=f"Citation metadata load failed: {exc_str}"
             )
 
 
