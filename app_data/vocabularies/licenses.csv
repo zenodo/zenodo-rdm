@@ -139,7 +139,7 @@ epics,EPICS Open License,,,all,https://epics.anl.gov/license/open.php,spdx,
 epl-1.0,Eclipse Public License 1.0,,,"all,software",http://www.eclipse.org/legal/epl-v10.html,spdx,y
 epl-2.0,Eclipse Public License 2.0,,,"all,software",https://www.eclipse.org/legal/epl-2.0,spdx,y
 eudatagrid,EU DataGrid Software License,,,"all,software",http://eu-datagrid.web.cern.ch/eu-datagrid/license.html,spdx,y
-eupl-1.0,European Union Public License 1.0,,,"all,sofware",http://ec.europa.eu/idabc/en/document/7330.html,spdx,
+eupl-1.0,European Union Public License 1.0,,,"all,software",http://ec.europa.eu/idabc/en/document/7330.html,spdx,
 eupl-1.1,European Union Public License 1.1,,,"all,software",https://joinup.ec.europa.eu/software/page/eupl/licence-eupl,spdx,y
 eupl-1.2,European Union Public License 1.2,,,"all,software",https://joinup.ec.europa.eu/page/eupl-text-11-12,spdx,y
 entessa,Entessa Public License v1.0,,,"all,software",https://opensource.org/licenses/Entessa,spdx,y
