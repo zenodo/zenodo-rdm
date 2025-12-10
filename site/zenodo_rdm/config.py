@@ -76,9 +76,12 @@ SUPPORT_ISSUE_CATEGORIES = [
         "title": "Record deletion",
         "description": (
             '<div class="ui warning visible message">'
-            '<div class="header">You can delete your record</div>'
-            '<p>Please follow the documentation on <a href="https://help.zenodo.org/docs/deposit/manage-records/#delete">how to delete records</a> instead of creating a support ticket here.</p>'
-            "<p>Note: if you are not able to delete the record as you are not the uploader, choose <em>take-down notice</em> instead</p>"
+            '<div class="header">Deleting a record</div>'
+            "<ul>"
+            '<li><strong>Published within the last 30 days:</strong> Follow the <a href="https://help.zenodo.org/docs/deposit/manage-records/#delete">deletion guide</a> to delete your record.</li>'
+            '<li><strong>Published more than 30 days ago:</strong> Deletion is no longer possible. You can <a href="https://help.zenodo.org/docs/deposit/create-new-upload/#visibility">restrict public access to files</a>, <a href="https://help.zenodo.org/docs/deposit/describe-records/descriptions/">add a public note</a>, and optionally <a href="https://help.zenodo.org/docs/deposit/manage-versions/">upload a new version</a> if needed.</li>'
+            "</ul>"
+            "<p>For copyright issues, select <strong>Take-down notice</strong> from the category above. For personal data exposure, select <strong>Report personal data exposure</strong>.</p>"
             "</div>"
         ),
         "form_disabled": True,
