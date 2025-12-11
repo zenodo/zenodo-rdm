@@ -6,6 +6,9 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 """Custom code config."""
 
+from invenio_administration.permissions import administration_permission
+from invenio_search.api import dsl
+
 from .params import ZenodoArgsSchema, ZenodoSearchOptions
 from .redirector import (
     communities_detail_view_function,
@@ -53,18 +56,11 @@ SUPPORT_ISSUE_CATEGORIES = [
         "key": "file-modification",
         "title": "File modification",
         "description": (
-            "File modifications are possible within a short grace period after publishing:"
-            "<ul>"
-            "<li><strong>Published <=30 days (accepted):</strong> File modifications are accepted within a 30 days grace period after publishing your record.</li>"
-            '<li><strong>Published >30 days (declined):</strong> Please use our <a href="https://help.zenodo.org/docs/deposit/manage-versions/">versioning feature</a> for records published >30 days ago. File modification requests made after the 30-day grace period are declined.</li>'
-            "</ul>"
-            "Please provide the following information:"
-            "<ul>"
-            "<li><strong>Justification:</strong> Short justification for the file change.</li>"
-            "<li><strong>Record URL:</strong> Please provide a direct link to the record you would like to modify (e.g. https://zenodo.org/records/1234).</li>"
-            "<li><strong>Actions:</strong> Please specify all changes you would like to perform (add/replace/delete/rename). Please specify the exact <strong>filename</strong> for each action.</li>"
-            "<li><strong>Files:</strong> Please provide the files on a publicly-accessible URL(s) or for smaller files attach them on the form.</li>"
-            "</ul>"
+            '<div class="ui warning visible message">'
+            '<div class="header">You can modify your files</div>'
+            '<p>Please follow the documentation to <a href="https://help.zenodo.org/docs/deposit/manage-files/#modify">edit your published files</a> first. Requests for records within 30 days of publication will be automatically declined.</p>'
+            "<p>Note: If over 30 days have passed since publication, please enquire below.</p>"
+            "</div>"
         ),
     },
     {
@@ -80,7 +76,7 @@ SUPPORT_ISSUE_CATEGORIES = [
         "title": "Record deletion",
         "description": (
             '<div class="ui warning visible message">'
-            '<div class="header">Delete your record yourself</div>'
+            '<div class="header">You can delete your record</div>'
             '<p>Please follow the documentation on <a href="https://help.zenodo.org/docs/deposit/manage-records/#delete">how to delete records</a> instead of creating a support ticket here.</p>'
             "<p>Note: if you are not able to delete the record as you are not the uploader, choose <em>take-down notice</em> instead</p>"
             "</div>"
@@ -154,7 +150,25 @@ SUPPORT_ENDPOINT = "/support"
 
 # Search query of recent uploads
 # Defaults to newest records search
-ZENODO_FRONTPAGE_RECENT_UPLOADS_QUERY = "type:(dataset OR software OR poster OR presentation) AND _exists_:parent.communities AND access.files:public"
+
+ZENODO_FRONTPAGE_RECENT_UPLOADS_QUERY = dsl.query.Bool(
+    must=[
+        dsl.Q(
+            "terms",
+            **{
+                "metadata.resource_type.id": [
+                    "dataset",
+                    "software",
+                    "poster",
+                    "presentation",
+                ]
+            },
+        ),
+        dsl.Q("exists", field="parent.communities"),
+        dsl.Q("term", **{"access.files": "public"}),
+    ]
+)
+
 
 # Citations
 # =========
@@ -336,6 +350,14 @@ def lock_edit_record_published_files(service, identity, record=None, draft=None)
     can_modify = service.check_permission(
         identity, "modify_locked_files", record=record
     )
+
+    # Admins SHOULD NOT be allowed to automatically unlock files on edit, but instead
+    # go through an explicit file modification process that is logged and tracked.
+    # NOTE: We have to be explicit here, since admins usually have "superuser-access"
+    # permissions, which bypass the above check.
+    if administration_permission.allows(identity):
+        return True
+
     if can_modify:
         return False
 

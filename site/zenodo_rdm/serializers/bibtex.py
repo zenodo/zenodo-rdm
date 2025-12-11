@@ -8,7 +8,6 @@
 
 from flask_resources import BaseListSchema, MarshmallowSerializer
 from flask_resources.serializers import SimpleSerializer
-from invenio_rdm_records.resources.serializers import BibtexSerializer
 from invenio_rdm_records.resources.serializers.bibtex.schema import BibTexSchema
 from marshmallow import fields, missing
 

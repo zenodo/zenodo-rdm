@@ -7,7 +7,6 @@
 
 """Zenodo permissions."""
 
-from invenio_administration.generators import Administration
 from invenio_communities.permissions import CommunityPermissionPolicy
 from invenio_rdm_records.services.generators import (
     AccessGrant,
@@ -219,7 +218,7 @@ class ZenodoRDMRecordPermissionPolicy(RDMRecordPermissionPolicy):
 
     # Media files
     can_draft_media_create_files = [MediaFilesManager(), SystemProcess()]
-    can_draft_media_read_files = can_draft_media_create_files
+    can_draft_media_read_files = can_draft_read_files
     can_draft_media_set_content_files = [
         IfTransferType(LOCAL_TRANSFER_TYPE, can_draft_media_create_files),
         SystemProcess(),
@@ -264,8 +263,6 @@ class ZenodoRDMRecordPermissionPolicy(RDMRecordPermissionPolicy):
     can_media_delete_files = [SystemProcess()]
 
     can_modify_locked_files = [
-        Administration(),
-        UserManager,
         SystemProcess(),
         IfExternalDOIRecord(then_=[ExternalDOIFilesManager()], else_=[]),
     ]

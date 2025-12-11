@@ -11,6 +11,11 @@ from collections import namedtuple
 
 import pytest
 from flask_security.utils import hash_password
+from flask_webpackext.manifest import (
+    JinjaManifest,
+    JinjaManifestEntry,
+    JinjaManifestLoader,
+)
 from invenio_access.models import ActionRoles
 from invenio_access.permissions import superuser_access, system_identity
 from invenio_accounts.models import Role
@@ -37,9 +42,35 @@ from zenodo_rdm.resources import record_serializers
 from .fake_datacite_client import FakeDataCiteClient
 
 
+#
+# Mock the webpack manifest to avoid having to compile the full assets.
+#
+class MockJinjaManifest(JinjaManifest):
+    """Mock manifest."""
+
+    def __getitem__(self, key):
+        """Get a manifest entry."""
+        return JinjaManifestEntry(key, [key])
+
+    def __getattr__(self, name):
+        """Get a manifest entry."""
+        return JinjaManifestEntry(name, [name])
+
+
+class MockManifestLoader(JinjaManifestLoader):
+    """Manifest loader creating a mocked manifest."""
+
+    def load(self, filepath):
+        """Load the manifest."""
+        return MockJinjaManifest()
+
+
 @pytest.fixture(scope="module")
 def app_config(app_config):
     """Mimic an instance's configuration."""
+    # Mock webpack manifest loader to avoid compiling assets for testing UI views
+    app_config["WEBPACKEXT_MANIFEST_LOADER"] = MockManifestLoader
+
     app_config["SESSION_COOKIE_DOMAIN"] = "127.0.0.1"
     app_config["REST_CSRF_ENABLED"] = False
     app_config["DATACITE_ENABLED"] = True
