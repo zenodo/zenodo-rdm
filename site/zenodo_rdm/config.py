@@ -57,11 +57,15 @@ SUPPORT_ISSUE_CATEGORIES = [
         "title": "File modification",
         "description": (
             '<div class="ui warning visible message">'
-            '<div class="header">You can modify your files</div>'
-            '<p>Please follow the documentation to <a href="https://help.zenodo.org/docs/deposit/manage-files/#modify">edit your published files</a> first. Requests for records within 30 days of publication will be automatically declined.</p>'
-            "<p>Note: If over 30 days have passed since publication, please enquire below.</p>"
+            '<div class="header">Modifying record files</div>'
+            "<ul>"
+            '<li><strong>Published within the last 30 days:</strong> Follow the <a href="https://help.zenodo.org/docs/deposit/manage-files/#modify">file modification guide</a> to edit your published files.</li>'
+            '<li><strong>Published more than 30 days ago:</strong> File modification is no longer possible. You can <a href="https://help.zenodo.org/docs/deposit/create-new-upload/#visibility">restrict public access to files</a>, <a href="https://help.zenodo.org/docs/deposit/describe-records/descriptions/">add a public note</a>, and <a href="https://help.zenodo.org/docs/deposit/manage-versions/">upload a new version</a> with the corrected files.</li>'
+            "</ul>"
+            "<p>For copyright issues, select <strong>Take-down notice</strong> from the category above. For personal data exposure, select <strong>Report personal data exposure</strong>.</p>"
             "</div>"
         ),
+        "form_disabled": True,
     },
     {
         "key": "quota-increase",
