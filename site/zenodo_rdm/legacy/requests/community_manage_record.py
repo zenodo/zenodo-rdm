@@ -7,7 +7,6 @@
 
 """Zenodo community manage record request."""
 
-from flask_login import current_user
 from invenio_access.permissions import system_identity
 from invenio_communities.proxies import current_communities
 from invenio_pidstore.models import PersistentIdentifier
@@ -56,14 +55,14 @@ def _create_comment(request, content, uow):
     uow.register(IndexRefreshOp(indexer=current_events_service.indexer))
 
 
-def _get_legacy_records_by_user():
+def _get_legacy_records_by_user(user_id):
     """Find legacy records of a specific user."""
     return current_rdm_records_service.search(
         system_identity,
         extra_filter=dsl.query.Bool(
             "must",
             must=[
-                dsl.Q("terms", **{"parent.access.owned_by.user": [current_user.id]}),
+                dsl.Q("terms", **{"parent.access.owned_by.user": [user_id]}),
                 # indicator that record is a legacy one
                 dsl.Q(
                     "exists",
@@ -119,7 +118,8 @@ class AcceptAction(actions.AcceptAction):
 
     def execute(self, identity, uow):
         """Grant permission to manage all legacy records of a user to all the communities."""
-        legacy_records = _get_legacy_records_by_user()
+        owner = self.request.receiver.resolve()
+        legacy_records = _get_legacy_records_by_user(owner.id)
 
         for hit in legacy_records.hits:
             # remove flag from record parent, permissions logic will do the rest
@@ -140,7 +140,8 @@ class DeclineAction(actions.DeclineAction):
 
     def execute(self, identity, uow):
         """Deny access to manage legacy records for community curators."""
-        legacy_records = _get_legacy_records_by_user()
+        owner = self.request.receiver.resolve()
+        legacy_records = _get_legacy_records_by_user(owner.id)
 
         for legacy_record in legacy_records.hits:
             record = _resolve_record(legacy_record)
@@ -158,7 +159,7 @@ class DeclineAction(actions.DeclineAction):
                             must=[
                                 dsl.Q("term", **{"role": "owner"})
                                 | dsl.Q("term", **{"role": "curator"}),
-                                dsl.Q("term", **{"user_id": current_user.id}),
+                                dsl.Q("term", **{"user_id": owner.id}),
                             ],
                         ),
                     )
@@ -176,7 +177,8 @@ class ExpireAction(actions.ExpireAction):
 
     def execute(self, identity, uow):
         """Grant permission to manage all legacy records of a user to all the communities."""
-        legacy_records = _get_legacy_records_by_user()
+        owner = self.request.receiver.resolve()
+        legacy_records = _get_legacy_records_by_user(owner.id)
 
         for hit in legacy_records.hits:
             # remove flag from record parent, permissions logic will do the rest
