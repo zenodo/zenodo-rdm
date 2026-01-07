@@ -844,16 +844,23 @@ BIODIVERSITY_FIELDS_UI = {
                 ),
             ),
         ),
-        # TODO - needs dedicated UI widget
         # obo
-        # dict(
-        #     field="obo:RO_0002453",
-        #     template="zenodo_rdm/obo.html",
-        #     ui_widget="MultiInput",
-        #     props=dict(
-        #         label="Host of",
-        #     ),
-        # ),
+        dict(
+            field="obo:RO_0002453",
+            ui_widget="RelationshipList",
+            template="zenodo_rdm/relationship_list.html",
+            props=dict(
+                label=_("Host of"),
+                subject=dict(
+                    label=_("Subject"),
+                    placeholder=_("e.g., host species name"),
+                ),
+                object=dict(
+                    label=_("Object"),
+                    placeholder=_("e.g., pathogen name"),
+                ),
+            ),
+        ),
     ],
 }
 
