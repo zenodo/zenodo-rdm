@@ -1,106 +1,165 @@
-# Dockerfile that builds a fully functional image of your app.
+# syntax=docker/dockerfile:1
 #
-# This image installs all Python dependencies for your application. It's based
-# on Almalinux (https://github.com/inveniosoftware/docker-invenio)
-# and includes Pip, Pipenv, Node.js, NPM and some few standard libraries
-# Invenio usually needs.
+# Zenodo Production Dockerfile
+#
+# Uses multi-stage build with Invenio base images:
+#   - Builder stage: compiles Python wheels, builds frontend assets
+#   - Runtime stage: minimal production image
+#
+# Note: XRootD (CERN storage) is only available for amd64, so this image
+# must be built with --platform=linux/amd64.
+#
+# Build:
+#   docker build --platform=linux/amd64 -t zenodo:latest .
+#
+# Build with specific options:
+#   docker build --platform=linux/amd64 \
+#     --build-arg XROOTD_VERSION=5.9.1 \
+#     --build-arg SENTRY_RELEASE=$(git rev-parse HEAD) \
+#     -t zenodo:$(git rev-parse --short HEAD) .
 
-FROM registry.cern.ch/inveniosoftware/almalinux:1
+# Global ARGs (available in all stages)
+ARG INVENIO_BASE_VERSION=1
+ARG REGISTRY=registry.cern.ch/inveniosoftware
+ARG XROOTD_VERSION=5.9.1
 
+# =============================================================================
+# STAGE 1: Build Python wheels and frontend assets
+# =============================================================================
+FROM ${REGISTRY}/almalinux:${INVENIO_BASE_VERSION}-builder AS builder
 
-RUN dnf install -y epel-release
+# Re-declare ARG after FROM to use in this stage
+ARG XROOTD_VERSION
 
-# Pin Python version: changing .python-version busts the Docker layer cache
-# and forces dnf update/reinstall to run, ensuring we get the expected version.
-COPY .python-version .python-version
-RUN dnf update -y && \
-    dnf reinstall -y python3 python3-devel python3-libs pip
+# ---- Build dependencies (combined for fewer layers) ----
+# - cmake, libuuid-devel: build xrootd Python bindings from PyPI
+# - krb5-devel: build kerberos bindings
+# - vips-devel: image processing
+# - xrootd-client-*: C libraries to link against
+RUN dnf config-manager --add-repo https://cern.ch/xrootd/xrootd.repo && \
+    dnf install -y http://rpms.remirepo.net/enterprise/remi-release-9.rpm && \
+    dnf install -y \
+        cmake \
+        krb5-devel \
+        libuuid-devel \
+        vips-devel \
+        xrootd-client-devel-${XROOTD_VERSION} \
+        xrootd-client-libs-${XROOTD_VERSION} && \
+    dnf clean all
 
-# XRootD
-ARG xrootd_version="5.5.5"
-# Repo required to find all the releases of XRootD
-RUN dnf config-manager --add-repo https://cern.ch/xrootd/xrootd.repo
-RUN if [ ! -z "$xrootd_version" ] ; then XROOTD_V="-$xrootd_version" ; else XROOTD_V="" ; fi && \
-    echo "Will install xrootd version: $XROOTD_V (latest if empty)" && \
-    dnf install -y xrootd"$XROOTD_V" python3-xrootd"$XROOTD_V"
-# /XRootD
-
-# Kerberos
-# CRB (Code Ready Builder): equivalent repository to well-known CentOS PowerTools
-RUN dnf install -y yum-utils
-RUN dnf config-manager --set-enabled crb
-# `krb5-devel` required by requests-kerberos
-RUN dnf install -y krb5-workstation krb5-libs krb5-devel
-COPY ./krb5.conf /etc/krb5.conf
-# /Kerberos
-
-# VIPS
-# libvips is not available in EPEL so we install the Remi repository configuration package
-# See: https://github.com/libvips/libvips/issues/1184
-RUN dnf install -y http://rpms.remirepo.net/enterprise/remi-release-9.rpm
-RUN dnf install -y vips
-# /VIPS
-
-# Python and uv configuration
+# ---- Python and uv configuration ----
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     UV_CACHE_DIR=/opt/.cache/uv \
     UV_COMPILE_BYTECODE=1 \
     UV_FROZEN=1 \
     UV_LINK_MODE=copy \
-    UV_NO_MANAGED_PYTHON=1 \
-    UV_SYSTEM_PYTHON=1 \
-    # Tell uv to use system Python
-    UV_PROJECT_ENVIRONMENT=/usr/ \
-    UV_PYTHON_DOWNLOADS=never \
     UV_REQUIRE_HASHES=1 \
     UV_VERIFY_HASHES=1
 
-# Get latest version of uv
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
-
-# Install Python dependencies using uv
+# ---- Build Python dependencies ----
 ARG BUILD_EXTRAS="--extra sentry --extra xrootd"
+
+# Install dependencies (not the workspace packages yet)
+# Using bind mounts avoids creating a layer for pyproject.toml/uv.lock
 RUN --mount=type=cache,target=/opt/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    uv sync --no-dev --no-install-workspace --no-editable $BUILD_EXTRAS \
-        # (py)xrootd is already installed above using dnf
+    uv sync --no-dev --no-install-workspace --no-editable ${BUILD_EXTRAS} \
         --no-install-package=xrootd
 
-COPY site ./site
-COPY legacy ./legacy
+# Add venv to PATH for subsequent commands
+ENV PATH="${WORKING_DIR}/src/.venv/bin:${PATH}"
 
-COPY ./docker/uwsgi/ ${INVENIO_INSTANCE_PATH}
-COPY ./invenio.cfg ${INVENIO_INSTANCE_PATH}
-COPY ./templates/ ${INVENIO_INSTANCE_PATH}/templates/
-COPY ./app_data/ ${INVENIO_INSTANCE_PATH}/app_data/
-COPY ./translations ${INVENIO_INSTANCE_PATH}/translations
-COPY ./ .
+# Build xrootd from PyPI BEFORE copying source (slow step, rarely changes)
+# Must link against system xrootd-client libs installed above
+RUN UV_REQUIRE_HASHES=0 uv pip install --no-cache xrootd==${XROOTD_VERSION}
 
-# Make sure workspace packages are installed (zenodo-rdm, zenodo-legacy)
+# Copy source code
+COPY . .
+
+# Install workspace packages (zenodo-rdm, zenodo-legacy)
 RUN --mount=type=cache,target=/opt/.cache/uv \
-    uv sync --frozen --no-dev $BUILD_EXTRAS \
-    # (py)xrootd is already installed above using dnf
-    --no-install-package=xrootd
+    uv sync --frozen --no-dev ${BUILD_EXTRAS} \
+        --no-install-package=xrootd
 
-# We're caching on a mount, so for any commands that run after this we
-# don't want to use the cache (for image filesystem permission reasons)
+# Disable uv cache for subsequent commands (filesystem permission reasons)
 ENV UV_NO_CACHE=1
 
-# application build args to be exposed as environment variables
+# ---- Build frontend assets ----
+# Copy static files and assets BEFORE invenio collect
+# webpack buildall = create + install + build
+RUN --mount=type=cache,target=/root/.npm \
+    cp -r ./static/. ${INVENIO_INSTANCE_PATH}/static/ && \
+    cp -r ./assets/. ${INVENIO_INSTANCE_PATH}/assets/ && \
+    invenio collect --verbose && \
+    invenio webpack buildall
+
+# =============================================================================
+# STAGE 2: Production runtime image
+# =============================================================================
+FROM ${REGISTRY}/almalinux:${INVENIO_BASE_VERSION}-runtime AS production
+
+# Re-declare ARG after FROM to use in this stage
+ARG XROOTD_VERSION
+
+# ---- Runtime dependencies (combined for fewer layers) ----
+# - krb5-*: Kerberos authentication
+# - vips: image processing (libs only, no -devel)
+# - xrootd-client-*: CERN storage client
+RUN dnf config-manager --add-repo https://cern.ch/xrootd/xrootd.repo && \
+    dnf install -y http://rpms.remirepo.net/enterprise/remi-release-9.rpm && \
+    dnf install -y \
+        krb5-libs \
+        krb5-workstation \
+        vips \
+        xrootd-client-${XROOTD_VERSION} \
+        xrootd-client-libs-${XROOTD_VERSION} && \
+    dnf clean all && \
+    rm -rf /var/cache/dnf
+
+# ---- Copy configuration files ----
+COPY ./krb5.conf /etc/krb5.conf
+
+# ---- Copy Python environment from builder ----
+COPY --from=builder ${WORKING_DIR}/src/.venv ${WORKING_DIR}/src/.venv
+ENV PATH="${WORKING_DIR}/src/.venv/bin:${PATH}"
+
+# ---- Copy application code ----
+COPY --chown=invenio:0 legacy ./legacy
+COPY --chown=invenio:0 site ./site
+
+# ---- Copy instance configuration ----
+COPY --chown=invenio:0 ./app_data/ ${INVENIO_INSTANCE_PATH}/app_data/
+COPY --chown=invenio:0 ./docker/uwsgi/ ${INVENIO_INSTANCE_PATH}
+COPY --chown=invenio:0 ./invenio.cfg ${INVENIO_INSTANCE_PATH}
+COPY --chown=invenio:0 ./templates/ ${INVENIO_INSTANCE_PATH}/templates/
+COPY --chown=invenio:0 ./translations ${INVENIO_INSTANCE_PATH}/translations
+
+# ---- Copy built static assets from builder ----
+COPY --from=builder --chown=invenio:0 ${INVENIO_INSTANCE_PATH}/static ${INVENIO_INSTANCE_PATH}/static
+COPY --from=builder --chown=invenio:0 ${WORKING_DIR}/src/static ./static
+
+# ---- Build metadata ----
 ARG IMAGE_BUILD_TIMESTAMP
 ARG SENTRY_RELEASE
 
-# Expose random sha to uniquely identify this build
-ENV INVENIO_IMAGE_BUILD_TIMESTAMP="'${IMAGE_BUILD_TIMESTAMP}'"
-ENV SENTRY_RELEASE=${SENTRY_RELEASE}
+ENV INVENIO_IMAGE_BUILD_TIMESTAMP="'${IMAGE_BUILD_TIMESTAMP}'" \
+    SENTRY_RELEASE=${SENTRY_RELEASE}
 
-RUN echo "Image build timestamp $INVENIO_IMAGE_BUILD_TIMESTAMP"
+# ---- Labels ----
+LABEL org.opencontainers.image.title="Zenodo" \
+      org.opencontainers.image.description="Zenodo Research Data Repository" \
+      org.opencontainers.image.source="https://github.com/zenodo/zenodo-rdm" \
+      org.opencontainers.image.vendor="CERN" \
+      org.opencontainers.image.revision="${SENTRY_RELEASE}"
 
-RUN cp -r ./static/. ${INVENIO_INSTANCE_PATH}/static/ && \
-    cp -r ./assets/. ${INVENIO_INSTANCE_PATH}/assets/ && \
-    invenio collect --verbose  && \
-    invenio webpack buildall
+# ---- Runtime configuration ----
+USER invenio
+WORKDIR ${WORKING_DIR}/src
+EXPOSE 5000
 
-ENTRYPOINT [ "bash", "-l"]
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:5000/ping || exit 1
+
+ENTRYPOINT ["bash", "-l"]
