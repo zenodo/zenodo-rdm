@@ -87,7 +87,7 @@ def test_quickstart_workflow(
     assert data["filesize"] == 7
     assert {"self", "download"} <= data["links"].keys()
 
-    # Upload another file, without the "name" paramter
+    # Upload another file, without the "name" parameter
     res = client.post(
         deposit_links["files"],
         headers=headers,
