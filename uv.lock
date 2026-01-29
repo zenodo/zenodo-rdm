@@ -2614,7 +2614,7 @@ wheels = [
 
 [[package]]
 name = "invenio-rdm-records"
-version = "22.7.2"
+version = "22.7.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "arrow" },
@@ -2647,9 +2647,9 @@ dependencies = [
     { name = "pytz" },
     { name = "pyyaml" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/72/ae/735ce292e041acdae4b760793643508cbf295d288997f346b5325f53a164/invenio_rdm_records-22.7.2.tar.gz", hash = "sha256:fd26457f480a5ac555792237577cd727e0b8e4de6f1c3e6cda2f29a34c4943ec", size = 1252006, upload-time = "2026-01-29T15:05:11.295Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/0e/5d/0dde69627b179297d377fddb47958dc4461e3ff47fa9b348bb08a0b98022/invenio_rdm_records-22.7.3.tar.gz", hash = "sha256:6ffaaa4472f76db9355d862d7639d9d485cbd6c5c4bd70e40ed908ef15ff4d0c", size = 1251932, upload-time = "2026-01-29T16:23:07.02Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ed/07/3ef0c93c792be148e5152b28cf2ea2354f563268b71241cc6981ea053013/invenio_rdm_records-22.7.2-py2.py3-none-any.whl", hash = "sha256:37a0105ea68005580bcb1624fd3f4026ec166e53d4342f7a80faf4ca4f3946a5", size = 1781784, upload-time = "2026-01-29T15:05:08.764Z" },
+    { url = "https://files.pythonhosted.org/packages/d6/8e/4f6758a1ec1e5dd7a0fa22a3c1b68ed084866e8042721a5b6a96e3a1cc5f/invenio_rdm_records-22.7.3-py2.py3-none-any.whl", hash = "sha256:fe037637e461a8ac0159f52b95445d76d52658a387e750452851ad096a8bcdf7", size = 1781809, upload-time = "2026-01-29T16:23:05.104Z" },
 ]
 
 [[package]]
@@ -7108,7 +7108,7 @@ source = { editable = "site" }
 
 [[package]]
 name = "zenodo-rdm-app"
-version = "22.2.0"
+version = "22.2.1"
 source = { virtual = "." }
 dependencies = [
     { name = "github3-py" },
