@@ -1,59 +1,139 @@
 # syntax=docker/dockerfile:1
 #
-# Zenodo Production Dockerfile
+# Zenodo Production Dockerfile (Standalone)
 #
-# Uses multi-stage build with Invenio base images:
-#   - Builder stage: compiles Python wheels, builds frontend assets
-#   - Runtime stage: minimal production image
-#
-# Note: XRootD (CERN storage) is only available for amd64, so this image
-# must be built with --platform=linux/amd64.
+# Single self-contained build for linux/amd64 with XRootD support.
 #
 # Build:
-#   docker build --platform=linux/amd64 -t zenodo:latest .
+#   docker build -t zenodo:latest .
 #
 # Build with specific options:
-#   docker build --platform=linux/amd64 \
+#   docker build \
 #     --build-arg XROOTD_VERSION=5.9.1 \
 #     --build-arg SENTRY_RELEASE=$(git rev-parse HEAD) \
 #     -t zenodo:$(git rev-parse --short HEAD) .
 
-# Global ARGs (available in all stages)
-ARG INVENIO_BASE_VERSION=1
-ARG REGISTRY=registry.cern.ch/inveniosoftware
+# =============================================================================
+# Global ARGs
+# =============================================================================
+ARG LINUX_VERSION=9
+ARG PYTHON_VERSION=3.14
+ARG NODE_VERSION=22
 ARG XROOTD_VERSION=5.9.1
 
 # =============================================================================
-# STAGE 1: Build Python wheels and frontend assets
+# BASE: Common configuration shared by all stages
 # =============================================================================
-FROM ${REGISTRY}/almalinux:${INVENIO_BASE_VERSION}-builder AS builder
+FROM almalinux:${LINUX_VERSION} AS base
 
-# Re-declare ARG after FROM to use in this stage
+ARG PYTHON_VERSION
+
+# Locale configuration
+RUN dnf install -y glibc-langpack-en && \
+    dnf clean all
+
+ENV LANG=en_US.UTF-8 \
+    LANGUAGE=en_US:en \
+    LC_ALL=en_US.UTF-8
+
+# Python configuration
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONFAULTHANDLER=1
+
+# Working directory structure
+ENV WORKING_DIR=/opt/invenio \
+    INVENIO_INSTANCE_PATH=/opt/invenio/var/instance
+
+# Create invenio user (UID 1000 for compatibility)
+ARG INVENIO_USER_ID=1000
+RUN useradd --uid ${INVENIO_USER_ID} --gid 0 --create-home invenio
+
+# Create directory structure
+RUN mkdir -p ${WORKING_DIR}/src \
+             ${INVENIO_INSTANCE_PATH}/data \
+             ${INVENIO_INSTANCE_PATH}/archive \
+             ${INVENIO_INSTANCE_PATH}/static && \
+    chown -R invenio:0 ${WORKING_DIR} && \
+    chmod -R g=u ${WORKING_DIR}
+
+WORKDIR ${WORKING_DIR}/src
+
+# Install uv for Python management
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /usr/local/bin/
+
+# Install Python via uv
+ENV UV_PYTHON_INSTALL_DIR=/opt/python
+RUN uv python install ${PYTHON_VERSION} && \
+    ln -sfn $(uv python find ${PYTHON_VERSION}) /usr/local/bin/python && \
+    ln -sfn $(uv python find ${PYTHON_VERSION}) /usr/local/bin/python3
+
+# uv configuration
+ENV UV_PYTHON=${PYTHON_VERSION} \
+    UV_COMPILE_BYTECODE=1 \
+    UV_LINK_MODE=copy
+
+# =============================================================================
+# BUILDER: Full toolchain for compiling Python/Node.js packages
+# =============================================================================
+FROM base AS builder
+
+ARG NODE_VERSION
 ARG XROOTD_VERSION
+ARG TARGETARCH
 
-# ---- Build dependencies (combined for fewer layers) ----
-# - cmake, libuuid-devel: build xrootd Python bindings from PyPI
-# - krb5-devel: build kerberos bindings
-# - vips-devel: image processing
-# - xrootd-client-*: C libraries to link against
+# Enable EPEL and CRB
+RUN dnf install -y dnf-plugins-core && \
+    dnf config-manager --set-enabled crb && \
+    dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
+    dnf clean all
+
+# Add XRootD and Remi repos
 RUN dnf config-manager --add-repo https://cern.ch/xrootd/xrootd.repo && \
-    dnf install -y http://rpms.remirepo.net/enterprise/remi-release-9.rpm && \
-    dnf install -y \
+    dnf install -y http://rpms.remirepo.net/enterprise/remi-release-9.rpm
+
+# Install build tools and development libraries
+RUN --mount=type=cache,target=/var/cache/dnf,sharing=locked,id=dnf-${TARGETARCH} \
+    dnf install -y --setopt=install_weak_deps=False \
+        # Build essentials
+        gcc \
+        gcc-c++ \
+        make \
         cmake \
+        pkgconf \
+        # Development libraries
+        cairo-devel \
+        libffi-devel \
+        libpq-devel \
+        libxml2-devel \
+        libxslt-devel \
+        ImageMagick-devel \
+        openssl-devel \
+        bzip2-devel \
+        xz-devel \
+        sqlite-devel \
+        xmlsec1-devel \
+        xmlsec1-openssl-devel \
+        # Zenodo-specific build deps
         krb5-devel \
         libuuid-devel \
         vips-devel \
         xrootd-client-devel-${XROOTD_VERSION} \
-        xrootd-client-libs-${XROOTD_VERSION} && \
-    dnf clean all
+        xrootd-client-libs-${XROOTD_VERSION} \
+        # Other
+        git \
+        dejavu-sans-fonts
+
+# Install Node.js
+RUN curl -fsSL https://rpm.nodesource.com/setup_${NODE_VERSION}.x | bash - && \
+    dnf install -y --setopt=install_weak_deps=False nodejs && \
+    dnf clean all && \
+    rm -rf /var/cache/dnf && \
+    corepack enable
 
 # ---- Python and uv configuration ----
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1 \
-    UV_CACHE_DIR=/opt/.cache/uv \
-    UV_COMPILE_BYTECODE=1 \
+ENV UV_CACHE_DIR=/opt/.cache/uv \
     UV_FROZEN=1 \
-    UV_LINK_MODE=copy \
     UV_REQUIRE_HASHES=1 \
     UV_VERIFY_HASHES=1
 
@@ -61,19 +141,14 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 ARG BUILD_EXTRAS="--extra sentry --extra xrootd"
 
 # Install dependencies (not the workspace packages yet)
-# Using bind mounts avoids creating a layer for pyproject.toml/uv.lock
 RUN --mount=type=cache,target=/opt/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
     uv sync --no-dev --no-install-workspace --no-editable ${BUILD_EXTRAS} \
         --no-install-package=xrootd
 
-# Add venv to PATH for subsequent commands
+# Add venv to PATH
 ENV PATH="${WORKING_DIR}/src/.venv/bin:${PATH}"
-
-# Build xrootd from PyPI BEFORE copying source (slow step, rarely changes)
-# Must link against system xrootd-client libs installed above
-RUN UV_REQUIRE_HASHES=0 uv pip install --no-cache xrootd==${XROOTD_VERSION}
 
 # Copy source code
 COPY . .
@@ -83,12 +158,13 @@ RUN --mount=type=cache,target=/opt/.cache/uv \
     uv sync --frozen --no-dev ${BUILD_EXTRAS} \
         --no-install-package=xrootd
 
-# Disable uv cache for subsequent commands (filesystem permission reasons)
+# Build xrootd from PyPI AFTER uv sync (uv sync removes non-locked packages)
+RUN UV_REQUIRE_HASHES=0 uv pip install --no-cache xrootd==${XROOTD_VERSION}
+
+# Disable uv cache for subsequent commands
 ENV UV_NO_CACHE=1
 
 # ---- Build frontend assets ----
-# Copy static files and assets BEFORE invenio collect
-# webpack buildall = create + install + build
 RUN --mount=type=cache,target=/root/.npm \
     cp -r ./static/. ${INVENIO_INSTANCE_PATH}/static/ && \
     cp -r ./assets/. ${INVENIO_INSTANCE_PATH}/assets/ && \
@@ -96,27 +172,48 @@ RUN --mount=type=cache,target=/root/.npm \
     invenio webpack buildall
 
 # =============================================================================
-# STAGE 2: Production runtime image
+# PRODUCTION: Minimal runtime image
 # =============================================================================
-FROM ${REGISTRY}/almalinux:${INVENIO_BASE_VERSION}-runtime AS production
+FROM base AS production
 
-# Re-declare ARG after FROM to use in this stage
 ARG XROOTD_VERSION
+ARG TARGETARCH
 
-# ---- Runtime dependencies (combined for fewer layers) ----
-# - krb5-*: Kerberos authentication
-# - vips: image processing (libs only, no -devel)
-# - xrootd-client-*: CERN storage client
+# Enable EPEL and CRB
+RUN dnf install -y dnf-plugins-core && \
+    dnf config-manager --set-enabled crb && \
+    dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
+    dnf clean all
+
+# Add XRootD and Remi repos
 RUN dnf config-manager --add-repo https://cern.ch/xrootd/xrootd.repo && \
-    dnf install -y http://rpms.remirepo.net/enterprise/remi-release-9.rpm && \
-    dnf install -y \
+    dnf install -y http://rpms.remirepo.net/enterprise/remi-release-9.rpm
+
+# Install runtime-only system libraries
+RUN --mount=type=cache,target=/var/cache/dnf,sharing=locked,id=dnf-${TARGETARCH} \
+    dnf install -y --setopt=install_weak_deps=False \
+        # Runtime libraries
+        cairo \
+        libffi \
+        libpq \
+        libxml2 \
+        libxslt \
+        ImageMagick-libs \
+        openssl-libs \
+        bzip2-libs \
+        xz-libs \
+        sqlite-libs \
+        xmlsec1 \
+        xmlsec1-openssl \
+        # Zenodo-specific runtime deps
         krb5-libs \
         krb5-workstation \
         vips \
         xrootd-client-${XROOTD_VERSION} \
-        xrootd-client-libs-${XROOTD_VERSION} && \
-    dnf clean all && \
-    rm -rf /var/cache/dnf
+        xrootd-client-libs-${XROOTD_VERSION} \
+        # Fonts and utilities
+        dejavu-sans-fonts \
+        git
 
 # ---- Copy configuration files ----
 COPY ./krb5.conf /etc/krb5.conf
