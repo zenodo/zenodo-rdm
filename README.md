@@ -11,6 +11,8 @@
 Make sure you have [`uv` installed](https://docs.astral.sh/uv/getting-started/installation/#standalone-installer), and then run the following commands:
 
 ```bash
+git clone https://github.com/zenodo/zenodo-rdm.git
+cd zenodo-rdm
 uv tool install invenio-cli
 invenio-cli check-requirements --development
 invenio-cli install
