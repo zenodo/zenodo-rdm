@@ -345,15 +345,23 @@ class LegacyFileDraftServiceConfig(
 class LegacyFileService(FileService):
     """Legacy files service."""
 
+    def check_permission(self, identity, action_name, **kwargs):
+        """Check permission with an optional per-call action prefix."""
+        prefix = kwargs.pop(
+            "permission_action_prefix",
+            self.config.permission_action_prefix,
+        )
+        return self.permission_policy(f"{prefix}{action_name}", **kwargs).allows(
+            identity
+        )
+
     def _get_record(self, id_, identity, action, file_key=None):
         """Get the associated record.
 
         Adds support for getting a draft or a record instead of only draft.
         Needed for legacy API compatibility.
         """
-        # FIXME: This is to undo the horrible hack we do below in case we don't find a
-        # draft, and resort to using the record for permission checks.
-        self.config.permission_action_prefix = "draft_"
+        permission_action_prefix = "draft_"
         try:
             # Try first the draft
             record = self.record_cls.pid.resolve(id_, registered_only=False)
@@ -362,12 +370,15 @@ class LegacyFileService(FileService):
             record = self.config.published_record_cls.pid.resolve(
                 id_, registered_only=True
             )
-            # FIXME: This is a horrible hack to make sure that we can check permissions
-            # based on the published record. We "unset" this everytime at the top of
-            # this method.
-            self.config.permission_action_prefix = ""
+            permission_action_prefix = ""
 
-        self.require_permission(identity, action, record=record, file_key=file_key)
+        self.require_permission(
+            identity,
+            action,
+            record=record,
+            file_key=file_key,
+            permission_action_prefix=permission_action_prefix,
+        )
 
         if file_key and file_key not in record.files:
             raise FileKeyNotFoundError(id_, file_key)
