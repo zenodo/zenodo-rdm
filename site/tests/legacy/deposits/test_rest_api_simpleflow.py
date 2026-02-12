@@ -419,7 +419,6 @@ def test_delete_deposits_superuser(
     assert res.status_code == 204, res.json
 
 
-@pytest.mark.skip(reason="Works in other tests, so must be a test isolation issue.")
 def test_versioning_rest_flow(
     test_app,
     db,
