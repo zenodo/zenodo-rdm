@@ -60,7 +60,7 @@ def zenodo_non_featured_community_data():
 
 @pytest.fixture(scope="module")
 def expected_rdm_featured_community():
-    """Expected featured community in zenodo-rdm. Community id is programatically added when loading."""
+    """Expected featured community in zenodo-rdm. Community id is programmatically added when loading."""
     return {
         "created": "2023-01-01 12:00:00.00000",
         "updated": "2023-01-01 12:00:00.00000",

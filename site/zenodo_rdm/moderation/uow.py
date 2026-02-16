@@ -14,7 +14,7 @@ from invenio_db.uow import Operation
 class ExceptionOp(Operation):
     """Operation to perform cleanup logic for exceptions.
 
-    This unit of work operation is initialied using another regular operation and maps
+    This unit of work operation is initialized using another regular operation and maps
     the following methods to the associated "clean-up" unit of work lifecycle methods:
 
     - ``on_exception``: ``on_register``

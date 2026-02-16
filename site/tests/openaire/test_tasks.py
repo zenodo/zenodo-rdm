@@ -120,7 +120,7 @@ def test_openaire_retries_task(
     # After failing, the cache has is populated with ``openaire_direct_index:<record.id>`` that is picked up by the task ``retry_openaire_failures``
     mocked_session.post.side_effect = None
 
-    # Reset number of calls on ``post`` - this can be used to assess whether openaire indexing executed succesfully
+    # Reset number of calls on ``post`` - this can be used to assess whether openaire indexing executed successfully
     mocked_session.post.reset_mock()
 
     # Execute retry task and validate that the direct indexing succeeded

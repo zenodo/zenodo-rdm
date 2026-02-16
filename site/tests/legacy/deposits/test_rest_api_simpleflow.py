@@ -250,7 +250,7 @@ def test_update_deposit_not_owner(
     deposit_url = response.json["links"]["self"]
     owner.api_logout(client)
 
-    # Try to udpate a draft with another user
+    # Try to update a draft with another user
 
     client = not_owner.api_login(client)
     res = client.put(deposit_url, json=update_metadata, headers=headers)
@@ -280,7 +280,7 @@ def test_update_deposit_anonymous(
     deposit_url = response.json["links"]["self"]
     client = owner.api_logout(client)
 
-    # Try to udpate a draft with anonymous user
+    # Try to update a draft with anonymous user
     res = client.put(deposit_url, json=update_metadata, headers=headers)
     # TODO: Should be: 401
     assert res.status_code == 403
@@ -310,7 +310,7 @@ def test_update_deposit_superuser(
     deposit_url = response.json["links"]["self"]
     owner.api_logout(client)
 
-    # Try to udpate a draft with a super user
+    # Try to update a draft with a super user
     client = superuser.api_login(client)
     res = client.put(deposit_url, json=update_metadata, headers=headers)
     assert res.status_code == 200
