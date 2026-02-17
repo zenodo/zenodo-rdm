@@ -133,12 +133,10 @@ class SupportForm extends Component {
       maxFileSize,
     } = this.props;
 
-    const defaultCategory = categories.length > 0 ? categories[0].key : "";
-
     const initialValues = {
       email: userMail,
       name: name,
-      category: defaultCategory,
+      category: "",
       sysInfo: false,
       files: [],
     };
@@ -235,10 +233,11 @@ class SupportForm extends Component {
               />
               <CategoryDropdown
                 categories={categories}
-                defaultCategory={defaultCategory}
+                defaultCategory=""
                 activeCategory={activeCategory}
                 onCategoryChange={this.onCategoryChange}
                 className="eight wide field flex"
+                required
               />
               <TextField
                 disabled={formDisabledForCategory}
