@@ -92,8 +92,6 @@
     </div>
   </div>
 </div>
-
-
                 </div>
             </div>
         </div>
@@ -102,11 +100,16 @@
                 <h3>Contact us</h3>
                 {%- if not is_user_authenticated %}
                 <div class="ui clearing info message">
-                <div class="ui header">
-                Log in
-                </div>
-                <a class="ui right floated button" href="{{url_for_security('login')}}"><i class="sign-in icon"></i> Log in</a>
-                <p>Please log into Zenodo if you have already have an account by clicking the button. This helps us resolve your requests faster and is required for certain types of requests.</p>
+                    <div class="ui grid">
+                        <div class="ui header sixteen wide column pb-0">Log in</div>
+                        <div class="thirteen wide column">
+                            <p>Please log into Zenodo if you have already have an account by clicking the button. This helps us resolve your
+                                requests faster and is required for certain types of requests.</p>
+                        </div>
+                        <div class="three wide column">
+                            <a class="ui right floated button" href="{{url_for_security('login')}}?next=%2Fsupport"><i class="sign-in icon"></i>Log in</a>
+                        </div>
+                    </div>
                 </div>
                 {%- endif %}
                 {% block root_section %}
