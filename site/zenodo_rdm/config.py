@@ -43,14 +43,36 @@ SUPPORT_ZAMMAD_HTTPTOKEN = "changeme"
 # Support form categories
 SUPPORT_ISSUE_CATEGORIES = [
     {
-        "key": "general-inquiry",
-        "title": "General inquiry",
+        "key": "record-deletion",
+        "title": "Delete a record",
+        "description": (
+            '<div class="ui warning visible message">'
+            '<div class="header">Deleting a record</div>'
+            "<ul>"
+            '<li><strong>Published within the last 30 days:</strong> Follow the <a href="https://help.zenodo.org/docs/deposit/manage-records/#delete">deletion guide</a> to delete your record.</li>'
+            '<li><strong>Published more than 30 days ago:</strong> Deletion is no longer possible. You can <a href="https://help.zenodo.org/docs/deposit/create-new-upload/#visibility">restrict public access to files</a>, <a href="https://help.zenodo.org/docs/deposit/describe-records/descriptions/">add a public note</a>, and optionally <a href="https://help.zenodo.org/docs/deposit/manage-versions/">upload a new version</a> if needed.</li>'
+            "</ul>"
+            "<p>For copyright issues, select <strong>Take-down notice</strong> from the category above. For personal data exposure, select <strong>Report personal data exposure</strong>.</p>"
+            "</div>"
+        ),
+        "form_disabled": True,
+    },
+    {
+        "key": "user-deletion",
+        "title": "Delete account",
+        "description": (
+            "Please make sure you <strong>log in before you send the request</strong>. If you have uploaded any records or created any communities, please specify to who these should be transferred."
+        ),
+    },
+    {
+        "key": "feature-request",
+        "title": "Feedback/Feature request",
         "description": "",
     },
     {
-        "key": "problem-report",
-        "title": "Report bug or problem",
-        "description": "Please provide direct links to pages and screenshots if possible. Include the <strong>error identifier</strong> if shown.",
+        "key": "general-inquiry",
+        "title": "General inquiry",
+        "description": "",
     },
     {
         "key": "file-modification",
@@ -76,31 +98,14 @@ SUPPORT_ISSUE_CATEGORIES = [
         ),
     },
     {
-        "key": "record-deletion",
-        "title": "Delete a record",
-        "description": (
-            '<div class="ui warning visible message">'
-            '<div class="header">Deleting a record</div>'
-            "<ul>"
-            '<li><strong>Published within the last 30 days:</strong> Follow the <a href="https://help.zenodo.org/docs/deposit/manage-records/#delete">deletion guide</a> to delete your record.</li>'
-            '<li><strong>Published more than 30 days ago:</strong> Deletion is no longer possible. You can <a href="https://help.zenodo.org/docs/deposit/create-new-upload/#visibility">restrict public access to files</a>, <a href="https://help.zenodo.org/docs/deposit/describe-records/descriptions/">add a public note</a>, and optionally <a href="https://help.zenodo.org/docs/deposit/manage-versions/">upload a new version</a> if needed.</li>'
-            "</ul>"
-            "<p>For copyright issues, select <strong>Take-down notice</strong> from the category above. For personal data exposure, select <strong>Report personal data exposure</strong>.</p>"
-            "</div>"
-        ),
-        "form_disabled": True,
+        "key": "security-report",
+        "title": "Report a security issue",
+        "description": "Please provide as detailed information as possible.",
     },
     {
-        "key": "user-deletion",
-        "title": "Delete account",
-        "description": (
-            "Please make sure you <strong>log in before you send the request</strong>. If you have uploaded any records or created any communities, please specify to who these should be transferred."
-        ),
-    },
-    {
-        "key": "ownership-transfer",
-        "title": "Transfer ownership",
-        "description": "",
+        "key": "problem-report",
+        "title": "Report bug or problem",
+        "description": "Please provide direct links to pages and screenshots if possible. Include the <strong>error identifier</strong> if shown.",
     },
     {
         "key": "personal-data-report",
@@ -114,11 +119,6 @@ SUPPORT_ISSUE_CATEGORIES = [
         ),
     },
     {
-        "key": "security-report",
-        "title": "Report a security issue",
-        "description": "Please provide as detailed information as possible.",
-    },
-    {
         "key": "spam-report",
         "title": "Report spam",
         "description": (
@@ -130,16 +130,16 @@ SUPPORT_ISSUE_CATEGORIES = [
         ),
     },
     {
-        "key": "feature-request",
-        "title": "Feedback/Feature request",
-        "description": "",
-    },
-    {
         "key": "take-down",
         "title": "Take-down notice",
         "description": (
             "Please provide a direct link to the record or community to request us to take down. Please specify the reason for the take-down (e.g. copyright infringement, plagiarism, fraud, or similar)."
         ),
+    },
+    {
+        "key": "ownership-transfer",
+        "title": "Transfer ownership",
+        "description": "",
     },
 ]
 
