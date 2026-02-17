@@ -49,12 +49,12 @@ SUPPORT_ISSUE_CATEGORIES = [
     },
     {
         "key": "problem-report",
-        "title": "Bug or problem",
+        "title": "Report bug or problem",
         "description": "Please provide direct links to pages and screenshots if possible. Include the <strong>error identifier</strong> if shown.",
     },
     {
         "key": "file-modification",
-        "title": "File modification",
+        "title": "Modify files",
         "description": (
             '<div class="ui warning visible message">'
             '<div class="header">Modifying record files</div>'
@@ -77,7 +77,7 @@ SUPPORT_ISSUE_CATEGORIES = [
     },
     {
         "key": "record-deletion",
-        "title": "Record deletion",
+        "title": "Delete a record",
         "description": (
             '<div class="ui warning visible message">'
             '<div class="header">Deleting a record</div>'
@@ -92,14 +92,14 @@ SUPPORT_ISSUE_CATEGORIES = [
     },
     {
         "key": "user-deletion",
-        "title": "User deletion",
+        "title": "Delete account",
         "description": (
             "Please make sure you <strong>log in before you send the request</strong>. If you have uploaded any records or created any communities, please specify to who these should be transferred."
         ),
     },
     {
         "key": "ownership-transfer",
-        "title": "Ownership transfer",
+        "title": "Transfer ownership",
         "description": "",
     },
     {
