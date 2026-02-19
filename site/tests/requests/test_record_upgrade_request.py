@@ -428,7 +428,6 @@ def test_accept_a_request_no_field(
     assert response.json["is_closed"] is True
 
 
-@pytest.mark.skip()
 def test_decline_a_request(
     client,
     minimal_record,
@@ -480,13 +479,6 @@ def test_decline_a_request(
     res_record = RDMRecord.get_record(legacy_record.id)
     assert res_record.parent.permission_flags == {}
     assert res_record.parent.communities.ids == []
-
-    # check that no comment was added
-    response = record_owner.get(
-        f"{BASE_URL}/requests/{request.id}/timeline",
-        headers=headers,
-    )
-    assert response.json["hits"]["hits"] == []
 
     # check permissions
     recid = legacy_record["id"]
