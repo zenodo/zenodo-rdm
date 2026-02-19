@@ -2023,7 +2023,7 @@ wheels = [
 
 [[package]]
 name = "invenio-accounts"
-version = "6.2.2"
+version = "6.3.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cryptography" },
@@ -2039,9 +2039,9 @@ dependencies = [
     { name = "simplekv" },
     { name = "ua-parser" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/9e/d0/f88de2aa9ae4935b5a06d5606d63e2f2b29a2904fcc154e3cbd1c4b53b93/invenio_accounts-6.2.2.tar.gz", hash = "sha256:911c8f2a934467fb8f802429428c31e587679199d03eec328b49ac671bbb40ca", size = 107991, upload-time = "2025-12-08T11:43:10.513Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/07/8a/53a5a28f4d515f8e978d50037dce873922082c058034118f4b48107959f2/invenio_accounts-6.3.0.tar.gz", hash = "sha256:2a104780dcff19dae7a2e60330efe7050333fa67475bbc78998b5d89b7032a35", size = 109666, upload-time = "2026-02-19T21:51:23.35Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/0e/cf/7bc0b57cbb3134dc9db82a996666eb4f802c1ddbe73db5de4802e24d3eff/invenio_accounts-6.2.2-py2.py3-none-any.whl", hash = "sha256:43a0d7986eda5d7cacb0452e9e65811336cc38612c0085bf8db161e00c914d13", size = 227401, upload-time = "2025-12-08T11:43:09.004Z" },
+    { url = "https://files.pythonhosted.org/packages/d6/5c/4787818cccc42cef4861989a8cb9ec3c25df540b95118b2e2651df4be24b/invenio_accounts-6.3.0-py2.py3-none-any.whl", hash = "sha256:89cf998158a48f5fad29e4e1fa968b68b3464cc3625af9c9a2911fabf6757193", size = 229143, upload-time = "2026-02-19T21:51:20.395Z" },
 ]
 
 [[package]]
@@ -7178,7 +7178,7 @@ source = { editable = "site" }
 
 [[package]]
 name = "zenodo-rdm-app"
-version = "22.3.0"
+version = "22.4.0"
 source = { virtual = "." }
 dependencies = [
     { name = "github3-py" },
