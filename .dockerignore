@@ -1,3 +1,2 @@
 # Ignore local virtualenv (if present)
 .venv/
-.python-version

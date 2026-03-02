@@ -9,6 +9,10 @@ FROM registry.cern.ch/inveniosoftware/almalinux:1
 
 
 RUN dnf install -y epel-release
+
+# Pin Python version: changing .python-version busts the Docker layer cache
+# and forces dnf update to run, ensuring we get the expected Python version.
+COPY .python-version .python-version
 RUN dnf update -y
 
 # XRootD
