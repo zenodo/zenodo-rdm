@@ -14,6 +14,7 @@ from collections import OrderedDict
 from flask import (
     Blueprint,
     current_app,
+    redirect,
     render_template,
     request,
 )
@@ -43,6 +44,10 @@ class ZenodoSupport(MethodView):
 
     def get(self):
         """Renders the support template."""
+        valid_referrer = current_app.config["SUPPORT_VALID_REFERRER"]
+        if valid_referrer is not None and request.referrer != valid_referrer:
+            return redirect(valid_referrer)
+
         user_agent = _extract_info_from_useragent(request.headers.get("User-Agent"))
         browser_client = user_agent.get("browser", "") or "Unknown client"
         browser_version = user_agent.get("browser_version", "") or "Unknown version"
