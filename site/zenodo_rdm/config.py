@@ -155,6 +155,10 @@ SUPPORT_DESCRIPTION_MIN_LENGTH = 20
 # Support url endpoint
 SUPPORT_ENDPOINT = "/support"
 
+# Valid referrer to access the support form.
+# Set a value (e.g. "https://help.zenodo.org/") to enable this feature.
+SUPPORT_VALID_REFERRER = None
+
 # Search query of recent uploads
 # Defaults to newest records search
 
