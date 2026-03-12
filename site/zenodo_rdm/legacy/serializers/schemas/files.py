@@ -60,6 +60,16 @@ class LegacyFileListSchema(Schema):
 
     entries = fields.List(fields.Nested(LegacyFileSchema), dump_only=True)
 
+    def __init__(self, object_schema_cls=None, **kwargs):
+        """
+        Initialize the schema.
+
+        The object_schema_cls parameter is accepted (and ignored) for
+        compatibility with MarshmallowSerializer which always passes it
+        when instantiating list schemas (we hardcode the schema in entries).
+        """
+        super().__init__(**kwargs)
+
     @post_dump()
     def unwrap(self, data, many, **kwargs):
         """Unwrap into a top-level array."""
