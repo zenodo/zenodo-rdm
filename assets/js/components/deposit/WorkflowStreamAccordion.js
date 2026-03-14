@@ -39,6 +39,10 @@ export class WorkflowStreamAccordion extends Component {
 }
 
 WorkflowStreamAccordion.propTypes = {
-  streamOutput: PropTypes.string.isRequired,
+  streamOutput: PropTypes.string,
   isStreaming: PropTypes.bool.isRequired,
+};
+
+WorkflowStreamAccordion.defaultProps = {
+  streamOutput: "",
 };

@@ -28,18 +28,29 @@ class WorkflowButtonComponent extends Component {
   };
 
   handleClick = async () => {
-    const { record, formik, onStreamStart, onError } = this.props;
+    const { record, formik, onWorkflowStart, onStreamStart, onError } = this.props;
     const recordId = record?.id ?? formik?.values?.id;
 
-    if (!recordId || !this.hasAllCompletedFiles()) {
-      onError(i18next.t("Upload at least one file first."));
+    if (!recordId) {
+      onError(i18next.t("Could not determine record ID."));
       return;
     }
 
+    // sets isLoading state
+    onWorkflowStart();
+
     try {
       const response = await http.post(`/uploads/${recordId}/orcha`);
-      const workflowId = response.data?.workflow_id;
-      const source = new EventSource(`/uploads/${recordId}/orcha/${workflowId}/stream`);
+      const { workflowId, streamUrl } = response.data;
+      if (!workflowId) {
+        onError(i18next.t("Orcha did not respond with a workflow ID."));
+        return;
+      }
+      if (!streamUrl) {
+        onError(i18next.t("Orcha did not respond with a streaming endpoint."));
+        return;
+      }
+      const source = new EventSource(streamUrl);
       onStreamStart(source);
     } catch (err) {
       onError(
@@ -56,13 +67,18 @@ class WorkflowButtonComponent extends Component {
     const { values, isSubmitting } = formik;
     const isButtonDisabled = this.isDisabled(values, isSubmitting);
 
+    let popupContent;
+    if (isLoading) {
+      popupContent = i18next.t("Extracting metadata...");
+    } else if (isButtonDisabled) {
+      popupContent = i18next.t("Upload at least one file first.");
+    } else {
+      popupContent = i18next.t("Extract metadata from your uploaded files.");
+    }
+
     return (
       <Popup
-        content={
-          isButtonDisabled
-            ? i18next.t("Upload at least one file first.")
-            : i18next.t("Send (for now) the first file to the AI workflow")
-        }
+        content={popupContent}
         trigger={
           <span>
             <Button
@@ -72,7 +88,6 @@ class WorkflowButtonComponent extends Component {
               disabled={isButtonDisabled}
               loading={isLoading}
               primary
-              size="medium"
               labelPosition="left"
               icon={success ? "check" : "magic"}
               content={
@@ -96,6 +111,7 @@ WorkflowButtonComponent.propTypes = {
   record: PropTypes.object.isRequired,
   formik: PropTypes.object.isRequired,
   fileEntries: PropTypes.object.isRequired,
+  onWorkflowStart: PropTypes.func.isRequired,
   onStreamStart: PropTypes.func.isRequired,
   onError: PropTypes.func.isRequired,
 };

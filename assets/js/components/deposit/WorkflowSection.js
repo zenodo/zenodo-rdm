@@ -13,11 +13,9 @@ import { i18next } from "@translations/invenio_app_rdm/i18next";
 
 export class WorkflowSection extends Component {
   state = {
-    isLoading: false,
-    success: false,
+    status: "idle",
     error: null,
     streamOutput: "",
-    isStreaming: false,
   };
 
   componentWillUnmount() {
@@ -29,6 +27,14 @@ export class WorkflowSection extends Component {
 
   eventSource = null;
 
+  handleWorkflowStart = () => {
+    this.setState({
+      status: "triggering-workflow",
+      streamOutput: "",
+      error: null,
+    });
+  };
+
   handleStreamStart = (source) => {
     // close existing sources when starting a new one
     if (this.eventSource) {
@@ -37,10 +43,7 @@ export class WorkflowSection extends Component {
     this.eventSource = source;
 
     this.setState({
-      isLoading: true,
-      success: true,
-      streamOutput: "",
-      isStreaming: true,
+      status: "streaming",
     });
 
     source.onmessage = (event) => {
@@ -53,8 +56,7 @@ export class WorkflowSection extends Component {
       source.close();
       this.eventSource = null;
       this.setState({
-        isStreaming: false,
-        isLoading: false,
+        status: "error",
         error: i18next.t(
           "An unexpected error occurred while streaming the workflow results."
         ),
@@ -64,17 +66,18 @@ export class WorkflowSection extends Component {
     source.addEventListener("done", () => {
       source.close();
       this.eventSource = null;
-      this.setState({ isStreaming: false, isLoading: false });
+      this.setState({ status: "success" });
     });
   };
 
   handleError = (message) => {
-    this.setState({ isLoading: false, error: message, success: false });
+    this.setState({ error: message, status: "error" });
   };
 
   render() {
     const { record } = this.props;
-    const { isLoading, success, error, streamOutput, isStreaming } = this.state;
+    const { status, error, streamOutput } = this.state;
+    const isLoading = status === "triggering-workflow" || status === "streaming";
 
     return (
       <Grid className="mt-10">
@@ -83,7 +86,8 @@ export class WorkflowSection extends Component {
             <WorkflowButton
               record={record}
               isLoading={isLoading}
-              success={success}
+              success={status === "success"}
+              onWorkflowStart={this.handleWorkflowStart}
               onStreamStart={this.handleStreamStart}
               onError={this.handleError}
             />
@@ -110,7 +114,7 @@ export class WorkflowSection extends Component {
             <Grid.Column width={16}>
               <WorkflowStreamAccordion
                 streamOutput={streamOutput}
-                isStreaming={isStreaming}
+                isStreaming={status === "streaming"}
               />
             </Grid.Column>
           </Grid.Row>

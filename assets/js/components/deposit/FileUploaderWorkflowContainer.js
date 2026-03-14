@@ -25,7 +25,7 @@ export const FileUploaderWorkflowContainer = ({
       allowEmptyFiles={allowEmptyFiles}
       filesLocked={filesLocked}
     />
-    {permissions?.can_manage && <WorkflowSection record={record} />}
+    <WorkflowSection record={record} />
   </>
 );
 
