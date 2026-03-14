@@ -23,9 +23,29 @@ export class WorkflowSection extends Component {
       this.eventSource.close();
       this.eventSource = null;
     }
+    this.clearStreamTimeout();
   }
 
+  startStreamTimeout = (source) => {
+    return setTimeout(() => {
+      source.close();
+      this.eventSource = null;
+      this.setState({
+        status: "error",
+        error: i18next.t("Workflow timed out."),
+      });
+    }, 60 * 1000);
+  };
+
+  clearStreamTimeout = () => {
+    if (this.streamTimeoutId) {
+      clearTimeout(this.streamTimeoutId);
+      this.streamTimeoutId = null;
+    }
+  };
+
   eventSource = null;
+  streamTimeoutId = null;
 
   handleWorkflowStart = () => {
     this.setState({
@@ -46,13 +66,19 @@ export class WorkflowSection extends Component {
       status: "streaming",
     });
 
+    this.clearStreamTimeout();
+    this.streamTimeoutId = this.startStreamTimeout(source);
+
     source.onmessage = (event) => {
+      this.clearStreamTimeout();
+      this.streamTimeoutId = this.startStreamTimeout(source);
       this.setState((prev) => ({
         streamOutput: prev.streamOutput + event.data + "\n",
       }));
     };
 
     source.onerror = () => {
+      this.clearStreamTimeout();
       source.close();
       this.eventSource = null;
       this.setState({
@@ -64,6 +90,7 @@ export class WorkflowSection extends Component {
     };
 
     source.addEventListener("done", () => {
+      this.clearStreamTimeout();
       source.close();
       this.eventSource = null;
       this.setState({ status: "success" });
@@ -71,6 +98,7 @@ export class WorkflowSection extends Component {
   };
 
   handleError = (message) => {
+    this.clearStreamTimeout();
     this.setState({ error: message, status: "error" });
   };
 
