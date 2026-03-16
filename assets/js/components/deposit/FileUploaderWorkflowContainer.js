@@ -15,19 +15,22 @@ export const FileUploaderWorkflowContainer = ({
   permissions,
   filesLocked,
   allowEmptyFiles,
-}) => (
-  <>
-    <FileUploader
-      isDraftRecord={!record.is_published}
-      quota={config.quota}
-      decimalSizeDisplay={config.decimal_size_display}
-      showMetadataOnlyToggle={permissions?.can_manage_files}
-      allowEmptyFiles={allowEmptyFiles}
-      filesLocked={filesLocked}
-    />
-    <WorkflowSection record={record} />
-  </>
-);
+}) => {
+  const orchaEnabled = document.getElementById("orcha-enabled");
+  return (
+    <>
+      <FileUploader
+        isDraftRecord={!record.is_published}
+        quota={config.quota}
+        decimalSizeDisplay={config.decimal_size_display}
+        showMetadataOnlyToggle={permissions?.can_manage_files}
+        allowEmptyFiles={allowEmptyFiles}
+        filesLocked={filesLocked}
+      />
+      {orchaEnabled && <WorkflowSection record={record} />}
+    </>
+  );
+};
 
 FileUploaderWorkflowContainer.propTypes = {
   record: PropTypes.object.isRequired,

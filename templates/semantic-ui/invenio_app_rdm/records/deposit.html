@@ -1,0 +1,86 @@
+
+{%- extends config.BASE_TEMPLATE %}
+
+{%- if community and community.theme and community.theme.enabled %}
+  {%- block css %}
+  {{ super() }}
+  <link rel="stylesheet" type="text/css" href="/communities/{{community.slug}}/community-theme-{{ community.revision_id }}.css">
+  {%- if config.APP_RDM_DEPOSIT_NG_FILES_UI_ENABLED %}
+  {{ webpack['uppy-file-uploader.css'] }}
+  {%- endif %}
+  {%- endblock %}
+{%- endif %}
+
+{%- if not record.is_published and record.versions.index and record.versions.index > 1 %}
+  {%- set title = _("New version") %}
+{%- elif not record.is_published %}
+  {%- set title = _("New upload") %}
+{% else %}
+  {%- set title = _("Edit upload") %}
+{%- endif %}
+
+{%- block page_body %}
+
+{%- if community_use_jinja_header %}
+{%- include "invenio_communities/details/header.html" %}
+{%- endif %}
+
+  {%- if record %}
+    <input id="deposits-record" type="hidden" name="deposits-record"
+           value='{{ record | tojson }}'>
+
+    <input id="deposits-record-locked-files" type="hidden"
+           name="deposits-record-locked-files"
+           value='{{ files_locked | tojson }}'>
+  {%- endif %}
+
+  {%- if preselectedCommunity %}
+    <input id="deposits-draft-community" type="hidden" name="deposits-draft-community"
+           value='{{ preselectedCommunity | tojson }}'>
+  {%- endif %}
+
+  {%- if files %}
+    <input id="deposits-record-files" type="hidden" name="deposits-record-files"
+           value='{{ files | tojson }}'>
+  {%- endif %}
+
+  <input type="hidden" name="deposits-record-restriction-grace-period"
+          value='{{ config.RDM_RECORDS_RESTRICTION_GRACE_PERIOD.days | tojson }}'>
+  <input type="hidden" name="deposits-allow-record-restriction"
+          value='{{ config.RDM_RECORDS_ALLOW_RESTRICTION_AFTER_GRACE_PERIOD | tojson }}'>
+  {% if record_deletion %}
+    <input type="hidden" name="deposits-record-deletion" value='{{ record_deletion | tojson }}'>
+  {% endif %}
+  {% if file_modification %}
+    <input type="hidden" name="deposits-file-modification" value='{{ file_modification | tojson }}'>
+  {% endif %}
+  <input type="hidden" name="config-groups-enabled"
+          value='{{ config.USERS_RESOURCES_GROUPS_ENABLED | tojson }}'>
+  <input type="hidden" name="records-resources-allow-empty-files"
+          value='{{ config.RECORDS_RESOURCES_ALLOW_EMPTY_FILES | tojson }}'>
+  <input type="hidden" name="deposits-use-uppy-ui"
+          value='{{ config.APP_RDM_DEPOSIT_NG_FILES_UI_ENABLED | tojson }}'>
+
+  {%- if forms_config %}
+    <input type="hidden" name="deposits-config"
+           value='{{ forms_config | tojson }}'>
+  {%- endif %}
+
+  {%- if permissions %}
+    <input id="deposits-record-permissions" type="hidden"
+           name="deposits-record-permissions"
+           value='{{ permissions | tojson }}'>
+  {%- endif %}
+
+<input type="hidden" id="deposits-share-btn-require-link-expiration"
+        data-share-btn-require-link-expiration='{{ config.RDM_RECORDS_REQUIRE_SECRET_LINKS_EXPIRATION | tojson }}'>
+
+  <div id="deposit-form"></div>
+  <div id="orcha-enabled" data-value='{{ config.ZENODO_ORCHA_PERMISSION }}'></div>
+
+{%- endblock page_body %}
+
+{%- block javascript %}
+  {{ super() }}
+  {{ webpack['invenio-app-rdm-deposit.js'] }}
+{%- endblock %}
