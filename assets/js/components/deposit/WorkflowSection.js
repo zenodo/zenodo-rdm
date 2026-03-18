@@ -8,14 +8,14 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Grid, Message, Icon } from "semantic-ui-react";
 import { WorkflowButton } from "./WorkflowButton";
-import { WorkflowStreamAccordion } from "./WorkflowStreamAccordion";
+import { WorkflowSuggestions } from "./WorkflowSuggestions";
 import { i18next } from "@translations/invenio_app_rdm/i18next";
 
 export class WorkflowSection extends Component {
   state = {
     status: "idle",
     error: null,
-    streamOutput: "",
+    suggestions: [],
   };
 
   componentWillUnmount() {
@@ -50,8 +50,8 @@ export class WorkflowSection extends Component {
   handleWorkflowStart = () => {
     this.setState({
       status: "triggering-workflow",
-      streamOutput: "",
       error: null,
+      suggestions: [],
     });
   };
 
@@ -69,18 +69,16 @@ export class WorkflowSection extends Component {
     this.clearStreamTimeout();
     this.streamTimeoutId = this.startStreamTimeout(source);
 
-    source.onmessage = (event) => {
-      this.clearStreamTimeout();
-      this.streamTimeoutId = this.startStreamTimeout(source);
-      this.setState((prev) => ({
-        streamOutput: prev.streamOutput + event.data + "\n",
-      }));
-    };
-
     source.onerror = () => {
+      // in case onerror fires more than once
+      if (this.eventSource == null) {
+        return;
+      }
+
       this.clearStreamTimeout();
       source.close();
       this.eventSource = null;
+
       this.setState({
         status: "error",
         error: i18next.t(
@@ -89,11 +87,26 @@ export class WorkflowSection extends Component {
       });
     };
 
-    source.addEventListener("done", () => {
+    source.addEventListener("metadata", (event) => {
+      try {
+        const { suggestions } = JSON.parse(event.data);
+        this.setState({ status: "success", suggestions: suggestions ?? [] });
+        this.clearStreamTimeout();
+      } catch {
+        this.clearStreamTimeout();
+        source.close();
+        this.eventSource = null;
+        this.setState({
+          status: "error",
+          error: i18next.t("Malformed extracted metadata result."),
+        });
+      }
+    });
+
+    source.addEventListener("end", () => {
       this.clearStreamTimeout();
       source.close();
       this.eventSource = null;
-      this.setState({ status: "success" });
     });
   };
 
@@ -104,7 +117,7 @@ export class WorkflowSection extends Component {
 
   render() {
     const { record } = this.props;
-    const { status, error, streamOutput } = this.state;
+    const { status, error, suggestions } = this.state;
     const isLoading = status === "triggering-workflow" || status === "streaming";
 
     return (
@@ -137,13 +150,10 @@ export class WorkflowSection extends Component {
           </Grid.Row>
         )}
 
-        {streamOutput && (
+        {suggestions.length > 0 && (
           <Grid.Row>
             <Grid.Column width={16}>
-              <WorkflowStreamAccordion
-                streamOutput={streamOutput}
-                isStreaming={status === "streaming"}
-              />
+              <WorkflowSuggestions suggestions={suggestions} />
             </Grid.Column>
           </Grid.Row>
         )}
