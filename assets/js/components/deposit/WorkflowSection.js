@@ -4,12 +4,13 @@
 // Zenodo RDM is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
+import { i18next } from "@translations/invenio_app_rdm/i18next";
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Grid, Message, Icon } from "semantic-ui-react";
+import { ApplySuggestionsButton } from "./ApplySuggestionsButton";
 import { WorkflowButton } from "./WorkflowButton";
 import { WorkflowSuggestions } from "./WorkflowSuggestions";
-import { i18next } from "@translations/invenio_app_rdm/i18next";
 
 export class WorkflowSection extends Component {
   state = {
@@ -154,6 +155,14 @@ export class WorkflowSection extends Component {
           <Grid.Row>
             <Grid.Column width={16}>
               <WorkflowSuggestions suggestions={suggestions} />
+            </Grid.Column>
+          </Grid.Row>
+        )}
+
+        {suggestions.length > 0 && (
+          <Grid.Row>
+            <Grid.Column width={6} floated="right">
+              <ApplySuggestionsButton suggestions={suggestions} />
             </Grid.Column>
           </Grid.Row>
         )}

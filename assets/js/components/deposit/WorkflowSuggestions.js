@@ -9,6 +9,14 @@ import PropTypes from "prop-types";
 import { Icon, Message } from "semantic-ui-react";
 import { i18next } from "@translations/invenio_app_rdm/i18next";
 
+const FIELD_LABELS = {
+  title: i18next.t("Title"),
+  description: i18next.t("Description"),
+  publication_date: i18next.t("Publication date"),
+  doi: i18next.t("DOI"),
+  creators: i18next.t("Creators"),
+};
+
 export class WorkflowSuggestions extends Component {
   renderAuthor = (author) => (
     <>
@@ -43,8 +51,8 @@ export class WorkflowSuggestions extends Component {
           <Message key={field || index} info size="small">
             <Message.Content>
               <Message.Header icon>
-                <Icon name="check circle outline icon" />
-                {field}
+                <Icon name="check circle outline" />
+                {FIELD_LABELS[field] ?? field}
               </Message.Header>
               <div>{this.renderValue(value)}</div>
             </Message.Content>
