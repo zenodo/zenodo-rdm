@@ -44,7 +44,7 @@ class OrchaClient:
     def trigger_workflow(self, payload, token):
         """Trigger an Orcha workflow with the given payload and token."""
         response = requests.post(
-            f"{self.base_url}/workflows",
+            f"{self.base_url}/workflows/",
             json=payload,
             headers={"Authorization": f"Bearer {token}"},
             timeout=10,
