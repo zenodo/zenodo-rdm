@@ -5,6 +5,7 @@
 from copy import deepcopy
 from datetime import datetime, timedelta, timezone
 from os.path import splitext
+from urllib.parse import urlencode, urlparse, urlunparse
 
 from flask import current_app, render_template
 
@@ -149,9 +150,16 @@ def preview(file):
             else "jpg"
         )
         size = current_app.config["IIIF_SIMPLE_PREVIEWER_SIZE"]
-        tpl_ctx["iiif_simple_url"] = (
+        iiif_simple_url = (
             f"{file.data['links']['iiif_base']}/full/{size}/0/default.{format}"
         )
+        unprocessed = tile_status is None
+        if unprocessed:
+            parsed = urlparse(iiif_simple_url)
+            qs = urlencode({"__skip_image_server": "1"})
+            existing_qs = f"{parsed.query}&{qs}" if parsed.query else qs
+            iiif_simple_url = urlunparse(parsed._replace(query=existing_qs))
+        tpl_ctx["iiif_simple_url"] = iiif_simple_url
 
         # Add banner message if needed
         if record.is_draft:
