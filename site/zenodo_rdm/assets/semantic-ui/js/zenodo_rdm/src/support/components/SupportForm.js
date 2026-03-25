@@ -56,6 +56,11 @@ class SupportForm extends Component {
   constructor(props) {
     super(props);
 
+    const category = props.initialValues.category || "";
+    const matchedCategory = category
+      ? props.categories.find((c) => c.key === category) || null
+      : null;
+
     this.state = {
       fileErrorMessage: null,
       totalFileSize: 0,
@@ -63,7 +68,7 @@ class SupportForm extends Component {
       loading: false,
       errorStatus: null,
       responseData: null,
-      activeCategory: null,
+      activeCategory: matchedCategory,
     };
   }
 
@@ -131,12 +136,15 @@ class SupportForm extends Component {
       userPlatform,
       userMail,
       maxFileSize,
+      initialValues,
     } = this.props;
 
-    const initialValues = {
+    const formInitialValues = {
       email: userMail,
       name: name,
-      category: "",
+      category: initialValues.category || "",
+      subject: initialValues.subject || "",
+      description: initialValues.description || "",
       sysInfo: false,
       files: [],
     };
@@ -176,7 +184,7 @@ class SupportForm extends Component {
 
     return (
       <Formik
-        initialValues={initialValues}
+        initialValues={formInitialValues}
         onSubmit={this.onSubmit}
         validateOnChange={false}
         validateOnBlur={false}
@@ -334,6 +342,7 @@ SupportForm.propTypes = {
   categories: PropTypes.array,
   maxFileSize: PropTypes.number,
   apiEndpoint: PropTypes.string.isRequired,
+  initialValues: PropTypes.object,
 };
 
 SupportForm.defaultProps = {
@@ -343,6 +352,7 @@ SupportForm.defaultProps = {
   userPlatform: "",
   categories: [],
   maxFileSize: 1000 * 1000 * 10,
+  initialValues: {},
 };
 
 export default SupportForm;

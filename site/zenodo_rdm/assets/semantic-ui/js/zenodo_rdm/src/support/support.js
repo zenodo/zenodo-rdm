@@ -15,6 +15,7 @@ const descriptionMaxLength = parseInt(domContainer.dataset.descriptionMaxLength)
 const descriptionMinLength = parseInt(domContainer.dataset.descriptionMinLength);
 const apiEndpoint = domContainer.dataset.apiEndpoint;
 const isUserAuthenticated = JSON.parse(domContainer.dataset.isAuthenticated);
+const initialValues = JSON.parse(domContainer.dataset.initialValues || "{}");
 
 ReactDOM.render(
   <SupportForm
@@ -28,6 +29,7 @@ ReactDOM.render(
     descriptionMaxLength={descriptionMaxLength}
     descriptionMinLength={descriptionMinLength}
     apiEndpoint={apiEndpoint}
+    initialValues={initialValues}
   />,
   rootContainer
 );

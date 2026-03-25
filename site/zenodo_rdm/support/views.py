@@ -8,6 +8,7 @@
 """Implements the support view for ZenodoRDM."""
 
 import mimetypes
+import re
 from base64 import b64encode
 from collections import OrderedDict
 
@@ -45,8 +46,14 @@ class ZenodoSupport(MethodView):
     def get(self):
         """Renders the support template."""
         valid_referrer = current_app.config["SUPPORT_VALID_REFERRER"]
+        blocked_ref = request.args.get("ref", "")
+        has_valid_ref = bool(re.fullmatch(r"[0-9a-f]{32}", blocked_ref))
         if valid_referrer is not None and request.referrer != valid_referrer:
-            return redirect(valid_referrer)
+            if not has_valid_ref:
+                return redirect(valid_referrer)
+        # Blocked users coming from the 403 page can't log in,
+        # so no need to show the login box
+        hide_login = has_valid_ref
 
         user_agent = _extract_info_from_useragent(request.headers.get("User-Agent"))
         browser_client = user_agent.get("browser", "") or "Unknown client"
@@ -54,10 +61,33 @@ class ZenodoSupport(MethodView):
         browser_string = browser_client + " " + browser_version
         platform = user_agent.get("os", "")
         system_info = {"browser": browser_string, "platform": platform}
+
+        # Form pre-fill from query params
+        req_category = request.args.get("category", "")
+        initial_values = {
+            "category": req_category if req_category in self.categories else "",
+            "subject": request.args.get("subject", ""),
+            "description": request.args.get("description", ""),
+        }
+        if blocked_ref:
+            initial_values.update(
+                {
+                    "subject": "Blocked access to Zenodo",
+                    "description": (
+                        "I believe my access to Zenodo was blocked by mistake.\n"
+                        "Please find below the details of the blocked request.\n"
+                        f"\nReference ID: {blocked_ref}\n"
+                        "\nAdditional context:\n"
+                    ),
+                }
+            )
+
         return render_template(
             self.template,
             categories=self.categories,
             system_info=system_info,
+            initial_values=initial_values,
+            hide_login=hide_login,
         )
 
     def post(self):

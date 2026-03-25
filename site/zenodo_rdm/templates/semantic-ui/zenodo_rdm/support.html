@@ -98,7 +98,7 @@
         <div class="row">
             <div class="sixteen wide mobile sixteen wide tablet ten wide computer column">
                 <h3>Contact us</h3>
-                {%- if not is_user_authenticated %}
+                {%- if not is_user_authenticated and not hide_login %}
                 <div class="ui clearing info message">
                     <div class="ui grid">
                         <div class="ui header sixteen wide column pb-0">Log in</div>
@@ -130,6 +130,7 @@
             data-description-min-length = '{{ config.SUPPORT_DESCRIPTION_MIN_LENGTH }}';
             data-description-max-length = '{{ config.SUPPORT_DESCRIPTION_MAX_LENGTH }}';
             data-api-endpoint = '{{ config.SUPPORT_ENDPOINT }}';
+            data-initial-values='{{ initial_values | tojson }}';
         >
         </div>
     {% endblock %}
