@@ -13,8 +13,8 @@ from datetime import datetime, timedelta, timezone
 import jwt
 import requests
 from flask import Blueprint, current_app, g, jsonify
-from invenio_files_rest.models import FileInstance
-from invenio_rdm_records.proxies import current_rdm_records_service
+from invenio_files_rest.errors import InvalidOperationError
+from invenio_rdm_records.proxies import current_rdm_records
 
 from .client import OrchaClient
 
@@ -32,6 +32,48 @@ def get_orcha_client():
     )
 
 
+def get_file_data(pid_value):
+    """Get file uri/url and filename from the pid."""
+
+    def convert_eos_path(path):
+        """Convert EOS redirect paths to HTTP URLs."""
+        import re
+
+        pattern = r"/eos_storage/http/([^/]+)/(\d+)(/.+)"
+        match = re.match(pattern, path)
+        if match:
+            host, port, rest = match.groups()
+            return f"http://{host}:{port}{rest}"
+        return path
+
+    service = current_rdm_records.records_service
+    draft = service.config.draft_cls.pid.resolve(pid_value, registered_only=False)
+    service.require_permission(g.identity, "manage", record=draft)
+    if not (draft.files and draft.files.entries):
+        raise InvalidOperationError(description="Draft has no files")
+
+    # TODO: after adjusting the workflow to receive several files per record, adapt implementation
+    first_file_name = next(iter(draft.files.entries))
+    record_file = draft.files[first_file_name]
+    file_instance = record_file.object_version.file
+
+    if current_app.config.get("IS_LOCAL_DEV"):
+        url = file_instance.uri
+    else:
+        storage_factory = current_app.config.get("FILES_REST_STORAGE_FACTORY")
+        storage = storage_factory(
+            fileinstance=file_instance,
+            default_location=object_version.bucket.location.uri,
+        )
+        url_to_reconstruct = storage._get_eos_redirect_path()
+        url = convert_eos_path(url_to_reconstruct)
+
+    return {
+        "url": url,
+        "filename": first_file_name,
+    }
+
+
 @blueprint.route("/uploads/<pid_value>/orcha", methods=["POST"])
 def get_workflow_stream_url(pid_value):
     """Proxy a workflow request to the ORCHA service.
@@ -39,20 +81,9 @@ def get_workflow_stream_url(pid_value):
     In the current implementation, the (first) file's URI is sent to the AI workflow service,
     and the corresponding workflow ID is returned if successful.
     """
-    record = current_rdm_records_service.read_draft(g.identity, pid_value, expand=True)
-    # TODO: if changing permissions on react, also change it in this check
-    current_rdm_records_service.require_permission(
-        g.identity, "manage", record=record._record
-    )
-    if not (record["files"] and record["files"].get("entries", {})):
-        return jsonify({"error": "No files found for this draft"}), 404
-    # TODO: after adjusting the workflow to receive several files per record, adapt implementation
-    entry = next(iter(record["files"]["entries"].values()))
-    file_instance = FileInstance.get(entry["id"])
-
     orcha = get_orcha_client()
     trigger_token = create_token(orcha)
-    payload = {"url": file_instance.uri}
+    payload = get_file_data(pid_value)
 
     try:
         response = orcha.trigger_workflow(payload, trigger_token)
