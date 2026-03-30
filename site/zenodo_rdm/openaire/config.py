@@ -1,8 +1,5 @@
-#
-# Copyright (C) 2023 CERN.
-#
-# Zendo-RDM is free software; you can redistribute it and/or modify
-# it under the terms of the MIT License; see LICENSE file for more details.
+# SPDX-FileCopyrightText: 2023 CERN
+# SPDX-License-Identifier: GPL-3.0-or-later
 """OpenAire related configs."""
 
 OPENAIRE_API_URL = "http://dev.openaire.research-infrastructures.eu/is/mvc/api"

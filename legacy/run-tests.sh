@@ -1,15 +1,6 @@
 #!/usr/bin/env bash
-# -*- coding: utf-8 -*-
-#
-# Copyright (C) 2016-2023 CERN.
-#
-# ZenodoRDM is free software; you can redistribute it and/or modify it
-# under the terms of the MIT License; see LICENSE file for more details.
-
-# Usage:
-#   ./run-tests.sh [pytest options and args...]
-
-# Quit on errors
+# SPDX-FileCopyrightText: 2016-2023 CERN
+# SPDX-License-Identifier: GPL-3.0-or-later
 set -o errexit
 
 # Quit on unbound symbols

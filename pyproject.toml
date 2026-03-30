@@ -4,7 +4,7 @@ version = "24.0.0"
 authors = [
     { name = "CERN" }
 ]
-license = "GPL-3.0"
+license = "GPL-3.0-or-later"
 requires-python = ">=3.9"
 dependencies = [
     "invenio-app-rdm[opensearch2]==14.0.0b10.dev2",

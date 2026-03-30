@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# -*- coding: utf-8 -*-
 
 # create admin role
 invenio roles create admin

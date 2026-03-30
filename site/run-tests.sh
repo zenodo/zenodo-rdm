@@ -1,25 +1,9 @@
 #!/usr/bin/env bash
-# -*- coding: utf-8 -*-
-#
-# Copyright (C) 2016-2023 CERN.
-# Copyright (C) 2020 Northwestern University.
-# Copyright (C) 2021 TU Wien.
-# Copyright (C) 2022 Graz University of Technology.
-#
-# ZenodoRDM is free software; you can redistribute it and/or modify it
-# under the terms of the MIT License; see LICENSE file for more details.
-
-# Usage:
-#   ./run-tests.sh [pytest options and args...]
-#
-# Note: the DB, SEARCH and CACHE services to use are determined by corresponding environment
-#       variables if they are set -- otherwise, the following defaults are used:
-#       DB=postgresql, SEARCH=opensearch and MQ=redis
-#
-# Example for using mysql instead of postgresql:
-#    DB=mysql ./run-tests.sh
-
-# Quit on errors
+# SPDX-FileCopyrightText: 2016-2023 CERN
+# SPDX-FileCopyrightText: 2020 Northwestern University
+# SPDX-FileCopyrightText: 2021 TU Wien
+# SPDX-FileCopyrightText: 2022 Graz University of Technology
+# SPDX-License-Identifier: GPL-3.0-or-later
 set -o errexit
 
 # Quit on unbound symbols
