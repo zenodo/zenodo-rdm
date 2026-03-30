@@ -1,10 +1,6 @@
 #!/usr/bin/env -S uv run --no-project --script
-# -*- coding: utf-8 -*-
-#
-# Copyright (C) 2024-2025 CERN.
-#
-# Invenio-RDM is free software; you can redistribute it and/or modify
-# it under the terms of the MIT License; see LICENSE file for more details.
+# SPDX-FileCopyrightText: 2024-2025 CERN
+# SPDX-License-Identifier: GPL-3.0-or-later
 """Script to run a Python script in a job on OpenShift."""
 
 import json

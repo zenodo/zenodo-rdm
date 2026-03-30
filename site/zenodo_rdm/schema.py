@@ -1,9 +1,5 @@
-# -*- coding: utf-8 -*-
-#
-# Copyright (C) 2024 CERN.
-#
-# Zenodo-RDM is free software; you can redistribute it and/or modify
-# it under the terms of the MIT License; see LICENSE file for more details.
+# SPDX-FileCopyrightText: 2024 CERN
+# SPDX-License-Identifier: GPL-3.0-or-later
 """Zenodo-RDM service schema."""
 
 from invenio_rdm_records.services.schemas import RDMRecordSchema

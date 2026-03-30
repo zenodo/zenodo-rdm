@@ -1,11 +1,6 @@
 #!/usr/bin/env sh
-# -*- coding: utf-8 -*-
-#
-# Copyright (C) 2020-2023 CERN.
-#
-# Demo-InvenioRDM is free software; you can redistribute it and/or modify it
-# under the terms of the MIT License; see LICENSE file for more details.
-
+# SPDX-FileCopyrightText: 2020-2023 CERN
+# SPDX-License-Identifier: GPL-3.0-or-later
 if [ "$SENTRY_ENVIRONMENT" == "production" ]
 then
   echo "ERROR: you tried to run setup script on production. ABORTING."

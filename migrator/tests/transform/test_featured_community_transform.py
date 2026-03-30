@@ -1,9 +1,5 @@
-# -*- coding: utf-8 -*-
-#
-# Copyright (C) 2023-01-01 12:00:00.00000N.
-#
-# Zenodo-RDM is free software; you can redistribute it and/or modify
-# it under the terms of the MIT License; see LICENSE file for more details.
+# SPDX-FileCopyrightText: 2023 CERN
+# SPDX-License-Identifier: GPL-3.0-or-later
 """Test featured community transform for RDM migration."""
 import dictdiffer
 import pytest

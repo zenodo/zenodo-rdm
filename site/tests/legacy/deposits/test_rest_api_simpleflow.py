@@ -1,9 +1,5 @@
-# -*- coding: utf-8 -*-
-#
-# Copyright (C) 2023 CERN.
-#
-# Zenodo-RDM is free software; you can redistribute it and/or modify
-# it under the terms of the MIT License; see LICENSE file for more details.
+# SPDX-FileCopyrightText: 2023 CERN
+# SPDX-License-Identifier: GPL-3.0-or-later
 """Test Zenodo-RDM legacy deposit (REST API).
 
 Tests were ported from: https://github.com/zenodo/zenodo/blob/master/tests/unit/deposit/test_api_simpleflow.py
