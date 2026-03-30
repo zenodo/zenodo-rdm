@@ -7,6 +7,8 @@
 
 """Zenodo legacy format serializer schemas."""
 
+from urllib.parse import quote
+
 from flask import current_app
 from marshmallow import fields, missing, post_dump, pre_dump
 from marshmallow_utils.fields import SanitizedUnicode
@@ -146,8 +148,9 @@ class LegacySchema(common.LegacySchema):
                 file_id is not None
             ):  # Check if 'id' is present in case of pending/failed file upload
                 links = {"self": f"{files_url}/{file_id}"}
+                quoted_key = quote(key, safe="/!$&'()*+,;=:@")
                 links["download"] = (
-                    f"{current_app.config['SITE_API_URL']}/records/{obj['id']}/draft/files/{key}/content"
+                    f"{current_app.config['SITE_API_URL']}/records/{obj['id']}/draft/files/{quoted_key}/content"
                 )
                 result.append(
                     {

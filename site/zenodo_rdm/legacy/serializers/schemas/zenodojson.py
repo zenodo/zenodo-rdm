@@ -7,6 +7,8 @@
 
 """Zenodo serializer schemas."""
 
+from urllib.parse import quote
+
 from marshmallow import Schema, fields, missing, post_dump
 from marshmallow_utils.fields import SanitizedUnicode
 
@@ -203,15 +205,16 @@ class ZenodoSchema(common.LegacySchema):
         files_url = obj["links"].get("files")
         for key, f in obj["files"].get("entries", {}).items():
             if files_url:
-                links = {"self": f"{files_url}/{key}/content"}
-            result.append(
-                {
-                    "id": f["id"],
-                    "key": f["key"],
-                    "size": f["size"],
-                    # skip the checksum algorithm prefix
-                    "checksum": f["checksum"],
-                    "links": links,
-                }
-            )
+                quoted_key = quote(key, safe="/!$&'()*+,;=:@")
+                links = {"self": f"{files_url}/{quoted_key}/content"}
+                result.append(
+                    {
+                        "id": f["id"],
+                        "key": f["key"],
+                        "size": f["size"],
+                        # skip the checksum algorithm prefix
+                        "checksum": f["checksum"],
+                        "links": links,
+                    }
+                )
         return result
