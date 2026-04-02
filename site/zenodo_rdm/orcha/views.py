@@ -15,6 +15,7 @@ import requests
 from flask import Blueprint, current_app, g, jsonify
 from invenio_files_rest.errors import InvalidOperationError
 from invenio_rdm_records.proxies import current_rdm_records
+from invenio_records_resources.services.errors import PermissionDeniedError
 
 from .client import OrchaClient
 
@@ -46,6 +47,9 @@ def get_file_data(pid_value):
             return f"http://{host}:{port}{rest}"
         return path
 
+    permission = current_app.config["ZENODO_ORCHA_PERMISSION"]
+    if not permission():
+        raise PermissionDeniedError()
     service = current_rdm_records.records_service
     draft = service.config.draft_cls.pid.resolve(pid_value, registered_only=False)
     service.require_permission(g.identity, "manage", record=draft)
@@ -55,9 +59,10 @@ def get_file_data(pid_value):
     # TODO: after adjusting the workflow to receive several files per record, adapt implementation
     first_file_name = next(iter(draft.files.entries))
     record_file = draft.files[first_file_name]
-    file_instance = record_file.object_version.file
+    object_version = record_file.object_version
+    file_instance = object_version.file
 
-    if current_app.config.get("IS_LOCAL_DEV"):
+    if current_app.config["IS_LOCAL_DEV"]:
         url = file_instance.uri
     else:
         storage_factory = current_app.config.get("FILES_REST_STORAGE_FACTORY")

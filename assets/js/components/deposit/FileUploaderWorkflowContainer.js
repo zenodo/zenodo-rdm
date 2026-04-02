@@ -16,7 +16,9 @@ export const FileUploaderWorkflowContainer = ({
   filesLocked,
   allowEmptyFiles,
 }) => {
-  const orchaEnabled = document.getElementById("orcha-enabled");
+  const orchaEnabled = JSON.parse(
+    document.getElementById("orcha-enabled")?.dataset.value ?? "false"
+  );
   return (
     <>
       <FileUploader
