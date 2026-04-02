@@ -32,8 +32,10 @@ export class WorkflowSuggestions extends Component {
     if (Array.isArray(value)) {
       return (
         <Message.List>
-          {value.map((author) => (
-            <Message.Item key={author.name}>{this.renderAuthor(author)}</Message.Item>
+          {value.map((author, index) => (
+            <Message.Item key={author.orcid ?? `${index}-${author.name}`}>
+              {this.renderAuthor(author)}
+            </Message.Item>
           ))}
         </Message.List>
       );

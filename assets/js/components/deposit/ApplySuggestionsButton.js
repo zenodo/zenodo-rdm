@@ -28,18 +28,6 @@ class ApplySuggestionButtonComponent extends Component {
       case "creators":
         formik.setFieldValue("metadata.creators", value.map(creatorField));
         break;
-      case "description":
-        // RichInputField does not read new formik value
-        formik.resetForm({
-          values: {
-            ...formik.values,
-            metadata: {
-              ...formik.values.metadata,
-              description: `<p>${value}</p>`,
-            },
-          },
-        });
-        break;
       case "doi":
         formik.setFieldValue("pids.doi", { identifier: value, provider: "external" });
         break;
@@ -51,7 +39,24 @@ class ApplySuggestionButtonComponent extends Component {
   handleClick = () => {
     const { formik, suggestions } = this.props;
 
-    suggestions.forEach(({ field, value }) =>
+    // separate description from other fields as it requires resetting the form
+    const descriptionSuggestion = suggestions.find(
+      ({ field }) => field === "description"
+    );
+    if (descriptionSuggestion) {
+      formik.resetForm({
+        values: {
+          ...formik.values,
+          metadata: {
+            ...formik.values.metadata,
+            description: `<p>${descriptionSuggestion["value"]}</p>`,
+          },
+        },
+      });
+    }
+
+    const otherSuggestions = suggestions.filter(({ field }) => field !== "description");
+    otherSuggestions.forEach(({ field, value }) =>
       this.applySuggestionToFormik(field, value, formik)
     );
 
