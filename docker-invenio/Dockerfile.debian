@@ -1,0 +1,184 @@
+# syntax=docker/dockerfile:1
+#
+# Invenio Base Docker Images (Debian variant)
+#
+# Build targets:
+#   docker build --target builder -t inveniosoftware/debian:1-builder .
+#   docker build --target runtime -t inveniosoftware/debian:1-runtime .
+#   docker build --target debug   -t inveniosoftware/debian:1-debug .
+#
+# Copyright (C) 2018-2025 CERN.
+#
+# Invenio is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+
+ARG PYTHON_VERSION=3.14
+ARG NODE_VERSION=22
+ARG DEBIAN_VERSION=bookworm
+
+# =============================================================================
+# BASE: Common configuration shared by all variants
+# =============================================================================
+FROM debian:${DEBIAN_VERSION}-slim AS base
+
+ARG PYTHON_VERSION
+
+# Locale configuration
+RUN apt-get update && apt-get install -y --no-install-recommends locales ca-certificates && \
+    sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && \
+    locale-gen && \
+    rm -rf /var/lib/apt/lists/*
+
+ENV LANG=en_US.UTF-8 \
+    LANGUAGE=en_US:en \
+    LC_ALL=en_US.UTF-8
+
+# Python configuration
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONFAULTHANDLER=1
+
+# Working directory structure
+ENV WORKING_DIR=/opt/invenio \
+    INVENIO_INSTANCE_PATH=/opt/invenio/var/instance
+
+# Create invenio user
+ARG INVENIO_USER_ID=1000
+RUN useradd --uid ${INVENIO_USER_ID} --gid 0 --create-home invenio
+
+# Create directory structure
+RUN mkdir -p ${WORKING_DIR}/src \
+             ${INVENIO_INSTANCE_PATH}/data \
+             ${INVENIO_INSTANCE_PATH}/archive \
+             ${INVENIO_INSTANCE_PATH}/static && \
+    chown -R invenio:0 ${WORKING_DIR} && \
+    chmod -R g=u ${WORKING_DIR}
+
+WORKDIR ${WORKING_DIR}/src
+
+# Install uv for Python management
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /usr/local/bin/
+
+# Install Python via uv (standalone builds, works for any version)
+ENV UV_PYTHON_INSTALL_DIR=/opt/python
+RUN uv python install ${PYTHON_VERSION} && \
+    ln -sfn $(uv python find ${PYTHON_VERSION}) /usr/local/bin/python && \
+    ln -sfn $(uv python find ${PYTHON_VERSION}) /usr/local/bin/python3
+
+# uv configuration
+ENV UV_PYTHON=${PYTHON_VERSION} \
+    UV_COMPILE_BYTECODE=1 \
+    UV_LINK_MODE=copy
+
+# =============================================================================
+# RUNTIME: Minimal production image with only runtime dependencies
+# =============================================================================
+FROM base AS runtime
+
+ARG TARGETARCH
+
+# Install runtime-only system libraries
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=apt-cache-${TARGETARCH} \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked,id=apt-lib-${TARGETARCH} \
+    apt-get update && apt-get install -y --no-install-recommends \
+        # Runtime libraries only (no -dev packages)
+        libcairo2 \
+        libffi8 \
+        libpq5 \
+        libxml2 \
+        libxslt1.1 \
+        libmagickwand-6.q16-6 \
+        libssl3 \
+        libbz2-1.0 \
+        liblzma5 \
+        libsqlite3-0 \
+        libxmlsec1 \
+        libxmlsec1-openssl \
+        # Fonts
+        fonts-dejavu \
+        # Utilities
+        git \
+        curl
+
+LABEL org.opencontainers.image.title="Invenio Base Debian (Runtime)" \
+      org.opencontainers.image.description="Minimal Debian-based runtime image for Invenio" \
+      org.opencontainers.image.vendor="Invenio Software" \
+      org.opencontainers.image.licenses="MIT"
+
+# =============================================================================
+# BUILDER: Full toolchain for compiling Python/Node.js packages
+# =============================================================================
+FROM base AS builder
+
+ARG NODE_VERSION
+ARG TARGETARCH
+
+# Install build tools and development libraries
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=apt-cache-${TARGETARCH} \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked,id=apt-lib-${TARGETARCH} \
+    apt-get update && apt-get install -y --no-install-recommends \
+        # Build essentials
+        build-essential \
+        pkg-config \
+        # Development libraries (with headers)
+        libcairo2-dev \
+        libffi-dev \
+        libpq-dev \
+        libxml2-dev \
+        libxslt1-dev \
+        libmagickwand-dev \
+        libssl-dev \
+        libbz2-dev \
+        liblzma-dev \
+        libsqlite3-dev \
+        libxmlsec1-dev \
+        libxmlsec1-openssl \
+        # Other
+        git \
+        curl \
+        # Fonts
+        fonts-dejavu
+
+# Install Node.js
+RUN curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - && \
+    apt-get install -y --no-install-recommends nodejs && \
+    corepack enable && \
+    rm -rf /var/lib/apt/lists/*
+
+LABEL org.opencontainers.image.title="Invenio Base Debian (Builder)" \
+      org.opencontainers.image.description="Full Debian-based toolchain for building Invenio" \
+      org.opencontainers.image.vendor="Invenio Software" \
+      org.opencontainers.image.licenses="MIT"
+
+# =============================================================================
+# DEBUG: Runtime + debugging tools
+# =============================================================================
+FROM runtime AS debug
+
+ARG TARGETARCH
+
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=apt-cache-${TARGETARCH} \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked,id=apt-lib-${TARGETARCH} \
+    apt-get update && apt-get install -y --no-install-recommends \
+        # Process inspection
+        procps \
+        htop \
+        strace \
+        lsof \
+        # File inspection
+        file \
+        less \
+        vim-tiny \
+        # Network debugging
+        tcpdump \
+        dnsutils \
+        net-tools \
+        wget \
+        # I/O monitoring
+        iotop \
+        iftop
+
+LABEL org.opencontainers.image.title="Invenio Base Debian (Debug)" \
+      org.opencontainers.image.description="Debian runtime with debugging tools" \
+      org.opencontainers.image.vendor="Invenio Software" \
+      org.opencontainers.image.licenses="MIT"
