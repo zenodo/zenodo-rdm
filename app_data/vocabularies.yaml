@@ -10,3 +10,6 @@ funders:
 awards:
   pid-type: awa
   data-file: vocabularies/awards.yaml
+resourcetypes:
+  pid-type: rsrct
+  data-file: vocabularies/resource_types.yaml
