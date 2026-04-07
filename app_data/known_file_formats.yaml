@@ -16,6 +16,12 @@ adobe_digital_negative_dng_:
   extensions:
   - dng
   name: Adobe Digital Negative (DNG)
+advanced_scientific_data_format_asdf_:
+  classifiers:
+  - scientific format
+  extensions:
+  - asdf
+  name: Advanced Scientific Data Format (ASDF)
 aiff_audio_interchange_file_format_:
   classifiers:
   - long term format
@@ -1541,4 +1547,9 @@ zeiss_microscopy_format:
   extensions:
   - czi
   name: Zeiss Microscopy Format
-
+zarr:
+  classifiers:
+  - scientific format
+  extensions:
+  - zarr
+  name: Zarr
