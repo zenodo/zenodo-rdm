@@ -1,13 +1,13 @@
 [project]
 name = "zenodo-rdm-app"
-version = "23.0.0"
+version = "24.0.0"
 authors = [
     { name = "CERN" }
 ]
 license = "GPL-3.0"
 requires-python = ">=3.9"
 dependencies = [
-    "invenio-app-rdm[opensearch2]==14.0.0b8.dev0",
+    "invenio-app-rdm[opensearch2]==14.0.0b10.dev2",
     "zenodo-legacy",
     "zenodo-rdm",
     "github3.py>=3.0.0",
