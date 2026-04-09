@@ -273,3 +273,11 @@ class ZenodoCommunityPermissionPolicy(CommunityPermissionPolicy):
     ]
 
     can_rename = [SystemProcess()]
+
+    can_manage_collections = [
+        IfConfig(
+            "COMMUNITIES_COLLECTIONS_ENABLED",
+            then_=[UserManager, SystemProcess()],
+            else_=[Disable()],
+        )
+    ]
