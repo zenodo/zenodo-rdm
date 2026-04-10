@@ -28,10 +28,11 @@ class QuotaIncreasePolicy(BasePolicy):
         return False
 
     def evaluate(self, identity, record):
-        """Check if record can be increased by specific additional quota for this user.
+        """
+        Check if record can be increased by specific additional quota for this user.
 
-        Only used on backend. The frontend evaluates is allowed in setAdditionalQuota"""
-
+        Only used on backend. The frontend evaluates is allowed in setAdditionalQuota.
+        """
         min_additional_quota_value = (
             current_rdm_records_storage_service.min_additional_quota_value(
                 identity.id, record
