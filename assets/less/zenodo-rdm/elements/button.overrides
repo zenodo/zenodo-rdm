@@ -7,6 +7,6 @@
   border: 1px solid @borderColor;
 }
 
-.ui.button.transparent {
-  box-shadow: none;
+.ui.button.transparent, .request-lock-button {
+  box-shadow: none !important;
 }
