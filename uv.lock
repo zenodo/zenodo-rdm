@@ -1331,7 +1331,7 @@ name = "exceptiongroup"
 version = "1.3.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "typing-extensions", marker = "python_full_version < '3.13'" },
+    { name = "typing-extensions", marker = "python_full_version < '3.11'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/50/79/66800aadf48771f6b62f7eb014e352e5d06856655206165d775e675a02c9/exceptiongroup-1.3.1.tar.gz", hash = "sha256:8b412432c6055b0b7d14c310000ae93352ed6754f70fa8f7c34141f91c4e3219", size = 30371, upload-time = "2025-11-21T23:01:54.787Z" }
 wheels = [
@@ -7707,6 +7707,7 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/77/79/696c9eed6944d0f2dd8ffdaf10969129092f4eda6d8a3df280ad40003dde/xrootd-5.9.2-cp312-cp312-manylinux_2_28_x86_64.whl", hash = "sha256:3dd5b1bbb51481e19d1039860503394320ddcb327b1ea67ea53e5355e25c2029", size = 71195076, upload-time = "2026-03-27T18:21:07.538Z" },
     { url = "https://files.pythonhosted.org/packages/02/5a/aa86b664c3379646787c3a3ae1ad9a66c023b82f414c5eef0de098b589ed/xrootd-5.9.2-cp313-cp313-manylinux_2_28_x86_64.whl", hash = "sha256:806a83f9b923704c80011807e85a2610b2feab422bd80b29666227c840fe96f0", size = 71196323, upload-time = "2026-03-27T18:21:14.188Z" },
     { url = "https://files.pythonhosted.org/packages/c1/c4/a9b79a647498129bbb152dd84ec79db71ef4770ee0b192d29bfc26ecc4dd/xrootd-5.9.2-cp314-cp314-manylinux_2_28_x86_64.whl", hash = "sha256:5a21eadf471479c3a752d0cd6a1af7a240849d7379a3d3728c05b1353d732175", size = 71195881, upload-time = "2026-03-27T18:21:20.41Z" },
+    { url = "https://files.pythonhosted.org/packages/de/58/45a18e7f3faedb4bc191e639564e6cac6824d683ff8cf47d33d9ddaea19b/xrootd-5.9.2-cp39-cp39-manylinux_2_28_x86_64.whl", hash = "sha256:50a809fd93652a2addcf6d9767c6e10aad8edb9029f6f20ab7856c8a0deeedd3", size = 71197173, upload-time = "2026-04-10T07:20:57.047Z" },
 ]
 
 [[package]]
@@ -7747,7 +7748,7 @@ source = { editable = "site" }
 
 [[package]]
 name = "zenodo-rdm-app"
-version = "24.1.0"
+version = "24.1.1"
 source = { virtual = "." }
 dependencies = [
     { name = "github3-py" },
