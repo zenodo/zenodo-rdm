@@ -14,13 +14,15 @@ from invenio_communities.subcommunities.services.request import (
     CreateSubcommunityInvitation,
     DeclineSubcommunity,
     DeclineSubcommunityInvitation,
-    SubCommunityInvitationRequest,
-    SubCommunityRequest,
 )
 from invenio_notifications.services.uow import NotificationOp
 from invenio_rdm_records.proxies import (
     current_community_records_service,
     current_rdm_records,
+)
+from invenio_rdm_records.requests.subcommunities import (
+    RDMSubCommunityInvitationRequest,
+    RDMSubCommunityRequest,
 )
 from invenio_records_resources.services.uow import ModelCommitOp, RecordCommitOp
 from invenio_requests.customizations import actions
@@ -193,7 +195,7 @@ class SubcommunityCreateAction(actions.CreateAndSubmitAction):
         )
 
 
-class ZenodoSubCommunityRequest(SubCommunityRequest):
+class ZenodoSubCommunityRequest(RDMSubCommunityRequest):
     """Request to add a subcommunity to a Zenodo community."""
 
     payload_schema = {"project_id": fields.String()}
@@ -302,7 +304,7 @@ class SubcommunityInvitationExpireAction(actions.ExpireAction):
         )
 
 
-class ZenodoSubCommunityInvitationRequest(SubCommunityInvitationRequest):
+class ZenodoSubCommunityInvitationRequest(RDMSubCommunityInvitationRequest):
     """Request from a Zenodo community to add a child community."""
 
     payload_schema = {
