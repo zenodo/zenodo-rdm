@@ -5,6 +5,7 @@
 from invenio_communities.subcommunities.services.schema import SubcommunityRequestSchema
 from invenio_i18n import gettext as _
 from marshmallow import Schema, ValidationError, fields, validates
+from marshmallow_utils.context import context_schema
 
 
 class SubCommunityRequestPayloadShema(Schema):
@@ -18,8 +19,8 @@ class SubCommunityRequestPayloadShema(Schema):
 
         For the 'eu' community, it is a required field.
         """
-        parent_community = self.context.get("community")
-        is_ec_community = parent_community.slug == "eu"
+        parent_community = context_schema.get().get("community")
+        is_ec_community = parent_community and parent_community.slug == "eu"
         if is_ec_community and not project_id:
             raise ValidationError(_("Project is required for EC communities."))
         if project_id:
