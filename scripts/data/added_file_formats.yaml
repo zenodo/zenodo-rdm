@@ -1,3 +1,10 @@
+advanced_scientific_data_format_asdf_:
+  classifiers:
+  - scientific format
+  extensions:
+  - asdf
+  name: Advanced Scientific Data Format (ASDF)
+
 anndata_format:
   classifiers:
   - scientific format
@@ -660,10 +667,16 @@ yaml_format:
   - yaml
   name: YAML Ain't Markup Language (YAML)
 
+zarr:
+  classifiers:
+  - scientific format
+  extensions:
+  - zarr
+  name: Zarr
+
 zeiss_microscopy_format:
   classifiers:
   - scientific format
   extensions:
   - czi
   name: Zeiss Microscopy Format
-
