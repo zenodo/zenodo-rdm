@@ -22,6 +22,10 @@ from invenio_pidstore.errors import PIDDoesNotExistError
 from invenio_rdm_records.cli import create_records_custom_field
 from invenio_rdm_records.services.pids import providers
 from invenio_records_resources.proxies import current_service_registry
+from invenio_records_resources.services.records.queryparser import (
+    QueryParser,
+    SearchFieldTransformer,
+)
 from invenio_vocabularies.contrib.awards.api import Award
 from invenio_vocabularies.contrib.funders.api import Funder
 from invenio_vocabularies.proxies import current_service as vocabulary_service
@@ -32,6 +36,7 @@ from zenodo_rdm.custom_fields import CUSTOM_FIELDS, CUSTOM_FIELDS_UI, NAMESPACES
 from zenodo_rdm.generators import media_files_management_action
 from zenodo_rdm.legacy.requests.record_upgrade import LegacyRecordUpgrade
 from zenodo_rdm.permissions import ZenodoRDMRecordPermissionPolicy
+from zenodo_rdm.queryparser import ZENODO_LEGACY_SEARCH_MAP
 from zenodo_rdm.resources import record_serializers
 
 from .fake_datacite_client import FakeDataCiteClient
@@ -108,6 +113,16 @@ def app_config(app_config):
     app_config["OPENAIRE_PORTAL_URL"] = "https://explore.openaire.eu"
     app_config["SUPPORT_ZAMMAD_HTTPTOKEN"] = "changeme"
     app_config["TILES_GENERATION_ENABLED "] = False
+
+    # Wire the production legacy-search query parser so tests exercise
+    # ZENODO_LEGACY_SEARCH_MAP end-to-end.
+    app_config["RDM_SEARCH"] = {
+        **app_config.get("RDM_SEARCH", {}),
+        "query_parser_cls": QueryParser.factory(
+            mapping=ZENODO_LEGACY_SEARCH_MAP,
+            tree_transformer_cls=SearchFieldTransformer,
+        ),
+    }
 
     return app_config
 
@@ -305,6 +320,27 @@ def resource_type_v(app, resource_type_type):
                 "type": "publication",
             },
             "title": {"en": "Book", "de": "Buch"},
+            "tags": ["depositable", "linkable"],
+            "type": "resourcetypes",
+        },
+    )
+
+    vocabulary_service.create(
+        system_identity,
+        {
+            "id": "publication-dissertation",
+            "props": {
+                "csl": "article",
+                "datacite_general": "Dissertation",
+                "datacite_type": "",
+                "openaire_resourceType": "0044",
+                "openaire_type": "publication",
+                "eurepo": "info:eu-repo/semantics/other",
+                "schema.org": "https://schema.org/Thesis",
+                "subtype": "publication-dissertation",
+                "type": "publication",
+            },
+            "title": {"en": "Thesis"},
             "tags": ["depositable", "linkable"],
             "type": "resourcetypes",
         },
