@@ -6,6 +6,7 @@ import csv
 import gzip
 import json
 import tarfile
+import time
 from io import BytesIO, TextIOWrapper
 
 from celery import shared_task
@@ -17,10 +18,29 @@ from invenio_db import db
 from invenio_files_rest.models import Bucket, Location, ObjectVersion, as_bucket
 from invenio_rdm_records.oai import oai_datacite_etree
 from invenio_rdm_records.proxies import current_rdm_records_service as service
+from invenio_search import current_search_client
 from lxml import etree
+
+from zenodo_rdm.exporter.pit import pit_scan
 
 RECORDS_MIMETYPE = "application/gzip"
 DELETED_MIMETYPE = "application/gzip"
+
+# Progress logging: whichever threshold fires first. Tuned for multi-day runs
+# on ~6M records — caps log volume while still surfacing stalls within minutes.
+PROGRESS_LOG_EVERY_RECORDS = 10_000
+PROGRESS_LOG_EVERY_SECONDS = 300
+
+
+def _fmt_duration(seconds):
+    """Format seconds as ``H:MM:SS`` or ``Nd HH:MM:SS`` for multi-day runs."""
+    seconds = max(0, int(seconds))
+    days, rem = divmod(seconds, 86400)
+    hours, rem = divmod(rem, 3600)
+    minutes, secs = divmod(rem, 60)
+    if days:
+        return f"{days}d {hours:02d}:{minutes:02d}:{secs:02d}"
+    return f"{hours}:{minutes:02d}:{secs:02d}"
 
 
 def _get_anonymous_identity():
@@ -31,7 +51,68 @@ def _get_anonymous_identity():
     return anonymous_identity
 
 
-def _export_records_to_files(format, community_slug, records_file, deleted_file):
+def _scan_records(identity, community_uuid, use_pit, page_size=1000):
+    """Return ``(result, total)`` where ``result.hits`` iterates all matches.
+
+    Both paths return a total so callers can compute progress and ETA.
+    PIT's total is the exact snapshot count; scroll's total comes from a
+    separate ``count()`` request and may drift slightly vs the scroll
+    snapshot during long runs, but the error is negligible on our scale.
+
+    ``page_size`` controls records-per-batch for both paths.
+    """
+    params = {"allversions": True, "include_deleted": True}
+    q = f"parent.communities.ids:{community_uuid}" if community_uuid else ""
+    search = service._search("scan", identity, params, search_preference=None, q=q)
+
+    if use_pit:
+        hits = pit_scan(index=search._index, body=search.to_dict(), size=page_size)
+        total = hits.total
+    else:
+        hits = search.params(size=page_size).scan()
+        count_body = {"query": search.to_dict().get("query", {"match_all": {}})}
+        total = current_search_client.count(
+            index=search._index, body=count_body
+        )["count"]
+
+    result = service.result_list(
+        service,
+        identity,
+        hits,
+        params,
+        links_tpl=None,
+        links_item_tpl=service.links_item_tpl,
+        expandable_fields=service.expandable_fields,
+    )
+    return result, total
+
+
+def _log_progress(count, total, start, last_log, last_count):
+    """Emit one progress line; return the new ``(last_log, last_count)``."""
+    now = time.monotonic()
+    elapsed = now - start
+    avg_rate = count / elapsed if elapsed > 0 else 0
+    window = now - last_log
+    recent_rate = (count - last_count) / window if window > 0 else avg_rate
+    pct = count * 100 / total if total else 0
+    eta = (total - count) / recent_rate if total and recent_rate > 0 else 0
+
+    current_app.logger.info(
+        f"[exporter] {count:,}/{total:,} ({pct:.2f}%) | "
+        f"rate={recent_rate:,.0f}/s avg={avg_rate:,.0f}/s | "
+        f"ETA {_fmt_duration(eta)}"
+    )
+    return now, count
+
+
+def _export_records_to_files(
+    format,
+    community_slug,
+    records_file,
+    deleted_file,
+    use_pit=False,
+    page_size=1000,
+):
     community_uuid = None
 
     if community_slug:
@@ -43,11 +124,20 @@ def _export_records_to_files(format, community_slug, records_file, deleted_file)
 
     anonymous_identity = _get_anonymous_identity()
 
-    res = service.scan(
-        anonymous_identity,
-        q=f"parent.communities.ids:{community_uuid}" if community_uuid else "",
-        params={"allversions": True, "include_deleted": True},
+    res, total = _scan_records(
+        anonymous_identity, community_uuid, use_pit, page_size=page_size
     )
+
+    mode = "pit" if use_pit else "scroll"
+    current_app.logger.info(
+        f"[exporter] starting: format={format} "
+        f"community={community_slug or '-'} mode={mode} "
+        f"page_size={page_size} total={total:,}"
+    )
+    start = time.monotonic()
+    last_log = start
+    last_count = 0
+    count = 0
 
     deleted_file_content = TextIOWrapper(deleted_file, encoding="utf-8")
     deleted_writer = csv.writer(deleted_file_content)
@@ -119,6 +209,22 @@ def _export_records_to_files(format, community_slug, records_file, deleted_file)
         tar_info.size = len(content_bytes)
         records_file.addfile(tar_info, fileobj=file_content)
 
+        count = idx + 1
+        if (
+            count - last_count >= PROGRESS_LOG_EVERY_RECORDS
+            or time.monotonic() - last_log >= PROGRESS_LOG_EVERY_SECONDS
+        ):
+            last_log, last_count = _log_progress(
+                count, total, start, last_log, last_count
+            )
+
+    elapsed = time.monotonic() - start
+    avg = count / elapsed if elapsed > 0 else 0
+    current_app.logger.info(
+        f"[exporter] done: {count:,} records in {_fmt_duration(elapsed)} "
+        f"(avg {avg:,.0f}/s)"
+    )
+
 
 def _create_or_get_bucket():
     bucket_uuid = current_app.config["EXPORTER_BUCKET_UUID"]
@@ -164,7 +270,7 @@ def _remove_old_object_versions(bucket, filename):
 
 
 @shared_task
-def export_records(format, community_slug):
+def export_records(format, community_slug, use_pit=False, page_size=1000):
     """Export records."""
     bucket = _create_or_get_bucket()
 
@@ -175,7 +281,14 @@ def export_records(format, community_slug):
         tarfile.open(fileobj=records_file_stream, mode="w|gz") as records_file,
         gzip.GzipFile(fileobj=deleted_file_stream, mode="w") as deleted_file,
     ):
-        _export_records_to_files(format, community_slug, records_file, deleted_file)
+        _export_records_to_files(
+            format,
+            community_slug,
+            records_file,
+            deleted_file,
+            use_pit=use_pit,
+            page_size=page_size,
+        )
 
     records_file_stream.seek(0)
     deleted_file_stream.seek(0)
