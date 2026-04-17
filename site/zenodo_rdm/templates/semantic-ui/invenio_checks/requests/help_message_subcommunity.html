@@ -1,0 +1,51 @@
+{# -*- coding: utf-8 -*-
+
+This file is part of Invenio.
+Copyright (C) 2025 CERN.
+
+Invenio is free software; you can redistribute it and/or modify it
+under the terms of the MIT License; see LICENSE file for more details.
+#}
+
+{% if check_id == "subcommunity_metadata" %}
+<div class="ui info message">
+    <div class="header">What is this about?</div>
+    <p>Community metadata is automatically suggested based on the EU project information.
+    This includes the project name, description, website, and participating organizations.</p>
+    <h5 class="ui header">Can I edit this metadata?</h5>
+    <p>Yes, the community owner can edit all metadata after the community is created via the community settings page.</p>
+    <p><a href='https://help.zenodo.org/docs/communities/manage-community-settings' target='_blank' >Learn more</a></p>
+</div>
+{% elif check_id == "subcommunity_member" %}
+<div class="ui info message">
+    <div class="header">What is this about?</div>
+    <p>To ensure communities are managed by legitimate project participants, we verify that at least one community
+      member (owner or manager) is affiliated with one of the project's partner organizations.</p>
+    <h5 class="ui header">How do we verify affiliation?</h5>
+    <p>We check the member's email domain against the project's partner organizations,
+      or verify through connected institutional accounts (e.g., via your institution's login).</p>
+    {# TODO: Update link #}
+    <p><a href='https://help.zenodo.org/docs/communities/manage-community-settings' target='_blank' >Learn more</a></p>
+</div>
+{% elif check_id == "subcommunity_validation" %}
+<div class="ui info message">
+    <div class="header">What is this about?</div>
+    <p>We validate that the EU project grant exists and is currently active,
+      and ensure no duplicate community has already been created for this project.</p>
+    <h5 class="ui header">Why is this important?</h5>
+    <p>This prevents creation of communities for non-existent or expired projects,
+      and avoids confusion from having multiple communities for the same project.</p>
+    {# TODO: Update link #}
+    <p><a href='https://help.zenodo.org/docs/communities/manage-community-settings' target='_blank' >Learn more</a></p>
+</div>
+{% elif check_id == "subcommunity_record_metadata" %}
+<div class="ui info message">
+    <div class="header">What is this about?</div>
+    <p>To be part of the EU Open Research Repository, all records in a community must acknowledge their EU funding
+      by including the project's grant information in their metadata.</p>
+    <h5 class="ui header">How do I fix this?</h5>
+    <p>You can use the "Add funding to all records" button to automatically add the grant information, or manually edit
+      individual records. Records being edited by others will need to be updated separately.</p>
+</div>
+{% endif %}
+

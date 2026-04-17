@@ -1,0 +1,51 @@
+{# -*- coding: utf-8 -*-
+
+This file is part of Invenio.
+Copyright (C) 2026 CERN.
+
+Invenio is free software; you can redistribute it and/or modify it
+under the terms of the MIT License; see LICENSE file for more details.
+#}
+
+{% import "invenio_checks/requests/_rule_severity.html" as rule_severity_tpl %}
+{% import "invenio_checks/requests/severity_level_icons.html" as severity_level_icons_tpl %}
+
+<div class="ui column stackable grid">
+  <div class="ten wide column">
+    <div class="ui very relaxed list rel-pl-2">
+      {% for check in checks %}
+        <div class="content">
+          <div class="header">{{ check.config.check_cls.title }}</div>
+          <div class="pt-5 pb-5 text-muted">{{ check.config.check_cls.description }}</div>
+        </div>
+        {% for rule_result in check.result.rule_results %}
+        {% set rule_severity_level = rule_severity_tpl.rule_severity_level(rule_result) | trim %}
+
+        <div class="item">
+          <i class="{{ severity_level_icons_tpl.severity_level_icons[rule_severity_level] }}"></i>
+          <div class="content">
+            <div class="header">{{ rule_result.rule_message }}</div>
+            {% set check_result = rule_result.check_results | first %}
+            {% if check_result %}
+            <div class="rel-pt-1 rel-pb-1">
+              {% for value in check_result.value %}
+                <div class="ui {{ 'success' if value.verified else 'warning' }} small message">
+                  {% if value.name %}<strong>{{ value.name ~ " - " ~ value.role }}</strong>{% endif %}
+                  <div class="text-muted">{{ value.domain }}</div>
+                </div>
+              {% endfor %}
+            </div>
+            {% endif %}
+            <div class="pt-5 text-muted">{{ rule_result.rule_description | safe }}</div>
+          </div>
+        </div>
+        {% endfor %}
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="six wide column">
+    {% include 'invenio_checks/requests/help_message_subcommunity.html' %}
+  </div>
+
+</div>
