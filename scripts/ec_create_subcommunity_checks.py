@@ -23,6 +23,12 @@ from werkzeug.local import LocalProxy
 community_service = LocalProxy(lambda: current_communities.service)
 
 
+MEMBER_RULES = {}
+
+VALIDATION_RULES = {}
+
+RECORD_METADATA_RULES = {}
+
 METADATA_RULES = {
     "target_type": "community",
     "rules": [
@@ -119,6 +125,9 @@ METADATA_RULES = {
 
 def create_eu_subcommunity_checks():
     eu_comm = community_service.record_cls.pid.resolve("eu")
+    create_member_checks(eu_comm)
+    create_project_validation_checks(eu_comm)
+    create_record_metadata_checks(eu_comm)
     create_metadata_checks(eu_comm)
     print("EU Open Research Repository subcommunity checks created/updated successfully.")
     run_checks_for_existing_requests(eu_comm)
@@ -160,6 +169,72 @@ def run_checks_for_existing_requests(eu_comm):
             uow.commit()
 
     print("Done running checks for existing subcommunity requests.")
+
+
+def create_member_checks(eu_comm):
+    existing_check = CheckConfig.query.filter_by(
+        community_id=eu_comm.id, check_id="subcommunity_member", scope=CheckScope.SUBCOMMUNITY
+    ).one_or_none()
+    if existing_check:
+        existing_check.params = MEMBER_RULES
+    else:
+        check_config = CheckConfig(
+            community_id=eu_comm.id,
+            check_id="subcommunity_member",
+            params=MEMBER_RULES,
+            severity=Severity.ERROR,
+            scope=CheckScope.SUBCOMMUNITY,
+            enabled=True,
+        )
+        db.session.add(check_config)
+    db.session.commit()
+    print(
+        f"Subcommunity member affiliation checks created/updated successfully for community {eu_comm.slug}."
+    )
+
+
+def create_project_validation_checks(eu_comm):
+    existing_check = CheckConfig.query.filter_by(
+        community_id=eu_comm.id, check_id="subcommunity_validation", scope=CheckScope.SUBCOMMUNITY
+    ).one_or_none()
+    if existing_check:
+        existing_check.params = VALIDATION_RULES
+    else:
+        check_config = CheckConfig(
+            community_id=eu_comm.id,
+            check_id="subcommunity_validation",
+            params=VALIDATION_RULES,
+            severity=Severity.INFO,
+            scope=CheckScope.SUBCOMMUNITY,
+            enabled=True,
+        )
+        db.session.add(check_config)
+    db.session.commit()
+    print(
+        f"Subcommunity project validation checks created/updated successfully for community {eu_comm.slug}."
+    )
+
+
+def create_record_metadata_checks(eu_comm):
+    existing_check = CheckConfig.query.filter_by(
+        community_id=eu_comm.id, check_id="subcommunity_record_metadata", scope=CheckScope.SUBCOMMUNITY
+    ).one_or_none()
+    if existing_check:
+        existing_check.params = RECORD_METADATA_RULES
+    else:
+        check_config = CheckConfig(
+            community_id=eu_comm.id,
+            check_id="subcommunity_record_metadata",
+            params=RECORD_METADATA_RULES,
+            severity=Severity.INFO,
+            scope=CheckScope.SUBCOMMUNITY,
+            enabled=True,
+        )
+        db.session.add(check_config)
+    db.session.commit()
+    print(
+        f"Subcommunity funding metadata checks created/updated successfully for community {eu_comm.slug}."
+    )
 
 
 def create_metadata_checks(eu_comm):
