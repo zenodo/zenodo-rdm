@@ -2,10 +2,16 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Subcommunities schema implementation."""
 
-from invenio_communities.subcommunities.services.schema import SubcommunityRequestSchema
+from invenio_communities.subcommunities.services.schema import (
+    MinimalCommunitySchema as BaseMinimalSchema,
+)
+from invenio_communities.subcommunities.services.schema import (
+    SubcommunityRequestSchema,
+)
 from invenio_i18n import gettext as _
-from marshmallow import Schema, ValidationError, fields, validates
+from marshmallow import Schema, ValidationError, fields, post_load, validates
 from marshmallow_utils.context import context_schema
+from marshmallow_utils.fields import URL, SanitizedUnicode
 
 
 class SubCommunityRequestPayloadShema(Schema):
@@ -33,10 +39,30 @@ class SubCommunityRequestPayloadShema(Schema):
                 )
 
 
+class ZenodoMinimalCommunitySchema(BaseMinimalSchema):
+    """Extended minimal schema for Zenodo."""
+
+    description = SanitizedUnicode(allow_none=True)
+    website = URL(allow_none=True)
+
+    @post_load
+    def load_default(self, data, **kwargs):
+        """Override to include extra metadata fields."""
+        res = super().load_default(data, **kwargs)
+        
+        extra_metadata = {
+            "description": data.get("description"),
+            "website": data.get("website"),
+        }
+
+        # Filter out None or empty strings
+        cleaned_extras = {k: v for k, v in extra_metadata.items() if v is not None}
+        
+        res["metadata"].update(cleaned_extras)
+        return res
+
 class ZenodoSubcommunityRequestSchema(SubcommunityRequestSchema):
-    """Schema for Zenodo subcommunity requests.
-
-    Extends the SubcommunityRequestSchema with a project field.
-    """
-
+    """Schema for Zenodo subcommunity requests."""
+    
+    community = fields.Nested(ZenodoMinimalCommunitySchema)
     payload = fields.Nested(SubCommunityRequestPayloadShema)
