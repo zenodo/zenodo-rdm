@@ -9,6 +9,7 @@ import {
   RadioField,
   SelectField,
   TextField,
+  TextAreaField,
   withCancel,
   http,
   RemoteSelectField,
@@ -70,8 +71,6 @@ class SubcommunityCreateForm extends Component {
     const { hasCommunity } = this.state;
     const { community } = this.props;
     let payload = {};
-    let slug = "";
-    let project_id = "";
     if (hasCommunity) {
       payload = {
         community_id: values["metadata"]["community"],
@@ -80,12 +79,12 @@ class SubcommunityCreateForm extends Component {
         },
       };
     } else {
-      slug = values["metadata"]["slug"];
-      project_id = values["metadata"]["project_id"];
       payload = {
         community: {
           title: values["metadata"]["title"],
-          slug: slug,
+          slug: values["metadata"]["slug"],
+          description: values["metadata"]["description"] || null,
+          website: values["metadata"]["website"] || null,       
         },
         payload:{
           project_id: values["metadata"]["project_id"]
@@ -138,6 +137,8 @@ class SubcommunityCreateForm extends Component {
             slug: "",
             title: "",
             project_id: "",
+            description: "",
+            website: "",
           },
         }}
         onSubmit={this.onSubmit}
@@ -233,6 +234,8 @@ class SubcommunityCreateForm extends Component {
                         key: item.id,
                         acronym: item.acronym,
                         title: item.title_l10n,
+                        short_description: item.short_description_l10n,
+                        website: item.identifiers.find((id) => id.scheme === "url")?.identifier  || "",
                       }))
                     }
                     onValueChange={({ data, formikProps }) => {
@@ -254,10 +257,20 @@ class SubcommunityCreateForm extends Component {
                             selectedProject.acronym.toLowerCase()
                           );
                         }
+                        formikProps.form.setFieldValue(
+                          "metadata.description",
+                          selectedProject.short_description
+                        );
+                        formikProps.form.setFieldValue(
+                          "metadata.website",
+                          selectedProject.website
+                        );
                       } else {
                         formikProps.form.setFieldValue("metadata.project_id", "");
                         formikProps.form.setFieldValue("metadata.title", "");
                         formikProps.form.setFieldValue("metadata.slug", "");
+                        formikProps.form.setFieldValue("metadata.description", "");
+                        formikProps.form.setFieldValue("metadata.website", "");
                       }
                     }}
                     noQueryMessage={i18next.t("Search for project...")}
@@ -310,6 +323,27 @@ class SubcommunityCreateForm extends Component {
                         }
                       />
                       <IdentifierField formConfig={formConfig} />
+                      <TextAreaField 
+                      label={<FieldLabel
+                        htmlFor="metadata.description"
+                        icon="pencil alternate"
+                        label={i18next.t("Short description")}/>}
+                        rows={4}
+                        id="metadata.description"
+                        fieldPath="metadata.description"
+                      />                     
+                      <TextField
+                      id="metadata.website"
+                      fluid
+                      fieldPath="metadata.website"
+                      label={
+                        <FieldLabel
+                          htmlFor="metadata.website"
+                          icon="linkify"
+                          label={i18next.t("Website")}
+                        />
+                      }
+                    />
                     </>
                   )}
                   {canCreateRestricted && (
