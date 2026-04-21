@@ -10,3 +10,22 @@ funders:
 awards:
   pid-type: awa
   data-file: vocabularies/awards.yaml
+subjects:
+  pid-type: sub
+  schemes:
+    - id: EuroSciVoc
+      name: European Science Vocabulary (EuroSciVoc)
+      uri: "https://op.europa.eu/en/web/eu-vocabularies/dataset/-/resource?uri=http://publications.europa.eu/resource/dataset/euroscivoc"
+      data-file: vocabularies/subjects_euroscivoc.yaml
+    - id: GEMET
+      name: GEneral Multilingual Environmental Thesaurus (GEMET)
+      uri: "https://www.eionet.europa.eu/gemet/"
+      data-file: vocabularies/subjects_gemet.yaml
+    - id: MeSH
+      name: Medical Subject Headings (MeSH)
+      uri: "http://www.nlm.nih.gov/mesh/"
+      data-file: vocabularies/subjects_mesh.yaml
+    - id: NVS-P02
+      name: NERC Vocabulary Server (NVS) - P02 (SeaDataNet Parameter Discovery Vocabulary)
+      uri: "https://vocab.nerc.ac.uk/collection/P02/current/"
+      data-file: vocabularies/subjects_nvs.yaml
