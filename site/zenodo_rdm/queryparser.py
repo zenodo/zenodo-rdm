@@ -26,25 +26,39 @@ def word_communities(node):
     return Phrase(f'"{uuid}"')
 
 
-def word_resource_type_subtype(node):
-    """Map legacy 'publication-thesis' subtype to 'publication-dissertation'."""
+def word_thesis_to_dissertation(node):
+    """Map legacy 'publication-thesis' value to 'publication-dissertation'."""
     if node.value == "publication-thesis":
         return Word("publication-dissertation")
     return node
 
 
-def phrase_resource_type_subtype(node):
-    """Map legacy 'publication-thesis' subtype phrase to 'publication-dissertation'."""
+def phrase_thesis_to_dissertation(node):
+    """Map legacy 'publication-thesis' phrase to 'publication-dissertation'."""
     if node.value == '"publication-thesis"':
         return Phrase('"publication-dissertation"')
     return node
 
 
+def _thesis_value_mapper(term_name):
+    """Rewrite 'publication-thesis' to 'publication-dissertation'."""
+    return FieldValueMapper(
+        term_name,
+        word=word_thesis_to_dissertation,
+        phrase=phrase_thesis_to_dissertation,
+    )
+
+
 ZENODO_LEGACY_SEARCH_MAP = {
-    "resource_type.subtype": FieldValueMapper(
-        "metadata.resource_type.props.subtype",
-        word=word_resource_type_subtype,
-        phrase=phrase_resource_type_subtype,
+    "resource_type.subtype": _thesis_value_mapper(
+        "metadata.resource_type.props.subtype"
+    ),
+    "metadata.resource_type.id": _thesis_value_mapper("metadata.resource_type.id"),
+    "metadata.resource_type.props.subtype": _thesis_value_mapper(
+        "metadata.resource_type.props.subtype"
+    ),
+    "metadata.related_identifiers.resource_type.id": _thesis_value_mapper(
+        "metadata.related_identifiers.resource_type.id"
     ),
     "resource_type.type": "metadata.resource_type.props.type",
     "access_right": "access.status",
