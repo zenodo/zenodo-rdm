@@ -15,15 +15,23 @@ def word_doi(node):
     return Phrase(f'"{node.value}"')
 
 
-def word_communities(node):
-    """Resolve community slugs to IDs."""
-    slug = node.value
-    uuid = (
+def _resolve_community_slug(slug):
+    return (
         db.session.query(CommunityMetadata.id)
         .filter(CommunityMetadata.slug == slug)
         .scalar()
     )
-    return Phrase(f'"{uuid}"')
+
+
+def word_communities(node):
+    """Resolve community slugs to IDs."""
+    return Phrase(f'"{_resolve_community_slug(node.value)}"')
+
+
+def phrase_communities(node):
+    """Resolve quoted community slugs to IDs."""
+    # node.value includes the surrounding double quotes.
+    return Phrase(f'"{_resolve_community_slug(node.value.strip(chr(34)))}"')
 
 
 def word_thesis_to_dissertation(node):
@@ -64,7 +72,11 @@ ZENODO_LEGACY_SEARCH_MAP = {
     "access_right": "access.status",
     "alternate.identifier": "metadata.identifiers.identifier",
     "alternate.scheme": "metadata.identifiers.scheme",
-    "communities": FieldValueMapper("parent.communities.ids", word=word_communities),
+    "communities": FieldValueMapper(
+        "parent.communities.ids",
+        word=word_communities,
+        phrase=phrase_communities,
+    ),
     "conceptdoi": FieldValueMapper("parent.pids.doi.identifier", word=word_doi),
     "conceptrecid": "parent.id",
     "created": "created",

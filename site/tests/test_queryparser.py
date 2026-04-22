@@ -112,7 +112,8 @@ def test_search_map_value_mappers(published_records):
         ),
         # `10.*` DOIs get phrase-wrapped so `/` isn't tokenized.
         ('doi:"10.1234/thesis"', [dissertation_id]),
-        # Community slug resolves to the UUID stored on ``parent.communities.ids``.
+        # Community slug resolves to the UUID stored in `parent.communities.ids`.
+        (f"communities:{slug}", [dissertation_id]),
         (f'communities:"{slug}"', [dissertation_id]),
         # Unknown slug resolves to `"None"` and matches nothing.
         ('communities:"does-not-exist"', []),
