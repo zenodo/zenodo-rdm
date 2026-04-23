@@ -24,4 +24,11 @@ class ExportRecords(JobType):
         default_community_slug = current_app.config[
             "EXPORTER_JOB_DEFAULT_COMMUNITY_SLUG"
         ]
-        return {"format": default_format, "community_slug": default_community_slug}
+        use_pit = current_app.config.get("EXPORTER_JOB_USE_PIT", False)
+        page_size = current_app.config.get("EXPORTER_JOB_PAGE_SIZE", 1000)
+        return {
+            "format": default_format,
+            "community_slug": default_community_slug,
+            "use_pit": use_pit,
+            "page_size": page_size,
+        }
