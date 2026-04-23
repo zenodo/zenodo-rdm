@@ -3,14 +3,6 @@ import { PropTypes } from "prop-types";
 import { SelectField } from "react-invenio-forms";
 
 class CategoryDropdown extends Component {
-  constructor(props) {
-    super(props);
-
-    const { categories, defaultCategory, onCategoryChange } = props;
-    const activeCategory = categories?.find((el) => el.key === defaultCategory);
-    onCategoryChange(activeCategory);
-  }
-
   serializeCategory(category) {
     if (!category) {
       return null;
@@ -56,16 +48,14 @@ class CategoryDropdown extends Component {
 
 CategoryDropdown.propTypes = {
   categories: PropTypes.array,
-  defaultCategory: PropTypes.string,
-  activeCategory: PropTypes.string,
+  activeCategory: PropTypes.object,
   onCategoryChange: PropTypes.func,
   className: PropTypes.string,
 };
 
 CategoryDropdown.defaultProps = {
   categories: [],
-  defaultCategory: "",
-  activeCategory: "",
+  activeCategory: null,
   onCategoryChange: null,
   className: "",
 };
