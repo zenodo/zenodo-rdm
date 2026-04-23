@@ -241,7 +241,6 @@ class SupportForm extends Component {
               />
               <CategoryDropdown
                 categories={categories}
-                defaultCategory=""
                 activeCategory={activeCategory}
                 onCategoryChange={this.onCategoryChange}
                 className="eight wide field flex"
