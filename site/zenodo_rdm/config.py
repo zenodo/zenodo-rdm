@@ -87,11 +87,14 @@ SUPPORT_ISSUE_CATEGORIES = [
     },
     {
         "key": "quota-increase",
-        "title": "Quota increase",
+        "title": "Storage quota increase",
         "description": (
-            "<p>We exceptionally grant a <strong>one-time quota increase up to 200GB</strong>. Requests beyond the 200GB are declined. Zenodo allows maximum 100 files in a record (this limit cannot be increased).</p>"
-            '<p><strong>Before you send the request</strong>, please follow the actions described on <a href="https://help.zenodo.org/docs/deposit/manage-files/quota-increase/">https://help.zenodo.org/docs/deposit/manage-files/quota-increase/</a>.</p>'
+            '<div class="ui warning visible message">'
+            '<div class="header">Increasing your storage quota</div>'
+            '<p>Follow the <a href="https://help.zenodo.org/docs/deposit/manage-quota/">storage quota guide</a> to manage the storage quota of your drafts.</p>'
+            "</div>"
         ),
+        "form_disabled": True,
     },
     {
         "key": "security-report",
