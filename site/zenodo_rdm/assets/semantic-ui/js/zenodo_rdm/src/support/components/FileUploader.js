@@ -13,12 +13,17 @@ const FileUploader = ({
   handleDelete,
   errorMessage,
   rejectedFiles,
+  disabled,
 }) => {
   return (
     <div>
-      <Dropzone {...dropzoneParams}>
+      <Dropzone {...dropzoneParams} disabled={disabled}>
         {({ getRootProps, getInputProps }) => (
-          <div id="file-dropzone" {...getRootProps({ className: "dropzone" })}>
+          <div
+            id="file-dropzone"
+            {...getRootProps({ className: "dropzone" })}
+            style={disabled ? { opacity: 0.5, cursor: "not-allowed" } : undefined}
+          >
             <input {...getInputProps()} name={name} />
             <p className="ui medium header text-align-center m-0">
               Drag files here, or click to select files
@@ -56,11 +61,13 @@ FileUploader.propTypes = {
   errorMessage: PropTypes.string,
   rejectedFiles: PropTypes.array,
   handleDelete: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
 };
 
 FileUploader.defaultProps = {
   errorMessage: null,
   rejectedFiles: [],
+  disabled: false,
 };
 
 export default FileUploader;
