@@ -69,11 +69,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Use Node.js v16.x
+
+      - name: Use Node.js 22
         uses: actions/setup-node@v4
         with:
-          node-version: v16.x
+          node-version: '22'
 
       - name: Run eslint test
-        run: ./run-js-linter.sh -i
+        run: ./run-js-linter.sh
 
