@@ -9,7 +9,7 @@ moderation = "zenodo_rdm.cli:moderation_cli"
 exporter = "zenodo_rdm.exporter.cli:exporter"
 
 [project.entry-points."invenio_base.blueprints"]
-zenodo_rdm = "zenodo_rdm.views:create_blueprint"
+zenodo_rdm = "zenodo_rdm.theme.views:create_blueprint"
 zenodo_support = "zenodo_rdm.support.views:create_blueprint"
 
 [project.entry-points."invenio_base.apps"]
@@ -53,6 +53,7 @@ zenodo_rdm_openaire = "zenodo_rdm.openaire.tasks"
 zenodo_rdm_moderation = "zenodo_rdm.moderation.tasks"
 zenodo_stats = "zenodo_rdm.stats.tasks"
 zenodo_rdm_curation = "zenodo_rdm.curation.tasks"
+zenodo_rdm_theme = "zenodo_rdm.theme.tasks"
 
 [project.entry-points."invenio_oauth2server.scopes"]
 deposit_write_scope = "zenodo_rdm.legacy.scopes:deposit_write_scope"
