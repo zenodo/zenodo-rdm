@@ -1,6 +1,7 @@
-# SPDX-FileCopyrightText: 2024 CERN
+# SPDX-FileCopyrightText: 2024-2026 CERN
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""Filters to be used in the Jinja templates."""
+
+"""Theme template filters."""
 
 from invenio_communities.proxies import current_communities
 from invenio_rdm_records.proxies import current_rdm_records_service as records_service
