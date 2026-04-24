@@ -276,6 +276,7 @@ class SupportForm extends Component {
                   }}
                   errorMessage={fileErrorMessage}
                   rejectedFiles={rejectedFiles}
+                  disabled={formDisabledForCategory}
                 />
               </div>
 
@@ -288,6 +289,8 @@ class SupportForm extends Component {
                     onLabel="Include browser and system information to assist us with narrowing down the cause of your problem."
                     offValue={false}
                     onValue
+                    disabled={formDisabledForCategory}
+                    optimized={false}
                   />
                   <label className="helptext">{sysInfo}</label>
                 </div>
