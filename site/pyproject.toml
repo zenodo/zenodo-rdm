@@ -11,6 +11,7 @@ exporter = "zenodo_rdm.exporter.cli:exporter"
 [project.entry-points."invenio_base.blueprints"]
 zenodo_rdm = "zenodo_rdm.views:create_blueprint"
 zenodo_support = "zenodo_rdm.support.views:create_blueprint"
+orcha = "zenodo_rdm.orcha.views:blueprint"
 
 [project.entry-points."invenio_base.apps"]
 zenodo_rdm_legacy = "zenodo_rdm.legacy.ext:ZenodoLegacy"
