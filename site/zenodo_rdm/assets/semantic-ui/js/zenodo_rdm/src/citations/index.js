@@ -5,11 +5,11 @@ import ReactDOM from "react-dom";
 import { CitationsSearch } from "./CitationsSearch";
 
 const citationsContainer = document.getElementById("citations-search");
-const recordPIDs = citationsContainer.dataset.recordPids;
-const recordParentPIDs = citationsContainer.dataset.recordParentPids;
-const citationsEndpoint = citationsContainer.dataset.citationsEndpoint;
+if (citationsContainer) {
+  const recordPIDs = citationsContainer.dataset.recordPids;
+  const recordParentPIDs = citationsContainer.dataset.recordParentPids;
+  const citationsEndpoint = citationsContainer.dataset.citationsEndpoint;
 
-citationsContainer &&
   ReactDOM.render(
     <CitationsSearch
       recordPIDs={JSON.parse(recordPIDs)}
@@ -18,3 +18,4 @@ citationsContainer &&
     />,
     citationsContainer
   );
+}
