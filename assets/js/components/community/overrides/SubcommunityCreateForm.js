@@ -35,9 +35,12 @@ class SubcommunityCreateForm extends Component {
     communities: [],
     organizationsKey: "initial",
     organizationSuggestions: [],
+    projectFieldKey: "initial",
+    projectInitialSuggestions: [],
   };
 
   knownOrganizations = {};
+  projectRawItems = {};
 
   componentDidMount() {
     withCancel(
@@ -148,6 +151,8 @@ class SubcommunityCreateForm extends Component {
       error,
       organizationsKey,
       organizationSuggestions,
+      projectFieldKey,
+      projectInitialSuggestions,
     } = this.state;
 
     return (
@@ -240,6 +245,7 @@ class SubcommunityCreateForm extends Component {
                       </Form.Group>
                     </div>
                     <RemoteSelectField
+                      key={projectFieldKey}
                       fieldPath="metadata.project_id"
                       id="metadata.project_id"
                       searchQueryParamName="q"
@@ -249,42 +255,40 @@ class SubcommunityCreateForm extends Component {
                         Accept: "application/vnd.inveniordm.v1+json",
                       }}
                       suggestionAPIQueryParams={{ funders: "00k4n6c32" }}
+                      initialSuggestions={projectInitialSuggestions}
                       serializeSuggestions={(suggestions) =>
-                        suggestions.map((item) => ({
-                          text: `${item.title_l10n} ${
-                            item.acronym ? ` - (${item.acronym})` : ""
-                          } - ${item.number}`,
-                          content: (
-                            <Header
-                              content={`${item.title_l10n}${
-                                item.acronym ? ` - (${item.acronym})` : ""
-                              }`}
-                              subheader={item.number}
-                            />
-                          ),
-                          value: item.id,
-                          key: item.id,
-                          acronym: item.acronym,
-                          title: item.title_l10n,
-                          short_description: item.short_description_l10n,
-                          website:
-                            item.website ||
-                            item.identifiers.find((id) => id.scheme === "url")
-                              ?.identifier ||
-                            "",
-                          organizations: item.organizations || [],
-                        }))
+                        (suggestions || []).map((item) => {
+                          this.projectRawItems[item.id] = item;
+                          return {
+                            text: `${item.title_l10n} ${
+                              item.acronym ? ` - (${item.acronym})` : ""
+                            } - ${item.number}`,
+                            content: (
+                              <Header
+                                content={`${item.title_l10n}${
+                                  item.acronym ? ` - (${item.acronym})` : ""
+                                }`}
+                                subheader={item.number}
+                              />
+                            ),
+                            value: item.id,
+                            key: item.id,
+                            acronym: item.acronym,
+                            title: item.title_l10n,
+                            short_description: item.short_description_l10n,
+                            website:
+                              item.website ||
+                              item.identifiers.find((id) => id.scheme === "url")
+                                ?.identifier ||
+                              "",
+                            organizations: item.organizations || [],
+                          };
+                        })
                       }
                       onValueChange={({ data, formikProps }) => {
                         let selectedProject = data.options.find(
                           (option) => option.value === data.value
                         );
-                        // Defer blur past SUI Dropdown's internal auto-refocus
-                        // of the search input after a selection.
-                        setTimeout(() => {
-                          const input = document.getElementById("metadata.project_id");
-                          input && input.blur();
-                        }, 0);
                         if (selectedProject) {
                           formikProps.form.setFieldValue(
                             formikProps.fieldPath,
@@ -315,9 +319,16 @@ class SubcommunityCreateForm extends Component {
                             "metadata.organizations",
                             orgNames
                           );
+                          // Remount the project field with only the selected
+                          // project as initial suggestion so the dropdown
+                          // doesn't auto-fetch the full list and re-open after
+                          // selection.
+                          const rawItem = this.projectRawItems[selectedProject.value];
                           this.setState({
                             organizationsKey: selectedProject.key,
                             organizationSuggestions: orgNames.map((name) => ({ name })),
+                            projectFieldKey: `selected-${selectedProject.value}`,
+                            projectInitialSuggestions: rawItem ? [rawItem] : [],
                           });
                         } else {
                           formikProps.form.setFieldValue("metadata.project_id", "");
@@ -329,6 +340,8 @@ class SubcommunityCreateForm extends Component {
                           this.setState({
                             organizationsKey: `cleared-${Date.now()}`,
                             organizationSuggestions: [],
+                            projectFieldKey: `cleared-${Date.now()}`,
+                            projectInitialSuggestions: [],
                           });
                         }
                       }}
@@ -461,12 +474,13 @@ class SubcommunityCreateForm extends Component {
                           multiple
                           initialSuggestions={organizationSuggestions}
                           serializeSuggestions={(orgs) => {
-                            orgs.forEach((org) => {
+                            const safeOrgs = orgs || [];
+                            safeOrgs.forEach((org) => {
                               if (org.id && !this.knownOrganizations[org.id]) {
                                 this.knownOrganizations[org.id] = org.name;
                               }
                             });
-                            return AffiliationsSuggestions(orgs, true);
+                            return AffiliationsSuggestions(safeOrgs, true);
                           }}
                           label={
                             <FieldLabel
