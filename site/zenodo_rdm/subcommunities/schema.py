@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Subcommunities schema implementation."""
 
+from invenio_communities.communities.schema import AffiliationRelationSchema
 from invenio_communities.subcommunities.services.schema import (
     MinimalCommunitySchema as BaseMinimalSchema,
 )
@@ -44,20 +45,22 @@ class ZenodoMinimalCommunitySchema(BaseMinimalSchema):
 
     description = SanitizedUnicode(allow_none=True)
     website = URL(allow_none=True)
+    organizations = fields.List(fields.Nested(AffiliationRelationSchema))
 
     @post_load
     def load_default(self, data, **kwargs):
         """Override to include extra metadata fields."""
         res = super().load_default(data, **kwargs)
-        
+
         extra_metadata = {
             "description": data.get("description"),
             "website": data.get("website"),
+            "organizations": data.get("organizations"),
         }
 
-        # Filter out None or empty strings
-        cleaned_extras = {k: v for k, v in extra_metadata.items() if v is not None}
-        
+        # Filter out None or empty values
+        cleaned_extras = {k: v for k, v in extra_metadata.items() if v}
+
         res["metadata"].update(cleaned_extras)
         return res
 
