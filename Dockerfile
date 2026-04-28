@@ -41,6 +41,24 @@ RUN dnf install -y http://rpms.remirepo.net/enterprise/remi-release-9.rpm
 RUN dnf install -y vips
 # /VIPS
 
+# Node.js 22 + pnpm (base image ships Node 16 from NodeSource, too old for pnpm 10)
+RUN dnf remove -y nodejs npm && \
+    dnf module reset -y nodejs && \
+    dnf module enable -y nodejs:22 && \
+    dnf install -y nodejs npm
+RUN npm install -g pnpm@10.33.2
+ENV PNPM_STORE_DIR=/opt/.cache/pnpm-store
+
+# Sits above project-source COPYs so the layer only invalidates when the lockfile
+# changes. --shamefully-hoist must match the flag pynpm.PNPMPackage forces during the
+# later `invenio webpack install`, otherwise that step would purge node_modules and
+# reinstall from scratch.
+RUN mkdir -p ${INVENIO_INSTANCE_PATH}/assets
+COPY package.json pnpm-lock.yaml ${INVENIO_INSTANCE_PATH}/assets/
+RUN --mount=type=cache,target=/opt/.cache/pnpm-store \
+    cd ${INVENIO_INSTANCE_PATH}/assets && \
+    pnpm install --frozen-lockfile --shamefully-hoist
+
 # Python and uv configuration
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
@@ -76,10 +94,11 @@ COPY ./invenio.cfg ${INVENIO_INSTANCE_PATH}
 COPY ./templates/ ${INVENIO_INSTANCE_PATH}/templates/
 COPY ./app_data/ ${INVENIO_INSTANCE_PATH}/app_data/
 COPY ./translations ${INVENIO_INSTANCE_PATH}/translations
-COPY ./ .
 
 # Make sure workspace packages are installed (zenodo-rdm, zenodo-legacy)
 RUN --mount=type=cache,target=/opt/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
     uv sync --frozen --no-dev $BUILD_EXTRAS \
     # (py)xrootd is already installed above using dnf
     --no-install-package=xrootd
@@ -87,6 +106,18 @@ RUN --mount=type=cache,target=/opt/.cache/uv \
 # We're caching on a mount, so for any commands that run after this we
 # don't want to use the cache (for image filesystem permission reasons)
 ENV UV_NO_CACHE=1
+
+# CI=true in `invenio webpack install` makes pnpm apply --frozen-lockfile (pynpm doesn't
+# pass it) and skip the interactive prompt that would otherwise abort the build under
+# no-TTY.
+RUN --mount=type=cache,target=/opt/.cache/pnpm-store \
+    invenio collect --verbose && \
+    invenio webpack create && \
+    CI=true invenio webpack install
+
+COPY ./assets/ ${INVENIO_INSTANCE_PATH}/assets/
+COPY ./static/ ${INVENIO_INSTANCE_PATH}/static/
+RUN cd ${INVENIO_INSTANCE_PATH}/assets && pnpm run build
 
 # application build args to be exposed as environment variables
 ARG IMAGE_BUILD_TIMESTAMP
@@ -98,9 +129,6 @@ ENV SENTRY_RELEASE=${SENTRY_RELEASE}
 
 RUN echo "Image build timestamp $INVENIO_IMAGE_BUILD_TIMESTAMP"
 
-RUN cp -r ./static/. ${INVENIO_INSTANCE_PATH}/static/ && \
-    cp -r ./assets/. ${INVENIO_INSTANCE_PATH}/assets/ && \
-    invenio collect --verbose  && \
-    invenio webpack buildall
+COPY ./ .
 
 ENTRYPOINT [ "bash", "-l"]
