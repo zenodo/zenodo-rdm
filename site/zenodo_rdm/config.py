@@ -176,6 +176,8 @@ ZENODO_FRONTPAGE_RECENT_UPLOADS_QUERY = dsl.query.Bool(
     ]
 )
 
+ZENODO_FRONTPAGE_CACHE_TIMEOUT = 60 * 30
+
 
 # Citations
 # =========
