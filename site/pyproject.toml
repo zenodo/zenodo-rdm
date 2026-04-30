@@ -14,7 +14,6 @@ zenodo_support = "zenodo_rdm.support.views:create_blueprint"
 
 [project.entry-points."invenio_base.apps"]
 zenodo_rdm_legacy = "zenodo_rdm.legacy.ext:ZenodoLegacy"
-profiler = "zenodo_rdm.profiler:Profiler"
 zenodo_rdm_metrics = "zenodo_rdm.metrics.ext:ZenodoMetrics"
 zenodo_rdm_moderation = "zenodo_rdm.moderation.ext:ZenodoModeration"
 invenio_openaire = "zenodo_rdm.openaire.ext:OpenAIRE"
@@ -24,7 +23,6 @@ zenodo_rdm_exporter = "zenodo_rdm.exporter.ext:ZenodoExporter"
 
 [project.entry-points."invenio_base.api_apps"]
 zenodo_rdm_legacy = "zenodo_rdm.legacy.ext:ZenodoLegacy"
-profiler = "zenodo_rdm.profiler:Profiler"
 zenodo_rdm_metrics = "zenodo_rdm.metrics.ext:ZenodoMetrics"
 zenodo_rdm_moderation = "zenodo_rdm.moderation.ext:ZenodoModeration"
 invenio_openaire = "zenodo_rdm.openaire.ext:OpenAIRE"
