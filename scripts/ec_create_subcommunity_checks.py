@@ -12,7 +12,7 @@ Usage:
 from copy import deepcopy
 
 from invenio_checks.api import ChecksAPI
-from invenio_checks.models import CheckConfig, CheckScope, Severity
+from invenio_checks.models import CheckConfig, Severity
 from invenio_communities.proxies import current_communities
 from invenio_db import db
 from invenio_records_resources.services.uow import UnitOfWork
@@ -23,11 +23,18 @@ from werkzeug.local import LocalProxy
 community_service = LocalProxy(lambda: current_communities.service)
 
 
-MEMBER_RULES = {}
+MEMBER_RULES = {
+    "target_type": "community",
+}
 
-VALIDATION_RULES = {}
+VALIDATION_RULES = {
+    "target_type": "community",
+}
 
-RECORD_METADATA_RULES = {}
+RECORD_METADATA_RULES = {
+    "sync": False,
+    "target_type": "community",
+}
 
 METADATA_RULES = {
     "target_type": "community",
@@ -134,12 +141,7 @@ def create_eu_subcommunity_checks():
 
 
 def run_checks_for_existing_requests(eu_comm):
-    configs = CheckConfig.query.filter_by(
-        community_id=eu_comm.id,
-        scope=CheckScope.SUBCOMMUNITY,
-        enabled=True,
-    ).all()
-
+    configs = ChecksAPI.get_configs([eu_comm.id], "community")
     if not configs:
         print("No subcommunity check configs found, skipping.")
         return
@@ -165,15 +167,17 @@ def run_checks_for_existing_requests(eu_comm):
 
         with UnitOfWork(db.session) as uow:
             for config in configs:
-                ChecksAPI.run_subcommunity_check(config, subcommunity, uow)
+                ChecksAPI.run_check(config, subcommunity, uow)
             uow.commit()
 
     print("Done running checks for existing subcommunity requests.")
 
 
 def create_member_checks(eu_comm):
-    existing_check = CheckConfig.query.filter_by(
-        community_id=eu_comm.id, check_id="subcommunity_member", scope=CheckScope.SUBCOMMUNITY
+    existing_check = CheckConfig.query.filter(
+        CheckConfig.community_id == eu_comm.id,
+        CheckConfig.check_id == "subcommunity_member",
+        CheckConfig.params["target_type"].as_string() == "community"
     ).one_or_none()
     if existing_check:
         existing_check.params = MEMBER_RULES
@@ -182,8 +186,7 @@ def create_member_checks(eu_comm):
             community_id=eu_comm.id,
             check_id="subcommunity_member",
             params=MEMBER_RULES,
-            severity=Severity.ERROR,
-            scope=CheckScope.SUBCOMMUNITY,
+            severity=Severity.FAIL,
             enabled=True,
         )
         db.session.add(check_config)
@@ -194,8 +197,10 @@ def create_member_checks(eu_comm):
 
 
 def create_project_validation_checks(eu_comm):
-    existing_check = CheckConfig.query.filter_by(
-        community_id=eu_comm.id, check_id="subcommunity_validation", scope=CheckScope.SUBCOMMUNITY
+    existing_check = CheckConfig.query.filter(
+        CheckConfig.community_id == eu_comm.id,
+        CheckConfig.check_id == "subcommunity_validation",
+        CheckConfig.params["target_type"].as_string() == "community"
     ).one_or_none()
     if existing_check:
         existing_check.params = VALIDATION_RULES
@@ -204,8 +209,7 @@ def create_project_validation_checks(eu_comm):
             community_id=eu_comm.id,
             check_id="subcommunity_validation",
             params=VALIDATION_RULES,
-            severity=Severity.INFO,
-            scope=CheckScope.SUBCOMMUNITY,
+            severity=Severity.FAIL,
             enabled=True,
         )
         db.session.add(check_config)
@@ -216,18 +220,20 @@ def create_project_validation_checks(eu_comm):
 
 
 def create_record_metadata_checks(eu_comm):
-    existing_check = CheckConfig.query.filter_by(
-        community_id=eu_comm.id, check_id="subcommunity_record_metadata", scope=CheckScope.SUBCOMMUNITY
+    existing_check = CheckConfig.query.filter(
+        CheckConfig.community_id == eu_comm.id,
+        CheckConfig.check_id == "subcommunity_record_metadata",
+        CheckConfig.params["target_type"].as_string() == "community"
     ).one_or_none()
     if existing_check:
         existing_check.params = RECORD_METADATA_RULES
+        existing_check.severity = Severity.FAIL
     else:
         check_config = CheckConfig(
             community_id=eu_comm.id,
             check_id="subcommunity_record_metadata",
             params=RECORD_METADATA_RULES,
-            severity=Severity.INFO,
-            scope=CheckScope.SUBCOMMUNITY,
+            severity=Severity.WARN,
             enabled=True,
         )
         db.session.add(check_config)
@@ -244,8 +250,10 @@ def create_metadata_checks(eu_comm):
         if 'description' not in rule:
             rule["description"] = check_message.replace("__FIELD__", rule["message"].lower())
 
-    existing_check = CheckConfig.query.filter_by(
-        community_id=eu_comm.id, check_id="subcommunity_metadata", scope=CheckScope.SUBCOMMUNITY
+    existing_check = CheckConfig.query.filter(
+        CheckConfig.community_id == eu_comm.id,
+        CheckConfig.check_id == "subcommunity_metadata",
+        CheckConfig.params["target_type"].as_string() == "community"
     ).one_or_none()
     if existing_check:
         existing_check.params = check_config_params
@@ -255,7 +263,6 @@ def create_metadata_checks(eu_comm):
             check_id="subcommunity_metadata",
             params=check_config_params,
             severity=Severity.INFO,
-            scope=CheckScope.SUBCOMMUNITY,
             enabled=True,
         )
         db.session.add(check_config)
