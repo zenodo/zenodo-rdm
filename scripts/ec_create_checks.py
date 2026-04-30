@@ -22,6 +22,7 @@ community_service = LocalProxy(lambda: current_communities.service)
 
 
 EU_RULES = {
+    "target_type": "record",
     "rules": [
         {
             "id": "journal:title/publication",
@@ -393,7 +394,7 @@ EU_RULES = {
             "title": "Creator Identifiers",
             "message": "All creators should have a persistent identifier (e.g. an ORCID)",
             "description": 'To comply with Horizon Europe\'s open science requirements, you should provide persistent identifiers for creators (e.g., ORCID, GND, or ISNI). <a href="/communities/eu/pages/open-science" target="_blank">Learn more</a>',
-            "level": "info",
+            "level": "warning",
             "condition": {
                 "type": "list",
                 "operator": "exists",
@@ -503,6 +504,7 @@ SUB_COMMUNITY_RULES = {
 }
 
 FILE_FORMAT_CONFIG = {
+    "target_type": "record",
     # TODO: Link needs to be updated
     "closed_format_description": "Using closed or proprietary formats hinders reusability and preservation of published files. <a href='https://support.zenodo.org/help/en-gb/28' target='_blank' >Learn more</a>",
 }
