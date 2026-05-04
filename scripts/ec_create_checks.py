@@ -6,6 +6,7 @@ Usage:
 
 .. code-block:: shell
 
+    source .venv/bin/activate
     invenio shell ec_create_checks.py
 """
 
