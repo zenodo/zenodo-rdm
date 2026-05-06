@@ -4,27 +4,13 @@
 
 import pytest
 from invenio_access.permissions import system_identity
-from invenio_db import db
 from invenio_rdm_records.proxies import current_rdm_records_service as records_service
-from invenio_rdm_records.records.api import RDMRecord
 
 
 @pytest.fixture()
-def published_records(running_app, minimal_record, community):
+def published_records(publish_record, minimal_record, community):
     """Publish a dissertation and a book, bidirectionally related."""
     base = dict(minimal_record, files={"enabled": False})
-
-    def _publish(record_data):
-        draft = records_service.create(system_identity, record_data)
-        return records_service.publish(system_identity, draft.id)
-
-    def _add_to_community(record_item, community):
-        record = record_item._record
-        record.parent.communities.add(community._record, default=True)
-        record.parent.commit()
-        record.commit()
-        db.session.commit()
-        records_service.indexer.index(record, arguments={"refresh": True})
 
     dissertation = dict(
         base,
@@ -43,8 +29,7 @@ def published_records(running_app, minimal_record, community):
         ),
         pids={"doi": {"identifier": "10.1234/thesis", "provider": "external"}},
     )
-    dissertation_rec = _publish(dissertation)
-    _add_to_community(dissertation_rec, community)
+    dissertation_rec = publish_record(dissertation, community=community)
 
     book = dict(
         base,
@@ -63,9 +48,8 @@ def published_records(running_app, minimal_record, community):
         ),
         pids={"doi": {"identifier": "10.1234/book", "provider": "external"}},
     )
-    book_rec = _publish(book)
+    book_rec = publish_record(book)
 
-    RDMRecord.index.refresh()
     return {
         "dissertation_id": dissertation_rec.id,
         "book_id": book_rec.id,

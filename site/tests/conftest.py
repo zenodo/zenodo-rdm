@@ -20,6 +20,7 @@ from invenio_communities import current_communities
 from invenio_communities.communities.records.api import Community
 from invenio_pidstore.errors import PIDDoesNotExistError
 from invenio_rdm_records.cli import create_records_custom_field
+from invenio_rdm_records.proxies import current_rdm_records_service as records_service
 from invenio_rdm_records.services.pids import providers
 from invenio_records_resources.proxies import current_service_registry
 from invenio_records_resources.services.records.queryparser import (
@@ -1009,3 +1010,22 @@ def funder_data():
         },
         "country": "FR",
     }
+
+
+@pytest.fixture()
+def publish_record(running_app):
+    """Factory: publish an RDM record, optionally attaching it to a community."""
+
+    def _publish(data, community=None):
+        item = records_service.create(system_identity, data)
+        item = records_service.publish(system_identity, item.id)
+        if community is not None:
+            record = item._record
+            record.parent.communities.add(community._record, default=True)
+            record.parent.commit()
+            record.commit()
+            db.session.commit()
+        records_service.indexer.index(item._record, arguments={"refresh": True})
+        return item
+
+    return _publish
