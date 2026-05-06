@@ -1013,7 +1013,7 @@ def funder_data():
 
 
 @pytest.fixture()
-def publish_record(running_app):
+def publish_record(running_app, db):
     """Factory: publish an RDM record, optionally attaching it to a community."""
 
     def _publish(data, community=None):
