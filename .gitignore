@@ -67,6 +67,9 @@ logs/
 # Invenio-cli per machine file
 .invenio.private
 
+# JS linting temp dir
+.lint/
+
 # Editor
 **DS_Store
 
