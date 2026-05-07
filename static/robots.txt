@@ -9,4 +9,5 @@ Disallow: /login
 Disallow: /logout
 Disallow: /records/*/preview
 Allow: /api/records/*/files
+Disallow: /api/records/*/files-archive
 Crawl-delay: 10
