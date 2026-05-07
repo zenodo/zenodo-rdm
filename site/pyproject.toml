@@ -85,6 +85,12 @@ zenodo_rdm = "zenodo_rdm.index_templates"
 [project.entry-points."idutils.custom_schemes"]
 edmo = "zenodo_rdm.custom_schemes:get_scheme_config_func"
 
+[project.entry-points."invenio_checks.check_types"]
+subcommunity_metadata = "zenodo_rdm.subcommunities.checks:SubcommunityMetadataCheck"
+subcommunity_member = "zenodo_rdm.subcommunities.checks:CommunityMembershipCheck"
+subcommunity_validation = "zenodo_rdm.subcommunities.checks:SubcommunityValidationCheck"
+subcommunity_record_metadata = "zenodo_rdm.subcommunities.checks:SubcommunityRecordCheck"
+
 [project.entry-points."invenio_jobs.jobs"]
 eu_records_curation = "zenodo_rdm.curation.jobs:EURecordCuration"
 export_records = "zenodo_rdm.exporter.jobs:ExportRecords"
