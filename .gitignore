@@ -81,3 +81,8 @@ celerybeat-schedule*
 
 # IDEs
 .vscode/
+
+# Nix
+result
+.direnv/
+.envrc
