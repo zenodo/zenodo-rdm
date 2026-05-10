@@ -1,2 +1,3 @@
 # Ignore local virtualenv (if present)
 .venv/
+node_modules/

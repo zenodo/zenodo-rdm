@@ -8,7 +8,16 @@
 
 ## Development quick start
 
-Make sure you have [`uv` installed](https://docs.astral.sh/uv/getting-started/installation/#standalone-installer), and then run the following commands:
+### Prerequisites
+
+- [`uv`](https://docs.astral.sh/uv/getting-started/installation/#standalone-installer)
+- [Docker](https://docs.docker.com/get-docker/)
+- [Node.js ≥ 18.12](https://nodejs.org/) and [`pnpm`](https://pnpm.io/installation)
+- [`libvips-dev`](https://www.libvips.org/install.html)
+
+### Setup
+
+Run the following commands:
 
 ```bash
 git clone https://github.com/zenodo/zenodo-rdm.git
@@ -22,7 +31,7 @@ invenio-cli run
 
 ### Update dependencies
 
-To update dependencies you need to:
+#### Python
 
 1. Run `invenio-cli packages lock`
 2. (Optional) Use [`changelog.py`](https://github.com/slint/changelog.py) to generate the commit message via `changelog.py --package-filter "^invenio" --show-major-bumps --since HEAD`
@@ -34,3 +43,8 @@ To update dependencies you need to:
 > ```bash
 > uv lock --upgrade-package <package-name>
 > ```
+
+#### JavaScript
+
+1. Run `invenio-cli assets lock`
+2. Commit the updated `pnpm-lock.yaml` and `package.json`
