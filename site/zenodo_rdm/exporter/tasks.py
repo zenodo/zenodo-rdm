@@ -101,6 +101,9 @@ def _export_records_to_files(format, community_slug, records_file, deleted_file)
     )
 
     for idx, record in enumerate(res.hits):
+        if idx % 1000 == 0:
+            current_app.logger.debug(f"Record index: {idx:_}")
+
         record_id = record.get("id")
         if not record_id:
             continue
