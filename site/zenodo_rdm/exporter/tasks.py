@@ -31,6 +31,40 @@ def _get_anonymous_identity():
     return anonymous_identity
 
 
+def _scan_with_scroll(
+    service,
+    identity,
+    params=None,
+    search_preference=None,
+    expand=False,
+    scroll="5m",
+    **kwargs,
+):
+    """Scan for records matching the querystring with scroll parameter."""
+    # Copied from RecordService#scan
+    # in invenio_records_resources/services/records/service.py
+    service.require_permission(identity, "search")
+
+    # Prepare and execute the search as scan()
+    params = params or {}
+    search_result = (
+        service._search("scan", identity, params, search_preference, **kwargs)
+        .params(scroll=scroll)
+        .scan()
+    )
+
+    return service.result_list(
+        service,
+        identity,
+        search_result,
+        params,
+        links_tpl=None,
+        links_item_tpl=service.links_item_tpl,
+        expandable_fields=service.expandable_fields,
+        expand=expand,
+    )
+
+
 def _export_records_to_files(format, community_slug, records_file, deleted_file):
     community_uuid = None
 
@@ -43,10 +77,12 @@ def _export_records_to_files(format, community_slug, records_file, deleted_file)
 
     anonymous_identity = _get_anonymous_identity()
 
-    res = service.scan(
+    res = _scan_with_scroll(
+        service,
         anonymous_identity,
         q=f"parent.communities.ids:{community_uuid}" if community_uuid else "",
         params={"allversions": True, "include_deleted": True},
+        scroll="15m",
     )
 
     deleted_file_content = TextIOWrapper(deleted_file, encoding="utf-8")
