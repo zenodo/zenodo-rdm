@@ -22,22 +22,11 @@ from werkzeug.local import LocalProxy
 
 community_service = LocalProxy(lambda: current_communities.service)
 
-
-MEMBER_RULES = {
-    "target_type": "community",
-}
-
-VALIDATION_RULES = {
-    "target_type": "community",
-}
-
 RECORD_METADATA_RULES = {
     "sync": False,
-    "target_type": "community",
 }
 
 METADATA_RULES = {
-    "target_type": "community",
     "rules": [
         {
             "id": "metadata:title",
@@ -177,15 +166,14 @@ def create_member_checks(eu_comm):
     existing_check = CheckConfig.query.filter(
         CheckConfig.community_id == eu_comm.id,
         CheckConfig.check_id == "subcommunity_member",
-        CheckConfig.params["target_type"].as_string() == "community"
     ).one_or_none()
     if existing_check:
-        existing_check.params = MEMBER_RULES
+        existing_check.target_type = "community"
     else:
         check_config = CheckConfig(
             community_id=eu_comm.id,
             check_id="subcommunity_member",
-            params=MEMBER_RULES,
+            target_type="community",
             severity=Severity.FAIL,
             enabled=True,
         )
@@ -199,16 +187,15 @@ def create_member_checks(eu_comm):
 def create_project_validation_checks(eu_comm):
     existing_check = CheckConfig.query.filter(
         CheckConfig.community_id == eu_comm.id,
-        CheckConfig.check_id == "subcommunity_validation",
-        CheckConfig.params["target_type"].as_string() == "community"
+        CheckConfig.check_id == "subcommunity_validation"
     ).one_or_none()
     if existing_check:
-        existing_check.params = VALIDATION_RULES
+        existing_check.target_type = "community"
     else:
         check_config = CheckConfig(
             community_id=eu_comm.id,
             check_id="subcommunity_validation",
-            params=VALIDATION_RULES,
+            target_type="community",
             severity=Severity.FAIL,
             enabled=True,
         )
@@ -223,9 +210,9 @@ def create_record_metadata_checks(eu_comm):
     existing_check = CheckConfig.query.filter(
         CheckConfig.community_id == eu_comm.id,
         CheckConfig.check_id == "subcommunity_record_metadata",
-        CheckConfig.params["target_type"].as_string() == "community"
     ).one_or_none()
     if existing_check:
+        existing_check.target_type = "community"
         existing_check.params = RECORD_METADATA_RULES
         existing_check.severity = Severity.FAIL
     else:
@@ -233,6 +220,7 @@ def create_record_metadata_checks(eu_comm):
             community_id=eu_comm.id,
             check_id="subcommunity_record_metadata",
             params=RECORD_METADATA_RULES,
+            target_type="community",
             severity=Severity.WARN,
             enabled=True,
         )
@@ -253,15 +241,16 @@ def create_metadata_checks(eu_comm):
     existing_check = CheckConfig.query.filter(
         CheckConfig.community_id == eu_comm.id,
         CheckConfig.check_id == "subcommunity_metadata",
-        CheckConfig.params["target_type"].as_string() == "community"
     ).one_or_none()
     if existing_check:
+        existing_check.target_type = "community"
         existing_check.params = check_config_params
     else:
         check_config = CheckConfig(
             community_id=eu_comm.id,
             check_id="subcommunity_metadata",
             params=check_config_params,
+            target_type="community"
             severity=Severity.INFO,
             enabled=True,
         )

@@ -22,7 +22,6 @@ community_service = LocalProxy(lambda: current_communities.service)
 
 
 EU_RULES = {
-    "target_type": "record",
     "rules": [
         {
             "id": "journal:title/publication",
@@ -504,7 +503,6 @@ SUB_COMMUNITY_RULES = {
 }
 
 FILE_FORMAT_CONFIG = {
-    "target_type": "record",
     # TODO: Link needs to be updated
     "closed_format_description": "Using closed or proprietary formats hinders reusability and preservation of published files. <a href='https://support.zenodo.org/help/en-gb/28' target='_blank' >Learn more</a>",
 }
@@ -593,6 +591,7 @@ def create_metadata_checks(eu_comm):
             community_id=eu_comm.id,
             check_id="metadata",
             params=EU_RULES,
+            target_type="record",
             severity=Severity.INFO,
             enabled=True,
         )
@@ -612,6 +611,7 @@ def create_file_format_checks(eu_comm):
             community_id=eu_comm.id,
             check_id="file_formats",
             params=FILE_FORMAT_CONFIG,
+            target_type="record",
             severity=Severity.INFO,
             enabled=True,
         )
