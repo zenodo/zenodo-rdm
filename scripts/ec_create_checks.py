@@ -393,7 +393,7 @@ EU_RULES = {
             "title": "Creator Identifiers",
             "message": "All creators should have a persistent identifier (e.g. an ORCID)",
             "description": 'To comply with Horizon Europe\'s open science requirements, you should provide persistent identifiers for creators (e.g., ORCID, GND, or ISNI). <a href="/communities/eu/pages/open-science" target="_blank">Learn more</a>',
-            "level": "info",
+            "level": "warning",
             "condition": {
                 "type": "list",
                 "operator": "exists",
@@ -591,6 +591,7 @@ def create_metadata_checks(eu_comm):
             community_id=eu_comm.id,
             check_id="metadata",
             params=EU_RULES,
+            target_type="record",
             severity=Severity.INFO,
             enabled=True,
         )
@@ -610,6 +611,7 @@ def create_file_format_checks(eu_comm):
             community_id=eu_comm.id,
             check_id="file_formats",
             params=FILE_FORMAT_CONFIG,
+            target_type="record",
             severity=Severity.INFO,
             enabled=True,
         )
