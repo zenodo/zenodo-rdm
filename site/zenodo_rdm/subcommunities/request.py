@@ -113,6 +113,7 @@ def _add_subcommunity_funding_check(request, subcommunity, uow):
             community_id=subcommunity.id,
             check_id="metadata",
             params={"rules": [funding_rule]},
+            target_type="record",
             severity=Severity.INFO,
             enabled=True,
         )

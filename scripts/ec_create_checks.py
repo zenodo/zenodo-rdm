@@ -23,7 +23,6 @@ community_service = LocalProxy(lambda: current_communities.service)
 
 
 EU_RULES = {
-    "target_type": "record",
     "rules": [
         {
             "id": "journal:title/publication",
@@ -505,7 +504,6 @@ SUB_COMMUNITY_RULES = {
 }
 
 FILE_FORMAT_CONFIG = {
-    "target_type": "record",
     # TODO: Link needs to be updated
     "closed_format_description": "Using closed or proprietary formats hinders reusability and preservation of published files. <a href='https://support.zenodo.org/help/en-gb/28' target='_blank' >Learn more</a>",
 }
@@ -570,11 +568,13 @@ def create_eu_checks():
         ).one_or_none()
         if existing_check:
             existing_check.params = check_config_params
+            existing_check.target_type = "record"
         else:
             check_config = CheckConfig(
                 community_id=sub_community["id"],
                 check_id="metadata",
                 params=check_config_params,
+                target_type="record",
                 severity=Severity.INFO,
                 enabled=True,
             )
@@ -589,11 +589,13 @@ def create_metadata_checks(eu_comm):
     ).one_or_none()
     if existing_check:  # If it exists, update it
         existing_check.params = EU_RULES
+        existing_check.target_type = "record"
     else:  # ...create it
         check_config = CheckConfig(
             community_id=eu_comm.id,
             check_id="metadata",
             params=EU_RULES,
+            target_type="record",
             severity=Severity.INFO,
             enabled=True,
         )
@@ -608,11 +610,13 @@ def create_file_format_checks(eu_comm):
     ).one_or_none()
     if existing_check:  # If it exists, update it
         existing_check.params = FILE_FORMAT_CONFIG
+        existing_check.target_type = "record"
     else:  # ...create it
         check_config = CheckConfig(
             community_id=eu_comm.id,
             check_id="file_formats",
             params=FILE_FORMAT_CONFIG,
+            target_type="record",
             severity=Severity.INFO,
             enabled=True,
         )
