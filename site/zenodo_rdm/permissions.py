@@ -25,7 +25,10 @@ from invenio_records_permissions.generators import (
     SystemProcess,
 )
 from invenio_records_resources.services.files.generators import IfTransferType
-from invenio_records_resources.services.files.transfer import LOCAL_TRANSFER_TYPE
+from invenio_records_resources.services.files.transfer import (
+    LOCAL_STAGED_TRANSFER_TYPE,
+    LOCAL_TRANSFER_TYPE,
+)
 from invenio_users_resources.services.permissions import UserManager
 
 from .generators import (
@@ -114,16 +117,19 @@ class ZenodoRDMRecordPermissionPolicy(RDMRecordPermissionPolicy):
     can_draft_set_content_files = [
         # review is the same as create_files
         IfTransferType(LOCAL_TRANSFER_TYPE, can_review),
+        IfTransferType(LOCAL_STAGED_TRANSFER_TYPE, can_review),
         SystemProcess(),
     ]
     can_draft_get_content_files = [
         # preview is same as read_files
         IfTransferType(LOCAL_TRANSFER_TYPE, can_draft_read_files),
+        IfTransferType(LOCAL_STAGED_TRANSFER_TYPE, can_draft_read_files),
         SystemProcess(),
     ]
     can_draft_commit_files = [
         # review is the same as create_files
         IfTransferType(LOCAL_TRANSFER_TYPE, can_review),
+        IfTransferType(LOCAL_STAGED_TRANSFER_TYPE, can_review),
         SystemProcess(),
     ]
     can_draft_update_files = can_review
@@ -208,6 +214,7 @@ class ZenodoRDMRecordPermissionPolicy(RDMRecordPermissionPolicy):
         # note: even though this is closer to business logic than permissions,
         # it was simpler and less coupling to implement this as permission check
         IfTransferType(LOCAL_TRANSFER_TYPE, can_read_files),
+        IfTransferType(LOCAL_STAGED_TRANSFER_TYPE, can_read_files),
         SystemProcess(),
     ]
 
@@ -216,16 +223,19 @@ class ZenodoRDMRecordPermissionPolicy(RDMRecordPermissionPolicy):
     can_draft_media_read_files = can_draft_read_files
     can_draft_media_set_content_files = [
         IfTransferType(LOCAL_TRANSFER_TYPE, can_draft_media_create_files),
+        IfTransferType(LOCAL_STAGED_TRANSFER_TYPE, can_draft_media_create_files),
         SystemProcess(),
     ]
     can_draft_media_get_content_files = [
         # preview is same as read_files
         IfTransferType(LOCAL_TRANSFER_TYPE, can_get_content_files),
+        IfTransferType(LOCAL_STAGED_TRANSFER_TYPE, can_get_content_files),
         SystemProcess(),
     ]
     can_draft_media_commit_files = [
         # review is the same as create_files
         IfTransferType(LOCAL_TRANSFER_TYPE, can_draft_media_create_files),
+        IfTransferType(LOCAL_STAGED_TRANSFER_TYPE, can_draft_media_create_files),
         SystemProcess(),
     ]
     can_draft_media_update_files = can_draft_media_create_files
