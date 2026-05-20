@@ -54,6 +54,22 @@ SUPPORT_ISSUE_CATEGORIES = [
         "form_disabled": True,
     },
     {
+        "key": "access-blocked-403",
+        "title": "Access blocked (403 Forbidden)",
+        "description": (
+            '<div class="ui warning visible message">'
+            '<div class="header">Access blocked due to unusual traffic</div>'
+            "If you encountered a blank page with a <strong>403</strong> error when visiting Zenodo, we recommend that you upgrade your web browser or operating system, as older or insecure versions may not be supported.</p>"
+            "<p>If the issue persists or you are unable to update your browser, kindly include the following details in your request:</p>"
+            "<ul>"
+            "<li><strong>Reference ID:</strong> The reference code shown on the error page.</li>"
+            "<li><strong>Timestamp:</strong> The timestamp displayed with the error.</li>"
+            "<li><strong>Browser and version:</strong> The browser you are using and its version.</li>"
+            "</ul>"
+            "</div>"
+        ),
+    },
+    {
         "key": "user-deletion",
         "title": "Delete account",
         "description": (
