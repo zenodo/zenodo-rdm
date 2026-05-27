@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Zenodo datacite serializer."""
 
-from datacite import schema43
+from datacite import schema45
 from flask import current_app
 from flask_resources import BaseListSchema, MarshmallowSerializer
 from flask_resources.serializers import JSONSerializer, SimpleSerializer
@@ -10,8 +10,12 @@ from invenio_rdm_records.contrib.journal.processors import JournalDataciteDumper
 from invenio_rdm_records.resources.serializers.datacite.schema import DataCite45Schema
 from marshmallow import missing
 
+# Keep these two in sync when bumping the DataCite version.
+DATACITE_SCHEMA = DataCite45Schema
+DATACITE_ENCODER = schema45
 
-class ZenodoDataciteSchema(DataCite45Schema):
+
+class ZenodoDataciteSchema(DATACITE_SCHEMA):
     """Zenodo Datacite schema."""
 
     def get_related_identifiers(self, obj):
@@ -49,7 +53,7 @@ class ZenodoDataciteXMLSerializer(MarshmallowSerializer):
 
     def __init__(self, **options):
         """Instantiate serializer."""
-        encoder = options.get("encoder", schema43.tostring)
+        encoder = options.get("encoder", DATACITE_ENCODER.tostring)
         super().__init__(
             format_serializer_cls=SimpleSerializer,
             object_schema_cls=ZenodoDataciteSchema,
