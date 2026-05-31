@@ -5,6 +5,7 @@
 import re
 
 from flask import current_app
+from invenio_rdm_records.proxies import current_rdm_records_service
 from invenio_search import current_search_client
 
 from .models import LinkDomain, LinkDomainStatus
@@ -52,6 +53,7 @@ def extract_links(text):
 #
 def links_rule(identity, draft=None, record=None):
     """Calculate a moderation score based on links found in record metadata."""
+    record = record if record is not None else draft
     score = 0
     description_links = extract_links(str(record.metadata.get("description", "")))
 
@@ -79,6 +81,7 @@ def links_rule(identity, draft=None, record=None):
 
 def text_sanitization_rule(identity, draft=None, record=None):
     """Calculate a score based on excessive emoji and HTML tag usage in metadata text."""
+    record = record if record is not None else draft
     record_text = " ".join(map(str, record.metadata.values()))
     htag_count = len(re.findall(r"<h[1-9]\b[^>]*>", record_text, re.IGNORECASE))
     score = 0
@@ -94,6 +97,7 @@ def text_sanitization_rule(identity, draft=None, record=None):
 
 def verified_user_rule(identity, draft=None, record=None):
     """Adjust moderation score based on the verification status of the user."""
+    record = record if record is not None else draft
     is_verified = (
         getattr(record.parent, "is_verified", None)
         if hasattr(record, "parent")
@@ -108,6 +112,7 @@ def verified_user_rule(identity, draft=None, record=None):
 
 def files_rule(identity, draft=None, record=None):
     """Calculate score based on the number, size, and type of files associated with the record."""
+    record = record if record is not None else draft
     score = 0
 
     files_count = record.files.count
@@ -131,8 +136,15 @@ def files_rule(identity, draft=None, record=None):
 
 def match_query_rule(identity, draft=None, record=None):
     """Calculate a score based on matched percolate queries against the given document in the specified index."""
-    document = record.dumps()
-    percolator_index = get_percolator_index(record)
+    obj = record if record is not None else draft
+    document = obj.dumps()
+    # Drafts have no percolator index of their own; percolate against the
+    # published-records index and drop draft-only fields the strict mapping rejects.
+    if getattr(obj, "is_draft", False):
+        document.pop("expires_at", None)
+        document.pop("fork_version_id", None)
+        obj = current_rdm_records_service.record_cls
+    percolator_index = get_percolator_index(obj)
     if percolator_index:
         matched_queries = current_search_client.search(
             index=percolator_index,
