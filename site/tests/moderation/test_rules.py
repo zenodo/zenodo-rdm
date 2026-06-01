@@ -48,18 +48,18 @@ def test_extract_links(text, expected):
 
 
 @pytest.mark.parametrize(
-    "text,expected_matches",
+    "text,expected_count",
     [
         ("plain ascii text", 0),
-        # separated emoji are distinct matches
         ("hi 😀 there 🎉 ok 🚀", 3),
-        # a consecutive run counts as a single match (not 4 emoji)
-        ("😀😀😀😀", 1),
+        # a dense run of emoji (classic spam) counts every emoji, so it trips
+        # the >3 threshold rather than counting as a single match
+        ("😀😀😀😀", 4),
     ],
 )
-def test_extract_emojis_counts_runs(text, expected_matches):
-    """Emoji detection matches runs, which is what the >3 threshold counts."""
-    assert len(extract_emojis(text)) == expected_matches
+def test_extract_emojis_counts_individual_emoji(text, expected_count):
+    """Each emoji is counted, so emoji-spam runs trip the >3 threshold."""
+    assert len(extract_emojis(text)) == expected_count
 
 
 @pytest.fixture()

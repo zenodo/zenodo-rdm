@@ -31,7 +31,7 @@ EMOJI_PATTERN = re.compile(
     "\U0001f1e0-\U0001f1ff"  # Flags (iOS)
     "\U00002700-\U000027bf"  # Dingbats
     "\U000024c2-\U0001f251"  # Enclosed characters
-    "]+",
+    "]",
     flags=re.UNICODE,
 )
 
