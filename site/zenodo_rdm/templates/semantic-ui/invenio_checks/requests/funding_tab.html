@@ -1,0 +1,42 @@
+{# -*- coding: utf-8 -*-
+    Copyright (C) 2026 CERN.
+#}
+    
+{% set check = checks | first %}
+{% set severity = check.result.errors | map(attribute='severity') | first %}
+
+<div class="ui column stackable grid">
+  <div class="ten wide column">
+    <div class="ten wide column">
+      <div class="ui very relaxed list rel-pl-2">
+        {% set has_errors = check.result.errors %}
+        {% set icon = has_errors and severity_level_icons_tpl.severity_level_icons['warning'] or severity_level_icons_tpl.severity_level_icons['success'] %}
+        <div class="item">
+          <i class="{{ icon }}"></i>
+          <div class="content">
+            <div class="header">{{ check.result.message }}</div>
+            <div class="text-muted">
+
+              <p><i class=" rel-p-1 fire blue icon"></i>AI-assisted grant matching</p>
+            </div>
+            <div class="pt-5 text-muted">
+              <p>{{ check.result.description | safe }}</p>
+              {% if has_errors %}
+                <ul class="list">
+                  {% for error in check.result.errors %}
+                    {% for msg in error["messages"] %}
+                      <li>{{ msg }}</li>
+                    {% endfor %}
+                  {% endfor %}
+                </ul>
+            {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="six wide column">
+    {% include 'invenio_checks/requests/help_message.html' %}
+  </div>
+</div>
