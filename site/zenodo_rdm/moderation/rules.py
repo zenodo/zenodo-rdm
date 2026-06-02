@@ -19,7 +19,6 @@ from .models import LinkDomain, LinkDomainStatus
 from .percolator import get_percolator_index
 from .proxies import current_scores
 
-
 #
 # Utilities
 #
