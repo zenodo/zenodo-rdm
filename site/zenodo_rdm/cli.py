@@ -211,11 +211,11 @@ def delete_record(recid):
         rdm_draft,
     ) = _get_record(recid)
     # Parent
-    (parent_model, parent_id, parent_pid, parent_communities, requests) = _get_parent(
+    parent_model, parent_id, parent_pid, parent_communities, requests = _get_parent(
         record_model
     )
     # Version
-    (record_version, latest_record_version_id, all_versions) = _get_version(
+    record_version, latest_record_version_id, all_versions = _get_version(
         recid, parent_id
     )
 
