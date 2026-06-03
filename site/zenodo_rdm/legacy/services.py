@@ -350,7 +350,7 @@ class LegacyFileService(FileService):
             identity
         )
 
-    def _get_record(self, id_, identity, action, file_key=None):
+    def _get_record(self, id_, identity, action, file_key=None, **kwargs):
         """Get the associated record.
 
         Adds support for getting a draft or a record instead of only draft.
@@ -373,6 +373,7 @@ class LegacyFileService(FileService):
             record=record,
             file_key=file_key,
             permission_action_prefix=permission_action_prefix,
+            **kwargs,
         )
 
         if file_key and file_key not in record.files:
