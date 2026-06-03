@@ -35,7 +35,10 @@ from zenodo_rdm.moderation.rules import (
         # href targets and bare URLs are both extracted, in order
         ('<a href="http://bad.ru/x">click</a>', ["http://bad.ru/x"]),
         ("see http://a.com and www.b.org", ["http://a.com", "www.b.org"]),
-        ('mix <a href="http://h.com">x</a> http://bare.com', ["http://h.com", "http://bare.com"]),
+        (
+            'mix <a href="http://h.com">x</a> http://bare.com',
+            ["http://h.com", "http://bare.com"],
+        ),
         ("no links here", []),
         # repeated URLs are NOT deduplicated: each occurrence counts toward
         # the >5 excess-links threshold
@@ -175,7 +178,10 @@ def test_text_sanitization_rule_flags_excess_emoji(running_app, db, minimal_reco
     data = {
         **minimal_record,
         "files": {"enabled": False},
-        "metadata": {**minimal_record["metadata"], "description": "Amazing 🎉🎉🎉🎉 work"},
+        "metadata": {
+            **minimal_record["metadata"],
+            "description": "Amazing 🎉🎉🎉🎉 work",
+        },
     }
     item = records_service.create(system_identity, data)
     record = records_service.publish(system_identity, item.id)._record
@@ -259,7 +265,9 @@ def _publish_with_files(identity, data, files):
 
 def test_files_rule_flags_spam_files(running_app, db, minimal_record):
     """A few small files with a spam extension add the spam-files score."""
-    record = _publish_with_files(system_identity, minimal_record, [("malware.pdf", b"x" * 10)])
+    record = _publish_with_files(
+        system_identity, minimal_record, [("malware.pdf", b"x" * 10)]
+    )
 
     result = FilesRule()(system_identity, record=record)
 

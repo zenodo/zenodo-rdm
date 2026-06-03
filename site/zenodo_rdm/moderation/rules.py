@@ -166,9 +166,11 @@ class VerifiedUserRule(Rule):
         return RuleResult(
             reasons=[
                 self.Verification(
-                    score=current_scores.verified_user
-                    if is_verified
-                    else current_scores.unverified_user,
+                    score=(
+                        current_scores.verified_user
+                        if is_verified
+                        else current_scores.unverified_user
+                    ),
                     label=f"owner is {'verified' if is_verified else 'unverified'}",
                     verified=bool(is_verified),
                 )
