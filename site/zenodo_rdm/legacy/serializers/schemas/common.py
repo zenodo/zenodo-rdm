@@ -284,8 +284,10 @@ class MetadataSchema(Schema):
 
     def _grant(self, award, funder):
         """Serialize an RDM award and funder into a legacy Zenodo grant."""
-        # RDM allows specifying only funder
-        if not award:
+        # RDM requires funder and makes award optional, but draft saves don't block
+        # on validation, so a draft can persist funding missing either part. Skip
+        # those instead of crashing when serializing the record.
+        if not award or not funder:
             return
         funder_id = funder.get("id")
         funder_id = FUNDER_ROR_TO_DOI.get(funder_id, funder_id)
