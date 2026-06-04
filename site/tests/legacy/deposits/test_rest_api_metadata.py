@@ -150,6 +150,60 @@ def test_malformed_license(
     assert expected_message in errors[0]["messages"][0]
 
 
+@pytest.mark.parametrize(
+    "communities",
+    [
+        {"identifier": "my-community"},  # object instead of array
+        [{"id": "my-community"}],  # wrong key ("id" instead of "identifier")
+        ["my-community"],  # array of strings instead of objects
+    ],
+)
+def test_malformed_communities(
+    test_app, client_with_login, deposit_url, headers, communities
+):
+    """Communities must be an array of objects with an 'identifier' key."""
+    data = {
+        "metadata": {
+            "title": "Test",
+            "upload_type": "dataset",
+            "description": "Test description",
+            "creators": [{"name": "Test User"}],
+            "communities": communities,
+        }
+    }
+    res = client_with_login.post(deposit_url, json=data, headers=headers)
+    assert res.status_code == 400
+    errors = res.json["errors"]
+    assert errors[0]["field"] == "communities"
+    assert "identifier" in errors[0]["messages"][0]
+
+
+@pytest.mark.parametrize(
+    "communities",
+    [
+        [{"identifier": "c1"}],
+        [{"identifier": "c1"}, {"identifier": "c2"}],
+    ],
+)
+def test_valid_communities(
+    test_app, client_with_login, deposit_url, headers, communities
+):
+    """Valid communities: an array of objects with an 'identifier' key."""
+    data = {
+        "metadata": {
+            "title": "Test",
+            "upload_type": "dataset",
+            "description": "Test description",
+            "creators": [{"name": "Test User"}],
+            "communities": communities,
+        }
+    }
+    res = client_with_login.post(deposit_url, json=data, headers=headers)
+    assert res.status_code == 201
+    returned = {c["identifier"] for c in res.json["metadata"]["communities"]}
+    assert returned == {c["identifier"] for c in communities}
+
+
 @pytest.mark.parametrize("license_value", ["cc-by-4.0", {"id": "cc-by-4.0"}])
 def test_valid_license(
     test_app, client_with_login, deposit_url, headers, license_value
