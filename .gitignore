@@ -86,3 +86,6 @@ celerybeat-schedule*
 result
 .direnv/
 .envrc
+
+# Keys
+*.pem
