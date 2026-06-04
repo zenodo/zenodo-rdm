@@ -210,6 +210,15 @@ class LegacySchema(Schema):
         communities = original.get("metadata", {}).get("communities", [])
 
         if communities:
+            is_array = isinstance(communities, list)
+            all_have_identifier = is_array and all(
+                isinstance(c, dict) and "identifier" in c for c in communities
+            )
+            if not all_have_identifier:
+                raise ValidationError(
+                    "Communities must be an array of objects with an 'identifier' key.",
+                    field_name="communities",
+                )
             community_ids = [c["identifier"] for c in communities]
             result.setdefault("custom_fields", {})
             result["custom_fields"].update({"legacy:communities": community_ids})
