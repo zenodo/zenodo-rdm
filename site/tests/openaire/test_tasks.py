@@ -2,8 +2,9 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Test OpenAIRE tasks."""
 
-from unittest.mock import call
+from unittest.mock import MagicMock, call
 
+import pytest
 from invenio_cache.proxies import current_cache
 
 from zenodo_rdm.openaire.tasks import (
@@ -126,6 +127,19 @@ def test_openaire_retries_task(
     assert mocked_session.post.called_once()
 
     # Assert cache does not have the key
+    assert not current_cache.cache.has(f"openaire_direct_index:{openaire_record.id}")
+
+
+@pytest.mark.parametrize("status_code", [400, 413])
+def test_openaire_direct_index_rejected(
+    status_code, running_app, openaire_record, mocked_session, enable_openaire_indexing
+):
+    """A 400/413 from OpenAIRE is terminal, so the record is neither retried nor cached."""
+    rejected = MagicMock(ok=False, status_code=status_code, text="Rejected")
+    mocked_session.post = MagicMock(return_value=rejected)
+
+    openaire_direct_index.delay(openaire_record.id)
+
     assert not current_cache.cache.has(f"openaire_direct_index:{openaire_record.id}")
 
 

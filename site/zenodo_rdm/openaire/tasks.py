@@ -12,7 +12,7 @@ from invenio_cache import current_cache
 from invenio_rdm_records.proxies import current_rdm_records_service as records_service
 from werkzeug.local import LocalProxy
 
-from .errors import OpenAIRERequestError
+from .errors import OpenAIREInvalidRecordError, OpenAIRERequestError
 from .serializers import OpenAIREV1Serializer
 from .utils import get_openaire_id, openaire_request_factory, openaire_type
 
@@ -66,8 +66,12 @@ def openaire_direct_index(record_id, retry=True):
         session = openaire_request_factory()
         res = session.post(url, json=serialized_record, timeout=30)
 
+        # 400/413 are deterministic rejections, retrying never succeeds.
+        if res.status_code in (400, 413):
+            raise OpenAIREInvalidRecordError(res.status_code, res.text)
+
         if not res.ok:
-            raise OpenAIRERequestError(res.text)
+            raise OpenAIRERequestError(f"HTTP {res.status_code}: {res.text}")
 
         beta_base_url = current_app.config.get("OPENAIRE_API_URL_BETA")
         if beta_base_url:
@@ -75,15 +79,33 @@ def openaire_direct_index(record_id, retry=True):
             res_beta = session.post(beta_endpoint, json=serialized_record, timeout=30)
 
             if not res_beta.ok:
-                # Just log the error, but don't raise
-                current_app.logger.warning("OpenAIRE indexing to beta failed")
+                # Beta is best-effort, don't raise.
+                ctx = {"record_id": record_id, "status_code": res_beta.status_code}
+                current_app.logger.warning(
+                    "OpenAIRE beta indexing failed for record %(record_id)s (HTTP %(status_code)s).",
+                    ctx,
+                    extra=ctx,
+                )
 
         current_cache.delete(f"openaire_direct_index:{record_id}")
+    except OpenAIREInvalidRecordError as exc:
+        # Deterministic rejection: don't retry, drop from the failures cache.
+        current_cache.delete(f"openaire_direct_index:{record_id}")
+        ctx = {"record_id": record_id, "status_code": exc.status_code}
+        current_app.logger.warning(
+            "OpenAIRE rejected record %(record_id)s for direct indexing (HTTP %(status_code)s).",
+            ctx,
+            extra={**ctx, "openaire_response": str(exc)},
+        )
     except Exception as exc:
         current_cache.set(
             f"openaire_direct_index:{record_id}", datetime.now(), timeout=-1
         )
-        current_app.logger.exception("Openaire index failed.")
+        current_app.logger.exception(
+            "OpenAIRE direct indexing failed for record %(record_id)s.",
+            {"record_id": record_id},
+            extra={"record_id": record_id},
+        )
         if retry:
             openaire_direct_index.retry(exc=exc)
         else:
@@ -113,14 +135,19 @@ def openaire_delete(record_id=None, retry=True):
         res = session.delete(f"{base_url}/result/{openaire_id}")
 
         if not res.ok:
-            raise OpenAIRERequestError(res.text)
+            raise OpenAIRERequestError(f"HTTP {res.status_code}: {res.text}")
 
         base_beta_url = current_app.config.get("OPENAIRE_API_URL_BETA")
         if base_beta_url:
             res_beta = session.delete(f"{base_beta_url}/result/{openaire_id}")
             if not res_beta.ok:
-                # Just log the error, but don't raise
-                current_app.logger.warning("OpenAIRE deleting to beta failed")
+                # Beta is best-effort, don't raise.
+                ctx = {"record_id": record_id, "status_code": res_beta.status_code}
+                current_app.logger.warning(
+                    "OpenAIRE beta deletion failed for record %(record_id)s (HTTP %(status_code)s).",
+                    ctx,
+                    extra=ctx,
+                )
 
         # Remove from failures cache
         current_cache.delete(f"openaire_direct_index:{record_id}")
@@ -129,7 +156,11 @@ def openaire_delete(record_id=None, retry=True):
         current_cache.set(
             f"openaire_direct_index:{record_id}", datetime.now(), timeout=-1
         )
-        current_app.logger.exception("Openaire delete failed.")
+        current_app.logger.exception(
+            "OpenAIRE deletion failed for record %(record_id)s.",
+            {"record_id": record_id},
+            extra={"record_id": record_id},
+        )
         if retry:
             openaire_delete.retry(exc=exc)
         else:
@@ -159,5 +190,8 @@ def retry_openaire_failures():
             else:
                 openaire_direct_index.delay(record_id, retry=False)
         except Exception:
-            # Otherwise it stops processing records when the first one fails.
+            # Keep going if one record fails, but log so it stays visible.
+            current_app.logger.exception(
+                "Could not reschedule OpenAIRE retry for cached failure."
+            )
             continue
