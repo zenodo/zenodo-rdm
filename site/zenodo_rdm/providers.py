@@ -188,6 +188,14 @@ RDM_PERSISTENT_IDENTIFIER_PROVIDERS = [
     ),
 ]
 
+RDM_PERSISTENT_IDENTIFIERS = copy.deepcopy(
+    rdm_records_config.RDM_PERSISTENT_IDENTIFIERS
+)
+RDM_PERSISTENT_IDENTIFIERS["doi"]["providers"] = [
+    "datacite",
+    "external",
+]
+
 RDM_PARENT_PERSISTENT_IDENTIFIER_PROVIDERS = [
     rdm_providers.DataCitePIDProvider(
         "datacite",
