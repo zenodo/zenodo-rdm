@@ -9,7 +9,7 @@ from .api import featured_communities, recent_uploads
 from .filters import is_blr_related_record, is_verified_community, is_verified_record
 
 
-def frontpage_view_function():
+def index():
     """Zenodo frontpage view."""
     return render_template(
         current_app.config["THEME_FRONTPAGE_TEMPLATE"],
