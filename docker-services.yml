@@ -20,6 +20,9 @@ services:
       - "INVENIO_RATELIMIT_STORAGE_URL=redis://cache:6379/3"
       - "INVENIO_SITE_UI_URL=https://127.0.0.1"
       - "INVENIO_SITE_API_URL=https://127.0.0.1/api"
+      - "INVENIO_RDM_ORCHA_URL=http://host.docker.internal:8000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
   frontend:
     build: ./docker/nginx/
     image: zenodo-frontend

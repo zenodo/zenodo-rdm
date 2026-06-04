@@ -32,6 +32,7 @@ from invenio_vocabularies.contrib.funders.api import Funder
 from invenio_vocabularies.proxies import current_service as vocabulary_service
 from invenio_vocabularies.records.api import Vocabulary
 
+from zenodo_rdm import providers as zenodo_providers
 from zenodo_rdm.api import ZenodoRDMDraft, ZenodoRDMRecord
 from zenodo_rdm.custom_fields import CUSTOM_FIELDS, CUSTOM_FIELDS_UI, NAMESPACES
 from zenodo_rdm.generators import media_files_management_action
@@ -95,6 +96,9 @@ def app_config(app_config):
             label=("OAI ID"),
         ),
     ]
+    app_config["RDM_PERSISTENT_IDENTIFIERS"] = (
+        zenodo_providers.RDM_PERSISTENT_IDENTIFIERS
+    )
     app_config["DATACITE_PREFIX"] = "10.5281"
     app_config["DATACITE_FORMAT"] = "{prefix}/zenodo.{id}"
     app_config["RDM_NAMESPACES"] = NAMESPACES
