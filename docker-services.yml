@@ -24,6 +24,8 @@ services:
     build: ./docker/nginx/
     image: zenodo-frontend
     restart: "unless-stopped"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     ports:
       - "${DOCKER_SERVICES_IP_BIND:-127.0.0.1}:80:80"
       - "${DOCKER_SERVICES_IP_BIND:-127.0.0.1}:443:443"

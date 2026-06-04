@@ -21,7 +21,9 @@ dependencies = [
     "uwsgitop>=0.11",
     "uwsgi-tools>=1.1.1",
     "invenio-records-resources",
-    "invenio-github>=6.0.0,<7.0.0"
+    "invenio-github>=6.0.0,<7.0.0",
+    "invenio-administration",
+  #"invenio-rdm-records"
 ]
 
 [tool.uv.sources]
@@ -30,6 +32,9 @@ zenodo-legacy = { workspace = true }
 invenio-swh = { git = "https://github.com/inveniosoftware/invenio-swh", rev = "v0.13.4" }
 # User profile fixes
 invenio-records-resources = { git = "https://github.com/inveniosoftware/invenio-records-resources", branch = "fix-read-many" }
+invenio-app-rdm = { path = "../invenio-app-rdm", editable = true }
+invenio-administration = { path = "../invenio-administration", editable = true }
+#invenio-rdm-records = { path = "../invenio-rdm-records", editable = true }
 
 [tool.uv.workspace]
 members = [

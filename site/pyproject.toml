@@ -11,6 +11,7 @@ exporter = "zenodo_rdm.exporter.cli:exporter"
 [project.entry-points."invenio_base.blueprints"]
 zenodo_rdm = "zenodo_rdm.theme.views:create_blueprint"
 zenodo_support = "zenodo_rdm.support.views:create_blueprint"
+orcha = "zenodo_rdm.orcha.views:blueprint"
 
 [project.entry-points."invenio_base.apps"]
 zenodo_rdm_legacy = "zenodo_rdm.legacy.ext:ZenodoLegacy"
@@ -73,6 +74,7 @@ community_manage_record = "zenodo_rdm.legacy.requests:CommunityManageRecord"
 [project.entry-points."invenio_access.actions"]
 media_files_management_action = "zenodo_rdm.generators:media_files_management_action"
 manage_external_doi_files_action = "zenodo_rdm.generators:manage_external_doi_files_action"
+orcha_access_action = "zenodo_rdm.permissions:orcha_access_action"
 
 [project.entry-points."invenio_previewer.previewers"]
 image_previewer = "zenodo_rdm.previewer.image_previewer"
