@@ -168,9 +168,7 @@ class SubcommunityCreateAction(actions.CreateAndSubmitAction):
         super().execute(identity, uow)
 
         # Create a system comment
-        comment_data = dict(
-            payload={
-                "content": f"""
+        comment_data = dict(payload={"content": f"""
             <p>
             We have created your community for your project <a href='/communities/{subcommunity.slug}'>{subcommunity["metadata"]["title"]}</a>.
             </p>
@@ -183,9 +181,7 @@ class SubcommunityCreateAction(actions.CreateAndSubmitAction):
                 <li>Learn more about how to <a href="https://help.zenodo.org/docs/communities/review-submissions/"> review submissions</a> and <a href="https://help.zenodo.org/docs/communities/curate/">curate records.</a></li>
             </ul>
             </p>
-            """
-            }
-        )
+            """})
         current_events_service.create(
             system_identity,
             self.request,
