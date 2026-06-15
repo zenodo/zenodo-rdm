@@ -8670,7 +8670,7 @@ source = { editable = "site" }
 
 [[package]]
 name = "zenodo-rdm-app"
-version = "24.5.1"
+version = "25.0.0rc1"
 source = { virtual = "." }
 dependencies = [
     { name = "github3-py" },
