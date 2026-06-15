@@ -36,22 +36,23 @@ jobs:
       EXTRAS: tests
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Cache Docker images
         # We're using the fork by AndreKurait, which has bumped the "cache" action
-        uses: AndreKurait/docker-cache@0fe76702a40db986d9663c24954fc14c6a6031b7  # 0.6.0
+        uses: AndreKurait/docker-cache@7a3887908bdb97935395833df69b060cfcca0f7f  # 0.7.0
         with:
           key: docker-${{ runner.os }}-${{ hashFiles('docker-services.yml') }}
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@v8.2.0
         with:
           python-version: ${{ matrix.python-version }}
           enable-cache: true
+          activate-environment: true
 
       - name: Install system dependencies
-        uses: awalsh128/cache-apt-pkgs-action@4c82c3ccdc1344ee11e9775dbdbdf43aa8a5614e  # v1.5.1
+        uses: awalsh128/cache-apt-pkgs-action@681749ae568c81c2037cb9185e38b709b261bd2f  # v1.6.1
         with:
           packages: libkrb5-dev libvips-dev
 
@@ -68,11 +69,11 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Use Node.js v16.x
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: v16.x
+          node-version: 24
 
       - name: Run eslint test
         run: ./run-js-linter.sh -i
