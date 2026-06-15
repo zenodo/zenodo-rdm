@@ -1,8 +1,15 @@
+# SPDX-FileCopyrightText: 2026 CERN
+# SPDX-License-Identifier: GPL-3.0-or-later
+"""Orcha client module."""
+
 import os
+
 import requests
 
 
 class OrchaClient:
+    """Orcha client."""
+
     def __init__(
         self,
         key_path=None,
@@ -12,6 +19,7 @@ class OrchaClient:
         public_url=None,
         ssl_verify=True,
     ):
+        """Constructor."""
         self.key_path = key_path
         self.key_id = key_id
         self.tenant = tenant
@@ -22,6 +30,7 @@ class OrchaClient:
 
     @property
     def private_key(self):
+        """Retrieve the private key needed to connect to Orcha."""
         if self._private_key is None:
             key_content = os.environ.get("ZENODO_ORCHA_PRIVATE_KEY")
             if key_content:
@@ -34,6 +43,7 @@ class OrchaClient:
         return self._private_key
 
     def trigger_workflow(self, payload, token):
+        """Trigger an Orcha workflow."""
         response = requests.post(
             f"{self.base_url}/workflows/",
             json=payload,

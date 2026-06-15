@@ -2,8 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Zenodo permissions."""
 
-from invenio_access import action_factory
-from invenio_access import Permission
+from invenio_access import Permission, action_factory
 from invenio_communities.permissions import CommunityPermissionPolicy
 from invenio_rdm_records.services.generators import (
     AccessGrant,

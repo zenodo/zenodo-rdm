@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 CERN
+# SPDX-License-Identifier: GPL-3.0-or-later
+"""Orcha views module."""
+
 from datetime import datetime, timedelta, timezone
 
 import jwt
@@ -70,6 +74,7 @@ def _file_download_url(pid_value, orcha):
 
 @blueprint.route("/uploads/<pid_value>/orcha", methods=["POST"])
 def get_workflow_stream_url(pid_value):
+    """Get an Orcha workflow stream URL."""
     if pid_value in {None, "", "null", "undefined"}:
         return jsonify(
             {"error": "Draft must be saved before extracting metadata."}
@@ -167,6 +172,7 @@ def _verify_file_download_token(client, pid_value, key):
 
 @blueprint.route("/uploads/<pid_value>/orcha/files/<path:key>", methods=["GET"])
 def download_orcha_file(pid_value, key):
+    """Download an Orcha file."""
     orcha = _orcha_client()
     _verify_file_download_token(orcha, pid_value, key)
     _, _, record_file = _record_file(pid_value, key=key, identity=system_identity)
@@ -175,6 +181,7 @@ def download_orcha_file(pid_value, key):
 
 @blueprint.route("/orcha-proxy/<path:subpath>", methods=["GET"])
 def orcha_proxy(subpath):
+    """Proxy the subpath request to Orcha."""
     orcha = _orcha_client()
     upstream_url = f"{orcha.base_url}/{subpath}"
     upstream = requests.get(
