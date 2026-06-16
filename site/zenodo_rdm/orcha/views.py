@@ -55,7 +55,7 @@ def _record_file(pid_value, key=None, identity=None):
 
 
 def _file_download_url(pid_value, orcha):
-    permission = current_app.config["ZENODO_ORCHA_PERMISSION"]
+    permission = current_app.config["RDM_DEPOSIT_ORCHA_ENABLED"]
     if not permission():
         raise PermissionDeniedError()
 
