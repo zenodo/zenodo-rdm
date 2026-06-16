@@ -76,7 +76,7 @@
         data-share-btn-require-link-expiration='{{ config.RDM_RECORDS_REQUIRE_SECRET_LINKS_EXPIRATION | tojson }}'>
 
   <div id="deposit-form"></div>
-  <div id="orcha-enabled" data-value='{{ config.ZENODO_ORCHA_PERMISSION() | tojson }}'></div>
+  <div id="orcha-enabled" data-value='{{ config.RDM_DEPOSIT_ORCHA_ENABLED() | tojson }}'></div>
 
 {%- endblock page_body %}
 
