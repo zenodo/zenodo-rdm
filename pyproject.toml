@@ -1,6 +1,6 @@
 [project]
 name = "zenodo-rdm-app"
-version = "25.0.0rc2"
+version = "25.0.0rc3"
 authors = [
     { name = "CERN" }
 ]
