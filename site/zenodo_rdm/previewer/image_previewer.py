@@ -7,6 +7,9 @@ from datetime import datetime, timedelta, timezone
 from os.path import splitext
 
 from flask import current_app, render_template
+from werkzeug.local import LocalProxy
+
+previewable_extensions = LocalProxy(lambda: current_app.config["IIIF_FORMATS"].keys())
 
 
 def is_pdf_previewable(file):
@@ -25,8 +28,7 @@ def can_preview(file):
     :returns: Boolean.
     """
     # supported_extensions list for image formats
-    preview_extensions = current_app.config["IIIF_FORMATS"]
-    supported_extensions = ["." + ext for ext in preview_extensions if ext != "pdf"]
+    supported_extensions = ["." + ext for ext in previewable_extensions if ext != "pdf"]
 
     if is_pdf_previewable(file):
         return True
