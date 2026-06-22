@@ -91,13 +91,19 @@ def get_workflow_stream_url(pid_value):
     try:
         response = orcha.trigger_workflow(payload, _workflow_token(orcha))
         workflow_id = response["public_id"]
+        workflow_token = _workflow_token(orcha, workflow_id)
         return (
             jsonify(
                 {
                     "workflowId": workflow_id,
                     "streamUrl": orcha.stream_url(
                         workflow_id,
-                        _workflow_token(orcha, workflow_id),
+                        workflow_token,
+                    ),
+                    "workflowUrl": url_for(
+                        "orcha.orcha_proxy",
+                        subpath=f"workflows/{workflow_id}",
+                        token=workflow_token,
                     ),
                 }
             ),
@@ -186,9 +192,22 @@ def orcha_proxy(subpath):
     """Proxy the subpath request to Orcha."""
     orcha = _orcha_client()
     upstream_url = f"{orcha.base_url}/{subpath}"
+    params = request.args.to_dict(flat=False)
+    upstream_headers = {}
+    workflow_id = (
+        subpath.removeprefix("workflows/") if subpath.startswith("workflows/") else ""
+    )
+
+    if workflow_id and "/" not in workflow_id:
+        token = request.args.get("token")
+        if token:
+            upstream_headers["Authorization"] = f"Bearer {token}"
+            params.pop("token", None)
+
     upstream = requests.get(
         upstream_url,
-        params=request.args,
+        params=params,
+        headers=upstream_headers,
         stream=True,
         timeout=(10, None),
         verify=orcha.ssl_verify,
