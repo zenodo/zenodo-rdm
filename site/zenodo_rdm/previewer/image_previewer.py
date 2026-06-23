@@ -68,6 +68,9 @@ def preview(file):
                 return render_template(
                     "invenio_app_rdm/records/previewers/simple_image_preview.html",
                     css_bundles=["image-previewer.css"],
+                    # `file` is needed for `file.is_iframe` in `invenio_previewer/rdm_abstract_previewer.html`
+                    file=file,
+                    # `file_url` is needed in `invenio_app_rdm/records/previewers/simple_image_preview.html`
                     file_url=file.file.links["iiif_api"],
                 )
             # The image size is greater than configured size,
@@ -96,6 +99,9 @@ def preview(file):
                 return render_template(
                     "invenio_app_rdm/records/previewers/simple_image_preview.html",
                     css_bundles=["image-previewer.css"],
+                    # `file` is needed for `file.is_iframe` in `invenio_previewer/rdm_abstract_previewer.html`
+                    file=file,
+                    # `file_url` is needed in `invenio_app_rdm/records/previewers/simple_image_preview.html`
                     file_url=file.uri,
                 )
 
