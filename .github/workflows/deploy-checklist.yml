@@ -1,0 +1,112 @@
+name: Deployment checklist
+
+on:
+  push:
+    tags:
+      - v*
+  # Manual run for testing: provide a tag (and optionally the previous one).
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag (e.g. v25.0.0)
+        required: true
+      prev:
+        description: Previous tag (optional, auto-detected if empty)
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  checklist:
+    name: Open deployment checklist issue
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (full history, for the tag diff)
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Resolve tags
+        id: tags
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TAG="${{ inputs.tag }}"
+            PREV="${{ inputs.prev }}"
+          else
+            TAG="${GITHUB_REF_NAME}"
+            PREV=""
+          fi
+          if [ -z "$PREV" ]; then
+            PREV="$(git describe --tags --abbrev=0 "${TAG}^" 2>/dev/null || true)"
+          fi
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+          echo "prev=${PREV}" >> "$GITHUB_OUTPUT"
+          echo "Tag=${TAG}  Prev=${PREV:-<none>}"
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v8.2.0
+
+      - name: Fetch changelog.py
+        run: git clone --depth 1 "https://github.com/${{ vars.CHANGELOG_REPO || 'slint/changelog.py' }}" /tmp/changelog
+
+      - name: Locate changelog.py cache
+        id: clcache
+        run: echo "dir=$(uv run /tmp/changelog/changelog.py --cache-dir)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache changelog.py git checkouts
+        uses: actions/cache@v5
+        with:
+          path: ${{ steps.clcache.outputs.dir }}
+          key: changelog-repos-${{ github.run_id }}
+          restore-keys: changelog-repos-
+
+      - name: Generate signals
+        run: |
+          if [ -z "${{ steps.tags.outputs.prev }}" ]; then
+            echo '{"packages": []}' > signals.json
+          else
+            uv run /tmp/changelog/changelog.py uv.lock \
+              --since "${{ steps.tags.outputs.prev }}" \
+              --until "${{ steps.tags.outputs.tag }}" \
+              --package-filter '^invenio' \
+              --show-major-bumps \
+              --fetch \
+              --json --detect-migrations > signals.json
+          fi
+          cat signals.json
+
+      - name: Render issue body
+        run: |
+          uv run --no-project --script scripts/deploy_checklist.py \
+            --version "${{ steps.tags.outputs.tag }}" \
+            --since "${{ steps.tags.outputs.prev }}" \
+            --author "${{ github.actor }}" \
+            < signals.json > body.md
+          cat body.md
+
+      - name: Create checklist issue
+        id: issue
+        env:
+          GH_TOKEN: ${{ secrets.OPS_ISSUES_TOKEN }}
+        run: |
+          URL="$(gh issue create \
+            --repo "${{ vars.CHECKLIST_REPO || 'zenodo/ops' }}" \
+            --title "Zenodo ${{ steps.tags.outputs.tag }} deployment" \
+            --body-file body.md)"
+          echo "url=${URL}" >> "$GITHUB_OUTPUT"
+          # Best-effort: assign whoever pushed the tag (no-op if they lack ops access).
+          gh issue edit "$URL" --add-assignee "${{ github.actor }}" || true
+          echo "Created ${URL}"
+
+      - name: Notify Mattermost
+        env:
+          WEBHOOK: ${{ secrets.MATTERMOST_WEBHOOK }}
+        run: |
+          if [ -z "$WEBHOOK" ]; then echo "No MATTERMOST_WEBHOOK set, skipping."; exit 0; fi
+          TEXT="### 📦 Zenodo \`${{ steps.tags.outputs.tag }}\` tagged
+
+          Fill in the [deployment checklist](${{ steps.issue.outputs.url }}) before deploying."
+          curl -sf -X POST -H 'Content-Type: application/json' \
+            -d "$(jq -nc --arg t "$TEXT" '{text: $t}')" \
+            "$WEBHOOK"
