@@ -81,3 +81,6 @@ celerybeat-schedule*
 
 # IDEs
 .vscode/
+
+# Keys
+*.pem

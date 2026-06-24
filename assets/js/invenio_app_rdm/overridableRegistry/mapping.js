@@ -4,6 +4,7 @@ import { UpgradeLegacyRecordButton } from "../../components/landing_page/overrid
 import SubcommunityCreateForm from "../../components/community/overrides/SubcommunityCreateForm";
 import FileModificationModalMessage from "../../components/community/overrides/FileModificationModalMessage";
 import { CustomAffiliationsSuggestions } from "../../components/react_invenio_forms/CustomAffiliationsSuggestions";
+import {FileUploaderWorkflowContainer} from "../../components/deposit/FileUploaderWorkflowContainer";
 
 export const overriddenComponents = {
   "InvenioAppRdm.RecordLandingPage.RecordManagement.container":
@@ -11,4 +12,5 @@ export const overriddenComponents = {
   "ReactInvenioForms.AffiliationsSuggestions.content": CustomAffiliationsSuggestions,
   "InvenioCommunities.CommunityCreateForm.layout": SubcommunityCreateForm,
   "InvenioAppRdm.Deposit.ModificationModal.message": FileModificationModalMessage,
+  "InvenioAppRdm.Deposit.FileUploader.container": FileUploaderWorkflowContainer,
 };
