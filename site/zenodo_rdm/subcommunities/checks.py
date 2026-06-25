@@ -5,6 +5,7 @@
 # Zenodo RDM is free software; you can redistribute it and/or modify
 # it under the terms of the MIT License; see LICENSE file for more details.
 """Zenodo-specific subcommunity checks."""
+from urllib.parse import urlparse
 
 from invenio_access.permissions import system_identity
 from invenio_accounts.models import Domain, DomainStatus, User
@@ -15,6 +16,7 @@ from invenio_checks.contrib.metadata.check import CheckResult, MetadataCheck
 from invenio_checks.contrib.metadata.rules import RuleResult
 from invenio_communities.proxies import current_communities
 from invenio_rdm_records.proxies import current_community_records_service
+from invenio_vocabularies.contrib.affiliations.api import Affiliation
 
 
 def _get_funding_per_community(community, funder_id):
@@ -40,7 +42,12 @@ class SubcommunityMetadataCheck(MetadataCheck):
 
 
 class CommunityMembershipCheck(Check):
-    """Check that at least one owner and one manager have a verified institutional email."""
+    """
+    Check that community members have affiliations.
+
+    Checks that at least one community member has a verified domain or is affiliated (via their email)
+    to a recognized organization.
+    """
 
     id = "subcommunity_member"
     title = "Member affiliation"
@@ -53,11 +60,17 @@ class CommunityMembershipCheck(Check):
         result = CheckResult(self.id)
 
         verified_domains = self._get_verified_domains()
+        ec_funder_id = config.params.get("ec_funder_id", "00k4n6c32")
+        award_org_data = self._get_award_org_data(record, ec_funder_id)
 
         Membership = current_communities.service.members.record_cls
-        members = Membership.model_cls.query.filter(
-            Membership.model_cls.community_id == str(record.id)
-        ).all()
+        members = [
+            m for m in Membership.model_cls.query.filter(
+                Membership.model_cls.community_id == str(record.id),
+                Membership.model_cls.active.is_(True),
+            ).all()
+            if m.user_id != deleted_member_id and m.role in ("manager", "owner")
+        ]
 
         user_ids = {int(m.user_id) for m in members if m.user_id is not None}
         users_by_id = {
@@ -65,35 +78,53 @@ class CommunityMembershipCheck(Check):
             for u in User.query.filter(User.id.in_(user_ids)).all()
         }
         users = []
-        verified_users = 0
-        unverified_users = 0
-        for member in (m for m in members if m.role in ("manager", "owner")):
+        has_any_affiliation = False
+        has_any_verified = False
+
+        for member in members:
             user = users_by_id[int(member.user_id)]
             verified = user.domain in verified_domains
-            user_data = {"domain": user.domain, "role": member.role.capitalize(), "verified": verified}
-            if user_name := user.user_profile.get('full_name') or user.username:
-                user_data.update({"name": user_name})
+            affiliated_to = self.is_affiliated_to(user.domain, award_org_data)
+
+            user_data = {
+                "domain": user.domain,
+                "role": member.role.capitalize(),
+                "verified": verified,
+                "affiliation": affiliated_to,
+            }
+            if affiliated_to:
+                has_any_affiliation = True
+                user_data["level"] = "success"
+            elif verified:
+                has_any_verified = True
+                user_data["level"] = "info"
+            else:
+                user_data["level"] = "warning"
+            if user_name := user.user_profile.get("full_name") or user.username:
+                user_data["name"] = user_name
             users.append(user_data)
 
-            if verified:
-                verified_users += 1
-            else:
-                unverified_users += 1
-        if verified_users == 0 and unverified_users != 0:
-            description = "At least one community member should have a verified email."
+        if has_any_affiliation:
+            level = config.severity.error_value
+            description = "The community has at least one member affiliated to one of the award's organizations."
+        elif has_any_verified:
+            level = "warning"
+            description = "No verified community member is affiliated to one of the award's organizations."
         else:
-            description = "The community has at least one member who is verified."
+            level = "error"
+            description = "None of the community members are verified or with an affiliation."
+
         rule_result = RuleResult(
             rule_id="membership:verified",
             rule_title="Verified community member",
             rule_message="Verified community member",
             rule_description=description,
-            level=config.severity.error_value,
-            success=bool(verified_users),
-            check_results=[ExpressionResult(success=bool(verified_users), value=users)],
+            level=level,
+            success=has_any_affiliation,
+            check_results=[ExpressionResult(success=has_any_affiliation, value=users)],
         )
         result.add_rule_result(rule_result)
-        if not verified_users:
+        if not has_any_affiliation:
             result.add_errors([
                 {
                     "field": "members.verified",
@@ -118,6 +149,64 @@ class CommunityMembershipCheck(Check):
             }
             current_cache.set(cache_key, domains, timeout=3600)
         return domains
+
+    def _get_award_org_data(self, record, funder_id):
+        """Return lowercase organization names from the community's EC-funded awards.
+
+        Handles two storage formats produced by the awards datastream:
+        - ``{"id": ror_id}`` — resolved via the Affiliation vocabulary
+        - ``{"organization": legal_name}`` — used as-is
+        """
+        record.relations.dereference()
+        org_names = []
+        for funding in record.metadata.get("funding", []):
+            if funding.get("funder", {}).get("id") != funder_id:
+                continue
+            for org in funding.get("award", {}).get("organizations", []):
+                org_data = {}
+                if ror_id := org.get("id"):
+                    try:
+                        affiliation = Affiliation.pid.resolve(ror_id)
+                        if domains := affiliation.get("domains"):
+                            org_data['domains'] = domains
+                        if identifiers := affiliation.get('identifiers', {}):
+                            for identifier in identifiers:
+                                if identifier["scheme"] == "url":
+                                    org_data['website'] = identifier["identifier"]
+                                    break
+                        if name := affiliation.get("name"):
+                            org_data['name'] = name
+                    except Exception:
+                        pass
+                elif name := org.get("organization"):
+                    org_data['name'] = name
+                org_names.append(org_data)
+        return org_names
+
+    def is_affiliated_to(self, email, orgs):
+        """Checks if email domain matches the organization's domains or website."""
+        for org in orgs:
+            org_name = org["name"]
+            if domains := org.get('domains'):
+                if email in domains:
+                    return org_name
+            if website := org.get("website"):
+                try:
+                    hostname = urlparse(website).hostname or ""
+                except Exception:
+                    return False
+
+                hostname = hostname.removeprefix("www.")
+
+                email_parts = email.split(".")
+                hostname_parts = hostname.split(".")
+
+                # heuristics: the core of both the email domain and the hostname matches,
+                # and the final part of both also matches.
+                # Ex: domain is tuwien.ca.at and website is tuwien.at
+                if bool(email_parts) and email_parts[0] == hostname_parts[0] and email_parts[-1] == hostname_parts[-1]:
+                    return org_name
+        return False
 
 
 class SubcommunityValidationCheck(Check):

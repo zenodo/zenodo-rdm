@@ -28,11 +28,27 @@ under the terms of the MIT License; see LICENSE file for more details.
             {% for check_result in rule_result.check_results %}
               <div class="pt-5 text-muted">
                 {% if rule_result.success %}
-                  {{ rule_result.rule_description if rule_result.rule_id in ("metadata:type", "metadata:logo") else check_result.value }}
+                  {% if rule_result.rule_id in ("metadata:type", "metadata:logo", "metadata:organizations") %}
+                    {{ rule_result.rule_description }}
+                  {% else %}
+                    {{ check_result.value }}
+                  {% endif %}
                 {% else %}
                   {{ rule_result.rule_description }}
                 {% endif %}
               </div>
+              {% if rule_result.rule_id == "metadata:organizations" and rule_result.success %}
+                <div class="ui list rel-pt-1">
+                  {% for org in check_result.value %}
+                    <div class="item">
+                      <i class="building outline icon"></i>
+                      <div class="content">
+                        {{ org.name or org.id }}
+                      </div>
+                    </div>
+                  {% endfor %}
+                </div>
+              {% endif %}
             {% endfor %}
           </div>
         </div>
