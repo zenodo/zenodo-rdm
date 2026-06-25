@@ -3135,7 +3135,7 @@ wheels = [
 [[package]]
 name = "invenio-records-resources"
 version = "11.0.0"
-source = { git = "https://github.com/inveniosoftware/invenio-records-resources?branch=feature%2Forcha-fix-read-many#83acaad6a5e50da04a5b4d29d401dbb8cd082a39" }
+source = { git = "https://github.com/inveniosoftware/invenio-records-resources?branch=feature%2Forcha-fix-read-many#1e9e8d0499bdc6b86d2cb06de6a69291e3b88137" }
 dependencies = [
     { name = "babel-edtf" },
     { name = "flask-resources" },
@@ -8669,7 +8669,7 @@ source = { editable = "site" }
 
 [[package]]
 name = "zenodo-rdm-app"
-version = "25.0.0rc8"
+version = "25.0.0"
 source = { virtual = "." }
 dependencies = [
     { name = "github3-py" },
