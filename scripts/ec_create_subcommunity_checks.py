@@ -114,7 +114,21 @@ METADATA_RULES = {
                 }
             ],
         },
-        # TODO: implement organization checks
+        {
+            "id": "metadata:organizations",
+            "title": "Organizations",
+            "message": "Organizations",
+            "description": "The community should list the participating organizations of the EU project.",
+            "level": "info",
+            "checks": [
+                {
+                    "type": "comparison",
+                    "left": {"type": "field", "path": "metadata.organizations"},
+                    "operator": "!=",
+                    "right": None,
+                }
+            ],
+        },
     ]
 }
 
@@ -175,7 +189,7 @@ def create_member_checks(eu_comm):
             check_id="subcommunity_member",
             params={},
             target_type="community",
-            severity=Severity.FAIL,
+            severity=Severity.WARN,
             enabled=True,
         )
         db.session.add(check_config)

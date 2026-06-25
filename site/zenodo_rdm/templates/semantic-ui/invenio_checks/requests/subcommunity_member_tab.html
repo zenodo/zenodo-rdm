@@ -29,9 +29,18 @@ under the terms of the MIT License; see LICENSE file for more details.
             {% if check_result %}
             <div class="rel-pt-1 rel-pb-1">
               {% for value in check_result.value %}
-                <div class="ui {{ 'success' if value.verified else 'warning' }} small message">
-                  {% if value.name %}<strong>{{ value.name ~ " - " ~ value.role }}</strong>{% endif %}
-                  <div class="text-muted">{{ value.domain }}</div>
+                <div class="ui {{ value.level }} small message">
+                  {% if value.name %}<strong>{{ value.name ~ " - " ~ value.role }}</strong>
+                  {% else %}
+                      <strong>{{ value.role }}</strong>
+                  {% endif %}
+                  <div class="text-muted">
+                      {{ value.domain }}
+                      {% if value.affiliation %} - Affiliated to {{ value.affiliation }}
+                      {% elif value.verified %} - Verified
+                      {% else %} - Not verified
+                      {% endif %}
+                  </div>
                 </div>
               {% endfor %}
             </div>
