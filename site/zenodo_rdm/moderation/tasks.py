@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2024 CERN
+# SPDX-FileCopyrightText: 2024-2026 CERN
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Tasks for moderation."""
 
@@ -22,6 +22,7 @@ from invenio_requests.records.api import Request
 from invenio_requests.services.user_moderation.errors import OpenRequestAlreadyExists
 from invenio_search.engine import dsl
 from invenio_users_resources.proxies import current_users_service as users_service
+from markupsafe import escape
 
 
 @shared_task(ignore_result=True)
@@ -95,12 +96,30 @@ def update_moderation_request(user_id, action_ctx):
                 f' (<a href="/communities/{content_pid}">Community {content_pid}</a>)'
             )
 
+        breakdown = _render_breakdown(action_ctx.get("results", {}))
         comment = dict(
-            payload={"content": f"<p>Final evaluation: {evaluation}{content}</p>"}
+            payload={
+                "content": f"<p>Final evaluation: {evaluation}{content}</p>{breakdown}"
+            }
         )
         events_service.create(system_identity, req, comment, CommentEventType, uow=uow)
 
         uow.commit()
+
+
+def _render_breakdown(results):
+    """Render the score-moving reasons per rule as an HTML list for the comment."""
+    groups = []
+    for name, result in results.items():
+        drivers = [reason for reason in result["reasons"] if reason["score"]]
+        if not drivers:
+            continue
+        items = "".join(
+            f"<li>{reason['score']:+} {escape(reason['label'])}</li>"
+            for reason in drivers
+        )
+        groups.append(f"<li>{name} ({result['score']})<ul>{items}</ul></li>")
+    return f"<ul>{''.join(groups)}</ul>" if groups else ""
 
 
 @shared_task(ignore_result=True)
