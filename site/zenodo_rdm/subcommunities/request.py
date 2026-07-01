@@ -6,6 +6,7 @@ from copy import deepcopy
 
 import invenio_communities.notifications.builders as notifications
 from invenio_access.permissions import system_identity
+from invenio_checks.api import ChecksAPI
 from invenio_checks.models import CheckConfig, Severity
 from invenio_communities.proxies import current_communities
 from invenio_communities.subcommunities.services.request import (
@@ -161,8 +162,13 @@ class SubcommunityCreateAction(actions.CreateAndSubmitAction):
     def execute(self, identity, uow):
         """Execute create action."""
         subcommunity = self.request.topic.resolve()
+        parent = self.request.receiver.resolve()
 
         _update_subcommunity_funding(self.request, subcommunity, uow)
+
+        configs = ChecksAPI.get_configs({str(parent.id)}, target_type="community")
+        for config in configs:
+            ChecksAPI.run_check(config, subcommunity, uow)
 
         # Execute the default create action
         super().execute(identity, uow)
