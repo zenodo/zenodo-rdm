@@ -22,7 +22,19 @@ DEPLOYMENTS = {
     "worker-beat-custom": ["worker-beat-custom"],
     "terminal": ["terminal"],
 }
-deployment_names = ", ".join(DEPLOYMENTS.keys())
+# CronJobs run with their image pinned in the manifest, so they go stale unless
+# bumped here together with the deployments on every deploy.
+CRONJOBS = {
+    "export-all-xml": ["terminal"],
+    "stats-agg-file-download": ["terminal"],
+    "stats-agg-record-view": ["terminal"],
+}
+# name -> (resource kind, container names)
+RESOURCES = {
+    **{name: ("deployment", containers) for name, containers in DEPLOYMENTS.items()},
+    **{name: ("cronjob", containers) for name, containers in CRONJOBS.items()},
+}
+resource_names = ", ".join(RESOURCES.keys())
 
 
 def _abort(message):
@@ -31,10 +43,10 @@ def _abort(message):
 
 
 if len(sys.argv) < 3:
-    print(f"Usage: {PROGRAM} <env> <image_tag> [<deployment>...]\n")
+    print(f"Usage: {PROGRAM} <env> <image_tag> [<target>...]\n")
     print(f"  env: one of [{env_names}]")
     print("  image_tag: the tag of the image to deploy (e.g. `3.1.0`)")
-    print(f"  deployment: any of [{deployment_names}] (optional, default all)")
+    print(f"  target: any of [{resource_names}] (optional, default all)")
     print()
     print(f"  Example: {PROGRAM} qa 3.1.0")
     sys.exit(1)
@@ -48,12 +60,12 @@ if not image_tag:
     _abort("Invalid image tag")
 
 if len(sys.argv) > 3:
-    deployments = sys.argv[3:]
-    for dep in deployments:
-        if dep not in DEPLOYMENTS:
-            _abort(f"Invalid deployment: {dep}, must be one of {deployment_names}")
+    targets = sys.argv[3:]
+    for target in targets:
+        if target not in RESOURCES:
+            _abort(f"Invalid target: {target}, must be one of {resource_names}")
 else:
-    deployments = DEPLOYMENTS.keys()
+    targets = RESOURCES.keys()
 
 # Verify image exists
 image = f"ghcr.io/zenodo/zenodo-rdm/zenodo-rdm:{image_tag}"
@@ -66,29 +78,30 @@ if res.returncode != 0:
 
 oc_env = ENVS[env]
 print(f"You're deploying to {env} ({oc_env}), the following images updates:")
-for dep, containers in DEPLOYMENTS.items():
-    if dep not in deployments:
+for name, (kind, containers) in RESOURCES.items():
+    if name not in targets:
         continue
-    print(f"  {dep}: {containers} -> {image}")
+    print(f"  {kind}/{name}: {containers} -> {image}")
 
 if input("\nType the name of the environment to confirm: ") != env:
     _abort("Deployment aborted!")
 
 
-for dep, containers in DEPLOYMENTS.items():
-    if dep not in deployments:
+for name, (kind, containers) in RESOURCES.items():
+    if name not in targets:
         continue
     containers_args = [f"{container}={image}" for container in containers]
     print()
     res = subprocess.run(
         # oc set image deployment/web web=my/repo:v1.0 copy-web-assets=my/repo:v1.0
+        # oc set image cronjob/export-all-xml terminal=my/repo:v1.0
         [
             "oc",
             "set",
             "image",
             "--namespace",
             oc_env,
-            f"deployment/{dep}",
+            f"{kind}/{name}",
             *containers_args,
         ],
         capture_output=True,
