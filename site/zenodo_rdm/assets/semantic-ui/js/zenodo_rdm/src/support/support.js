@@ -1,4 +1,3 @@
-import React from "react";
 import ReactDOM from "react-dom";
 import SupportForm from "./components/SupportForm";
 

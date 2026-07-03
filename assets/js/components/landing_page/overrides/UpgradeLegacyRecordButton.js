@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023 CERN
 // SPDX-License-Identifier: GPL-3.0-or-later
-import React, { Component } from "react";
+import { Component } from "react";
 import { Button, Grid, Message, Icon } from "semantic-ui-react";
 import PropTypes from "prop-types";
 import { http, withCancel } from "react-invenio-forms";

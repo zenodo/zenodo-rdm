@@ -1,5 +1,4 @@
 import PropTypes from "prop-types";
-import React from "react";
 import { Icon, Table } from "semantic-ui-react";
 import { humanReadableBytes } from "react-invenio-forms";
 

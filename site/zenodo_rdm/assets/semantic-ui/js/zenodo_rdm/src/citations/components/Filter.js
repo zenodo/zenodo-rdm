@@ -1,6 +1,5 @@
 // SPDX-FileCopyrightText: 2022 CERN
 // SPDX-License-Identifier: GPL-3.0-or-later
-import React from "react";
 import { PropTypes } from "prop-types";
 import { missingTypesFilter } from "../sanitizer";
 import { withState, BucketAggregation } from "react-searchkit";

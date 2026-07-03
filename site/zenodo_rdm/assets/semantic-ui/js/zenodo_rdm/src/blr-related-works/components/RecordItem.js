@@ -1,6 +1,5 @@
 // SPDX-FileCopyrightText: 2023 CERN
 // SPDX-License-Identifier: GPL-3.0-or-later
-import React from "react";
 import PropTypes from "prop-types";
 import { Grid, Header, Item, Label, Icon } from "semantic-ui-react";
 import _get from "lodash/get";

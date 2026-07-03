@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2022 CERN
 // SPDX-License-Identifier: GPL-3.0-or-later
-import React from "react";
+import { Component } from "react";
 import { PropTypes } from "prop-types";
 import {
   ReactSearchKit,
@@ -41,7 +41,7 @@ const overriddenComponents = {
   [`${citationSearchAppID}.Count.element`]: Counter,
 };
 
-export class CitationsSearch extends React.Component {
+export class CitationsSearch extends Component {
   constructor(props) {
     super(props);
 

@@ -1,6 +1,5 @@
 // SPDX-FileCopyrightText: 2022 CERN
 // SPDX-License-Identifier: GPL-3.0-or-later
-import React from "react";
 import { Table, Popup, Icon, Label, Header } from "semantic-ui-react";
 import _truncate from "lodash/truncate";
 import { PropTypes } from "prop-types";
