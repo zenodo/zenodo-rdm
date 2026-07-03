@@ -23,6 +23,16 @@ dependencies = [
     "invenio-records-resources",
     "invenio-github>=7.0.0,<8.0.0",
     "invenio-rdm-records",
+    # React18
+    "invenio-administration",
+    "invenio-search-ui",
+    "invenio-collections",
+    "invenio-communities",
+    "invenio-assets",
+    "invenio-vocabularies",
+    "invenio-requests",
+    # "react-searchkit",
+    # "react-invenio-forms",
 ]
 
 [tool.uv.sources]
@@ -31,10 +41,21 @@ zenodo-legacy = { workspace = true }
 invenio-swh = { git = "https://github.com/inveniosoftware/invenio-swh", rev = "v0.13.5" }
 # User profile fixes
 invenio-records-resources = { git = "https://github.com/inveniosoftware/invenio-records-resources", branch = "fix-read-many" }
-invenio-app-rdm = { git = "https://github.com/inveniosoftware/invenio-app-rdm", branch = "feature/orcha" }
-invenio-rdm-records = { git = "https://github.com/inveniosoftware/invenio-rdm-records", branch = "feature/orcha" }
 # Python 3.14 + xrootdpyfs 3.x support (inveniosoftware/invenio-xrootd#40)
 invenio-xrootd = { git = "https://github.com/ntarocco/invenio-xrootd", branch = "upgrade-xrootdpyf" }
+
+# React18
+invenio-app-rdm = { path = "../invenio-app-rdm", editable = true }
+invenio-rdm-records = { path = "../invenio-rdm-records", editable = true }
+invenio-administration = { path = "../invenio-administration", editable = true }
+invenio-search-ui = { path = "../invenio-search-ui", editable=true }
+invenio-collections = { path = "../invenio-collections", editable=true }
+invenio-communities = { path = "../invenio-communities", editable=true }
+invenio-assets = { path = "../invenio-assets", editable=true }
+invenio-vocabularies = { path = "../invenio-vocabularies", editable=true }
+invenio-requests = { path = "../invenio-requests", editable=true }
+#react-searchkit = { path = "../react-searchkit" }
+#react-invenio-forms = { path = "../react-invenio-forms" }
 
 [tool.uv.workspace]
 members = [
