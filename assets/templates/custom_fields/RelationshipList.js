@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2025 CERN
 // SPDX-License-Identifier: GPL-3.0-or-later
-import React, { Component } from "react";
+import { Component } from "react";
 import PropTypes from "prop-types";
 import { Button, Form, Icon, Dropdown } from "semantic-ui-react";
 import {
@@ -20,7 +20,7 @@ class TagInput extends Component {
   };
 
   render() {
-    const { value, placeholder } = this.props;
+    const { value = [], placeholder = "" } = this.props;
     const options = (value || []).map((v) => ({ key: v, text: v, value: v }));
 
     return (
@@ -47,18 +47,20 @@ TagInput.propTypes = {
   onChange: PropTypes.func.isRequired,
 };
 
-TagInput.defaultProps = {
-  value: [],
-  placeholder: "",
-};
-
 /**
  * Main component for editing a list of biotic relationships.
  * Used for the obo:RO_0002453 (Host of) custom field.
  */
 class RelationshipListComponent extends Component {
   render() {
-    const { fieldPath, label, labelIcon, helpText, subject, object } = this.props;
+    const {
+      fieldPath,
+      label,
+      labelIcon,
+      helpText,
+      subject = {},
+      object = {},
+    } = this.props;
 
     return (
       <>
@@ -143,14 +145,6 @@ RelationshipListComponent.propTypes = {
     label: PropTypes.string,
     placeholder: PropTypes.string,
   }),
-};
-
-RelationshipListComponent.defaultProps = {
-  label: undefined,
-  labelIcon: undefined,
-  helpText: undefined,
-  subject: {},
-  object: {},
 };
 
 export const RelationshipList = showHideOverridableWithDynamicId(RelationshipListComponent);

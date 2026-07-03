@@ -1,4 +1,3 @@
-import React from "react";
 import { Placeholder } from "semantic-ui-react";
 
 export const BlrResultsLoader = (children, loading) => {

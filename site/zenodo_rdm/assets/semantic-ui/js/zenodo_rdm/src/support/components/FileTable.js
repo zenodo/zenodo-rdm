@@ -1,9 +1,13 @@
 import PropTypes from "prop-types";
-import React from "react";
 import { Icon, Table } from "semantic-ui-react";
 import { humanReadableBytes } from "react-invenio-forms";
 
-const FileTable = ({ filesList, handleDelete, decimalSizeDisplay, negative }) => {
+const FileTable = ({
+  filesList,
+  handleDelete,
+  decimalSizeDisplay = false,
+  negative = false,
+}) => {
   return (
     <Table>
       <Table.Body>
@@ -42,11 +46,6 @@ FileTable.propTypes = {
   filesList: PropTypes.array.isRequired,
   decimalSizeDisplay: PropTypes.bool,
   negative: PropTypes.bool,
-};
-
-FileTable.defaultProps = {
-  decimalSizeDisplay: false,
-  negative: false,
 };
 
 export default FileTable;

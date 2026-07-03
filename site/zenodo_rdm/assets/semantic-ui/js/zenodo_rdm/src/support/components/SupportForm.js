@@ -1,5 +1,5 @@
 import { PropTypes } from "prop-types";
-import React, { Component } from "react";
+import { Component } from "react";
 import { Formik, Form } from "formik";
 import {
   Form as SemanticForm,
@@ -56,9 +56,10 @@ class SupportForm extends Component {
   constructor(props) {
     super(props);
 
-    const category = props.initialValues.category || "";
+    const { initialValues = {}, categories = [] } = props;
+    const category = initialValues.category || "";
     const matchedCategory = category
-      ? props.categories.find((c) => c.key === category) || null
+      ? categories.find((c) => c.key === category) || null
       : null;
 
     this.state = {
@@ -129,14 +130,14 @@ class SupportForm extends Component {
 
   render() {
     const {
-      categories,
-      name,
+      categories = [],
+      name = "",
       isUserAuthenticated,
-      userBrowser,
-      userPlatform,
-      userMail,
-      maxFileSize,
-      initialValues,
+      userBrowser = "",
+      userPlatform = "",
+      userMail = "",
+      maxFileSize = 1000 * 1000 * 10,
+      initialValues = {},
     } = this.props;
 
     const formInitialValues = {
@@ -345,16 +346,6 @@ SupportForm.propTypes = {
   maxFileSize: PropTypes.number,
   apiEndpoint: PropTypes.string.isRequired,
   initialValues: PropTypes.object,
-};
-
-SupportForm.defaultProps = {
-  userMail: "",
-  name: "",
-  userBrowser: "",
-  userPlatform: "",
-  categories: [],
-  maxFileSize: 1000 * 1000 * 10,
-  initialValues: {},
 };
 
 export default SupportForm;

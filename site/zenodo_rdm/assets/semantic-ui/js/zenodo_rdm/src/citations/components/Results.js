@@ -1,13 +1,12 @@
 // SPDX-FileCopyrightText: 2022 CERN
 // SPDX-License-Identifier: GPL-3.0-or-later
-import React from "react";
 import { PropTypes } from "prop-types";
 import { sanitizeCitation } from "../sanitizer";
 import { withState } from "react-searchkit";
 import { Table } from "semantic-ui-react";
 import { CitationRow } from "./CitationRow";
 
-export const Results = withState(({ currentResultsState }) => {
+export const Results = withState(({ currentResultsState = null }) => {
   return (
     <Table striped className="citations">
       <Table.Body>
@@ -23,8 +22,4 @@ export const Results = withState(({ currentResultsState }) => {
 
 Results.propTypes = {
   currentResultsState: PropTypes.object,
-};
-
-Results.defaultProps = {
-  currentResultsState: null,
 };

@@ -3,7 +3,7 @@ import { Formik } from "formik";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import PropTypes from "prop-types";
-import React, { Component } from "react";
+import { Fragment, Component } from "react";
 import {
   AffiliationsSuggestions,
   FieldLabel,
@@ -526,7 +526,7 @@ class SubcommunityCreateForm extends Component {
                       <>
                         <Header as="h3">{i18next.t("Community visibility")}</Header>
                         {formConfig.access.visibility.map((item) => (
-                          <React.Fragment key={item.value}>
+                          <Fragment key={item.value}>
                             <RadioField
                               key={item.value}
                               fieldPath="access.visibility"
@@ -542,7 +542,7 @@ class SubcommunityCreateForm extends Component {
                               }}
                             />
                             <label className="helptext">{item.helpText}</label>
-                          </React.Fragment>
+                          </Fragment>
                         ))}
                       </>
                     )}

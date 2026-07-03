@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2026 CERN
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import React, { Component } from "react";
+import { Component } from "react";
 import { Button, Message } from "semantic-ui-react";
 import { http } from "react-invenio-forms";
 import { i18next } from "@translations/invenio_app_rdm/i18next";

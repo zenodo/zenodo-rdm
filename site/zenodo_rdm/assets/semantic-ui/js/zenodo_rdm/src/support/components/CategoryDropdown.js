@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import { Component } from "react";
 import { PropTypes } from "prop-types";
 import { SelectField } from "react-invenio-forms";
 
@@ -14,7 +14,7 @@ class CategoryDropdown extends Component {
   }
 
   onChange = ({ data, formikProps }) => {
-    const { categories, onCategoryChange } = this.props;
+    const { categories = [], onCategoryChange } = this.props;
     const activeCategory = categories.find((el) => el.key === data.value);
 
     onCategoryChange(activeCategory);
@@ -22,7 +22,7 @@ class CategoryDropdown extends Component {
   };
 
   render() {
-    const { categories, activeCategory, className } = this.props;
+    const { categories = [], activeCategory = null, className = "" } = this.props;
 
     const serializedCategories = categories.map((cat) => this.serializeCategory(cat));
 
@@ -51,13 +51,6 @@ CategoryDropdown.propTypes = {
   activeCategory: PropTypes.object,
   onCategoryChange: PropTypes.func,
   className: PropTypes.string,
-};
-
-CategoryDropdown.defaultProps = {
-  categories: [],
-  activeCategory: null,
-  onCategoryChange: null,
-  className: "",
 };
 
 export default CategoryDropdown;
