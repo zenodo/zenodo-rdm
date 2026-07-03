@@ -1,4 +1,3 @@
-import React from "react";
 import ReactDOM from "react-dom";
 import { CommunityItem } from "./community-item";
 import { CommunitySelectionSearch } from "@js/invenio_rdm_records";

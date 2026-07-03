@@ -1,4 +1,3 @@
-import React from "react";
 import PropTypes from "prop-types";
 import Dropzone from "react-dropzone";
 import { humanReadableBytes } from "react-invenio-forms";

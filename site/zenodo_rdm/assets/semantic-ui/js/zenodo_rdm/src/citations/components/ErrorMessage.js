@@ -1,6 +1,5 @@
 // SPDX-FileCopyrightText: 2022 CERN
 // SPDX-License-Identifier: GPL-3.0-or-later
-import React from "react";
 import { Message } from "semantic-ui-react";
 
 export const ErrorMessage = () => (

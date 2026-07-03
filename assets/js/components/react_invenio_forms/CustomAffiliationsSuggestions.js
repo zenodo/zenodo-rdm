@@ -1,4 +1,3 @@
-import React from "react";
 import { Header, Grid } from "semantic-ui-react";
 
 export const CustomAffiliationsSuggestions = ({
@@ -25,9 +24,7 @@ export const CustomAffiliationsSuggestions = ({
         </span>
       );
     } else if (scheme === "edmo") {
-      sources.push(
-        <span key={value}>Source: {scheme.toUpperCase()}</span>
-      );
+      sources.push(<span key={value}>Source: {scheme.toUpperCase()}</span>);
     } else {
       const idEntry = makeIdEntry(identifier);
       if (idEntry) idStrings.push(idEntry);

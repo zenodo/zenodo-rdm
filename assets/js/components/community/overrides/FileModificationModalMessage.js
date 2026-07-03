@@ -1,6 +1,5 @@
 // SPDX-FileCopyrightText: 2025 CERN
 // SPDX-License-Identifier: GPL-3.0-or-later
-import React from "react";
 import { ModalContent } from "semantic-ui-react";
 
 const FileModificationModalMessage = () => {

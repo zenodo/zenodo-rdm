@@ -1,6 +1,5 @@
 // SPDX-FileCopyrightText: 2023 CERN
 // SPDX-License-Identifier: GPL-3.0-or-later
-import React from "react";
 import { PropTypes } from "prop-types";
 import { Button } from "semantic-ui-react";
 import { withState } from "react-searchkit";

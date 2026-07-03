@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2025 CERN
 // SPDX-License-Identifier: GPL-3.0-or-later
-import React, { Component } from "react";
+import { Component } from "react";
 import PropTypes from "prop-types";
 import { Button, Form, Icon, Dropdown } from "semantic-ui-react";
 import {
