@@ -1,0 +1,49 @@
+{# -*- coding: utf-8 -*-
+    Copyright (C) 2026 CERN.
+#}
+
+{% import "invenio_checks/requests/severity_level_icons.html" as severity_tpl %}
+{% import "invenio_checks/requests/_rule_severity.html" as rule_severity_tpl %}
+
+<div class="ui column stackable grid">
+  <div class="ten wide column">
+    <div class="ui very relaxed list rel-pl-2">
+
+      {% for check in checks %}
+
+        {% set status = check.status.name %}
+        {% set running = status == "PENDING" or status == "RUNNING" %}
+        {% set has_errors = check.result.errors %}
+        {% set icon = (
+          severity_tpl.severity_level_icons["running"] if running else
+          severity_tpl.severity_level_icons["warning"] if has_errors else
+          severity_tpl.severity_level_icons["success"]
+        ) %}
+
+        <div class="item">
+          <div class="content">
+            <div class="header">
+              <i class="{{ icon }}"></i>
+              {{ check.result.title }}
+            </div>
+            <div class="text-muted">
+              <p><i class="rel-p-1 fire blue icon"></i>AI-assisted grant matching</p>
+            </div>
+            <div class="pt-5 text-muted">
+              {% if running %}
+              <p>Analysis in progress, please check back shortly.</p>
+              {% else %}
+              <p>{{ check.result.description }}</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+      {% endfor %}
+
+    </div>
+  </div>
+  <div class="six wide column">
+    {% include 'invenio_checks/requests/help_message.html' %}
+  </div>
+</div>
