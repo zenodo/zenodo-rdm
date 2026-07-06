@@ -120,6 +120,27 @@ def _add_subcommunity_funding_check(request, subcommunity, uow):
     uow.register(ModelCommitOp(check_config))
 
 
+def _add_subcommunity_llm_funding_check(subcommunity, uow):
+    """Create the LLM funding relevance CheckConfig on the subcommunity."""
+    check_config = CheckConfig.query.filter_by(
+        community_id=subcommunity.id, check_id="funding"
+    ).one_or_none()
+    if check_config:
+        return
+    check_config = CheckConfig(
+        community_id=subcommunity.id,
+        check_id="funding",
+        params={
+            "funding_title": "Record metadata should match grant description",
+            "funding_description": "The system compares the record title and description against the official EU grant description.",
+        },
+        target_type="record",
+        severity=Severity.WARN,
+        enabled=True,
+    )
+    uow.register(ModelCommitOp(check_config))
+
+
 def _update_subcommunity_funding(request, subcommunity, uow):
     """Update the subcommunity funding metadata."""
     project_id = request.get("payload", {}).get("project_id")
@@ -150,6 +171,7 @@ class SubcommunityAcceptAction(AcceptSubcommunity):
 
         _add_community_records(subcommunity.id, parent.id, uow)
         _add_subcommunity_funding_check(self.request, subcommunity, uow)
+        _add_subcommunity_llm_funding_check(subcommunity, uow)
 
         super().execute(identity, uow)
 
@@ -278,6 +300,7 @@ class SubCommunityInvitationAcceptAction(AcceptSubcommunityInvitation):
         _add_community_records(child.id, parent.id, uow)
         _update_subcommunity_funding(self.request, child, uow)
         _add_subcommunity_funding_check(self.request, child, uow)
+        _add_subcommunity_llm_funding_check(child, uow)
         # moving the community is handled by super()
 
         super().execute(identity, uow)
@@ -299,6 +322,7 @@ class SubcommunityInvitationExpireAction(actions.ExpireAction):
 
         _update_subcommunity_funding(self.request, child, uow)
         _add_subcommunity_funding_check(self.request, child, uow)
+        _add_subcommunity_llm_funding_check(child, uow)
 
         super().execute(identity, uow)
 

@@ -89,6 +89,7 @@ subcommunity_metadata = "zenodo_rdm.subcommunities.checks:SubcommunityMetadataCh
 subcommunity_member = "zenodo_rdm.subcommunities.checks:CommunityMembershipCheck"
 subcommunity_validation = "zenodo_rdm.subcommunities.checks:SubcommunityValidationCheck"
 subcommunity_record_metadata = "zenodo_rdm.subcommunities.checks:SubcommunityRecordCheck"
+funding = "zenodo_rdm.checks.funding:FundingCheck"
 
 [project.entry-points."invenio_jobs.jobs"]
 eu_records_curation = "zenodo_rdm.curation.jobs:EURecordCuration"
