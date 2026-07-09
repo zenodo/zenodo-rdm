@@ -355,7 +355,7 @@ wheels = [
 
 [[package]]
 name = "build"
-version = "1.5.0"
+version = "1.5.1"
 source = { registry = "https://pypi.org/simple" }
 resolution-markers = [
     "python_full_version >= '3.11'",
@@ -368,9 +368,9 @@ dependencies = [
     { name = "pyproject-hooks", marker = "python_full_version >= '3.10'" },
     { name = "tomli", marker = "python_full_version == '3.10.*'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/78/e0/df5e171f685f82f37b12e1f208064e24244911079d7b767447d1af7e0d70/build-1.5.0.tar.gz", hash = "sha256:302c22c3ba2a0fd5f3911918651341ebb3896176cbdec15bd421f80b1afc7647", size = 89796, upload-time = "2026-04-30T03:18:25.17Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/2d/21/6ec54248b4d0d51f12f3ca4aa77a128077d747a5db86cb5a2fcd9aedecbd/build-1.5.1.tar.gz", hash = "sha256:94e17f1db803ab22f46049376c44c8437c52090f0dfdf1adc43df56542d644fb", size = 112439, upload-time = "2026-07-09T06:21:59.632Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/0d/fe/6bea5c9162869c5beba5d9c8abbed835ec85bf1ec1fba05a3822325c45f3/build-1.5.0-py3-none-any.whl", hash = "sha256:13f3eecb844759ab66efec90ca17639bbf14dc06cb2fdf37a9010322d9c50a6f", size = 26018, upload-time = "2026-04-30T03:18:23.644Z" },
+    { url = "https://files.pythonhosted.org/packages/c7/f7/2c3f99ff9282f1c1ec9f6298f2c03034658a0901eeacb3b3501cb488574c/build-1.5.1-py3-none-any.whl", hash = "sha256:f1a58fe2e5af5b0238a07b9e70207492c79ddebbdb1ad954fc86d62a56be3e0d", size = 31195, upload-time = "2026-07-09T06:21:58.551Z" },
 ]
 
 [[package]]
@@ -783,7 +783,7 @@ version = "0.51"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "build", version = "1.4.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
-    { name = "build", version = "1.5.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
+    { name = "build", version = "1.5.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
     { name = "setuptools", version = "82.0.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
     { name = "setuptools", version = "83.0.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
     { name = "tomli", marker = "python_full_version < '3.11'" },
@@ -795,27 +795,27 @@ wheels = [
 
 [[package]]
 name = "citeproc-py"
-version = "0.9.3"
+version = "0.10.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "lxml" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/5c/76/1d3dadd2f4ef56543c3107ea05be1ed20286a6647536547fe9cb8f7c31b6/citeproc_py-0.9.3.tar.gz", hash = "sha256:8cf1bdb89e629075051ff225ae4b4edf485dab08a1ffe656506357a61a658649", size = 162441, upload-time = "2026-04-30T15:57:06.331Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/05/e6/f97aa815a7d8e6fbed1923f755defa3dd2fa49af99698dce8822be7bc397/citeproc_py-0.10.1.tar.gz", hash = "sha256:41e7247ae90fd185b2432e1484776507ac8542ddf491ceec1d9937b3a4c25843", size = 267348, upload-time = "2026-07-08T22:06:09.807Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/52/c1/c5243f5520685e4dbfc8062ee02b24ce5a30dc5aab2c38d2dc5f1474bfd3/citeproc_py-0.9.3-py3-none-any.whl", hash = "sha256:963c3ef62ecee022899d5760667753b3321ec2b34e872027a2a2fc0a603356c2", size = 183041, upload-time = "2026-04-30T15:57:04.803Z" },
+    { url = "https://files.pythonhosted.org/packages/ae/80/bacafa527858774f53271224ca83e5fc22e4b116c1bfe7e4d4f9dfb3e305/citeproc_py-0.10.1-py3-none-any.whl", hash = "sha256:9058b231603fdd71566c85cb5b9d30c507d0bbdbca833acfcdbd972d1030f889", size = 356183, upload-time = "2026-07-08T22:06:08.558Z" },
 ]
 
 [[package]]
 name = "citeproc-py-styles"
-version = "0.1.5"
+version = "0.1.6"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "lxml" },
     { name = "six" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/a9/5f/f404e956c24ea487563eb898e5a34cf4a399cd3f29e0a62abfd85d8e38c5/citeproc_py_styles-0.1.5.tar.gz", hash = "sha256:20a82e22b4eb814039449ba83be8c142a385e6f6f17f5b70b1b33b3fd1f8e619", size = 3691118, upload-time = "2025-07-17T19:22:07.555Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/8f/c9/88cdec9fccaea98f97a23b0c8826b3824f8c878ba84dfd4a17dd667d7541/citeproc_py_styles-0.1.6.tar.gz", hash = "sha256:6499914e1425f2d7275f15d8c8417982314b5b79c1b63a9669719fdaeb833169", size = 6348333, upload-time = "2026-07-07T22:20:37.855Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/7c/f4/46806ef35525b9025561f1a05cc28f7f88a19ee4e03e4d005f7da3dd46e3/citeproc_py_styles-0.1.5-py2.py3-none-any.whl", hash = "sha256:2d15558d82fc447daf49a0861f01b51ee9dbc0d2f1872ac87fb6545867620433", size = 11939977, upload-time = "2025-07-17T19:22:05.68Z" },
+    { url = "https://files.pythonhosted.org/packages/7e/d4/c58e3bf20e37fadaae939d9f98fe90ca37f219ec6a1765aacd4af19396dc/citeproc_py_styles-0.1.6-py2.py3-none-any.whl", hash = "sha256:f1720fe9004c88ea9117a7312e9f44e5753cf5436a995b56f77297aaee03590a", size = 15543542, upload-time = "2026-07-07T22:20:34.996Z" },
 ]
 
 [[package]]
@@ -1588,7 +1588,7 @@ name = "exceptiongroup"
 version = "1.3.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "typing-extensions", marker = "python_full_version < '3.11'" },
+    { name = "typing-extensions", marker = "python_full_version < '3.13'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/50/79/66800aadf48771f6b62f7eb014e352e5d06856655206165d775e675a02c9/exceptiongroup-1.3.1.tar.gz", hash = "sha256:8b412432c6055b0b7d14c310000ae93352ed6754f70fa8f7c34141f91c4e3219", size = 30371, upload-time = "2025-11-21T23:01:54.787Z" }
 wheels = [
@@ -1726,7 +1726,7 @@ wheels = [
 
 [[package]]
 name = "flask-caching"
-version = "2.4.0"
+version = "2.4.1"
 source = { registry = "https://pypi.org/simple" }
 resolution-markers = [
     "python_full_version >= '3.11'",
@@ -1736,9 +1736,9 @@ dependencies = [
     { name = "cachelib", marker = "python_full_version >= '3.10'" },
     { name = "flask", marker = "python_full_version >= '3.10'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/42/53/5c46b6a80adc13ed9179879a93cfc2c1f190c64c48ba732b4f5819df520e/flask_caching-2.4.0.tar.gz", hash = "sha256:a7f14e43617cd0612a57bec2f80516d6d2ec888bfc50a807b1e4e41ca345a3b5", size = 153673, upload-time = "2026-04-17T20:27:24.318Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/89/15/d2852e86419c6c1416cba00c177b2cf609b5c2935372933684f84111c631/flask_caching-2.4.1.tar.gz", hash = "sha256:ecef4ca80b9cb1fa01d461373a0fce441527cd57eecee1aa71c1f6d750d7ff77", size = 165380, upload-time = "2026-07-08T19:23:57.264Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/00/7c/acd8624c1295bcf10c0b67d0e5191b570081b181bc0e8aa5a5a8ab89ca0d/flask_caching-2.4.0-py3-none-any.whl", hash = "sha256:d15b8135f055c4f28f6f7dbcf8d36a3de4af1224def975ae6e0b43cbfa684486", size = 28727, upload-time = "2026-04-17T20:27:22.763Z" },
+    { url = "https://files.pythonhosted.org/packages/bd/e3/ad7572c7f00b1286f2fc2a387f01b62bb46b59c5f91536093eae57889adb/flask_caching-2.4.1-py3-none-any.whl", hash = "sha256:5f5555d610ec1f230c8200ae00c1c723ee562f657c22f896b806f4689513b952", size = 28977, upload-time = "2026-07-08T19:23:55.68Z" },
 ]
 
 [[package]]
@@ -2708,7 +2708,7 @@ version = "3.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "flask-caching", version = "2.3.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
-    { name = "flask-caching", version = "2.4.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
+    { name = "flask-caching", version = "2.4.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
     { name = "invenio-base" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/b6/0a/942747c7f789b47dacdfdb8ca879e12b286108b71e762b2ed8ef3fbccd7f/invenio_cache-3.0.0.tar.gz", hash = "sha256:0399ec800d102a70e8bd7f35ac7f185f6543bc4752a0c747508fdef5cb86d4ba", size = 11995, upload-time = "2026-01-27T13:02:46.181Z" }
@@ -2765,7 +2765,7 @@ wheels = [
 
 [[package]]
 name = "invenio-communities"
-version = "29.0.0"
+version = "29.0.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "invenio-administration" },
@@ -2776,9 +2776,9 @@ dependencies = [
     { name = "invenio-search-ui" },
     { name = "invenio-vocabularies" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/99/a1/bac1909998711f96cb94cef4ffbbe07bd6f8bbfb9f9bfcbd83f0b1670e26/invenio_communities-29.0.0.tar.gz", hash = "sha256:4e2735843d5b66456ac9244c2f84451313d129403c5ae86d8d916ef1477463f4", size = 518191, upload-time = "2026-06-18T06:04:56.288Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/22/36/7230aa531cc56bf9c622cfad7ffde83985dc510317a87fb2aad149b1414b/invenio_communities-29.0.1.tar.gz", hash = "sha256:637737eb6e02ee66e75236060bfaaf782afbbdf046c685623b4a2443ec032670", size = 420173, upload-time = "2026-07-09T10:38:41.19Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/9d/7f/1f48640de304c1c312d230567533ffdc77a4b0f95a780ae38df646306888/invenio_communities-29.0.0-py2.py3-none-any.whl", hash = "sha256:78727ab6be755b4256db962bb707410cbb63dc9e13091306c7232d630339247d", size = 862104, upload-time = "2026-06-18T06:04:54.477Z" },
+    { url = "https://files.pythonhosted.org/packages/b5/cb/4cc603ef44f58467d66b60e98d71de228dfd782874129baf392954d75ca3/invenio_communities-29.0.1-py3-none-any.whl", hash = "sha256:a6d9edd67359a3447064489a883ec89a9d453bdc1cf91b43f7c808a0cca10331", size = 770589, upload-time = "2026-07-09T10:38:39.753Z" },
 ]
 
 [[package]]
@@ -3257,7 +3257,7 @@ dependencies = [
 
 [[package]]
 name = "invenio-records-rest"
-version = "6.0.0"
+version = "6.0.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "bleach", version = "6.2.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
@@ -3271,9 +3271,9 @@ dependencies = [
     { name = "invenio-rest" },
     { name = "marshmallow-utils" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b1/a8/38262cd24af44c7c1773c348f13014aba547ac4ab92711855c07088ea281/invenio_records_rest-6.0.0.tar.gz", hash = "sha256:e640b5a44ce57ef920f8a070e115c3e56f5c0eda48ad7c0990b746b2d88bd5e4", size = 68338, upload-time = "2026-06-17T21:51:16.726Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/0b/b6/4ea29f720ce12eea8d4dc2cba236d55b684a0e02895778d2cffdb082c411/invenio_records_rest-6.0.1.tar.gz", hash = "sha256:e7549ed3b7cf942837c415d7455980bbaa057ddc8c9f7886b49773e511f1ba0a", size = 50382, upload-time = "2026-07-09T06:44:08.119Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/17/3b/01e1ad01fa53f8be59b2a36254b7f8ad01e99a63fe442ad1660c7a6aad68/invenio_records_rest-6.0.0-py2.py3-none-any.whl", hash = "sha256:36afe0217038629e0d5ee1b699ba7ed5f62ad6ded3d8a59f36152ed909b59ab3", size = 135469, upload-time = "2026-06-17T21:51:15.55Z" },
+    { url = "https://files.pythonhosted.org/packages/25/ee/ece58f3692a6853917d8f25125ea2e2f039c221b69d636134b5bdef7f1bc/invenio_records_rest-6.0.1-py3-none-any.whl", hash = "sha256:98740b2f84ad9108459e577911d0eeb77c4f9ef7776cf63f47fecacabacd1ff8", size = 103044, upload-time = "2026-07-09T06:44:06.92Z" },
 ]
 
 [[package]]
@@ -3438,7 +3438,7 @@ wheels = [
 
 [[package]]
 name = "invenio-users-resources"
-version = "13.0.1"
+version = "13.1.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "invenio-accounts" },
@@ -3449,9 +3449,9 @@ dependencies = [
     { name = "invenio-oauthclient" },
     { name = "invenio-records-resources" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/7b/eb/7ff2ad4393f74610f7bbd8eb8eb853a710ad18cb94ea9975f7be6075f584/invenio_users_resources-13.0.1.tar.gz", hash = "sha256:82f00f66e46723adbd7bb1759342c6644f245754153ba23d19b58fadaac008e8", size = 58011, upload-time = "2026-07-02T12:40:14.73Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/69/50/1525eb2eacbdbb0b02f111b6d037cab7c62669af65c60c43c0d19b3f1bd7/invenio_users_resources-13.1.0.tar.gz", hash = "sha256:d5c8deed8887921d1cb9fa26dc010b4eda98479bf7c1cf25b88b49e9918a8fbc", size = 58715, upload-time = "2026-07-09T10:43:20.066Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/2c/3c/2f815fb7636da4f2c8dcba819abc9eb5cdbe14b9276a8896eae1bd8be18a/invenio_users_resources-13.0.1-py3-none-any.whl", hash = "sha256:66d085a0c81fb56b6c8dbf99579ba82812931f3e32495e60ac6d241ce829b639", size = 137884, upload-time = "2026-07-02T12:40:13.531Z" },
+    { url = "https://files.pythonhosted.org/packages/68/a5/36e2d34ff20f92fbb16b73e54edffbb895394beecac93f133b3fb70c586d/invenio_users_resources-13.1.0-py3-none-any.whl", hash = "sha256:2b3fb0b658fc856e1129d075687fbfa574369ed33040bcc81bffdcd58de03fea", size = 138355, upload-time = "2026-07-09T10:43:18.895Z" },
 ]
 
 [[package]]
@@ -4554,14 +4554,14 @@ wheels = [
 
 [[package]]
 name = "mistune"
-version = "3.3.2"
+version = "3.3.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "typing-extensions", marker = "python_full_version < '3.11'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/04/5f/007786743f962224423753b78f7d7acb0f2ade46d1604f2e0fa2bedf9020/mistune-3.3.2.tar.gz", hash = "sha256:e12ee4f1e74336e91aa1141e35f913b337c40bdf7c0cc49f21fb853a27e8b62f", size = 111284, upload-time = "2026-06-23T00:29:28.568Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/7b/a5/2dab368d6950e6808904dec98f54c7e726ee7be4a0c6afe00e6e011bd52d/mistune-3.3.3.tar.gz", hash = "sha256:c4c6c0c840b8637a2e9b8b6d607eb7c8f00888bf14c754409bcd339e848c2477", size = 115363, upload-time = "2026-07-09T06:18:05.268Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/44/43/894c2cbbcbdf53b57d1257a249811abe2ee9ab7ef76af301b40f1c054533/mistune-3.3.2-py3-none-any.whl", hash = "sha256:a678a56387d487db7368ede4647cb2ba1deff22ce61f92343e4ebe0ddfce4f2d", size = 61554, upload-time = "2026-06-23T00:29:27.088Z" },
+    { url = "https://files.pythonhosted.org/packages/89/70/b1e4737b84163db5bb1dfde6f216dbfbf32783330a9989c965e121172830/mistune-3.3.3-py3-none-any.whl", hash = "sha256:99de1585e42dcbd826faa9e11a202727a5e202e4e4722a4c69ac1ff615793dd7", size = 63569, upload-time = "2026-07-09T06:18:03.839Z" },
 ]
 
 [[package]]
