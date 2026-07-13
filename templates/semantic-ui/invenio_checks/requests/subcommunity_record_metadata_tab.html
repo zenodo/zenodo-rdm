@@ -1,0 +1,91 @@
+{# -*- coding: utf-8 -*-
+
+    This file is part of Invenio.
+    Copyright (C) 2026 CERN.
+    
+    Invenio is free software; you can redistribute it and/or modify it
+    under the terms of the MIT License; see LICENSE file for more details.
+    #}
+    
+    {% import "invenio_checks/requests/_rule_severity.html" as rule_severity_tpl %}
+    {% import "invenio_checks/requests/severity_level_icons.html" as severity_tpl %}
+    
+    <div class="ui column stackable grid">
+      <div class="ten wide column">
+        <div class="ui very relaxed list rel-pl-2">
+    
+          {% for check in checks %}
+    
+            <div class="content">
+              <div class="header">{{ check.config.check_cls.title }}</div>
+              <div class="pt-5 pb-5 text-muted">
+                {{ check.config.check_cls.description }}
+              </div>
+            </div>
+    
+            {% for rule_result in check.result.rule_results %}
+    
+              {% set rule_severity_level = rule_severity_tpl.rule_severity_level(rule_result) | trim %}
+    
+              <div class="item">
+                <i class="{{ severity_tpl.severity_level_icons[rule_severity_level] }}"></i>
+    
+                <div class="content">
+                  <div class="header">
+                    {{ rule_result.rule_message }}
+                  </div>
+    
+                  <div class="pt-5 text-muted">
+                    {{ rule_result.rule_description | safe }}
+                  </div>
+                </div>
+              </div>
+    
+              {% if rule_result.rule_id == "records:funding" and not rule_result.success %}
+    
+                {% set result = rule_result.check_results[0].value %}
+    
+                <div class="ui warning message">
+                  <div class="header">
+                    <i class="{{ severity_tpl.severity_level_icons[rule_severity_level] }}"></i>
+                    {{ result.unfunded }} records missing funding metadata
+                  </div>
+    
+                  <p>
+                    These records need to have Grant
+                    <strong>{{ result.funding.grant_id }}</strong>
+                    ({{ result.funding.grant_title }})
+                    added to their funding metadata before the community can be included
+                    in the EU Open Research Repository.
+                  </p>
+    
+                  <div class="ui buttons">
+                    <a
+                      class="ui button"
+                      href="{{ url_for('invenio_app_rdm_communities.communities_detail', pid_value=subcommunity_slug) }}?q=-metadata.funding.award.number:{{ result.funding.grant_id }}&l=list&p=1&s=10&sort=newest"
+                    >
+                      <i class="search icon" aria-hidden="true"></i>
+                      View affected records
+                    </a>
+                  </div>
+    
+                  <p class="text-muted pt-5">
+                    <strong>Note:</strong>
+                    Records that are currently being edited cannot be automatically
+                    updated. You may need to wait for ongoing edits to complete.
+                  </p>
+                </div>
+    
+              {% endif %}
+    
+            {% endfor %}
+    
+          {% endfor %}
+    
+        </div>
+      </div>
+    
+      <div class="six wide column">
+        {% include "invenio_checks/requests/help_message_subcommunity.html" %}
+      </div>
+    </div>
