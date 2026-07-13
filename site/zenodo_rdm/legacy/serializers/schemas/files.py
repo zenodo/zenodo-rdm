@@ -50,6 +50,27 @@ class LegacyFilesRESTSchema(Schema):
         }
 
 
+class LegacyFilesRESTListSchema(Schema):
+    """Files-REST bucket listing schema."""
+
+    entries = fields.List(fields.Nested(LegacyFilesRESTSchema), dump_only=True)
+
+    def __init__(self, object_schema_cls=None, **kwargs):
+        """
+        Initialize the schema.
+
+        The object_schema_cls parameter is accepted (and ignored) for
+        compatibility with MarshmallowSerializer which always passes it
+        when instantiating list schemas (we hardcode the schema in entries).
+        """
+        super().__init__(**kwargs)
+
+    @post_dump()
+    def wrap(self, data, many, **kwargs):
+        """Wrap entries in a Files-REST style envelope."""
+        return {"contents": data.get("entries", [])}
+
+
 class LegacyFileListSchema(Schema):
     """Files list schema."""
 
