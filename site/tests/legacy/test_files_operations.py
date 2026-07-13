@@ -65,6 +65,12 @@ def test_deposit_files_operations(client, deposit_url, headers, uploader):
     assert res.status_code == 204
     assert res.data == b""
 
+    # Reading and deleting it again is a 404
+    res = client.get(file_one["links"]["self"], headers=headers)
+    assert res.status_code == 404
+    res = client.delete(file_one["links"]["self"], headers=headers)
+    assert res.status_code == 404
+
     # Listing reflects the deletion
     res = client.get(files_url, headers=headers)
     assert res.status_code == 200
@@ -132,3 +138,9 @@ def test_files_rest_operations(client, deposit_url, headers, files_headers, uplo
     res = client.delete(f"{bucket_url}/data.txt", headers=headers)
     assert res.status_code == 204, res.text
     assert res.data == b""
+
+    # Downloading and deleting it again is a 404
+    res = client.get(f"{bucket_url}/data.txt")
+    assert res.status_code == 404
+    res = client.delete(f"{bucket_url}/data.txt", headers=headers)
+    assert res.status_code == 404
