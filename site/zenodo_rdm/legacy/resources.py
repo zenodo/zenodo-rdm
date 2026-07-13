@@ -360,7 +360,7 @@ class LegacyFilesRESTResource(FileResource):
         record = self.service.get_record_by_bucket_id(bucket_id)
 
         self.service.delete_file(g.identity, record["id"], key)
-        return "", 204
+        return {}, 204
 
 
 def parse_extra_formats_mimetype(

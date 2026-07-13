@@ -9,6 +9,16 @@ from marshmallow_utils.fields import SanitizedUnicode
 class LegacyFileSchema(Schema):
     """Legacy file schema."""
 
+    def __init__(self, object_schema_cls=None, **kwargs):
+        """
+        Initialize the schema.
+
+        The object_schema_cls parameter is accepted (and ignored) for
+        compatibility with MarshmallowSerializer which always passes it
+        when instantiating list schemas (we hardcode the schema in entries).
+        """
+        super().__init__(**kwargs)
+
     id = SanitizedUnicode(attribute="file_id")
     filename = SanitizedUnicode(attribute="key")
     filesize = fields.Number(attribute="size")
@@ -17,15 +27,28 @@ class LegacyFileSchema(Schema):
 
     def dump_links(self, obj):
         """Dump links with the prefix `draft_files.``."""
+        links = obj.get("links") if isinstance(obj, dict) else None
+        if not links:
+            return {}
         return {
             k.split("draft_files.")[1]: v
-            for k, v in obj["links"].items()
+            for k, v in links.items()
             if k.startswith("draft_files.")
         }
 
 
 class LegacyFilesRESTSchema(Schema):
     """Legacy Files-REST schema."""
+
+    def __init__(self, object_schema_cls=None, **kwargs):
+        """
+        Initialize the schema.
+
+        The object_schema_cls parameter is accepted (and ignored) for
+        compatibility with MarshmallowSerializer which always passes it
+        when instantiating list schemas (we hardcode the schema in entries).
+        """
+        super().__init__(**kwargs)
 
     created = SanitizedUnicode()
     updated = SanitizedUnicode()
@@ -43,9 +66,12 @@ class LegacyFilesRESTSchema(Schema):
 
     def dump_links(self, obj):
         """Dump links with the prefix `files_rest.``."""
+        links = obj.get("links") if isinstance(obj, dict) else None
+        if not links:
+            return {}
         return {
             k.split("files_rest.")[1]: v
-            for k, v in obj["links"].items()
+            for k, v in links.items()
             if k.startswith("files_rest.")
         }
 
