@@ -138,7 +138,8 @@ def _add_subcommunity_llm_funding_check(subcommunity, uow):
                 }
             ]
         },
-        target_type="record",
+        # TODO: Pass target_type when subcommunity checks are integrated.
+        # target_type="record",
         severity=Severity.WARN,
         enabled=True,
     )

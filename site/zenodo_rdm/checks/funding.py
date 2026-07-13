@@ -8,8 +8,12 @@
 import time
 
 from invenio_access.permissions import system_identity
-from invenio_app_rdm.orcha.views import _orcha_client, _workflow_token
-from invenio_checks.base import Check, CheckResult
+from invenio_checks.base import (
+    Check,  # Import CheckResult when subcommunity checks are integrated
+)
+from invenio_checks.contrib.file_formats import (
+    CheckResult,  # Remove when subcommunity checks are integrated
+)
 from invenio_checks.models import CheckConfig
 from invenio_communities.proxies import current_communities
 from invenio_records_resources.proxies import current_service_registry
