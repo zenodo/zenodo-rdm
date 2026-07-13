@@ -5,6 +5,7 @@
 # Zenodo RDM is free software; you can redistribute it and/or modify
 # it under the terms of the MIT License; see LICENSE file for more details.
 """Zenodo-specific subcommunity checks."""
+
 from urllib.parse import urlparse
 
 from invenio_access.permissions import system_identity
@@ -26,8 +27,9 @@ def _get_funding_per_community(community, funder_id):
         return {
             f["award"]["number"]: f["award"].get("acronym")
             for f in funding
-            if "award" in f and "number" in f["award"]
-               and f["funder"].get("id") == funder_id
+            if "award" in f
+            and "number" in f["award"]
+            and f["funder"].get("id") == funder_id
         }
     return {}
 
@@ -40,6 +42,46 @@ class SubcommunityMetadataCheck(MetadataCheck):
     description = "The following metadata was automatically suggested based on the selected EU project."
     sort_order = 34
 
+    def run(self, record, config, deleted_member_id=None):
+        result = super().run(record, config)
+
+        ec_funder_id = config.params.get("ec_funder_id", "00k4n6c32")
+        funding = next(
+            (
+                f
+                for f in record.metadata.get("funding", [])
+                if f["funder"]["id"] == ec_funder_id
+            ),
+            None,
+        )
+        award_orgs = funding.get("award", {}).get("organizations", [])
+        community_orgs = record.metadata.get("organizations", [])
+
+        award_ids = {org["id"] for org in award_orgs if "id" in org}
+        community_ids = {org["id"] for org in community_orgs if "id" in org}
+
+        matching_ids = community_ids & award_ids
+
+        for rule in result.rule_results:
+            if rule.rule_id == "metadata:organizations":
+                if matching_ids:
+                    # Keep only the matching organizations in the check result
+                    if rule.check_results:
+                        rule.check_results[0].value = [
+                            org
+                            for org in rule.check_results[0].value
+                            if org["id"] in matching_ids
+                        ]
+                else:
+                    rule.success = False
+                    rule.level = "warning"
+                    rule.rule_description = (
+                        "The community organizations should have the organizations "
+                        "defined in the project award."
+                    )
+                break
+        return result
+
 
 class CommunityMembershipCheck(Check):
     """
@@ -51,8 +93,10 @@ class CommunityMembershipCheck(Check):
 
     id = "subcommunity_member"
     title = "Member affiliation"
-    description = ("Verifies that at least one community member (owner or manager) is affiliated with "
-                   "one of the EU project’s participating organizations. ")
+    description = (
+        "Verifies that at least one community member (owner or manager) is affiliated with "
+        "one of the EU project’s participating organizations. "
+    )
     sort_order = 31
 
     def run(self, record, config, deleted_member_id=None):
@@ -65,7 +109,8 @@ class CommunityMembershipCheck(Check):
 
         Membership = current_communities.service.members.record_cls
         members = [
-            m for m in Membership.model_cls.query.filter(
+            m
+            for m in Membership.model_cls.query.filter(
                 Membership.model_cls.community_id == str(record.id),
                 Membership.model_cls.active.is_(True),
             ).all()
@@ -73,10 +118,7 @@ class CommunityMembershipCheck(Check):
         ]
 
         user_ids = {int(m.user_id) for m in members if m.user_id is not None}
-        users_by_id = {
-            u.id: u
-            for u in User.query.filter(User.id.in_(user_ids)).all()
-        }
+        users_by_id = {u.id: u for u in User.query.filter(User.id.in_(user_ids)).all()}
         users = []
         has_any_affiliation = False
         has_any_verified = False
@@ -112,7 +154,9 @@ class CommunityMembershipCheck(Check):
             description = "No verified community member is affiliated to one of the award's organizations."
         else:
             level = "error"
-            description = "None of the community members are verified or with an affiliation."
+            description = (
+                "None of the community members are verified or with an affiliation."
+            )
 
         rule_result = RuleResult(
             rule_id="membership:verified",
@@ -125,14 +169,16 @@ class CommunityMembershipCheck(Check):
         )
         result.add_rule_result(rule_result)
         if not has_any_affiliation:
-            result.add_errors([
-                {
-                    "field": "members.verified",
-                    "messages": [rule_result.rule_message],
-                    "description": rule_result.rule_description,
-                    "severity": rule_result.level,
-                }
-            ])
+            result.add_errors(
+                [
+                    {
+                        "field": "members.verified",
+                        "messages": [rule_result.rule_message],
+                        "description": rule_result.rule_description,
+                        "severity": rule_result.level,
+                    }
+                ]
+            )
 
         return result
 
@@ -168,26 +214,28 @@ class CommunityMembershipCheck(Check):
                     try:
                         affiliation = Affiliation.pid.resolve(ror_id)
                         if domains := affiliation.get("domains"):
-                            org_data['domains'] = domains
-                        if identifiers := affiliation.get('identifiers', {}):
+                            org_data["domains"] = domains
+                        if identifiers := affiliation.get("identifiers", {}):
                             for identifier in identifiers:
                                 if identifier["scheme"] == "url":
-                                    org_data['website'] = identifier["identifier"]
+                                    org_data["website"] = identifier["identifier"]
                                     break
                         if name := affiliation.get("name"):
-                            org_data['name'] = name
+                            org_data["name"] = name
                     except Exception:
                         pass
                 elif name := org.get("organization"):
-                    org_data['name'] = name
+                    org_data["name"] = name
                 org_names.append(org_data)
         return org_names
 
     def is_affiliated_to(self, email, orgs):
         """Checks if email domain matches the organization's domains or website."""
         for org in orgs:
-            org_name = org["name"]
-            if domains := org.get('domains'):
+            org_name = org.get("name")
+            if not org_name:
+                continue
+            if domains := org.get("domains"):
                 if email in domains:
                     return org_name
             if website := org.get("website"):
@@ -204,7 +252,11 @@ class CommunityMembershipCheck(Check):
                 # heuristics: the core of both the email domain and the hostname matches,
                 # and the final part of both also matches.
                 # Ex: domain is tuwien.ca.at and website is tuwien.at
-                if bool(email_parts) and email_parts[0] == hostname_parts[0] and email_parts[-1] == hostname_parts[-1]:
+                if (
+                    bool(email_parts)
+                    and email_parts[0] == hostname_parts[0]
+                    and email_parts[-1] == hostname_parts[-1]
+                ):
                     return org_name
         return False
 
@@ -236,12 +288,16 @@ class SubcommunityValidationCheck(Check):
         ]:
             result.add_rule_result(rule_result)
             if not rule_result.success:
-                result.add_errors([{
-                    "field": rule_result.rule_id,
-                    "messages": [rule_result.rule_message],
-                    "description": rule_result.rule_description,
-                    "severity": rule_result.level,
-                }])
+                result.add_errors(
+                    [
+                        {
+                            "field": rule_result.rule_id,
+                            "messages": [rule_result.rule_message],
+                            "description": rule_result.rule_description,
+                            "severity": rule_result.level,
+                        }
+                    ]
+                )
 
         return result
 
@@ -255,8 +311,8 @@ class SubcommunityValidationCheck(Check):
             rule_message="Funding information on the community",
             rule_description=(
                 "No funding information found on this community."
-                if not success else
-                f"This community has funding: {', '.join(funding)}."
+                if not success
+                else f"This community has funding: {', '.join(funding)}."
             ),
             level=config.severity.error_value,
             success=success,
@@ -310,100 +366,98 @@ class SubcommunityRecordCheck(Check):
         community_id = str(record.id)
         ec_funder_id = config.params.get("ec_funder_id", "00k4n6c32")
         community_funding = _get_funding_per_community(record, ec_funder_id)
-
         total = current_community_records_service.search(
             system_identity,
             community_id=community_id,
         ).total
+        rule = self._check_record_funding(
+            community_id,
+            total,
+            config,
+            ec_funder_id,
+            community_funding,
+        )
 
-        unfunded = current_community_records_service.search(
-            system_identity,
-            community_id=community_id,
-            params={"q": "NOT _exists_:metadata.funding"},
-        ).total
+        result.add_rule_result(rule)
 
-        rules = [self._check_unfunded_records(unfunded, total, config)]
-        if unfunded != total:
-            rules.append(self._check_mismatched_records(community_id, total, config, ec_funder_id, community_funding))
-        for rule_result in rules:
-            result.add_rule_result(rule_result)
-            if not rule_result.success:
-                result.add_errors([{
-                    "field": rule_result.rule_id,
-                    "messages": [rule_result.rule_message],
-                    "description": rule_result.rule_description,
-                    "severity": rule_result.level,
-                }])
+        if not rule.success:
+            result.add_errors(
+                [
+                    {
+                        "field": rule.rule_id,
+                        "messages": [rule.rule_message],
+                        "description": rule.rule_description,
+                        "severity": rule.level,
+                    }
+                ]
+            )
 
         return result
 
-    def _check_unfunded_records(self, unfunded, total, config):
-        """Check how many records are missing funding metadata entirely."""
-        success = unfunded == 0
-        if success:
-            if total == 0:
-                description = f"No records in this community yet."
-            else:
-                description = "All records in this community have project funding."
-        else:
-            description = f"""
-                {unfunded} of {str(total) + (' records' if total > 1 else ' record')} in this community 
-                {'do' if unfunded > 1 else 'does'} not have EU project funding in their metadata. 
-                Records must include funding information to be part of the EU Open Research Repository.
-            """
-        return RuleResult(
-            rule_id="records:funding_metadata",
-            rule_title="Records have funding metadata",
-            rule_message="All records must have funding information",
-            rule_description=description,
-            level=config.severity.error_value,
-            success=success,
-            check_results=[ExpressionResult(success=success, value=str({"unfunded": unfunded, "total": total}))],
-        )
-
-    def _check_mismatched_records(self, community_id, total, config, ec_funder_id, community_funding):
-        """Check how many records have EC funding that doesn't match the community's grants."""
+    def _check_record_funding(
+        self, community_id, total, config, ec_funder_id, community_funding
+    ):
+        """Check that all records contain one of the community's EC grants."""
         if not community_funding:
             return RuleResult(
-                rule_id="records:funding_mismatch",
-                rule_title="Records have matching grant",
-                rule_message="Records must be funded by the community's EC grant",
+                rule_id="records:funding",
+                rule_title="Records have community funding",
+                rule_message="All records must include the community's funding information",
                 rule_description="No EC grants found on this community to match against.",
                 level=config.severity.error_value,
                 success=False,
                 check_results=[],
             )
 
+        grant_id, grant_title = next(iter(community_funding.items()))
         award_clauses = " OR ".join(
-            f'metadata.funding.award.number:"{n}"' for n in community_funding.keys()
+            f'metadata.funding.award.number:"{grant}"' for grant in community_funding
         )
-        mismatched = current_community_records_service.search(
+
+        non_compliant = current_community_records_service.search(
             system_identity,
             community_id=community_id,
             params={
-                "q": f"metadata.funding.funder.id:{ec_funder_id} AND NOT ({award_clauses})",
+                "q": (
+                    f"NOT (metadata.funding.funder.id:{ec_funder_id} "
+                    f"AND ({award_clauses}))"
+                ),
             },
         ).total
 
-        success = mismatched == 0
-        if success:
-            if total == 0:
-                description = f"No records in this community yet."
-            else:
-                description = f"All records in this community are funded by the community's EC grant."
+        success = non_compliant == 0
+
+        if total == 0:
+            description = "No records in this community yet."
+        elif success:
+            description = "All records in this community include the community's EC project funding."
         else:
-            description = f"""
-                {mismatched} of {str(total) + (' records' if total > 1 else ' record')} records in this community
-                have a grant that {'do' if mismatched > 1 else 'does'} not match
-                {"" if len(community_funding) == 1 else "any of "} the EU project funding of the community
-                (Grant {', Grant '.join(community_funding.keys())}).
-            """
+            grants = ", ".join(community_funding.keys())
+            description = (
+                f"{non_compliant} of {total} "
+                f"{'records' if total != 1 else 'record'} "
+                f"do not include the community's EC project funding "
+                f"(Grant{'s' if len(community_funding) > 1 else ''} {grants})."
+            )
+
         return RuleResult(
-            rule_id="records:funding_mismatch",
-            rule_title="Records have matching grant",
-            rule_message="Records must be funded by the community's EC grant",
+            rule_id="records:funding",
+            rule_title="Records have community funding",
+            rule_message="All records must include the community's funding information",
             rule_description=description,
             level=config.severity.error_value,
             success=success,
-            check_results=[ExpressionResult(success=success, value=str({"mismatched": mismatched, "total": total}))],
+            check_results=[
+                ExpressionResult(
+                    success=success,
+                    value={
+                        "unfunded": non_compliant,
+                        "total": total,
+                        "funding": {
+                            "grant_id": grant_id,
+                            "grant_title": grant_title,
+                        },
+                    },
+                )
+            ],
         )
