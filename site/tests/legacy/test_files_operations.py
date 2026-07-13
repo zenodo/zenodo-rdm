@@ -116,6 +116,17 @@ def test_files_rest_operations(client, deposit_url, headers, files_headers, uplo
     assert res.status_code == 200
     assert res.data == b"4, 5, 6, 7"
 
+    # List files in the bucket (Files-REST style "contents" envelope)
+    res = client.get(bucket_url, headers=headers)
+    assert res.status_code == 200, res.text
+    contents = res.json["contents"]
+    assert len(contents) == 1
+    assert contents[0]["key"] == "data.txt"
+    assert contents[0]["size"] == 10
+    assert contents[0]["checksum"] == "md5:eaf1424a3bb9fafc4c7bb85c75806fd5"
+    assert contents[0]["is_head"] is True
+    assert {"self", "uploads", "version"} <= contents[0]["links"].keys()
+
     # Delete the file (regression: serializing the empty 204 body crashed
     # with "TypeError: string indices must be integers")
     res = client.delete(f"{bucket_url}/data.txt", headers=headers)
