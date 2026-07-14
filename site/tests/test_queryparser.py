@@ -102,6 +102,6 @@ def test_search_map_value_mappers(published_records):
         # Unknown slug resolves to `"None"` and matches nothing.
         ('communities:"does-not-exist"', []),
     ]:
-        assert _search_ids(query) == expected, (
-            f"Query {query!r} expected {expected} but got {_search_ids(query)}"
-        )
+        assert (
+            _search_ids(query) == expected
+        ), f"Query {query!r} expected {expected} but got {_search_ids(query)}"
