@@ -84,6 +84,9 @@ zenodo_rdm = "zenodo_rdm.index_templates"
 [project.entry-points."idutils.custom_schemes"]
 edmo = "zenodo_rdm.custom_schemes:get_scheme_config_func"
 
+[project.entry-points."invenio_users_resources.moderation.actions"]
+block = "zenodo_rdm.moderation.actions:on_block_notify"
+
 [project.entry-points."invenio_jobs.jobs"]
 eu_records_curation = "zenodo_rdm.curation.jobs:EURecordCuration"
 export_records = "zenodo_rdm.exporter.jobs:ExportRecords"

@@ -1,0 +1,11 @@
+{{ _('Dear %(name)s,', name=full_name or _('user')) }}
+
+{{ _('Your account has been blocked by our spam-detection system for uploading content that is not permitted on Zenodo.
+If you believe the content you submitted is legitimate research dissemination, please reply to this email and our support team will review your account as soon as possible.') }}
+
+{{ _('Best regards,
+The Zenodo Team') }}
+
+---
+{{ _('When replying, please do not remove the information below:') }}
+{{ _('User ID: %(user_id)s', user_id=user_id) }}
