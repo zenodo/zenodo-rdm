@@ -4,15 +4,16 @@ import { humanReadableBytes } from "react-invenio-forms";
 import FileTable from "./FileTable";
 import { Message } from "semantic-ui-react";
 
+const fileUploaderDefaultPropRejectedFiles = [];
 const FileUploader = ({
   dropzoneParams,
   maxFileSize,
   name,
   currentFiles,
   handleDelete,
-  errorMessage,
-  rejectedFiles,
-  disabled,
+  errorMessage = null,
+  rejectedFiles = fileUploaderDefaultPropRejectedFiles,
+  disabled = false,
 }) => {
   return (
     <div>
@@ -61,12 +62,6 @@ FileUploader.propTypes = {
   rejectedFiles: PropTypes.array,
   handleDelete: PropTypes.func.isRequired,
   disabled: PropTypes.bool,
-};
-
-FileUploader.defaultProps = {
-  errorMessage: null,
-  rejectedFiles: [],
-  disabled: false,
 };
 
 export default FileUploader;
