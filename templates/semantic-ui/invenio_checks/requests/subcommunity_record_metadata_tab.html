@@ -15,72 +15,156 @@
         <div class="ui very relaxed list rel-pl-2">
     
           {% for check in checks %}
-    
-            <div class="content">
-              <div class="header">{{ check.config.check_cls.title }}</div>
-              <div class="pt-5 pb-5 text-muted">
-                {{ check.config.check_cls.description }}
-              </div>
+
+          {% set status = check.status.name %}
+          {% set running = status == "PENDING" or status == "RUNNING" %}
+          {% set failed = status == "ERROR" %}
+          {% set has_errors = check.result.errors %}
+        
+          {% set icon = (
+            severity_tpl.severity_level_icons["running"] if running else
+            severity_tpl.severity_level_icons["warning"] if has_errors else
+            severity_tpl.severity_level_icons["success"]
+          ) %}
+        
+          <div class="content">
+            <div class="header">
+              {{ check.config.check_cls.title }}
             </div>
-    
+        
+            <div class="pt-5 pb-5 text-muted">
+              {{ check.config.check_cls.description }}
+            </div>
+          </div>
+        
+        
+          {% if running %}
+        
+            <div class="ui info message">
+              <div class="header">
+                <i class="{{ icon }}"></i>
+                {{ _("Check is running") }}
+              </div>
+        
+              <p>
+                {{ _("This check is currently running in the background. Results will appear once it has completed.") }}
+              </p>
+        
+              {% if check.state.message %}
+                <p class="text-muted">
+                  {{ check.state.message }}
+                </p>
+              {% endif %}
+            </div>
+        
+        
+          {% elif failed %}
+        
+            <div class="ui negative message">
+        
+              <div class="header">
+                <i class="exclamation triangle icon"></i>
+                {{ _("Check failed") }}
+              </div>
+        
+              <p>
+                {{ _("This check could not be completed after several attempts. Kidly re-run the check.") }}
+              </p>
+        
+              {% if check.state.error %}
+                <p class="text-muted">
+                  {{ check.state.error }}
+                </p>
+              {% endif %}
+        
+            </div>
+        
+        
+          {% else %}
+        
             {% for rule_result in check.result.rule_results %}
-    
-              {% set rule_severity_level = rule_severity_tpl.rule_severity_level(rule_result) | trim %}
-    
+        
+              {% set rule_severity_level =
+                rule_severity_tpl.rule_severity_level(rule_result) | trim
+              %}
+        
               <div class="item">
+        
                 <i class="{{ severity_tpl.severity_level_icons[rule_severity_level] }}"></i>
-    
+        
                 <div class="content">
+        
                   <div class="header">
                     {{ rule_result.rule_message }}
                   </div>
-    
+        
                   <div class="pt-5 text-muted">
                     {{ rule_result.rule_description | safe }}
                   </div>
+        
                 </div>
+        
               </div>
-    
-              {% if rule_result.rule_id == "records:funding" and not rule_result.success %}
-    
+        
+        
+              {% if rule_result.rule_id == "records:funding"
+                    and not rule_result.success %}
+        
                 {% set result = rule_result.check_results[0].value %}
-    
+        
                 <div class="ui warning message">
+        
                   <div class="header">
                     <i class="{{ severity_tpl.severity_level_icons[rule_severity_level] }}"></i>
-                    {{ result.unfunded }} records missing funding metadata
+        
+                    {{ result.unfunded }}
+                    {{ _("record") if result.unfunded == 1 else _("records") }}
+                    {{ _("missing funding metadata") }}
+        
                   </div>
-    
+        
+        
                   <p>
-                    These records need to have Grant
+                    {{ _("This record needs") if result.unfunded == 1 else _("These records need") }}
+        
+                    to have Grant
                     <strong>{{ result.funding.grant_id }}</strong>
                     ({{ result.funding.grant_title }})
-                    added to their funding metadata before the community can be included
-                    in the EU Open Research Repository.
+        
+                    {{ _("added to its funding metadata before the community can be included in the EU Open Research Repository.") }}
                   </p>
-    
+        
+        
                   <div class="ui buttons">
+        
                     <a
                       class="ui button"
                       href="{{ url_for('invenio_app_rdm_communities.communities_detail', pid_value=subcommunity_slug) }}?q=-metadata.funding.award.number:{{ result.funding.grant_id }}&l=list&p=1&s=10&sort=newest"
                     >
                       <i class="search icon" aria-hidden="true"></i>
-                      View affected records
+                      {{ _("View affected records") }}
                     </a>
+        
                   </div>
-    
+        
+        
                   <p class="text-muted pt-5">
-                    <strong>Note:</strong>
-                    Records that are currently being edited cannot be automatically
-                    updated. You may need to wait for ongoing edits to complete.
+        
+                    <strong>{{ _("Note:") }}</strong>
+        
+                    {{ _("Records that are currently being edited cannot be automatically updated. You may need to wait for ongoing edits to complete.") }}
+        
                   </p>
+        
                 </div>
-    
+        
               {% endif %}
-    
+        
             {% endfor %}
-    
-          {% endfor %}
+        
+          {% endif %}
+        
+        {% endfor %}
     
         </div>
       </div>
