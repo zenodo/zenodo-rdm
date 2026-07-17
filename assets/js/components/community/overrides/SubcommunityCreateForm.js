@@ -6,10 +6,12 @@ import PropTypes from "prop-types";
 import React, { Component } from "react";
 import {
   AffiliationsSuggestions,
+  AffiliationsSuggestions,
   FieldLabel,
   RadioField,
   SelectField,
   TextField,
+  TextAreaField,
   TextAreaField,
   withCancel,
   http,
@@ -37,7 +39,14 @@ class SubcommunityCreateForm extends Component {
     organizationSuggestions: [],
     projectFieldKey: "initial",
     projectInitialSuggestions: [],
+    organizationsKey: "initial",
+    organizationSuggestions: [],
+    projectFieldKey: "initial",
+    projectInitialSuggestions: [],
   };
+
+  knownOrganizations = {};
+  projectRawItems = {};
 
   knownOrganizations = {};
   projectRawItems = {};
@@ -312,13 +321,21 @@ class SubcommunityCreateForm extends Component {
                             "metadata.website",
                             selectedProject.website
                           );
-                          const orgNames = (selectedProject.organizations || [])
-                            .map((org) => org.organization)
-                            .filter(Boolean);
-                          formikProps.form.setFieldValue(
-                            "metadata.organizations",
-                            orgNames
-                          );
+                          const organizations = (selectedProject.organizations || [])
+                          .filter((org) => org.name)
+                          .map((org) => {
+                            if (org.id) {
+                              this.knownOrganizations[org.id] = org.name;
+                              return org.id;
+                            }
+                        
+                            return org.name;
+                          });
+                        
+                        formikProps.form.setFieldValue(
+                          "metadata.organizations",
+                          organizations
+                        );
                           // Remount the project field with only the selected
                           // project as initial suggestion so the dropdown
                           // doesn't auto-fetch the full list and re-open after
@@ -326,7 +343,7 @@ class SubcommunityCreateForm extends Component {
                           const rawItem = this.projectRawItems[selectedProject.value];
                           this.setState({
                             organizationsKey: selectedProject.key,
-                            organizationSuggestions: orgNames.map((name) => ({ name })),
+                            organizationSuggestions: selectedProject.organizations || [],
                             projectFieldKey: `selected-${selectedProject.value}`,
                             projectInitialSuggestions: rawItem ? [rawItem] : [],
                           });
