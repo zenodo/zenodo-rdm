@@ -9,9 +9,18 @@ from invenio_communities.subcommunities.services.schema import (
 from invenio_communities.subcommunities.services.schema import (
     SubcommunityRequestSchema,
 )
+from invenio_communities.communities.schema import AffiliationRelationSchema
+from invenio_communities.subcommunities.services.schema import (
+    MinimalCommunitySchema as BaseMinimalSchema,
+)
+from invenio_communities.subcommunities.services.schema import (
+    SubcommunityRequestSchema,
+)
 from invenio_i18n import gettext as _
 from marshmallow import Schema, ValidationError, fields, post_load, validates
+from marshmallow import Schema, ValidationError, fields, post_load, validates
 from marshmallow_utils.context import context_schema
+from marshmallow_utils.fields import URL, SanitizedUnicode
 from marshmallow_utils.fields import URL, SanitizedUnicode
 
 
@@ -46,16 +55,18 @@ class ZenodoMinimalCommunitySchema(BaseMinimalSchema):
     description = SanitizedUnicode(allow_none=True)
     website = URL(allow_none=True)
     organizations = fields.List(fields.Nested(AffiliationRelationSchema))
-
+ 
     @post_load
     def load_default(self, data, **kwargs):
         """Override to include extra metadata fields."""
         res = super().load_default(data, **kwargs)
-
         extra_metadata = {
             "description": data.get("description"),
             "website": data.get("website"),
             "organizations": data.get("organizations"),
+            "type": {
+                "id": "project"
+            },
         }
 
         # Filter out None or empty values
