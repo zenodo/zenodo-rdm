@@ -13,11 +13,14 @@ from invenio_accounts.models import Domain, DomainStatus, User
 from invenio_cache import current_cache
 from invenio_checks.base import Check
 from invenio_checks.contrib.metadata import ExpressionResult
-from invenio_checks.contrib.metadata.check import CheckResult, MetadataCheck
+from invenio_checks.contrib.metadata.check import  MetadataCheckResult, MetadataCheck
 from invenio_checks.contrib.metadata.rules import RuleResult
 from invenio_communities.proxies import current_communities
 from invenio_rdm_records.proxies import current_community_records_service
+from invenio_records_resources.proxies import current_service_registry
 from invenio_vocabularies.contrib.affiliations.api import Affiliation
+from invenio_vocabularies.contrib.awards.api import Award
+
 
 
 def _get_funding_per_community(community, funder_id):
@@ -43,43 +46,75 @@ class SubcommunityMetadataCheck(MetadataCheck):
     sort_order = 34
 
     def run(self, record, config, deleted_member_id=None):
+        """Validate community metadata against the selected EU project award."""
         result = super().run(record, config)
-
         ec_funder_id = config.params.get("ec_funder_id", "00k4n6c32")
+
         funding = next(
             (
                 f
                 for f in record.metadata.get("funding", [])
-                if f["funder"]["id"] == ec_funder_id
+                if f.get("funder", {}).get("id") == ec_funder_id
             ),
             None,
         )
-        award_orgs = funding.get("award", {}).get("organizations", [])
+
+        if not funding:
+            return result
+
+        award_id = funding.get("award", {}).get("id")
+        if not award_id:
+            return result
+
+        award = Award.pid.resolve(award_id)
+        if not award:
+            return result
+
+        award_orgs = award.get("organizations", [])
         community_orgs = record.metadata.get("organizations", [])
 
-        award_ids = {org["id"] for org in award_orgs if "id" in org}
-        community_ids = {org["id"] for org in community_orgs if "id" in org}
+        def normalize_name(name):
+            return name.strip().lower() if name else None
 
-        matching_ids = community_ids & award_ids
+        # Match organizations by either identifier or normalized name
+        award_ids = {
+            org["id"]
+            for org in award_orgs
+            if org.get("id")
+        }
+
+        award_names = {
+            normalize_name(org.get("name"))
+            for org in award_orgs
+            if org.get("name")
+        }
+
+        matching_orgs = [
+            org
+            for org in community_orgs
+            if (
+                org.get("id") in award_ids
+                or normalize_name(org.get("name")) in award_names
+            )
+        ]
 
         for rule in result.rule_results:
-            if rule.rule_id == "metadata:organizations":
-                if matching_ids:
-                    # Keep only the matching organizations in the check result
-                    if rule.check_results:
-                        rule.check_results[0].value = [
-                            org
-                            for org in rule.check_results[0].value
-                            if org["id"] in matching_ids
-                        ]
-                else:
-                    rule.success = False
-                    rule.level = "warning"
-                    rule.rule_description = (
-                        "The community organizations should have the organizations "
-                        "defined in the project award."
-                    )
-                break
+            if rule.rule_id != "metadata:organizations":
+                continue
+
+            if matching_orgs:
+                if rule.check_results:
+                    rule.check_results[0].value = matching_orgs
+            else:
+                rule.success = False
+                rule.level = "warning"
+                rule.rule_description = (
+                    "The community organizations should contain at least one "
+                    "organization defined in the project award."
+                )
+
+            break
+
         return result
 
 
@@ -101,7 +136,7 @@ class CommunityMembershipCheck(Check):
 
     def run(self, record, config, deleted_member_id=None):
         """Run the check against the community's members, excluding members being removed."""
-        result = CheckResult(self.id)
+        result = MetadataCheckResult(self.id, self.title, self.description)
 
         verified_domains = self._get_verified_domains()
         ec_funder_id = config.params.get("ec_funder_id", "00k4n6c32")
@@ -117,16 +152,28 @@ class CommunityMembershipCheck(Check):
             if m.user_id != deleted_member_id and m.role in ("manager", "owner")
         ]
 
-        user_ids = {int(m.user_id) for m in members if m.user_id is not None}
-        users_by_id = {u.id: u for u in User.query.filter(User.id.in_(user_ids)).all()}
-        users = []
-        has_any_affiliation = False
-        has_any_verified = False
+        user_ids = {
+            int(m.user_id)
+            for m in members
+            if m.user_id is not None
+        }
+
+        users_by_id = {
+            u.id: u
+            for u in User.query.filter(User.id.in_(user_ids)).all()
+        }
+
+        valid_users = []
+        invalid_users = []
 
         for member in members:
             user = users_by_id[int(member.user_id)]
+
             verified = user.domain in verified_domains
-            affiliated_to = self.is_affiliated_to(user.domain, award_org_data)
+            affiliated_to = self.is_affiliated_to(
+                user.domain,
+                award_org_data,
+            )
 
             user_data = {
                 "domain": user.domain,
@@ -134,28 +181,36 @@ class CommunityMembershipCheck(Check):
                 "verified": verified,
                 "affiliation": affiliated_to,
             }
-            if affiliated_to:
-                has_any_affiliation = True
-                user_data["level"] = "success"
-            elif verified:
-                has_any_verified = True
-                user_data["level"] = "info"
-            else:
-                user_data["level"] = "warning"
+
             if user_name := user.user_profile.get("full_name") or user.username:
                 user_data["name"] = user_name
-            users.append(user_data)
 
-        if has_any_affiliation:
+            if affiliated_to:
+                user_data["level"] = "success"
+                valid_users.append(user_data)
+            elif verified:
+                user_data["level"] = "info"
+                valid_users.append(user_data)
+            else:
+                user_data["level"] = "warning"
+                invalid_users.append(user_data)
+
+        if valid_users:
+            success = True
+            users = valid_users
             level = config.severity.error_value
-            description = "The community has at least one member affiliated to one of the award's organizations."
-        elif has_any_verified:
-            level = "warning"
-            description = "No verified community member is affiliated to one of the award's organizations."
+            description = (
+                "The community has at least one owner or manager "
+                "with a verified domain or affiliation to one of the "
+                "award's organizations."
+            )
         else:
+            success = False
+            users = invalid_users
             level = "error"
             description = (
-                "None of the community members are verified or with an affiliation."
+                "None of the community owners or managers are verified "
+                "or affiliated with one of the award's organizations."
             )
 
         rule_result = RuleResult(
@@ -164,11 +219,18 @@ class CommunityMembershipCheck(Check):
             rule_message="Verified community member",
             rule_description=description,
             level=level,
-            success=has_any_affiliation,
-            check_results=[ExpressionResult(success=has_any_affiliation, value=users)],
+            success=success,
+            check_results=[
+                ExpressionResult(
+                    success=success,
+                    value=users,
+                )
+            ],
         )
+
         result.add_rule_result(rule_result)
-        if not has_any_affiliation:
+
+        if not success:
             result.add_errors(
                 [
                     {
@@ -203,31 +265,59 @@ class CommunityMembershipCheck(Check):
         - ``{"id": ror_id}`` — resolved via the Affiliation vocabulary
         - ``{"organization": legal_name}`` — used as-is
         """
-        record.relations.dereference()
-        org_names = []
+        org_data_list = []
+
         for funding in record.metadata.get("funding", []):
             if funding.get("funder", {}).get("id") != funder_id:
                 continue
-            for org in funding.get("award", {}).get("organizations", []):
+
+            award_id = funding.get("award", {}).get("id")
+            if not award_id:
+                continue
+
+            try:
+                award = Award.pid.resolve(award_id)
+            except Exception:
+                continue
+
+            if not award:
+                continue
+
+            for org in award.get("organizations", []):
                 org_data = {}
+
                 if ror_id := org.get("id"):
                     try:
                         affiliation = Affiliation.pid.resolve(ror_id)
+
                         if domains := affiliation.get("domains"):
                             org_data["domains"] = domains
+
                         if identifiers := affiliation.get("identifiers", {}):
                             for identifier in identifiers:
-                                if identifier["scheme"] == "url":
-                                    org_data["website"] = identifier["identifier"]
+                                if identifier.get("scheme") == "url":
+                                    org_data["website"] = identifier.get(
+                                        "identifier"
+                                    )
                                     break
+
                         if name := affiliation.get("name"):
                             org_data["name"] = name
+
                     except Exception:
-                        pass
+                        continue
+
                 elif name := org.get("organization"):
                     org_data["name"] = name
-                org_names.append(org_data)
-        return org_names
+
+                elif name := org.get("name"):
+                    # fallback if award already contains name
+                    org_data["name"] = name
+
+                if org_data:
+                    org_data_list.append(org_data)
+
+        return org_data_list
 
     def is_affiliated_to(self, email, orgs):
         """Checks if email domain matches the organization's domains or website."""
@@ -271,7 +361,7 @@ class SubcommunityValidationCheck(Check):
 
     def run(self, record, config):
         """Run eligibility checks against the subcommunity."""
-        result = CheckResult(self.id)
+        result = MetadataCheckResult(self.id, self.title, self.description)
         # decide how to do this, add a config? hardcode?
         ec_funder_id = config.params.get("ec_funder_id", "00k4n6c32")
         eu_community_id = str(config.community_id)
@@ -359,10 +449,12 @@ class SubcommunityRecordCheck(Check):
     title = "Record metadata"
     description = "All records in the community must include the EU project's funding information in their metadata."
     sort_order = 33
+    target_type="community"
+    sync = False
 
     def run(self, record, config):
         """Run the check against the community's records."""
-        result = CheckResult(self.id)
+        result = MetadataCheckResult(self.id, self.title, self.description)
         community_id = str(record.id)
         ec_funder_id = config.params.get("ec_funder_id", "00k4n6c32")
         community_funding = _get_funding_per_community(record, ec_funder_id)
@@ -426,7 +518,6 @@ class SubcommunityRecordCheck(Check):
         ).total
 
         success = non_compliant == 0
-
         if total == 0:
             description = "No records in this community yet."
         elif success:
@@ -461,3 +552,4 @@ class SubcommunityRecordCheck(Check):
                 )
             ],
         )
+
