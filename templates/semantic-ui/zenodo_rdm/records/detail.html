@@ -52,7 +52,7 @@
             <div class="ui {{ record.ui.access_status.message_class }} message file-box-message rel-pl-1 rel-pr-1">
               <i class="ui {{ record.ui.access_status.icon }} icon" aria-hidden="true"></i>
               <h4 class="inline">{{ record.ui.access_status.title_l10n }}</h4>
-              <p>{{ record.ui.access_status.description_l10n }}</p>
+              <p>{{ record.ui.access_status.description_l10n | safe }}</p>
 
               {% if record.access.embargo.reason %}
                 <p>{{ _("Reason") }}: {{ record.access.embargo.reason }}</p>
