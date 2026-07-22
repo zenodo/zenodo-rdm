@@ -37,13 +37,16 @@ class ZenodoDataciteSchema(DATACITE_SCHEMA):
 class ZenodoDataciteJSONSerializer(MarshmallowSerializer):
     """Zenodo Datacite serializer."""
 
-    def __init__(self, **options):
+    def __init__(self, is_parent=False, **options):
         """Instantiate serializer."""
         super().__init__(
             format_serializer_cls=JSONSerializer,
             object_schema_cls=ZenodoDataciteSchema,
             list_schema_cls=BaseListSchema,
-            schema_kwargs={"dumpers": [JournalDataciteDumper()]},  # Order matters
+            schema_kwargs={
+                "dumpers": [JournalDataciteDumper()],  # Order matters
+                "is_parent": is_parent,
+            },
             **options,
         )
 

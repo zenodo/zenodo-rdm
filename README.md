@@ -34,3 +34,13 @@ To update dependencies you need to:
 > ```bash
 > uv lock --upgrade-package <package-name>
 > ```
+
+## Tests
+
+Tests can be run by activating the `uv` virtual env first:
+
+```bash
+cd zenodo-rdm
+source .venv/bin/activate
+(zenodo-rdm-app)$ ./run-tests.sh
+```

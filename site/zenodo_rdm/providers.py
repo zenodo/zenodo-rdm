@@ -200,7 +200,7 @@ RDM_PARENT_PERSISTENT_IDENTIFIER_PROVIDERS = [
     rdm_providers.DataCitePIDProvider(
         "datacite",
         client=rdm_providers.DataCiteClient("datacite", config_prefix="DATACITE"),
-        serializer=ZenodoDataciteJSONSerializer(schema_context={"is_parent": True}),
+        serializer=ZenodoDataciteJSONSerializer(is_parent=True),
         label=_("Concept DOI"),
     ),
     LegacyParentDOIProvider("legacy", pid_type="doi"),
