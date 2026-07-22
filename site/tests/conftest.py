@@ -40,6 +40,7 @@ from zenodo_rdm.legacy.requests.record_upgrade import LegacyRecordUpgrade
 from zenodo_rdm.permissions import ZenodoRDMRecordPermissionPolicy
 from zenodo_rdm.queryparser import ZENODO_LEGACY_SEARCH_MAP
 from zenodo_rdm.resources import record_serializers
+from zenodo_rdm.serializers import ZenodoDataciteJSONSerializer
 
 from .fake_datacite_client import FakeDataCiteClient
 
@@ -81,6 +82,7 @@ def app_config(app_config):
         providers.DataCitePIDProvider(
             "datacite",
             client=FakeDataCiteClient("datacite", config_prefix="DATACITE"),
+            serializer=ZenodoDataciteJSONSerializer(),
             label=("DOI"),
         ),
         # DOI provider for externally managed DOIs
@@ -94,6 +96,15 @@ def app_config(app_config):
         providers.OAIPIDProvider(
             "oai",
             label=("OAI ID"),
+        ),
+    ]
+    app_config["RDM_PARENT_PERSISTENT_IDENTIFIER_PROVIDERS"] = [
+        # DataCite DOI provider with fake client
+        providers.DataCitePIDProvider(
+            "datacite",
+            client=FakeDataCiteClient("datacite", config_prefix="DATACITE"),
+            serializer=ZenodoDataciteJSONSerializer(is_parent=True),
+            label=("DOI"),
         ),
     ]
     app_config["RDM_PERSISTENT_IDENTIFIERS"] = (

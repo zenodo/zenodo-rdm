@@ -24,7 +24,7 @@ on:
 
 jobs:
   Python:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
           python-version: ["3.9"]
@@ -36,7 +36,7 @@ jobs:
       EXTRAS: tests
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Cache Docker images
         # We're using the fork by AndreKurait, which has bumped the "cache" action
@@ -66,11 +66,12 @@ jobs:
         run: ./run-tests.sh
 
   JS:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
-      - name: Use Node.js v16.x
+        uses: actions/checkout@v7
+
+      - name: Use Node.js v24.x
         uses: actions/setup-node@v6
         with:
           node-version: 24
