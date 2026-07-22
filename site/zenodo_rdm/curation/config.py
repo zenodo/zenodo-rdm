@@ -10,6 +10,7 @@ from .rules import (
     award_acronym_in_title,
     award_number_in_additional_description,
     award_number_in_description,
+    check_funding_relevance_llm_workflow,
     community_data_award_acronym,
     contains_high_conf_keywords,
     contains_low_conf_keywords,
@@ -36,6 +37,7 @@ CURATION_EU_RULES = {
     "community_data_award_acronym": community_data_award_acronym,
     "award_number_in_additional_description": award_number_in_additional_description,
     "award_number_in_description": award_number_in_description,
+    "check_funding_relevance_llm_workflow": check_funding_relevance_llm_workflow,
 }
 """Rules to run for EU Curation."""
 
@@ -55,6 +57,7 @@ CURATION_SCORES = {
     "community_data_award_acronym": 0,
     "award_number_in_additional_description": 0,
     "award_number_in_description": 0,
+    "check_funding_relevance_llm_workflow": 0,
 }
 """Rule scores for EU Curation (bool value implies direct approval/decline)."""
 
@@ -74,3 +77,6 @@ CURATION_HIGH_CONF_KEYWORDS_EU = []
 
 CURATION_TEST_PHRASES = []
 """Test record phrases."""
+
+CURATION_FUNDING_RELEVANCE_RULE = ""
+"""Instructions passed to the LLM for the funding relevance check."""

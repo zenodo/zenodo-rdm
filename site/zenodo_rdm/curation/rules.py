@@ -11,6 +11,8 @@ from invenio_records_resources.proxies import current_service_registry
 from invenio_requests.proxies import current_requests_service
 from invenio_search.engine import dsl
 
+from zenodo_rdm.orcha.utils import run_funding_relevance_workflow
+
 
 def _award_acronym_in_text(award, text):
     """Check for award acronym in data."""
@@ -260,4 +262,21 @@ def community_data_award_acronym(record):
         for award in awards:
             if _award_acronym_in_text(award, comm_text):
                 return True
+    return False
+
+
+def check_funding_relevance_llm_workflow(record):
+    """Check funding relevance via the orcha LLM workflow."""
+    metadata = {
+        "title": record.metadata.get("title", ""),
+        "description": record.metadata.get("description", ""),
+    }
+    rule = current_app.config.get("CURATION_FUNDING_RELEVANCE_RULE")
+
+    awards = _get_ec_awards(record)
+    for award in awards:
+        award_description = award.get("description", {}).get("en")
+        response = run_funding_relevance_workflow(metadata, award_description, rule)
+        if response.get("match"):
+            return True
     return False
