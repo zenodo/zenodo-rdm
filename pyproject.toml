@@ -5,7 +5,7 @@ authors = [
     { name = "CERN" }
 ]
 license = "GPL-3.0-or-later"
-requires-python = ">=3.9"
+requires-python = ">=3.14"
 dependencies = [
     "invenio-app-rdm[opensearch2,profiler]==15.0.0b0.dev0",
     "zenodo-legacy",
@@ -17,12 +17,13 @@ dependencies = [
     "zammad-py>=3.0.0,<4.0.0",
     "pyvips>=2.2.2,<3.0.0",
     "invenio-swh",
-    "pyuwsgi>=2.0",
+    "uwsgi>=2.0",
     "uwsgitop>=0.11",
     "uwsgi-tools>=1.1.1",
     "invenio-records-resources",
     "invenio-github>=7.0.0,<8.0.0",
-    "invenio-rdm-records"
+    "invenio-rdm-records",
+    "sword2"
 ]
 
 [tool.uv.sources]
@@ -33,6 +34,9 @@ invenio-swh = { git = "https://github.com/inveniosoftware/invenio-swh", rev = "v
 invenio-records-resources = { git = "https://github.com/inveniosoftware/invenio-records-resources", branch = "feature/orcha-fix-read-many" }
 invenio-app-rdm = { git = "https://github.com/inveniosoftware/invenio-app-rdm", branch = "feature/orcha" }
 invenio-rdm-records = { git = "https://github.com/inveniosoftware/invenio-rdm-records", branch = "feature/orcha" }
+sword2 = { git = "https://github.com/slint/python-client-sword2", branch = "support-314" }
+# Python 3.14 + xrootdpyfs 3.x support (inveniosoftware/invenio-xrootd#40)
+invenio-xrootd = { git = "https://github.com/ntarocco/invenio-xrootd", branch = "upgrade-xrootdpyf" }
 
 [tool.uv.workspace]
 members = [
@@ -52,6 +56,6 @@ sentry = [
     "sentry-sdk>=1.45,<2.0.0",
 ]
 xrootd = [
-    "invenio-xrootd==2.0.0a2",
+    "invenio-xrootd",
     "requests-kerberos==0.14.0",
 ]
