@@ -123,8 +123,8 @@ def test_openaire_retries_task(
     # Execute retry task and validate that the direct indexing succeeded
     retry_openaire_failures.delay()
 
-    # Assert post was executed N times
-    assert mocked_session.post.called_once()
+    # Assert post was called once (the failed record got re-indexed by the retry)
+    mocked_session.post.assert_called_once()
 
     # Assert cache does not have the key
     assert not current_cache.cache.has(f"openaire_direct_index:{openaire_record.id}")
