@@ -508,11 +508,37 @@ FILE_FORMAT_CONFIG = {
     "closed_format_description": "Using closed or proprietary formats hinders reusability and preservation of published files. <a href='https://support.zenodo.org/help/en-gb/28' target='_blank' >Learn more</a>",
 }
 
+FUNDING_CHECK_CONFIG = {
+    "rules": [
+        {
+            "id": "funding:relevance",
+            "title": "Funding Relevance",
+            "message": "Record metadata should match grant description",
+            "description": "The system compares the record title and description against the official EU grant description.",
+            "level": "info",
+            "checks": [
+                {
+                    "type": "list",
+                    "operator": "any",
+                    "path": "metadata.funding",
+                    "predicate": {
+                        "type": "comparison",
+                        "left": {"type": "field", "path": "funder.id"},
+                        "operator": "==",
+                        "right": "00k4n6c32",
+                    },
+                }
+            ],
+        }
+    ]
+}
+
 
 def create_eu_checks():
     eu_comm = community_service.record_cls.pid.resolve("eu")
     create_metadata_checks(eu_comm)
     create_file_format_checks(eu_comm)
+    create_funding_checks(eu_comm)
     print("EU Open Research Repository community checks created/updated successfully.")
 
     # Create checks for sub-communities
@@ -620,6 +646,27 @@ def create_file_format_checks(eu_comm):
         f"File format checks created/updated successfully for community {eu_comm.slug}."
     )
 
+def create_funding_checks(eu_comm):
+    existing_check = CheckConfig.query.filter_by(
+        community_id=eu_comm.id, check_id="funding"
+    ).one_or_none()
+
+    if existing_check:  # If it exists, update it
+        existing_check.params = FUNDING_CHECK_CONFIG
+    else:  # ...create it
+        check_config = CheckConfig(
+            community_id=eu_comm.id,
+            check_id="funding",
+            params=FUNDING_CHECK_CONFIG,
+            severity=Severity.INFO,
+            enabled=True,
+        )
+        db.session.add(check_config)
+
+    db.session.commit()
+    print(
+        f"Funding check created/updated successfully for community {eu_comm.slug}."
+    )
 
 if __name__ == "__main__":
     create_eu_checks()
