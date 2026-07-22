@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2016-2025 CERN
+# SPDX-FileCopyrightText: 2016-2026 CERN
 # SPDX-FileCopyrightText: 2022 Graz University of Technology
 # SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -71,11 +71,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.15.1
+          cache: true
+          cache_dependency_path: site/package.json
+
       - name: Use Node.js v24.x
         uses: actions/setup-node@v6
         with:
           node-version: 24
 
-      - name: Run eslint test
-        run: ./run-js-linter.sh -i
-
+      - name: Run eslint
+        run: ./run-js-linter.sh
