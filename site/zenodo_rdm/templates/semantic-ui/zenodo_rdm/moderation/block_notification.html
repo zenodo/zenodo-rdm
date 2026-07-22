@@ -1,0 +1,16 @@
+<p>{{ _("Dear %(name)s,", name=full_name or _("user")) }}</p>
+<p>
+{{ _("Your account has been blocked by our spam-detection system for uploading content that is not permitted on Zenodo. You can review %(content_link)s, our %(terms_link)s, and %(policies_link)s.",
+    content_link='<a href="https://support.zenodo.org/help/en-gb/2-content/141-what-content-is-not-suitable-for-zenodo">%s</a>' | format(_("what content is not suitable for Zenodo")),
+    terms_link='<a href="https://about.zenodo.org/terms/">%s</a>' | format(_("Terms of Use")),
+    policies_link='<a href="https://about.zenodo.org/policies/">%s</a>' | format(_("General Policies"))
+) | safe }}
+</p>
+<p>{{ _("If you believe the content you submitted is legitimate research dissemination, please reply to this email and our support team will review your account as soon as possible.") }}</p>
+<p>{{ _("Best regards,") }}<br>{{ _("The Zenodo Team") }}</p>
+<hr>
+<p>
+{{ _("When replying, please do not remove the information below:") }}<br>
+{{ _("User ID:") }} {{ user_id }}<br>
+</p>
+
