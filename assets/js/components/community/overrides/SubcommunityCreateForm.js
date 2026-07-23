@@ -6,12 +6,10 @@ import PropTypes from "prop-types";
 import React, { Component } from "react";
 import {
   AffiliationsSuggestions,
-  AffiliationsSuggestions,
   FieldLabel,
   RadioField,
   SelectField,
   TextField,
-  TextAreaField,
   TextAreaField,
   withCancel,
   http,
