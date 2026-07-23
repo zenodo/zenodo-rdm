@@ -508,6 +508,11 @@ FILE_FORMAT_CONFIG = {
     "closed_format_description": "Using closed or proprietary formats hinders reusability and preservation of published files. <a href='https://support.zenodo.org/help/en-gb/28' target='_blank' >Learn more</a>",
 }
 
+FUNDING_CHECK_CONFIG = {
+    "funding_title": "Record metadata should match grant description",
+    "funding_description": "The system compares the record title and description against the official EU grant description.",
+}
+
 
 def create_eu_checks():
     eu_comm = community_service.record_cls.pid.resolve("eu")
@@ -563,22 +568,58 @@ def create_eu_checks():
         check_description = check_description.replace("__AWARD_NUMBER__", award_number)
         check_config_params["rules"][0]["description"] = check_description
 
-        existing_check = CheckConfig.query.filter_by(
+        existing_metadata_check = CheckConfig.query.filter_by(
             community_id=sub_community["id"], check_id="metadata"
         ).one_or_none()
-        if existing_check:
-            existing_check.params = check_config_params
+        if existing_metadata_check:
+            existing_metadata_check.params = check_config_params
+            existing_metadata_check.target_type = "record"
         else:
-            check_config = CheckConfig(
+            db.session.add(CheckConfig(
                 community_id=sub_community["id"],
                 check_id="metadata",
                 params=check_config_params,
                 severity=Severity.INFO,
                 enabled=True,
-            )
-            db.session.add(check_config)
+            ))
+
+        existing_funding_check = CheckConfig.query.filter_by(
+            community_id=sub_community["id"], check_id="funding"
+        ).one_or_none()
+        if existing_funding_check:
+            existing_funding_check.params = FUNDING_CHECK_CONFIG
+            existing_funding_check.target_type = "record"
+        else:
+            db.session.add(CheckConfig(
+                community_id=sub_community["id"],
+                check_id="funding",
+                params=FUNDING_CHECK_CONFIG,
+                target_type="record",
+                severity=Severity.WARN,
+                enabled=True,
+            ))
+
         db.session.commit()
     print("EU subcommunity checks created/updated successfully.")
+
+
+def create_funding_checks(eu_comm):
+    existing_check = CheckConfig.query.filter_by(
+        community_id=eu_comm.id, check_id="funding"
+    ).one_or_none()
+    if existing_check:  # If it exists, update it
+        existing_check.params = FUNDING_CHECK_CONFIG
+    else:  # ...create it
+        check_config = CheckConfig(
+            community_id=eu_comm.id,
+            check_id="funding",
+            params=FUNDING_CHECK_CONFIG,
+            severity=Severity.INFO,
+            enabled=True,
+        )
+        db.session.add(check_config)
+    db.session.commit()
+    print(f"Record funding checks created/updated for community {eu_comm.slug}.")
 
 
 def create_metadata_checks(eu_comm):
