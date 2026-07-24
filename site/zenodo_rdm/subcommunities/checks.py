@@ -13,14 +13,14 @@ from invenio_accounts.models import Domain, DomainStatus, User
 from invenio_cache import current_cache
 from invenio_checks.base import Check
 from invenio_checks.contrib.metadata import ExpressionResult
-from invenio_checks.contrib.metadata.check import  MetadataCheckResult, MetadataCheck
+from invenio_checks.contrib.metadata.check import (MetadataCheck,
+                                                   MetadataCheckResult)
 from invenio_checks.contrib.metadata.rules import RuleResult
 from invenio_communities.proxies import current_communities
 from invenio_rdm_records.proxies import current_community_records_service
 from invenio_records_resources.proxies import current_service_registry
 from invenio_vocabularies.contrib.affiliations.api import Affiliation
 from invenio_vocabularies.contrib.awards.api import Award
-
 
 
 def _get_funding_per_community(community, funder_id):
@@ -77,16 +77,10 @@ class SubcommunityMetadataCheck(MetadataCheck):
             return name.strip().lower() if name else None
 
         # Match organizations by either identifier or normalized name
-        award_ids = {
-            org["id"]
-            for org in award_orgs
-            if org.get("id")
-        }
+        award_ids = {org["id"] for org in award_orgs if org.get("id")}
 
         award_names = {
-            normalize_name(org.get("name"))
-            for org in award_orgs
-            if org.get("name")
+            normalize_name(org.get("name")) for org in award_orgs if org.get("name")
         }
 
         matching_orgs = [
@@ -133,6 +127,7 @@ class CommunityMembershipCheck(Check):
         "one of the EU project’s participating organizations. "
     )
     sort_order = 31
+    allow_rerun = True
 
     def run(self, record, config, deleted_member_id=None):
         """Run the check against the community's members, excluding members being removed."""
@@ -152,16 +147,9 @@ class CommunityMembershipCheck(Check):
             if m.user_id != deleted_member_id and m.role in ("manager", "owner")
         ]
 
-        user_ids = {
-            int(m.user_id)
-            for m in members
-            if m.user_id is not None
-        }
+        user_ids = {int(m.user_id) for m in members if m.user_id is not None}
 
-        users_by_id = {
-            u.id: u
-            for u in User.query.filter(User.id.in_(user_ids)).all()
-        }
+        users_by_id = {u.id: u for u in User.query.filter(User.id.in_(user_ids)).all()}
 
         valid_users = []
         invalid_users = []
@@ -296,9 +284,7 @@ class CommunityMembershipCheck(Check):
                         if identifiers := affiliation.get("identifiers", {}):
                             for identifier in identifiers:
                                 if identifier.get("scheme") == "url":
-                                    org_data["website"] = identifier.get(
-                                        "identifier"
-                                    )
+                                    org_data["website"] = identifier.get("identifier")
                                     break
 
                         if name := affiliation.get("name"):
@@ -449,8 +435,9 @@ class SubcommunityRecordCheck(Check):
     title = "Record metadata"
     description = "All records in the community must include the EU project's funding information in their metadata."
     sort_order = 33
-    target_type="community"
+    target_type = "community"
     sync = False
+    allow_rerun = True
 
     def run(self, record, config):
         """Run the check against the community's records."""
@@ -548,8 +535,17 @@ class SubcommunityRecordCheck(Check):
                             "grant_id": grant_id,
                             "grant_title": grant_title,
                         },
+                        "message": (
+                            f"{non_compliant} "
+                            f"{'record' if non_compliant == 1 else 'records'} "
+                            "missing funding metadata"
+                        ),
+                        "details": (
+                            f"This record needs Grant {grant_id} ({grant_title}) "
+                            "added to its funding metadata before the community can "
+                            "be included in the EU Open Research Repository."
+                        ),
                     },
                 )
             ],
         )
-
