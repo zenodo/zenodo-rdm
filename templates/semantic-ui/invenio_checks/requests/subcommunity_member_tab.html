@@ -15,7 +15,26 @@ under the terms of the MIT License; see LICENSE file for more details.
     <div class="ui very relaxed list rel-pl-2">
       {% for check in checks %}
         <div class="content">
-          <div class="header">{{ check.config.check_cls.title }}</div>
+          <div class="ui header middle aligned grid">
+            <div class="twelve wide column">
+              {{ check.config.check_cls.title }}
+            </div>
+          
+            {% if check.config.check_cls.allow_rerun %}
+              <div class="four wide right aligned column">
+                <form
+                  method="post"
+                  action="{{ url_for('invenio_app_rdm_requests.rerun_check_view', check_run_id=check.id) }}"
+                >
+                  <input type="hidden" name="return_hash" value="">
+                  <button class="ui mini button" type="submit">
+                    <i class="refresh icon"></i>
+                    {{ _("Re-run") }}
+                  </button>
+                </form>
+              </div>
+            {% endif %}
+          </div>
           <div class="pt-5 pb-5 text-muted">{{ check.config.check_cls.description }}</div>
         </div>
         {% for rule_result in check.result.rule_results %}
