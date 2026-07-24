@@ -13,8 +13,7 @@ from invenio_accounts.models import Domain, DomainStatus, User
 from invenio_cache import current_cache
 from invenio_checks.base import Check
 from invenio_checks.contrib.metadata import ExpressionResult
-from invenio_checks.contrib.metadata.check import (MetadataCheck,
-                                                   MetadataCheckResult)
+from invenio_checks.contrib.metadata.check import MetadataCheck, MetadataCheckResult
 from invenio_checks.contrib.metadata.rules import RuleResult
 from invenio_communities.proxies import current_communities
 from invenio_rdm_records.proxies import current_community_records_service
@@ -508,14 +507,14 @@ class SubcommunityRecordCheck(Check):
         if total == 0:
             description = "No records in this community yet."
         elif success:
-            description = "All records in this community include the community's EC project funding."
+            description = "All records in this community include the community's EU project funding."
         else:
             grants = ", ".join(community_funding.keys())
             description = (
                 f"{non_compliant} of {total} "
                 f"{'records' if total != 1 else 'record'} "
-                f"do not include the community's EC project funding "
-                f"(Grant{'s' if len(community_funding) > 1 else ''} {grants})."
+                f"do not include the community's EU project funding "
+                f"(GA {grants})."
             )
 
         return RuleResult(
@@ -535,14 +534,10 @@ class SubcommunityRecordCheck(Check):
                             "grant_id": grant_id,
                             "grant_title": grant_title,
                         },
-                        "message": (
-                            f"{non_compliant} "
-                            f"{'record' if non_compliant == 1 else 'records'} "
-                            "missing funding metadata"
-                        ),
                         "details": (
-                            f"This record needs Grant {grant_id} ({grant_title}) "
-                            "added to its funding metadata before the community can "
+                            "Records in this community need to include "
+                            f"the project {grant_title} (GA {grant_id}) "
+                            "in their funding metadata before the community can "
                             "be included in the EU Open Research Repository."
                         ),
                     },

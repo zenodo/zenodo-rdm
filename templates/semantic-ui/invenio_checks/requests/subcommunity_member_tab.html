@@ -9,34 +9,13 @@ under the terms of the MIT License; see LICENSE file for more details.
 
 {% import "invenio_checks/requests/_rule_severity.html" as rule_severity_tpl %}
 {% import "invenio_checks/requests/severity_level_icons.html" as severity_level_icons_tpl %}
+{% import "invenio_checks/requests/_checks_header.html" as header_tpl %}
 
 <div class="ui column stackable grid">
   <div class="ten wide column">
     <div class="ui very relaxed list rel-pl-2">
       {% for check in checks %}
-        <div class="content">
-          <div class="ui header middle aligned grid">
-            <div class="twelve wide column">
-              {{ check.config.check_cls.title }}
-            </div>
-          
-            {% if check.config.check_cls.allow_rerun %}
-              <div class="four wide right aligned column">
-                <form
-                  method="post"
-                  action="{{ url_for('invenio_app_rdm_requests.rerun_check_view', check_run_id=check.id) }}"
-                >
-                  <input type="hidden" name="return_hash" value="">
-                  <button class="ui mini button" type="submit">
-                    <i class="refresh icon"></i>
-                    {{ _("Re-run") }}
-                  </button>
-                </form>
-              </div>
-            {% endif %}
-          </div>
-          <div class="pt-5 pb-5 text-muted">{{ check.config.check_cls.description }}</div>
-        </div>
+      {{ header_tpl.render_check_header(check) }}
         {% for rule_result in check.result.rule_results %}
         {% set rule_severity_level = rule_severity_tpl.rule_severity_level(rule_result) | trim %}
 
