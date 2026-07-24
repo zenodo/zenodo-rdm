@@ -9,18 +9,9 @@ from invenio_communities.subcommunities.services.schema import (
 from invenio_communities.subcommunities.services.schema import (
     SubcommunityRequestSchema,
 )
-from invenio_communities.communities.schema import AffiliationRelationSchema
-from invenio_communities.subcommunities.services.schema import (
-    MinimalCommunitySchema as BaseMinimalSchema,
-)
-from invenio_communities.subcommunities.services.schema import (
-    SubcommunityRequestSchema,
-)
 from invenio_i18n import gettext as _
 from marshmallow import Schema, ValidationError, fields, post_load, validates
-from marshmallow import Schema, ValidationError, fields, post_load, validates
 from marshmallow_utils.context import context_schema
-from marshmallow_utils.fields import URL, SanitizedUnicode
 from marshmallow_utils.fields import URL, SanitizedUnicode
 
 
