@@ -24,6 +24,7 @@ community_service = LocalProxy(lambda: current_communities.service)
 
 RECORD_METADATA_RULES = {
     "sync": False,
+    "allow_rerun": True,
 }
 
 METADATA_RULES = {
@@ -139,7 +140,9 @@ def create_eu_subcommunity_checks():
     create_project_validation_checks(eu_comm)
     create_record_metadata_checks(eu_comm)
     create_metadata_checks(eu_comm)
-    print("EU Open Research Repository subcommunity checks created/updated successfully.")
+    print(
+        "EU Open Research Repository subcommunity checks created/updated successfully."
+    )
     run_checks_for_existing_requests(eu_comm)
 
 
@@ -151,8 +154,8 @@ def run_checks_for_existing_requests(eu_comm):
 
     # Subcommunity requests
     open_request_models = RequestMetadata.query.filter(
-        RequestMetadata.json.op('->>')('type') == "subcommunity",
-        RequestMetadata.json.op('->>')('status') == "submitted",
+        RequestMetadata.json.op("->>")("type") == "subcommunity",
+        RequestMetadata.json.op("->>")("status") == "submitted",
     ).all()
 
     for req_model in open_request_models:
@@ -183,11 +186,12 @@ def create_member_checks(eu_comm):
     ).one_or_none()
     if existing_check:
         existing_check.target_type = "community"
+        existing_check.params = {"allow_rerun": True}
     else:
         check_config = CheckConfig(
             community_id=eu_comm.id,
             check_id="subcommunity_member",
-            params={},
+            params={"allow_rerun": True},
             target_type="community",
             severity=Severity.WARN,
             enabled=True,
@@ -202,7 +206,7 @@ def create_member_checks(eu_comm):
 def create_project_validation_checks(eu_comm):
     existing_check = CheckConfig.query.filter(
         CheckConfig.community_id == eu_comm.id,
-        CheckConfig.check_id == "subcommunity_validation"
+        CheckConfig.check_id == "subcommunity_validation",
     ).one_or_none()
     if existing_check:
         existing_check.target_type = "community"
@@ -251,8 +255,10 @@ def create_metadata_checks(eu_comm):
     check_config_params = deepcopy(METADATA_RULES)
     check_message = "To comply with Horizon Europe's open science requirements, the community should provide the project's __FIELD__."
     for rule in check_config_params["rules"]:
-        if 'description' not in rule:
-            rule["description"] = check_message.replace("__FIELD__", rule["message"].lower())
+        if "description" not in rule:
+            rule["description"] = check_message.replace(
+                "__FIELD__", rule["message"].lower()
+            )
 
     existing_check = CheckConfig.query.filter(
         CheckConfig.community_id == eu_comm.id,

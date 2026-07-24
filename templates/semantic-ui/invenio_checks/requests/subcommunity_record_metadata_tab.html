@@ -28,8 +28,25 @@
           ) %}
         
           <div class="content">
-            <div class="header">
-              {{ check.config.check_cls.title }}
+            <div class="ui header middle aligned grid">
+              <div class="twelve wide column">
+                {{ check.config.check_cls.title }}
+              </div>
+            
+              {% if check.config.check_cls.allow_rerun %}
+                <div class="four wide right aligned column">
+                  <form
+                    method="post"
+                    action="{{ url_for('invenio_app_rdm_requests.rerun_check_view', check_run_id=check.id) }}"
+                  >
+                    <input type="hidden" name="return_hash" value="">
+                    <button class="ui mini button" type="submit">
+                      <i class="refresh icon"></i>
+                      {{ _("Re-run") }}
+                    </button>
+                  </form>
+                </div>
+              {% endif %}
             </div>
         
             <div class="pt-5 pb-5 text-muted">
