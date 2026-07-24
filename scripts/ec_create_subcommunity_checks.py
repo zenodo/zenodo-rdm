@@ -234,7 +234,7 @@ def create_record_metadata_checks(eu_comm):
     if existing_check:
         existing_check.target_type = "community"
         existing_check.params = RECORD_METADATA_RULES
-        existing_check.severity = Severity.FAIL
+        existing_check.severity = Severity.WARN
     else:
         check_config = CheckConfig(
             community_id=eu_comm.id,
