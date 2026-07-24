@@ -394,7 +394,7 @@ EU_RULES = {
             "title": "Creator Identifiers",
             "message": "All creators should have a persistent identifier (e.g. an ORCID)",
             "description": 'To comply with Horizon Europe\'s open science requirements, you should provide persistent identifiers for creators (e.g., ORCID, GND, or ISNI). <a href="/communities/eu/pages/open-science" target="_blank">Learn more</a>',
-            "level": "info",
+            "level": "warning",
             "condition": {
                 "type": "list",
                 "operator": "exists",
@@ -568,11 +568,13 @@ def create_eu_checks():
         ).one_or_none()
         if existing_check:
             existing_check.params = check_config_params
+            existing_check.target_type = "record"
         else:
             check_config = CheckConfig(
                 community_id=sub_community["id"],
                 check_id="metadata",
                 params=check_config_params,
+                target_type="record",
                 severity=Severity.INFO,
                 enabled=True,
             )
@@ -587,11 +589,13 @@ def create_metadata_checks(eu_comm):
     ).one_or_none()
     if existing_check:  # If it exists, update it
         existing_check.params = EU_RULES
+        existing_check.target_type = "record"
     else:  # ...create it
         check_config = CheckConfig(
             community_id=eu_comm.id,
             check_id="metadata",
             params=EU_RULES,
+            target_type="record",
             severity=Severity.INFO,
             enabled=True,
         )
@@ -606,11 +610,13 @@ def create_file_format_checks(eu_comm):
     ).one_or_none()
     if existing_check:  # If it exists, update it
         existing_check.params = FILE_FORMAT_CONFIG
+        existing_check.target_type = "record"
     else:  # ...create it
         check_config = CheckConfig(
             community_id=eu_comm.id,
             check_id="file_formats",
             params=FILE_FORMAT_CONFIG,
+            target_type="record",
             severity=Severity.INFO,
             enabled=True,
         )
