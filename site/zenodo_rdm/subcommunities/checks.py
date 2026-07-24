@@ -16,6 +16,7 @@ from invenio_checks.contrib.metadata import ExpressionResult
 from invenio_checks.contrib.metadata.check import MetadataCheck, MetadataCheckResult
 from invenio_checks.contrib.metadata.rules import RuleResult
 from invenio_communities.proxies import current_communities
+from invenio_db import db
 from invenio_rdm_records.proxies import current_community_records_service
 from invenio_records_resources.proxies import current_service_registry
 from invenio_vocabularies.contrib.affiliations.api import Affiliation
@@ -115,15 +116,15 @@ class CommunityMembershipCheck(Check):
     """
     Check that community members have affiliations.
 
-    Checks that at least one community member has a verified domain or is affiliated (via their email)
-    to a recognized organization.
+    Checks that at least one community member (owner or manager) has a verified domain
+    or is affiliated (via their email domain) with a recognized award organization.
     """
 
     id = "subcommunity_member"
     title = "Member affiliation"
     description = (
         "Verifies that at least one community member (owner or manager) is affiliated with "
-        "one of the EU project’s participating organizations. "
+        "one of the EU project’s participating organizations."
     )
     sort_order = 31
     allow_rerun = True
@@ -131,46 +132,48 @@ class CommunityMembershipCheck(Check):
     def run(self, record, config, deleted_member_id=None):
         """Run the check against the community's members, excluding members being removed."""
         result = MetadataCheckResult(self.id, self.title, self.description)
-
         verified_domains = self._get_verified_domains()
         ec_funder_id = config.params.get("ec_funder_id", "00k4n6c32")
         award_org_data = self._get_award_org_data(record, ec_funder_id)
 
         Membership = current_communities.service.members.record_cls
-        members = [
-            m
-            for m in Membership.model_cls.query.filter(
+
+        # Fetch active manager/owner members and their associated User models in a single query
+        query = (
+            db.session.query(Membership.model_cls, User)
+            .join(User, Membership.model_cls.user_id == User.id)
+            .filter(
                 Membership.model_cls.community_id == str(record.id),
                 Membership.model_cls.active.is_(True),
-            ).all()
-            if m.user_id != deleted_member_id and m.role in ("manager", "owner")
-        ]
-
-        user_ids = {int(m.user_id) for m in members if m.user_id is not None}
-
-        users_by_id = {u.id: u for u in User.query.filter(User.id.in_(user_ids)).all()}
+                Membership.model_cls.role.in_(["manager", "owner"]),
+            )
+        )
 
         valid_users = []
         invalid_users = []
 
-        for member in members:
-            user = users_by_id[int(member.user_id)]
+        for member, user in query.all():
+            # Exclude member currently being removed
+            if str(member.user_id) == str(deleted_member_id):
+                continue
 
-            verified = user.domain in verified_domains
-            affiliated_to = self.is_affiliated_to(
-                user.domain,
-                award_org_data,
+            user_domain = self._normalize_domain(user.domain)
+            verified = user_domain in verified_domains if user_domain else False
+            affiliated_to = self.is_affiliated_to(user_domain, award_org_data)
+
+            user_name = (
+                user.user_profile.get("full_name") or user.username
+                if user.user_profile
+                else user.username
             )
 
             user_data = {
+                "name": user_name,
                 "domain": user.domain,
                 "role": member.role.capitalize(),
                 "verified": verified,
                 "affiliation": affiliated_to,
             }
-
-            if user_name := user.user_profile.get("full_name") or user.username:
-                user_data["name"] = user_name
 
             if affiliated_to:
                 user_data["level"] = "success"
@@ -182,17 +185,17 @@ class CommunityMembershipCheck(Check):
                 user_data["level"] = "warning"
                 invalid_users.append(user_data)
 
-        if valid_users:
-            success = True
+        success = len(valid_users) > 0
+
+        if success:
             users = valid_users
-            level = config.severity.error_value
+            level = "info"
             description = (
                 "The community has at least one owner or manager "
                 "with a verified domain or affiliation to one of the "
                 "award's organizations."
             )
         else:
-            success = False
             users = invalid_users
             level = "error"
             description = (
@@ -231,28 +234,40 @@ class CommunityMembershipCheck(Check):
 
         return result
 
+    def _normalize_domain(self, value):
+        """Normalize domain names and URLs."""
+        if not value:
+            return None
+
+        value = value.lower().strip()
+
+        if value.startswith(("http://", "https://")):
+            value = urlparse(value).hostname or ""
+
+        value = value.removeprefix("www.")
+        return value if value else None
+
     def _get_verified_domains(self):
-        """Return the set of verified institutional domains, cached for 1 hour."""
+        """Return cached set of verified institutional domains."""
         cache_key = "checks:verified_domains"
         domains = current_cache.get(cache_key)
-        if not domains:
+
+        if domains is None:
+            raw_domains = Domain.query.filter(
+                Domain.status == DomainStatus.verified
+            ).all()
             domains = {
-                d.domain
-                for d in Domain.query.filter(
-                    Domain.status == DomainStatus.verified
-                ).all()
+                norm_domain
+                for domain in raw_domains
+                if (norm_domain := self._normalize_domain(domain.domain))
             }
             current_cache.set(cache_key, domains, timeout=3600)
+
         return domains
 
     def _get_award_org_data(self, record, funder_id):
-        """Return lowercase organization names from the community's EC-funded awards.
-
-        Handles two storage formats produced by the awards datastream:
-        - ``{"id": ror_id}`` — resolved via the Affiliation vocabulary
-        - ``{"organization": legal_name}`` — used as-is
-        """
-        org_data_list = []
+        """Return organizations and their matchable domains extracted from ROR records."""
+        organizations = []
 
         for funding in record.metadata.get("funding", []):
             if funding.get("funder", {}).get("id") != funder_id:
@@ -270,70 +285,68 @@ class CommunityMembershipCheck(Check):
             if not award:
                 continue
 
-            for org in award.get("organizations", []):
-                org_data = {}
+            for organization in award.get("organizations", []):
+                domains = set()
+                name = None
 
-                if ror_id := org.get("id"):
+                ror_id = organization.get("id")
+
+                if ror_id:
                     try:
                         affiliation = Affiliation.pid.resolve(ror_id)
-
-                        if domains := affiliation.get("domains"):
-                            org_data["domains"] = domains
-
-                        if identifiers := affiliation.get("identifiers", {}):
-                            for identifier in identifiers:
-                                if identifier.get("scheme") == "url":
-                                    org_data["website"] = identifier.get("identifier")
-                                    break
-
-                        if name := affiliation.get("name"):
-                            org_data["name"] = name
-
                     except Exception:
                         continue
 
-                elif name := org.get("organization"):
-                    org_data["name"] = name
+                    if not affiliation:
+                        continue
 
-                elif name := org.get("name"):
-                    # fallback if award already contains name
-                    org_data["name"] = name
+                    name = affiliation.get("name")
 
-                if org_data:
-                    org_data_list.append(org_data)
+                    for domain in affiliation.get("domains", []):
+                        if norm := self._normalize_domain(domain):
+                            domains.add(norm)
 
-        return org_data_list
+                    if website := affiliation.get("website"):
+                        if norm := self._normalize_domain(website):
+                            domains.add(norm)
 
-    def is_affiliated_to(self, email, orgs):
-        """Checks if email domain matches the organization's domains or website."""
-        for org in orgs:
-            org_name = org.get("name")
-            if not org_name:
-                continue
-            if domains := org.get("domains"):
-                if email in domains:
-                    return org_name
-            if website := org.get("website"):
-                try:
-                    hostname = urlparse(website).hostname or ""
-                except Exception:
-                    return False
+                    for identifier in affiliation.get("identifiers", []):
+                        if identifier.get("scheme") == "url":
+                            if norm := self._normalize_domain(
+                                identifier.get("identifier")
+                            ):
+                                domains.add(norm)
+                else:
+                    name = organization.get("organization") or organization.get("name")
 
-                hostname = hostname.removeprefix("www.")
+                if name and domains:
+                    organizations.append(
+                        {
+                            "name": name,
+                            "domains": domains,
+                        }
+                    )
 
-                email_parts = email.split(".")
-                hostname_parts = hostname.split(".")
+        return organizations
 
-                # heuristics: the core of both the email domain and the hostname matches,
-                # and the final part of both also matches.
-                # Ex: domain is tuwien.ca.at and website is tuwien.at
-                if (
-                    bool(email_parts)
-                    and email_parts[0] == hostname_parts[0]
-                    and email_parts[-1] == hostname_parts[-1]
-                ):
-                    return org_name
-        return False
+    def is_affiliated_to(self, user_domain, organizations):
+        """
+        Return organization name if user domain matches exact or subdomain.
+
+        Examples:
+        - user@cern.ch -> matches cern.ch
+        - user@sub.cern.ch -> matches cern.ch
+        """
+        user_domain = self._normalize_domain(user_domain)
+        if not user_domain:
+            return None
+
+        for organization in organizations:
+            for domain in organization["domains"]:
+                if user_domain == domain or user_domain.endswith(f".{domain}"):
+                    return organization["name"]
+
+        return None
 
 
 class SubcommunityValidationCheck(Check):
