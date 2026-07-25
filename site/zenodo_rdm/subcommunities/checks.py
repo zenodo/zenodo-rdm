@@ -18,7 +18,6 @@ from invenio_checks.contrib.metadata.rules import RuleResult
 from invenio_communities.proxies import current_communities
 from invenio_db import db
 from invenio_rdm_records.proxies import current_community_records_service
-from invenio_records_resources.proxies import current_service_registry
 from invenio_vocabularies.contrib.affiliations.api import Affiliation
 from invenio_vocabularies.contrib.awards.api import Award
 
@@ -106,6 +105,7 @@ class SubcommunityMetadataCheck(MetadataCheck):
                     "The community organizations should contain at least one "
                     "organization defined in the project award."
                 )
+                result.add_errors(self.to_service_errors(rule))
 
             break
 
@@ -372,7 +372,7 @@ class SubcommunityValidationCheck(Check):
 
         for rule_result in [
             self._check_has_ec_funding(record, funding, config),
-            self._check_no_duplicate_grant(record, ec_funder_id, funding, config),
+            self._check_no_duplicate_grant(record, ec_funder_id, funding_data, config),
         ]:
             result.add_rule_result(rule_result)
             if not rule_result.success:
@@ -407,28 +407,29 @@ class SubcommunityValidationCheck(Check):
             check_results=[],
         )
 
-    def _check_no_duplicate_grant(self, record, ec_funder_id, funding, config):
+    def _check_no_duplicate_grant(self, record, ec_funder_id, funding_data, config):
         """Check no existing EU subcommunity has the same EC grant."""
         duplicates = set()
-        for num in funding:
+        for number, acronym in funding_data.items():
             results = current_communities.service.search(
                 system_identity,
                 params={
                     "q": (
-                        f'metadata.funding.award.id:"{num}"'
+                        f'metadata.funding.award.number:"{number}"'
                         f" AND metadata.funding.funder.id:{ec_funder_id}"
                     ),
                     "size": 10,
                 },
             )
-            if any((h["id"] != str(record.id) for h in results.hits)):
-                duplicates.add(num)
+            if any(h["id"] != str(record.id) for h in results.hits):
+                display = f"Grant {number} ({acronym})" if acronym else f"Grant {number}"
+                duplicates.add(display)
 
         success = not duplicates
         if success:
             description = "There is no existing community registered for this grant number in the EU Open Research Repository."
         else:
-            description = f"Duplicate communities were found for {', '.join(funding)}."
+            description = f"Duplicate communities were found for {', '.join(duplicates)}."
         return RuleResult(
             rule_id="eligibility:no_duplicate_grant",
             rule_title="A community with the same grant already exists",
