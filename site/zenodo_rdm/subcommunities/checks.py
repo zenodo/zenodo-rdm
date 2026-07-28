@@ -265,6 +265,17 @@ class CommunityMembershipCheck(Check):
 
         return domains
 
+    @classmethod
+    def can_rerun(cls, identity, record_id):
+        permission = current_communities.service.config.permission_policy_cls(
+            action="members_manage",
+            community_id=str(record_id),
+        )
+        if permission.allows(identity):
+            return True
+
+        return False
+
     def _get_award_org_data(self, record, funder_id):
         """Return organizations and their matchable domains extracted from ROR records."""
         organizations = []
@@ -485,6 +496,17 @@ class SubcommunityRecordCheck(Check):
             )
 
         return result
+
+    @classmethod
+    def can_rerun(cls, identity, record_id):
+        permission = current_communities.service.config.permission_policy_cls(
+            action="members_manage",
+            community_id=str(record_id),
+        )
+        if permission.allows(identity):
+            return True
+
+        return False
 
     def _check_record_funding(
         self, community_id, total, config, ec_funder_id, community_funding
