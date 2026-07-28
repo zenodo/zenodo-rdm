@@ -44,9 +44,9 @@ class SubcommunityMetadataCheck(MetadataCheck):
     description = "The following metadata was automatically suggested based on the selected EU project."
     sort_order = 34
 
-    def run(self, record, config, deleted_member_id=None):
+    def run(self, record, config, **kwargs):
         """Validate community metadata against the selected EU project award."""
-        result = super().run(record, config)
+        result, state = super().run(record, config, **kwargs)
         ec_funder_id = config.params.get("ec_funder_id", "00k4n6c32")
 
         funding = next(
@@ -59,15 +59,15 @@ class SubcommunityMetadataCheck(MetadataCheck):
         )
 
         if not funding:
-            return result
+            return result, state
 
         award_id = funding.get("award", {}).get("id")
         if not award_id:
-            return result
+            return result, state
 
         award = Award.pid.resolve(award_id)
         if not award:
-            return result
+            return result, state
 
         award_orgs = award.get("organizations", [])
         community_orgs = record.metadata.get("organizations", [])
@@ -109,7 +109,7 @@ class SubcommunityMetadataCheck(MetadataCheck):
 
             break
 
-        return result
+        return result, state
 
 
 class CommunityMembershipCheck(Check):
@@ -129,7 +129,7 @@ class CommunityMembershipCheck(Check):
     sort_order = 31
     allow_rerun = True
 
-    def run(self, record, config, deleted_member_id=None):
+    def run(self, record, config, **kwargs):
         """Run the check against the community's members, excluding members being removed."""
         result = MetadataCheckResult(self.id, self.title, self.description)
         verified_domains = self._get_verified_domains()
@@ -154,7 +154,8 @@ class CommunityMembershipCheck(Check):
 
         for member, user in query.all():
             # Exclude member currently being removed
-            if str(member.user_id) == str(deleted_member_id):
+            deleted_member_id = kwargs.get("deleted_member_id")
+            if deleted_member_id and str(member.user_id) == str(deleted_member_id):
                 continue
 
             user_domain = self._normalize_domain(user.domain)
@@ -232,7 +233,7 @@ class CommunityMembershipCheck(Check):
                 ]
             )
 
-        return result
+        return result, {}
 
     def _normalize_domain(self, value):
         """Normalize domain names and URLs."""
@@ -368,12 +369,10 @@ class SubcommunityValidationCheck(Check):
     description = "Validates the EU project grant and checks for duplicate communities."
     sort_order = 32
 
-    def run(self, record, config):
+    def run(self, record, config, **kwargs):
         """Run eligibility checks against the subcommunity."""
         result = MetadataCheckResult(self.id, self.title, self.description)
-        # decide how to do this, add a config? hardcode?
         ec_funder_id = config.params.get("ec_funder_id", "00k4n6c32")
-        eu_community_id = str(config.community_id)
         funding_data = _get_funding_per_community(record, ec_funder_id)
         # Build a formatted list that can be used to display grant number and acronym
         funding = [
@@ -398,7 +397,7 @@ class SubcommunityValidationCheck(Check):
                     ]
                 )
 
-        return result
+        return result, {}
 
     def _check_has_ec_funding(self, record, funding, config):
         """Check the community has at least one EC funding entry."""
@@ -463,7 +462,7 @@ class SubcommunityRecordCheck(Check):
     sync = False
     allow_rerun = True
 
-    def run(self, record, config):
+    def run(self, record, config, **kwargs):
         """Run the check against the community's records."""
         result = MetadataCheckResult(self.id, self.title, self.description)
         community_id = str(record.id)
@@ -495,7 +494,7 @@ class SubcommunityRecordCheck(Check):
                 ]
             )
 
-        return result
+        return result, {}
 
     @classmethod
     def can_rerun(cls, identity, record_id):
