@@ -8,10 +8,10 @@
 import hashlib
 import json
 
-from invenio_access.permissions import system_identity
 from invenio_checks.base import Check, CheckResult
 from invenio_checks.models import CheckConfig, CheckRunStatus
 from invenio_communities.proxies import current_communities
+from invenio_pidstore.errors import PIDDoesNotExistError
 from invenio_records_resources.proxies import current_service_registry
 
 from zenodo_rdm.orcha.utils import run_funding_relevance_workflow
@@ -40,15 +40,37 @@ class FundingCheck(Check):
             "description": params.get("funding_description", self.default_messages["description"]),
         }
 
-    def _get_input_hash(self, metadata, award_description):
+    def _get_input_hash(self, metadata, award_descriptions):
         """Return a hash of the input used to detect when to rerun check."""
         input_data = {
             **metadata,
-            "award_description": award_description,
+            "award_description": award_descriptions,
         }
         return hashlib.sha256(
             json.dumps(input_data, sort_keys=True, default=str).encode()
         ).hexdigest()
+
+    def _get_awards_description(self, record, community):
+        """Extract award descriptions from community or record funding metadata."""
+        all_funding = list(community["metadata"].get("funding", []))
+        if not all_funding:
+            all_funding.extend(record.metadata.get("funding", []))
+
+        awards = []
+        awards_service = current_service_registry.get("awards")
+        for f in all_funding:
+            if f["funder"].get("id") == "00k4n6c32":
+                if award_id := f.get("award", {}).get("id"):
+                    try:
+                        award = awards_service.record_cls.pid.resolve(award_id)
+                        awards.append(award)
+                    except PIDDoesNotExistError:
+                        pass
+
+        return [
+            description for award in awards
+            if (description := award.get("description", {}).get("en")) is not None
+        ]
 
     def should_rerun(self, record, config, previous_run, **kwargs):
         """Return True if the check should run again.
@@ -61,8 +83,7 @@ class FundingCheck(Check):
             return True
 
         community = current_communities.service.record_cls.get_record(config.community_id)
-        community_funding = community["metadata"].get("funding") or []
-        award_description = self._get_award_description(community_funding)
+        awards = self._get_awards_description(record, community)
 
         metadata = record["metadata"]
         check_metadata = {
@@ -70,27 +91,8 @@ class FundingCheck(Check):
             "description": metadata.get("description", ""),
         }
 
-        input_hash = self._get_input_hash(check_metadata, award_description)
-
+        input_hash = self._get_input_hash(check_metadata, awards)
         return previous_run.state.get("input_hash") != input_hash
-
-    def _get_award_description(self, funding):
-        """Extract award description from community funding metadata."""
-        if not funding:
-            return None
-
-        award_id = (funding[0].get("award") or {}).get("id")
-        if not award_id:
-            return None
-
-        awards_service = current_service_registry.get("awards")
-        award = awards_service.read(system_identity, award_id)
-
-        return (
-            award.to_dict()
-            .get("description", {})
-            .get("en")
-        )
 
     def run(self, record, config: CheckConfig, **kwargs):
         """Run the funding relevance check on a record with the given configuration."""
@@ -121,25 +123,30 @@ class FundingCheck(Check):
         )
 
         community = current_communities.service.record_cls.get_record(config.community_id)
-        community_funding = community["metadata"].get("funding") or []
-        award_description = self._get_award_description(community_funding)
+        award_descriptions = self._get_awards_description(record, community)
 
         metadata = record["metadata"]
         check_metadata = {
             "title": metadata.get("title", ""),
             "description": metadata.get("description", ""),
         }
-        input_hash = self._get_input_hash(check_metadata, award_description)
+        input_hash = self._get_input_hash(check_metadata, award_descriptions)
 
-        if not award_description:
+        if not award_descriptions:
             return get_updated_result(
                 check_result,
-                message="No award found for the project.",
+                message="No award found for the project or record.",
+                success=False,
+            ), {"input_hash": input_hash}
+        if len(award_descriptions) > 1:
+            return get_updated_result(
+                check_result,
+                message="Multiple awards found for the project or record. The check will be skipped.",
                 success=False,
             ), {"input_hash": input_hash}
 
         try:
-            response = run_funding_relevance_workflow(check_metadata, award_description)
+            response = run_funding_relevance_workflow(check_metadata, award_descriptions[0])
 
         except Exception:
             return get_updated_result(

@@ -518,6 +518,7 @@ def create_eu_checks():
     eu_comm = community_service.record_cls.pid.resolve("eu")
     create_metadata_checks(eu_comm)
     create_file_format_checks(eu_comm)
+    create_funding_check(eu_comm)
     print("EU Open Research Repository community checks created/updated successfully.")
 
     # Create checks for sub-communities
@@ -649,6 +650,28 @@ def create_file_format_checks(eu_comm):
     db.session.commit()
     print(
         f"File format checks created/updated successfully for community {eu_comm.slug}."
+    )
+
+
+def create_funding_check(comm):
+    existing_check = CheckConfig.query.filter_by(
+        community_id=comm.id, check_id="funding"
+    ).one_or_none()
+    if existing_check:
+        existing_check.params = FUNDING_CHECK_CONFIG
+        existing_check.target_type = "record"
+    else:
+        db.session.add(CheckConfig(
+            community_id=comm.id,
+            check_id="funding",
+            params=FUNDING_CHECK_CONFIG,
+            target_type="record",
+            severity=Severity.WARN,
+            enabled=True,
+        ))
+    db.session.commit()
+    print(
+        f"Funding check created/updated successfully for community {comm.slug}."
     )
 
 

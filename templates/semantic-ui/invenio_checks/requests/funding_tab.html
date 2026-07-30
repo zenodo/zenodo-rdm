@@ -8,39 +8,40 @@
 <div class="ui column stackable grid">
   <div class="ten wide column">
     <div class="ui very relaxed list rel-pl-2">
+    {% set receiver_community_id = invenio_request.receiver.community %}
 
       {% for check in checks %}
+        {% if check.config.community_id|string == receiver_community_id %}
+          {% set status = check.status.name %}
+          {% set running = status == "PENDING" or status == "RUNNING" %}
+          {% set has_errors = check.result.errors or status == "ERROR" %}
+          {% set icon = (
+            severity_tpl.severity_level_icons["running"] if running else
+            severity_tpl.severity_level_icons["warning"] if has_errors else
+            severity_tpl.severity_level_icons["success"]
+          ) %}
 
-        {% set status = check.status.name %}
-        {% set running = status == "PENDING" or status == "RUNNING" %}
-        {% set has_errors = check.result.errors or status == "ERROR" %}
-        {% set icon = (
-          severity_tpl.severity_level_icons["running"] if running else
-          severity_tpl.severity_level_icons["warning"] if has_errors else
-          severity_tpl.severity_level_icons["success"]
-        ) %}
-
-        <div class="item">
-          <div class="content">
-            <div class="header">
-              <i class="{{ icon }}"></i>
-              {{ check.result.title }}
-            </div>
-            <div class="text-muted">
-              <p><i class="rel-p-1 fire blue icon"></i>AI-assisted grant matching</p>
-            </div>
-            <div class="pt-5 text-muted">
-              {% if running %}
-              <p>Analysis in progress, please check back shortly.</p>
-              {% elif status == "ERROR" %}
-              <p>Could not complete this check within the maximum number of retries.</p>
-              {% else %}
-              <p>{{ check.result.description }}</p>
-              {% endif %}
+          <div class="item">
+            <div class="content">
+              <div class="header">
+                <i class="{{ icon }}"></i>
+                {{ check.result.title }}
+              </div>
+              <div class="text-muted">
+                <p><i class="rel-p-1 fire blue icon"></i>AI-assisted grant matching</p>
+              </div>
+              <div class="pt-5 text-muted">
+                {% if running %}
+                <p>Analysis in progress, please check back shortly.</p>
+                {% elif status == "ERROR" %}
+                <p>Could not complete this check within the maximum number of retries.</p>
+                {% else %}
+                <p>{{ check.result.description }}</p>
+                {% endif %}
+              </div>
             </div>
           </div>
-        </div>
-
+        {% endif %}
       {% endfor %}
 
     </div>
