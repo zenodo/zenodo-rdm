@@ -22,7 +22,8 @@ dependencies = [
     "uwsgi-tools>=1.1.1",
     "invenio-records-resources",
     "invenio-github>=7.0.0,<8.0.0",
-    "invenio-rdm-records"
+    "invenio-rdm-records",
+    "invenio-checks"
 ]
 
 [tool.uv.sources]
@@ -33,6 +34,7 @@ invenio-swh = { git = "https://github.com/inveniosoftware/invenio-swh", rev = "v
 invenio-records-resources = { git = "https://github.com/inveniosoftware/invenio-records-resources", branch = "feature/orcha-fix-read-many" }
 invenio-app-rdm = { git = "https://github.com/inveniosoftware/invenio-app-rdm", branch = "feature/orcha" }
 invenio-rdm-records = { git = "https://github.com/inveniosoftware/invenio-rdm-records", branch = "feature/orcha" }
+invenio-checks = { git = "https://github.com/inveniosoftware/invenio-checks", branch = "feature/orcha" }
 
 [tool.uv.workspace]
 members = [
