@@ -13,7 +13,7 @@ class QuotaIncreasePolicy(BasePolicy):
     id = "quota-increase-policy-v1"
     description = _("You can increase the quota of your drafts.")
 
-    def is_allowed(self, identity, record):
+    def is_allowed(self, identity, record=None):
         """Only owners can increase the quota."""
         if identity.user.verified_at:
             if record:
