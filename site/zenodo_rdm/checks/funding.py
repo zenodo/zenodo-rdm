@@ -9,7 +9,7 @@ import hashlib
 import json
 
 from invenio_checks.base import Check, CheckResult
-from invenio_checks.models import CheckConfig, CheckRunStatus
+from invenio_checks.models import CheckConfig
 from invenio_communities.proxies import current_communities
 from invenio_pidstore.errors import PIDDoesNotExistError
 from invenio_records_resources.proxies import current_service_registry
@@ -78,10 +78,10 @@ class FundingCheck(Check):
         For the funding check, return True if the hash of the inputs (record title and
         description, as well as the award description) has changed since the last check
         run. Otherwise, return False as the last run can be reused.
-        """
-        if not previous_run or previous_run.status != CheckRunStatus.COMPLETED:
-            return True
 
+        A pending or running run keeps the last completed hash, so an unrelated edit
+        waits for it instead of starting a second run.
+        """
         community = current_communities.service.record_cls.get_record(config.community_id)
         awards = self._get_awards_description(record, community)
 
