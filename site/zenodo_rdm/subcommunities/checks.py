@@ -268,6 +268,7 @@ class CommunityMembershipCheck(Check):
 
     @classmethod
     def can_rerun(cls, identity, record_id):
+        """Assess whether a check can be rerun."""
         permission = current_communities.service.config.permission_policy_cls(
             action="members_manage",
             community_id=str(record_id),
@@ -498,6 +499,7 @@ class SubcommunityRecordCheck(Check):
 
     @classmethod
     def can_rerun(cls, identity, record_id):
+        """Assess whether a check can be rerun."""
         permission = current_communities.service.config.permission_policy_cls(
             action="members_manage",
             community_id=str(record_id),
