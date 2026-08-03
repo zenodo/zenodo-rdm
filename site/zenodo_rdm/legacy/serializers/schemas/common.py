@@ -331,7 +331,7 @@ class MetadataSchema(Schema):
             if scheme == "url":
                 grant["url"] = identifier["identifier"]
             if scheme == "doi":
-                grant["doi"] = identifier["doi"]
+                grant["doi"] = identifier["identifier"]
         return grant
 
     @post_dump(pass_original=True)
