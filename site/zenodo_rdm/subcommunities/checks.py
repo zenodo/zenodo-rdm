@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright (C) 2026 CERN.
 #
@@ -10,7 +9,6 @@ from urllib.parse import urlparse
 
 from invenio_access.permissions import system_identity
 from invenio_accounts.models import Domain, DomainStatus, User
-from invenio_cache import current_cache
 from invenio_checks.base import Check
 from invenio_checks.contrib.metadata import ExpressionResult
 from invenio_checks.contrib.metadata.check import MetadataCheck, MetadataCheckResult
@@ -132,7 +130,6 @@ class CommunityMembershipCheck(Check):
     def run(self, record, config, **kwargs):
         """Run the check against the community's members, excluding members being removed."""
         result = MetadataCheckResult(self.id, self.title, self.description)
-        verified_domains = self._get_verified_domains()
         ec_funder_id = config.params.get("ec_funder_id", "00k4n6c32")
         award_org_data = self._get_award_org_data(record, ec_funder_id)
 
@@ -159,7 +156,7 @@ class CommunityMembershipCheck(Check):
                 continue
 
             user_domain = self._normalize_domain(user.domain)
-            verified = user_domain in verified_domains if user_domain else False
+            verified = self._is_verified_domain(user_domain) if user_domain else False
             affiliated_to = self.is_affiliated_to(user_domain, award_org_data)
 
             user_name = (
@@ -248,23 +245,13 @@ class CommunityMembershipCheck(Check):
         value = value.removeprefix("www.")
         return value if value else None
 
-    def _get_verified_domains(self):
-        """Return cached set of verified institutional domains."""
-        cache_key = "checks:verified_domains"
-        domains = current_cache.get(cache_key)
-
-        if domains is None:
-            raw_domains = Domain.query.filter(
-                Domain.status == DomainStatus.verified
-            ).all()
-            domains = {
-                norm_domain
-                for domain in raw_domains
-                if (norm_domain := self._normalize_domain(domain.domain))
-            }
-            current_cache.set(cache_key, domains, timeout=3600)
-
-        return domains
+    def _is_verified_domain(self, domain):
+        """Check if a domain is verified."""
+        match = Domain.query.filter(
+            Domain.status == DomainStatus.verified,
+            Domain.domain == domain,
+        ).first()
+        return match is not None
 
     @classmethod
     def can_rerun(cls, identity, record_id):
@@ -433,14 +420,18 @@ class SubcommunityValidationCheck(Check):
                 },
             )
             if any(h["id"] != str(record.id) for h in results.hits):
-                display = f"Grant {number} ({acronym})" if acronym else f"Grant {number}"
+                display = (
+                    f"Grant {number} ({acronym})" if acronym else f"Grant {number}"
+                )
                 duplicates.add(display)
 
         success = not duplicates
         if success:
             description = "There is no existing community registered for this grant number in the EU Open Research Repository."
         else:
-            description = f"Duplicate communities were found for {', '.join(duplicates)}."
+            description = (
+                f"Duplicate communities were found for {', '.join(duplicates)}."
+            )
         return RuleResult(
             rule_id="eligibility:no_duplicate_grant",
             rule_title="A community with the same grant already exists",
