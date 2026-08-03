@@ -2,7 +2,7 @@
 
   This file is part of Invenio.
   Copyright (C) 2026 CERN.
-  
+
   Invenio is free software; you can redistribute it and/or modify it
   under the terms of the MIT License; see LICENSE file for more details.
 #}
@@ -83,7 +83,7 @@
              </div>
            </div>
 
-           {% if rule_result.rule_id == "records:funding" and not rule_result.success %}
+           {% if rule_result.rule_id == "records:funding" and not rule_result.success and rule_result.check_results %}
              {% set result = rule_result.check_results[0].value %}
 
              <div class="ui warning message mt-0">
