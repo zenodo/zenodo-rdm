@@ -26,6 +26,7 @@ class FundingCheck(Check):
     sort_order = 30
     sync = False
     target_type = "record"
+    hide_parent_checks = True
 
     default_messages = {
         "title": "Record metadata should match grant description",
