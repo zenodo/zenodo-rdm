@@ -8,10 +8,12 @@
 <div class="ui column stackable grid">
   <div class="ten wide column">
     <div class="ui very relaxed list rel-pl-2">
+    {% set ns = namespace(empty_tab=True) %}
     {% set receiver_community_id = invenio_request.receiver.community %}
 
       {% for check in checks %}
         {% if check.config.community_id|string == receiver_community_id %}
+          {% set ns.empty_tab = False %}
           {% set status = check.status.name %}
           {% set running = status == "PENDING" or status == "RUNNING" %}
           {% set has_errors = check.result.errors or status == "ERROR" %}
@@ -43,6 +45,15 @@
           </div>
         {% endif %}
       {% endfor %}
+      {% if ns.empty_tab %}
+        <div class="item">
+          <div class="content">
+            <div class="pt-5 text-muted">
+              <p>Funding relevance check is not configured for this community.</p>
+            </div>
+          </div>
+        </div>
+      {%  endif %}
 
     </div>
   </div>
