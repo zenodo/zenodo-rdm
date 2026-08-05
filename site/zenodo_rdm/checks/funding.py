@@ -8,11 +8,15 @@
 import hashlib
 import json
 
+from invenio_access.permissions import system_identity
 from invenio_checks.base import Check, CheckResult
 from invenio_checks.models import CheckConfig
 from invenio_communities.proxies import current_communities
 from invenio_pidstore.errors import PIDDoesNotExistError
+from invenio_rdm_records.checks.requests import CommunityInclusion, CommunitySubmission
 from invenio_records_resources.proxies import current_service_registry
+from invenio_requests.proxies import current_requests_service
+from invenio_search.api import dsl
 
 from zenodo_rdm.orcha.utils import run_funding_relevance_workflow
 
@@ -73,6 +77,28 @@ class FundingCheck(Check):
             if (description := award.get("description", {}).get("en")) is not None
         ]
 
+    def _get_ec_requests(self, record, community):
+        """Return EC existing open or accepted requests.
+
+        Only queries the community inclusion or community submission requests, open or accepted,
+        where the topic matches the record and the receiver is the EOR repository.
+        """
+        return current_requests_service.search(
+            system_identity,
+            extra_filter=dsl.Q(
+                "bool",
+                must=[
+                    dsl.Q("term", **{"topic.record": record.pid.pid_value}),
+                    dsl.Q("term", **{"receiver.community": community.pid.pid_value}),
+                    dsl.Q("terms", **{"type": [CommunitySubmission.type_id, CommunityInclusion.type_id]}),
+                    dsl.Q("bool", should=[
+                        dsl.Q("term", **{"is_open": True}),
+                        dsl.Q("term", **{"status": "accepted"}),
+                    ], minimum_should_match=1),
+                ],
+            ),
+        )
+
     def should_rerun(self, record, config, previous_run, **kwargs):
         """Return True if the check should run again.
 
@@ -103,7 +129,7 @@ class FundingCheck(Check):
             if not success:
                 check_result.errors.append(
                     {
-                        "field": f"funding",
+                        "field": "metadata.funding",
                         "messages": [message],
                         "description": description,
                         "severity": config.severity.error_value,
@@ -125,6 +151,15 @@ class FundingCheck(Check):
 
         community = current_communities.service.record_cls.get_record(config.community_id)
         award_descriptions = self._get_awards_description(record, community)
+
+        is_ec_community = community.slug == "eu"
+        no_ec_requests = self._get_ec_requests(record, community).total == 0
+        if is_ec_community and no_ec_requests:
+            return get_updated_result(
+                check_result,
+                message="Skipping EOR funding check run, as there is no open request to the community.",
+                success=False,
+            ), {}
 
         metadata = record["metadata"]
         check_metadata = {
