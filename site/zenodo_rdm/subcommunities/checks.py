@@ -166,6 +166,7 @@ class CommunityMembershipCheck(Check):
             )
 
             user_data = {
+                "id": user.id,
                 "name": user_name,
                 "domain": user.domain,
                 "role": member.role.capitalize(),

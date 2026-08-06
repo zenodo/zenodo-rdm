@@ -14,6 +14,7 @@ under the terms of the MIT License; see LICENSE file for more details.
 <div class="ui column stackable grid">
   <div class="ten wide column">
     <div class="ui very relaxed list rel-pl-2">
+      {% set is_admin = administration_permission.allows(g.identity) %}
       {% for check in checks %}
       {{ header_tpl.render_check_header(check) }}
         {% for rule_result in check.result.rule_results %}
@@ -28,9 +29,20 @@ under the terms of the MIT License; see LICENSE file for more details.
             <div class="rel-pt-1 rel-pb-1">
               {% for value in check_result.value %}
                 <div class="ui {{ value.level }} small message">
-                  {% if value.name %}<strong>{{ value.name ~ " - " ~ value.role }}</strong>
+                  {% set is_self = current_user.is_authenticated and current_user.id == value.id %}
+                  {% if value.name %}
+                    <strong>
+                      {% if is_self %}
+                        <a href="/account/settings/profile">{{ value.name }}</a>
+                      {% elif is_admin %}
+                        <a href="/administration/users?q=id%3A{{ value.id }}">{{ value.name }}</a>
+                      {% else %}
+                        {{ value.name }}
+                      {% endif %}
+                      {{ " - " ~ value.role }}
+                    </strong>
                   {% else %}
-                      <strong>{{ value.role }}</strong>
+                    <strong>{{ value.role }}</strong>
                   {% endif %}
                   <div class="text-muted">
                       {{ value.domain }}
