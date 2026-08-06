@@ -20,6 +20,7 @@ invenio_openaire = "zenodo_rdm.openaire.ext:OpenAIRE"
 zenodo_rdm_stats = "zenodo_rdm.stats.ext:ZenodoStats"
 zenodo_rdm_curation = "zenodo_rdm.curation.ext:ZenodoCuration"
 zenodo_rdm_exporter = "zenodo_rdm.exporter.ext:ZenodoExporter"
+zenodo_rdm_checks = "zenodo_rdm.checks.ext:ZenodoChecks"
 
 [project.entry-points."invenio_base.api_apps"]
 zenodo_rdm_legacy = "zenodo_rdm.legacy.ext:ZenodoLegacy"
