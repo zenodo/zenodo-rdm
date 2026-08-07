@@ -13,19 +13,21 @@ class QuotaIncreasePolicy(BasePolicy):
     id = "quota-increase-policy-v1"
     description = _("You can increase the quota of your drafts.")
 
-    def is_allowed(self, identity, record):
+    def is_allowed(self, identity, record=None):
         """Only owners can increase the quota."""
-        if identity.user.verified_at:
-            if record:
-                is_record_owner = (
-                    identity.user.id == record.parent.access.owned_by.owner_id
-                )
-                return is_record_owner
-            else:
-                # unsaved drafts are always valid as you are the owner
-                # i.e. you can't share an unsaved draft to someone else
-                return True
-        return False
+        # disabled to allow any user, kept to be quickly re-enabled if needed
+        # if not identity.user.verified_at:
+        #     return False
+
+        if record:
+            is_record_owner = (
+                identity.user.id == record.parent.access.owned_by.owner_id
+            )
+            return is_record_owner
+        else:
+            # unsaved drafts are always valid as you are the owner
+            # i.e. you can't share an unsaved draft to someone else
+            return True
 
     def evaluate(self, identity, record):
         """
