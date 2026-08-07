@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2024 CERN
+# SPDX-FileCopyrightText: 2024-2026 CERN
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Handlers for ZenodoRDM Moderation.
 
@@ -22,6 +22,8 @@ Moderation actions are based on the following logic:
   we actually block the user. Otherwise we open a moderation request to be reviewed by
   admins manually.
 """
+
+from dataclasses import asdict
 
 import invenio_rdm_records.services.communities.moderation as community_moderation
 from flask import current_app
@@ -55,7 +57,7 @@ class BaseModerationHandler:
 
     def evaluate_result(self, params):
         """Evaluate aggregate result based on params."""
-        return sum(params.values())
+        return sum(result.score for result in params.values())
 
     @property
     def should_apply_actions(self):
@@ -81,10 +83,11 @@ class BaseModerationHandler:
                 results[name] = rule(identity, draft=draft, record=record)
 
             evaluation = self.evaluate_result(results)
+            obj = record if record is not None else draft
             action_ctx = {
                 "user_id": user.id,
-                "record_pid": record.pid.pid_value,
-                "results": results,
+                "record_pid": obj.pid.pid_value,
+                "results": {name: asdict(result) for name, result in results.items()},
                 "evaluation": evaluation,
             }
             current_app.logger.debug("Moderation score calculated", extra=action_ctx)
