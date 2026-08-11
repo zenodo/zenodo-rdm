@@ -8,7 +8,12 @@ EXPORTER_BUCKET_UUID = UUID("00000000-0000-0000-0000-000000000001")
 
 EXPORTER_NUMBER_VERSIONS_TO_KEEP = 3
 
-EXPORTER_JOB_DEFAULT_FORMAT = "json"
+EXPORTER_JOB_DEFAULT_FORMATS = ("json",)
 
 # TODO: Use `example-community-slug` when custom args work properly.
 EXPORTER_JOB_DEFAULT_COMMUNITY_SLUG = "biosyslit"
+
+# Defaults to ``<instance path>/archive/exporter``. In production, this path must
+# be backed by a persistent volume so completed exports survive job restarts and
+# EOS outages.
+EXPORTER_STAGING_PATH = None

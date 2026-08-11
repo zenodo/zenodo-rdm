@@ -13,15 +13,15 @@ class ExportRecords(JobType):
     """Export Records Job."""
 
     task = export_records
-    description = _("Export records in a given format for given (optional) community ")
+    description = _("Export records in given formats for an optional community")
     title = _("Export Records")
     id = "export_records"
 
     @classmethod
     def build_task_arguments(cls, job_obj, since=None, **kwargs):
         """Generate default job arguments."""
-        default_format = current_app.config["EXPORTER_JOB_DEFAULT_FORMAT"]
+        default_formats = current_app.config["EXPORTER_JOB_DEFAULT_FORMATS"]
         default_community_slug = current_app.config[
             "EXPORTER_JOB_DEFAULT_COMMUNITY_SLUG"
         ]
-        return {"format": default_format, "community_slug": default_community_slug}
+        return {"formats": default_formats, "community_slug": default_community_slug}
