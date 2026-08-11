@@ -6,6 +6,7 @@ import click
 from flask.cli import with_appcontext
 
 from zenodo_rdm.exporter.tasks import export_records
+from zenodo_rdm.exporter.writers import EXPORT_FORMATS
 
 
 @click.group()
@@ -17,9 +18,11 @@ def exporter():
 @click.option(
     "-f",
     "--format",
-    type=click.Choice(["json", "xml"], case_sensitive=False),
+    "formats",
+    type=click.Choice(EXPORT_FORMATS, case_sensitive=False),
+    multiple=True,
     required=True,
-    help="Export format of the records.",
+    help="Record format. Repeat to export more than one format.",
 )
 @click.option(
     "-c",
@@ -28,10 +31,10 @@ def exporter():
     help="Slug of the community.",
 )
 @with_appcontext
-def export_records_command(format, community_slug):
+def export_records_command(formats, community_slug):
     """Export records."""
     try:
-        export_records(format, community_slug)
+        export_records(formats, community_slug)
         click.secho("Records exported successfully.", fg="green")
     except Exception as e:
-        click.secho(f"Error exporting records: {e}", fg="red")
+        raise click.ClickException(f"Error exporting records: {e}") from e

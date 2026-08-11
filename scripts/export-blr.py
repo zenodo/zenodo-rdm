@@ -10,18 +10,20 @@ Usage:
 """
 
 from invenio_app.factory import create_api
+
 from zenodo_rdm.exporter.tasks import export_records
 
 
 def export_blr():
     """Export records."""
-    format = "json"
+    formats = ("json",)
     community_slug = "biosyslit"
     try:
-        export_records(format, community_slug)
-        print(f"Records exported successfully.")
+        export_records(formats, community_slug)
+        print("Records exported successfully.")
     except Exception as e:
         print(f"Error exporting records: {e}")
+        raise
 
 
 if __name__ == "__main__":
