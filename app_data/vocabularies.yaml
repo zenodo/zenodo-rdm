@@ -4,6 +4,9 @@ licenses:
 descriptiontypes:
   pid-type: dty
   data-file: vocabularies/description_types.yaml
+affiliations:
+  pid-type: aff
+  data-file: vocabularies/affiliations.yaml
 funders:
   pid-type: fun
   data-file: vocabularies/funders.yaml

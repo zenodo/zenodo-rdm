@@ -8,92 +8,41 @@
   program: FP7-INFRASTRUCTURES
   short_description:
     en: Building a participatory open access infrastructure for scientific information, harvesting publications from institutional repositories and linking peer-reviewed literature with associated datasets and collections.
+  description:
+    en: |-
+      OpenAIREplus will build a 2nd-Generation Open Access Infrastructure by significantly expanding in several directions the outcomes of the OpenAIRE project, which implements the EC Open Access (OA) pilot. Capitalizing on the OpenAIRE infrastructure, built for managing FP7 and ERC funded articles, and the associated supporting mechanism of the European Helpdesk System, OpenAIREplus will "develop an open access, participatory infrastructure for scientific information". It will significantly expand its base of harvested publications to also include all OA publications indexed by the DRIVER infrastructure (more than 270 validated institutional repositories) and any other repository containing "peer-reviewed literature" that complies with certain standards. It will also generically harvest and index the metadata of scientific datasets in selected diverse OA thematic data repositories. It will support the concept of linked publications by deploying novel services for "linking peer-reviewed literature and associated data sets and collections", from link discovery based on diverse forms of mining (textual, usage, etc.), to storage, visual representation, and on-line exploration. It will offer both user-level services to experts and "non-scientists" alike as well as programming interfaces for "providers of value-added services" to build applications on its content. Deposited articles and data will be openly accessible through an enhanced version of the OpenAIRE portal, together with any available relevant information on associated project funding and usage statistics. OpenAIREplus will retain its European footprint, engaging people and scientific repositories in almost all 27 EU member states and beyond. The technical work will be complemented by a suite of studies and associated research efforts that will partly proceed in collaboration with "different European initiatives" and investigate issues of "intellectual property rights, efficient financing models, and standards".
   identifiers:
     - identifier: https://cordis.europa.eu/project/id/283595
       scheme: url
   start_date: "2011-12-01"
   end_date: "2014-12-31"
-  # TODO: Organizations, will become a relation field, so we only need to link via `id`
-  # and not repeat the scheme and organization name
   organizations:
-    - id: "04gnjpq42"
-      scheme: ror
-      organization: National and Kapodistrian University of Athens
-    - id: "01ggx4157"
-      scheme: ror
-      organization: European Organization for Nuclear Research
-    - id: "01zjc6908"
-      scheme: ror
-      organization: European Molecular Biology Laboratory
-    - id: "01y9bpm73"
-      scheme: ror
-      organization: University of Göttingen
-    - id: "02hpadn98"
-      scheme: ror
-      organization: Bielefeld University
-    - id: "0546hnb39"
-      scheme: ror
-      organization: University of Konstanz
-    - id: "04zaypm56"
-      scheme: ror
-      organization: Consiglio Nazionale delle Ricerche
-    - id: "043c0p156"
-      scheme: ror
-      organization: Royal Netherlands Academy of Arts and Sciences
-    - id: "039bjqg32"
-      scheme: ror
-      organization: University of Warsaw
-    - id: "037wpkx04"
-      scheme: ror
-      organization: University of Minho
-    - id: "02crff812"
-      scheme: ror
-      organization: University of Zurich
-    - id: "03prydq77"
-      scheme: ror
-      organization: University of Vienna
-    - id: "02qjrjx09"
-      scheme: ror
-      organization: University of Cyprus
-    - id: "04qtj9h94"
-      scheme: ror
-      organization: Technical University of Denmark
-    - id: "03z77qz90"
-      scheme: ror
-      organization: University of Tartu
-    - id: "034thb936"
-      scheme: ror
-      organization: Fundación Española para la Ciencia y la Tecnología
-    - id: "040af2s02"
-      scheme: ror
-      organization: University of Helsinki
-    - id: "035c9qf67"
-      scheme: ror
-      organization: Couperin
-    - id: "033m02g29"
-      scheme: ror
-      organization: National Hellenic Research Foundation
-    - id: "02mw21745"
-      scheme: ror
-      organization: Ruđer Bošković Institute
-    - id: "02tyrky19"
-      scheme: ror
-      organization: Trinity College Dublin
-    - id: "01me6gb93"
-      scheme: ror
-      organization: Kaunas University of Technology
-    - id: "036x5ad56"
-      scheme: ror
-      organization: University of Luxembourg
-    - id: "05g3mes96"
-      scheme: ror
-      organization: University of Latvia
-    - id: "03a62bv60"
-      scheme: ror
-      organization: University of Malta
-    - id: "056pp6k18"
-      scheme: ror
-      organization: EIFL
+    - id: "04gnjpq42"  # National and Kapodistrian University of Athens
+    - id: "01ggx4157"  # European Organization for Nuclear Research
+    - id: "01zjc6908"  # European Molecular Biology Laboratory
+    - id: "01y9bpm73"  # University of Göttingen
+    - id: "02hpadn98"  # Bielefeld University
+    - id: "0546hnb39"  # University of Konstanz
+    - id: "04zaypm56"  # National Research Council
+    - id: "043c0p156"  # Royal Netherlands Academy of Arts and Sciences
+    - id: "039bjqg32"  # University of Warsaw
+    - id: "037wpkx04"  # University of Minho
+    - id: "02crff812"  # University of Zurich
+    - id: "03prydq77"  # University of Vienna
+    - id: "02qjrjx09"  # University of Cyprus
+    - id: "04qtj9h94"  # Technical University of Denmark
+    - id: "03z77qz90"  # University of Tartu
+    - id: "034thb936"  # Fundación Española para la Ciencia y la Tecnología
+    - id: "040af2s02"  # University of Helsinki
+    - id: "035c9qf67"  # Couperin
+    - id: "033m02g29"  # National Hellenic Research Foundation
+    - id: "02mw21745"  # Ruđer Bošković Institute
+    - id: "02tyrky19"  # Trinity College Dublin
+    - id: "01me6gb93"  # Kaunas University of Technology
+    - id: "036x5ad56"  # University of Luxembourg
+    - id: "05g3mes96"  # University of Latvia
+    - id: "03a62bv60"  # University of Malta
+    - id: "056pp6k18"  # EIFL
 
 - id: "00k4n6c32::654039"
   number: "654039"
@@ -105,42 +54,33 @@
   program: H2020-EU.1.4.
   short_description:
     en: Establishing seamless integration between articles, data and researchers across the research lifecycle by developing interoperable persistent identifier services across DataCite, ORCID and other global research infrastructures.
+  description:
+    en: |-
+      Five years ago, a global infrastructure to uniquely attribute to researchers their scientific artefacts (articles, data, software…) appeared technically and socially infeasible. Since then, DataCite has minted over 3.5m unique identifiers for data. ORCID has deployed an open solution for identification of contributors with over 850,000 registrants in less than 2 years.
+
+      THOR will leverage these emerging global infrastructures to support the H2020 goal to make every researcher ‘digital’ and increase creativity and efficiency of research, while bridging the R&D divide between developed and less-developed regions. We will establish interoperability between existing resources, linking digital identifiers across platforms and propagating attribution information.
+
+      We will integrate PID services across the research lifecycle and data publishing workflows in four advanced research communities, and then roll-out core services and service building blocks for the wider community. These open resources will foster an open and sustainable e-infrastructure across stakeholders to avoid duplications, give economies of scale, richness of services and the ability to respond rapidly to opportunities for innovation.
+
+      THOR is not just relevant to the EINFRA-7-1024 Call, but will become a pervasive element of the EINFRA family of e-Infrastructure resources over the next 3 years. It will allow data-management and curation services to exploit knowledge of data location and attribution; provide robust and persistent mechanism for linking literature and data; enable search and resolving services and generate incentives for Open Science; deliver provenance and attribution mechanisms to underpin data exchange; and provide minting and resolving services for data citation workflows.
+
+      Its impact will enable third-party services, no-profit and commercial, to leverage the scholarly record.
   identifiers:
     - identifier: https://cordis.europa.eu/project/id/654039
       scheme: url
   start_date: "2015-06-01"
   end_date: "2017-11-30"
   organizations:
-    - id: "05dhe8b71"
-      scheme: ror
-      organization: British Library
-    - id: "01ggx4157"
-      scheme: ror
-      organization: European Organization for Nuclear Research
-    - id: "04wxnsj81"
-      scheme: ror
-      organization: DataCite
-    - id: "01zjc6908"
-      scheme: ror
-      organization: European Molecular Biology Laboratory
-    - id: "04ers2y35"
-      scheme: ror
-      organization: University of Bremen
-    - id: "04fa4r544"
-      scheme: ror
-      organization: ORCID
-    - id: "02bfwt286"
-      scheme: ror
-      organization: Monash University
-    - id: "0130frc33"
-      scheme: ror
-      organization: University of North Carolina at Chapel Hill
-    - id: "013fhv752"
-      scheme: ror
-      organization: Elsevier
-    - id: "008zgvp64"
-      scheme: ror
-      organization: Public Library of Science
+    - id: "05dhe8b71"  # British Library
+    - id: "01ggx4157"  # European Organization for Nuclear Research
+    - id: "04wxnsj81"  # DataCite
+    - id: "01zjc6908"  # European Molecular Biology Laboratory
+    - id: "04ers2y35"  # University of Bremen
+    - id: "04fa4r544"  # ORCID
+    - id: "02bfwt286"  # Monash University
+    - id: "0130frc33"  # University of North Carolina at Chapel Hill
+    - id: "013fhv752"  # Elsevier BV (Netherlands)
+    - id: "008zgvp64"  # Public Library of Science
 
 - id: "00k4n6c32::777523"
   number: "777523"
@@ -153,48 +93,31 @@
   website: https://www.project-freya.eu/
   short_description:
     en: Extending the persistent identifier landscape into a core component of European and global research e-infrastructures, building the PID Graph, PID Forum and PID Commons to support the European Open Science Cloud.
+  description:
+    en: |-
+      The goal of the FREYA consortium is to iteratively extend a robust environment for Persistent Identifiers (PIDs) into a core component of European and global research e-infrastructures. The resulting FREYA services will cover a wide range of resources in the research and innovation landscape and enhance the links between them so that they can be exploited in many disciplines and research processes. This will provide an essential building block of the European Open Science Cloud (EOSC). Moreover, the FREYA project will establish an open, sustainable, and trusted framework for collaborative self-governance of PIDs and services built on them.
+
+      FREYA capitalises on the successes of the THOR project and will build on the core services of the existing trusted PID systems of the project partners, developing them in the context of established community-based services and more widely through the EOSC. The FREYA e-infrastructure components will be built on technologies and services that are already well proven. New services, and new PID types, will be introduced and moved up the scale of Technology Readiness Levels, so that the emerging e-infrastructure services are prototyped and positioned for evolution beyond the end of the FREYA project.
+
+      The vision of FREYA is built on three key ideas: the PID Graph, PID Forum and PID Commons. The PID Graph connects and integrates PID systems to create an information map of relationships across PIDs that provides a basis for new services. The PID Forum is a stakeholder community, whose members collectively oversee the development and deployment of new PID types; it will be strongly linked to the Research Data Alliance (RDA). The sustainability of the PID infrastructure resulting from FREYA beyond the lifetime of the project itself is the concern of the PID Commons, defining the roles, responsibilities and structures for good self-governance based on consensual decision-making.
   identifiers:
     - identifier: https://cordis.europa.eu/project/id/777523
       scheme: url
   start_date: "2017-12-01"
   end_date: "2020-11-30"
   organizations:
-    - id: "001aqnf71"
-      scheme: ror
-      organization: UK Research and Innovation
-    - id: "05dhe8b71"
-      scheme: ror
-      organization: British Library
-    - id: "02bfwt286"
-      scheme: ror
-      organization: Monash University
-    - id: "01ggx4157"
-      scheme: ror
-      organization: European Organization for Nuclear Research
-    - id: "04wxnsj81"
-      scheme: ror
-      organization: DataCite
-    - id: "01zjc6908"
-      scheme: ror
-      organization: European Molecular Biology Laboratory
-    - id: "04ers2y35"
-      scheme: ror
-      organization: University of Bremen
-    - id: "008zgvp64"
-      scheme: ror
-      organization: Public Library of Science
-    - id: "02twcfp32"
-      scheme: ror
-      organization: Crossref
-    - id: "04fa4r544"
-      scheme: ror
-      organization: ORCID
-    - id: "043c0p156"
-      scheme: ror
-      organization: Royal Netherlands Academy of Arts and Sciences
-    - id: "02rt9z237"
-      scheme: ror
-      organization: Hindawi
+    - id: "001aqnf71"  # UK Research and Innovation
+    - id: "05dhe8b71"  # British Library
+    - id: "02bfwt286"  # Monash University
+    - id: "01ggx4157"  # European Organization for Nuclear Research
+    - id: "04wxnsj81"  # DataCite
+    - id: "01zjc6908"  # European Molecular Biology Laboratory
+    - id: "04ers2y35"  # University of Bremen
+    - id: "008zgvp64"  # Public Library of Science
+    - id: "02twcfp32"  # Crossref
+    - id: "04fa4r544"  # ORCID
+    - id: "043c0p156"  # Royal Netherlands Academy of Arts and Sciences
+    - id: "02rt9z237"  # Hindawi (United Kingdom)
 
 - id: "00k4n6c32::777541"
   number: "777541"
@@ -206,99 +129,44 @@
   program: H2020-EU.1.4.
   short_description:
     en: Strengthening the OpenAIRE infrastructure to support Open Access and Open Data mandates across Europe and bring together stakeholders in scholarly communication.
+  description:
+    en: |-
+      OpenAIRE-Advance continues the mission of OpenAIRE to support the Open Access/Open Data mandatesinEurope. By sustaining the current successful infrastructure, comprised of a human network and robust technical services, it consolidates its achievements while working to shift the momentum among its communities to Open Science, aiming to be a trusted e-Infrastructurewithin the realms of the European Open Science Cloud.In this next phase, OpenAIRE-Advance strives to empower its National Open Access Desks (NOADs) so they become a pivotal part within their own national data infrastructures, positioningOA and open science onto national agendas. The capacity building activities bring together experts ontopical task groups in thematic areas(open policies, RDM, legal issues, TDM), promoting a train the trainer approach, strengthening and expanding the pan-European Helpdesk with support and training toolkits, training resources and workshops.It examines key elements of scholarly communication, i.e., co-operative OA publishing and next generation repositories, to develop essential building blocks of the scholarly commons.On the technical level OpenAIRE-Advance focuses on the operation and maintenance of the OpenAIRE technical TRL8/9 services,and radically improvesthe OpenAIRE services on offer by: a) optimizing their performance and scalability, b) refining their functionality based on end-user feedback, c) repackagingthem into products, taking a professional marketing approach  with well-defined KPIs, d)consolidating the range of services/products into a common e-Infra catalogue to enable a wider uptake.OpenAIRE-Advancesteps up its outreach activities with concrete pilots with three major RIs,citizen science initiatives, and innovators via a rigorous Open Innovation programme. Finally, viaits partnership with COAR, OpenAIRE-Advance consolidatesOpenAIRE’s global roleextending its collaborations with Latin America, US, Japan, Canada, and Africa.
   identifiers:
     - identifier: https://cordis.europa.eu/project/id/777541
       scheme: url
   start_date: "2018-01-01"
   end_date: "2021-02-28"
   organizations:
-    - id: "04gnjpq42"
-      scheme: ror
-      organization: National and Kapodistrian University of Athens
-    - id: "01y9bpm73"
-      scheme: ror
-      organization: University of Göttingen
-    - id: "04zaypm56"
-      scheme: ror
-      organization: Consiglio Nazionale delle Ricerche
-    - id: "048tbm396"
-      scheme: ror
-      organization: University of Turin
-    - id: "039bjqg32"
-      scheme: ror
-      organization: University of Warsaw
-    - id: "01ggx4157"
-      scheme: ror
-      organization: European Organization for Nuclear Research
-    - id: "0576by029"
-      scheme: ror
-      organization: Athena Research Center
-    - id: "02j61yw88"
-      scheme: ror
-      organization: Aristotle University of Thessaloniki
-    - id: "05tcasm11"
-      scheme: ror
-      organization: GRNET
-    - id: "02hpadn98"
-      scheme: ror
-      organization: Bielefeld University
-    - id: "037wpkx04"
-      scheme: ror
-      organization: University of Minho
-    - id: "056pp6k18"
-      scheme: ror
-      organization: EIFL
-    - id: "043c0p156"
-      scheme: ror
-      organization: Royal Netherlands Academy of Arts and Sciences
-    - id: "01nrxwf90"
-      scheme: ror
-      organization: University of Edinburgh
-    - id: "00vtgdb53"
-      scheme: ror
-      organization: University of Glasgow
-    - id: "05n09v162"
-      scheme: ror
-      organization: DARIAH
-    - id: "03prydq77"
-      scheme: ror
-      organization: University of Vienna
-    - id: "02mw21745"
-      scheme: ror
-      organization: Ruđer Bošković Institute
-    - id: "02qjrjx09"
-      scheme: ror
-      organization: University of Cyprus
-    - id: "02e2c7k09"
-      scheme: ror
-      organization: Delft University of Technology
-    - id: "01rv9gx86"
-      scheme: ror
-      organization: Jisc
-    - id: "03zee5r16"
-      scheme: ror
-      organization: Sikt – Norwegian Agency for Shared Services in Education and Research
-    - id: "02j46qs45"
-      scheme: ror
-      organization: Masaryk University
-    - id: "02crff812"
-      scheme: ror
-      organization: University of Zurich
-    - id: "034thb936"
-      scheme: ror
-      organization: Fundación Española para la Ciencia y la Tecnología
-    - id: "02qsmb048"
-      scheme: ror
-      organization: University of Belgrade
-    - id: "040af2s02"
-      scheme: ror
-      organization: University of Helsinki
-    - id: "05njb9z20"
-      scheme: ror
-      organization: University of Ljubljana
-    - id: "0546hnb39"
-      scheme: ror
-      organization: University of Konstanz
+    - id: "04gnjpq42"  # National and Kapodistrian University of Athens
+    - id: "01y9bpm73"  # University of Göttingen
+    - id: "04zaypm56"  # National Research Council
+    - id: "048tbm396"  # University of Turin
+    - id: "039bjqg32"  # University of Warsaw
+    - id: "01ggx4157"  # European Organization for Nuclear Research
+    - id: "0576by029"  # Athena Research and Innovation Center In Information Communication & Knowledge Technologies
+    - id: "02j61yw88"  # Aristotle University of Thessaloniki
+    - id: "05tcasm11"  # National Infrastructures for Research and Technology -  GRNET S.A
+    - id: "02hpadn98"  # Bielefeld University
+    - id: "037wpkx04"  # University of Minho
+    - id: "056pp6k18"  # EIFL
+    - id: "043c0p156"  # Royal Netherlands Academy of Arts and Sciences
+    - id: "01nrxwf90"  # University of Edinburgh
+    - id: "00vtgdb53"  # University of Glasgow
+    - id: "05n09v162"  # Digital Research Infrastructure for the Arts and Humanities
+    - id: "03prydq77"  # University of Vienna
+    - id: "02mw21745"  # Ruđer Bošković Institute
+    - id: "02qjrjx09"  # University of Cyprus
+    - id: "02e2c7k09"  # Delft University of Technology
+    - id: "01rv9gx86"  # Jisc
+    - id: "03zee5r16"  # Sikt – Norwegian Agency for Shared Services in Education and Research
+    - id: "02j46qs45"  # Masaryk University
+    - id: "02crff812"  # University of Zurich
+    - id: "034thb936"  # Fundación Española para la Ciencia y la Tecnología
+    - id: "02qsmb048"  # University of Belgrade
+    - id: "040af2s02"  # University of Helsinki
+    - id: "05njb9z20"  # University of Ljubljana
+    - id: "0546hnb39"  # University of Konstanz
 
 - id: "00k4n6c32::101017452"
   number: "101017452"
@@ -310,45 +178,26 @@
   program: H2020-EU.1.4.1.3.
   short_description:
     en: Onboarding fourteen Open Science services to the EOSC across PUBLISH, MONITOR and DISCOVER portfolios to embed open and FAIR practices into researchers' workflows.
+  description:
+    en: |-
+      OpenAIRE-Nexus brings in Europe, EOSC and the world a set of services  to implement and accelerate Open Science. To embed in researchers workflows, making it easier for them to accept and uptake Open Science practices of openness and FAIRness. To give the tools to libraries,  research communities to make their content more visible and discoverable. To assist policy makers to better understand the environment and ramifications of Open Science into new incentives, scientific reward criteria, impact indicators, so as to increase research and innovation potential. To foster innovation, by providing SMEs with open data about scientific production. To this aim, OpenAIRE-Nexus onboards to the EOSC fourteen services, provided by public institutions, einfrastructures, and companies, structured in three portfolios: PUBLISH (catch all repository; Open Access overlay journal platform; data anonymization; Data Management Plans), MONITOR (Open Science and research impact monitoring; open citation indexes for article-article, article-dataset links; European monitoring of Article Processing Charges, publication usage statistics), and DISCOVER (open catalogue and APIs to the OpenAIRE Research Graph of interlinked publications, data, software, projects; discovery portals for communities; validation and brokering services for data sources to improve their metadata). The services are widely used in Europe and beyond and integrated in OpenAIRE-Nexus to assemble a uniform Open Science Scholarly Communication package for the EOSC. The project aims at forming synergies with other INFRAEOSC-07 awarded projects, the INFRAEOSC-03 project, research infrastructures, einfrastructures, and scholarly communication services define a common Open Science interoperability framework for the EOSC, to facilitate sharing, monitoring, and discovery of EOSC resources across disciplines.
   identifiers:
     - identifier: https://cordis.europa.eu/project/id/101017452
       scheme: url
   start_date: "2021-01-01"
   end_date: "2023-06-30"
   organizations:
-    - id: "019kf3481"
-      scheme: ror
-      organization: OpenAIRE
-    - id: "04zaypm56"
-      scheme: ror
-      organization: Consiglio Nazionale delle Ricerche
-    - id: "02hpadn98"
-      scheme: ror
-      organization: Bielefeld University
-    - id: "01ggx4157"
-      scheme: ror
-      organization: European Organization for Nuclear Research
-    - id: "0576by029"
-      scheme: ror
-      organization: Athena Research Center
-    - id: "05tcasm11"
-      scheme: ror
-      organization: GRNET
-    - id: "01y9bpm73"
-      scheme: ror
-      organization: University of Göttingen
-    - id: "039bjqg32"
-      scheme: ror
-      organization: University of Warsaw
-    - id: "01111rn36"
-      scheme: ror
-      organization: University of Bologna
-    - id: "02feahw73"
-      scheme: ror
-      organization: Centre National de la Recherche Scientifique
-    - id: "037wpkx04"
-      scheme: ror
-      organization: University of Minho
+    - id: "019kf3481"  # OpenAIRE Non-Profit Civil Partnership
+    - id: "04zaypm56"  # National Research Council
+    - id: "02hpadn98"  # Bielefeld University
+    - id: "01ggx4157"  # European Organization for Nuclear Research
+    - id: "0576by029"  # Athena Research and Innovation Center In Information Communication & Knowledge Technologies
+    - id: "05tcasm11"  # National Infrastructures for Research and Technology -  GRNET S.A
+    - id: "01y9bpm73"  # University of Göttingen
+    - id: "039bjqg32"  # University of Warsaw
+    - id: "01111rn36"  # University of Bologna
+    - id: "02feahw73"  # Centre National de la Recherche Scientifique
+    - id: "037wpkx04"  # University of Minho
 
 - id: "00k4n6c32::101057264"
   number: "101057264"
@@ -361,72 +210,35 @@
   website: https://faircore4eosc.eu/
   short_description:
     en: Building new EOSC-Core components to support FAIR research in science
+  description:
+    en: |-
+      FAIRCORE4EOSC focuses on the development and realisation of EOSC-Core components supporting a FAIR EOSC, addressing gaps identified in the SRIA. Leveraging existing technologies and services, the project will develop nine new EOSC-Core components aimed to improve the discoverability and interoperability of an increased amount of research outputs. FAIRCORE4EOSC will also contribute to the EOSC Interoperability Framework by establishing new guidelines on the new EOSC-Core components. The new components will be crucial to support the FAIR research life cycle. Five user-centric case studies (climate change, social sciences and humanities, mathematics, national research information systems, research data management communities) will drive the development and testing of the new components ensuring they are tailored to the user needs (co-design). All the selected case studies share similar challenges that are common to many other stakeholder groups: research communities at European and national level have datasets that currently cannot be found in the EOSC; they use Digital Object Identifiers (DOIs) but they are lacking PIDs for different levels of aggregation; they use community specific services to manage metadata that make cross-discipline reuse and interoperability complex. The user stories and best practices drawn by the case studies will be used to foster uptake of the new components beyond the project partners. The 22 complementary partners of the FAIRCORE4EOSC consortium have long-lasting experience in the provision and development of research data services, persistent identifiers, metadata and semantic registries, services and tools to archive and reference research software. The partners have also significantly contributed to the EOSC SRIA and are active members of the EOSC Association Task Forces (TFs)  providing the project a unique insight and capacity to boost the development of the Web of FAIR Data and Related Services.
   identifiers:
     - identifier: https://cordis.europa.eu/project/id/101057264
       scheme: url
   end_date: "2025-05-31"
   start_date: "2022-06-01"
   organizations:
-    - id: "04m8m1253"
-      scheme: ror
-      organization: CSC - IT Center for Science
-    - id: "009vhk114"
-      scheme: ror
-      organization: SURF
-    - id: "019kf3481"
-      scheme: ror
-      organization: OpenAIRE
-    - id: "039bjqg32"
-      scheme: ror
-      organization: University of Warsaw
-    - id: "0576by029"
-      scheme: ror
-      organization: Athena Research Center
-    - id: "04zaypm56"
-      scheme: ror
-      organization: Consiglio Nazionale delle Ricerche
-    - id: "043c0p156"
-      scheme: ror
-      organization: Royal Netherlands Academy of Arts and Sciences
-    - id: "00cd95c65"
-      scheme: ror
-      organization: GWDG
-    - id: "02kvxyf05"
-      scheme: ror
-      organization: Inria
-    - id: "03wp25384"
-      scheme: ror
-      organization: CLARIN ERIC
-    - id: "04wxnsj81"
-      scheme: ror
-      organization: DataCite
-    - id: "05tcasm11"
-      scheme: ror
-      organization: GRNET
-    - id: "03ztgj037"
-      scheme: ror
-      organization: Deutsches Klimarechenzentrum
-    - id: "00bas1c41"
-      scheme: ror
-      organization: AGH University of Krakow
-    - id: "027thnp44"
-      scheme: ror
-      organization: Trust-IT Services
-    - id: "01ggx4157"
-      scheme: ror
-      organization: European Organization for Nuclear Research
-    - id: "0387prb75"
-      scheme: ror
-      organization: FIZ Karlsruhe – Leibniz Institute for Information Infrastructure
-    - id: "00k4h2615"
-      scheme: ror
-      organization: Schloss Dagstuhl – Leibniz Center for Informatics
-    - id: "040af2s02"
-      scheme: ror
-      organization: University of Helsinki
-    - id: "038sjwq14"
-      scheme: ror
-      organization: Australian Research Data Commons
+    - id: "04m8m1253"  # CSC - IT Center for Science (Finland)
+    - id: "009vhk114"  # SURF
+    - id: "019kf3481"  # OpenAIRE Non-Profit Civil Partnership
+    - id: "039bjqg32"  # University of Warsaw
+    - id: "0576by029"  # Athena Research and Innovation Center In Information Communication & Knowledge Technologies
+    - id: "04zaypm56"  # National Research Council
+    - id: "043c0p156"  # Royal Netherlands Academy of Arts and Sciences
+    - id: "00cd95c65"  # Gesellschaft für wissenschaftliche Datenverarbeitung mbH Göttingen
+    - id: "02kvxyf05"  # Institut national de recherche en sciences et technologies du numérique
+    - id: "03wp25384"  # Common Language Resources and Technology Infrastructure
+    - id: "04wxnsj81"  # DataCite
+    - id: "05tcasm11"  # National Infrastructures for Research and Technology -  GRNET S.A
+    - id: "03ztgj037"  # German Climate Computing Centre
+    - id: "00bas1c41"  # AGH University of Krakow
+    - id: "027thnp44"  # Trust IT Services
+    - id: "01ggx4157"  # European Organization for Nuclear Research
+    - id: "0387prb75"  # FIZ Karlsruhe – Leibniz Institute for Information Infrastructure
+    - id: "00k4h2615"  # Schloss Dagstuhl – Leibniz Center for Informatics
+    - id: "040af2s02"  # University of Helsinki
+    - id: "038sjwq14"  # Australian Research Data Commons
   # TODO: Add EuroSciVoc subjects
   # subjects:
   #   - id: euroscivoc:307
@@ -456,15 +268,18 @@
   short_description:
     en: Making it easier for EU research funding beneficiaries to implement FAIR practices
   program: HORIZON.1.3
+  description:
+    en: |-
+      A specific aim of EU’s Open Science policy is to require all publicly funded research data to be FAIR (Findable, Accessible, Interoperable, Reusable) and open by default, and it’s even a contractual requirement for Horizon Europe beneficiaries. Despite large efforts, FAIR in practice is difficult for programme beneficiaries. EU has over the past 10 years funded Zenodo, an open data repository built by CERN, to help beneficiaries comply with first open access, and then open data contractual requirements. This grant capitalizes on past investments made in Zenodo and helps EC programme beneficiaries comply with the new FAIR and open science requirements, by implementing an easy go-to solution in Zenodo for beneficiaries to make data FAIR in practice.
+
+      HORIZON-ZEN’s overarching aim is to provide the EC’s programme beneficiaries with enhanced depositing services for digital research objects that are FAIR-enabling and compliant with Horizon Europe requirements, and to establish best practices for how scientific repositories can support the implementation of FAIR data principles by leading by example. This will be achieved by enhancing Zenodo with FAIR-enabling capabilities that support programme beneficiaries during the depositing of research outputs and by leveraging Zenodo’s simple and seamless user experience.
   identifiers:
     - identifier: https://cordis.europa.eu/project/id/101122956
       scheme: url
   end_date: "2025-05-31"
   start_date: "2023-06-01"
   organizations:
-    - id: "01ggx4157"
-      scheme: ror
-      organization: European Organization for Nuclear Research
+    - id: "01ggx4157"  # European Organization for Nuclear Research
 
 - id: "00k4n6c32::101256740"
   number: "101256740"
@@ -477,15 +292,16 @@
   website: https://about.zenodo.org/projects/horizon-zen-plus/
   short_description:
     en: Enhancing EU Open Research Repository on Zenodo
+  description:
+    en: |-
+      The HORIZON-ZEN+ project aims to advance the EU Open Research Repository (EOR Repository) on Zenodo, a key enabler of the European Commission’s Open Science policy. Building on the success of the HORIZON-ZEN project (2023–2025), HORIZON-ZEN+ enhances the repository’s ability to support FAIR (Findable, Accessible, Interoperable, and Reusable) and AI-ready research outputs. The project addresses two strategic challenges: enabling cost-effective, scalable data curation, and facilitating the discovery and reuse of high-quality datasets across disciplines for AI applications. To this end, the project will integrate AI-assisted curation tools, advanced metadata validation, and automated support workflows; improve deposit and discovery interfaces with support for AI-specific metadata and data packaging standards; and deepen interoperability with the EOSC EU Node and Open Research Europe platform. By embedding these enhancements directly in Zenodo and its open-source platform InvenioRDM, HORIZON-ZEN+ ensures broad uptake and long-term sustainability, strengthening Europe’s open science infrastructure and supporting researchers in meeting FAIR and AI-readiness mandates.
   identifiers:
     - identifier: https://cordis.europa.eu/project/id/101256740
       scheme: url
   end_date: "2025-05-31"
   start_date: "2023-06-01"
   organizations:
-    - id: "01ggx4157"
-      scheme: ror
-      organization: European Organization for Nuclear Research
+    - id: "01ggx4157"  # European Organization for Nuclear Research
 
 - id: "00k4n6c32::101129744"
   number: "101129744"
@@ -498,57 +314,36 @@
   website: https://everse.software/
   short_description:
     en: Strengthening the quality, sustainability and recognition of research software as a core component of European research and innovation, with quality assessment toolkits, automated evaluation pipelines and training frameworks.
+  description:
+    en: |-
+      The EVERSE project aims to create a framework for research software and code excellence, collaboratively designed and championed by the research communities across five EOSC Science Clusters and national Research Software Expertise Centres, in pursuit of building a European network of Research Software Quality and setting the foundations of a future Virtual Institute for Research Software Excellence.
+
+      This framework for research software excellence will incorporate aspects involving community curation, quality assessment, and best practices for research software. This collective knowledge will be captured in the Research Software Quality toolkit (RSQkit), a knowledge base to gather and curate expertise that will contribute to high-quality software and code across different disciplines.
+
+      By embedding the RSQkit and services into the EOSC Science Clusters, EVERSE will demonstrate improvements in the quality of research software and maximise its reuse, leading to standardised software development practices and sustainable research software. Furthermore, we will drive recognition of software and support career progress for developers, from researchers who code to RSEs, raising their capacity to guarantee software quality.
+
+      The European network for Research Software Quality aims to cross-fertilise different research domains, act as a lobbying organisation, and raise awareness of software as a key enabler in research, with the overall ambition to accelerate research and innovation through improving the quality of research software and code.
+
+      EVERSE ultimate ambition is to contribute towards a cultural change where research software is recognized as a first-class citizen of the scientific process and the people that contribute to it are credited for their efforts.
   identifiers:
     - identifier: https://cordis.europa.eu/project/id/101129744
       scheme: url
   start_date: "2024-03-01"
   end_date: "2027-02-28"
   organizations:
-    - id: "03bndpq63"
-      scheme: ror
-      organization: Centre for Research and Technology Hellas
-    - id: "05sd8tv96"
-      scheme: ror
-      organization: Barcelona Supercomputing Center
-    - id: "01ggx4157"
-      scheme: ror
-      organization: European Organization for Nuclear Research
-    - id: "02feahw73"
-      scheme: ror
-      organization: Centre National de la Recherche Scientifique
-    - id: "00f7hpc57"
-      scheme: ror
-      organization: Friedrich-Alexander-Universität Erlangen-Nürnberg
-    - id: "01pwgd096"
-      scheme: ror
-      organization: SKA Observatory
-    - id: "01zjc6908"
-      scheme: ror
-      organization: European Molecular Biology Laboratory
-    - id: "04dkp9463"
-      scheme: ror
-      organization: University of Amsterdam
-    - id: "01zy2cs03"
-      scheme: ror
-      organization: Helmholtz-Zentrum Dresden-Rossendorf
-    - id: "00rbjv475"
-      scheme: ror
-      organization: Netherlands eScience Center
-    - id: "03n6nwv02"
-      scheme: ror
-      organization: Universidad Politécnica de Madrid
-    - id: "00240q980"
-      scheme: ror
-      organization: University of Padua
-    - id: "03fc1k060"
-      scheme: ror
-      organization: University of Salento
-    - id: "024d6js02"
-      scheme: ror
-      organization: Charles University
-    - id: "0576by029"
-      scheme: ror
-      organization: Athena Research Center
-    - id: "019kf3481"
-      scheme: ror
-      organization: OpenAIRE
+    - id: "03bndpq63"  # Centre for Research and Technology Hellas
+    - id: "05sd8tv96"  # Barcelona Supercomputing Center
+    - id: "01ggx4157"  # European Organization for Nuclear Research
+    - id: "02feahw73"  # Centre National de la Recherche Scientifique
+    - id: "00f7hpc57"  # Friedrich-Alexander-Universität Erlangen-Nürnberg
+    - id: "01pwgd096"  # SKA Observatory
+    - id: "01zjc6908"  # European Molecular Biology Laboratory
+    - id: "04dkp9463"  # University of Amsterdam
+    - id: "01zy2cs03"  # Helmholtz-Zentrum Dresden-Rossendorf
+    - id: "00rbjv475"  # Netherlands eScience Center
+    - id: "03n6nwv02"  # Universidad Politécnica de Madrid
+    - id: "00240q980"  # University of Padua
+    - id: "03fc1k060"  # University of Salento
+    - id: "024d6js02"  # Charles University
+    - id: "0576by029"  # Athena Research and Innovation Center In Information Communication & Knowledge Technologies
+    - id: "019kf3481"  # OpenAIRE Non-Profit Civil Partnership

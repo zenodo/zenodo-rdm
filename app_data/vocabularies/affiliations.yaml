@@ -1,0 +1,2025 @@
+- id: 00bas1c41
+  name: AGH University of Krakow
+  title:
+    en: AGH University of Krakow
+    pl: Akademia Górniczo-Hutnicza im. Stanisława Staszica w Krakowie
+  acronym: AGH UST
+  aliases:
+    - AGH University of Science and Technology
+    - Akademia Górniczo-Hutnicza im. Stanisława Staszica
+    - University of Mining and Metallurgy
+  identifiers:
+    - identifier: 00bas1c41
+      scheme: ror
+    - identifier: grid.9922.0
+      scheme: grid
+    - identifier: 0000 0000 9174 1488
+      scheme: isni
+  types:
+    - education
+    - funder
+  country: PL
+  country_name: Poland
+  location_name: Krakow
+  website: https://www.agh.edu.pl
+  domains:
+    - agh.edu.pl
+  status: active
+- id: 02j61yw88
+  name: Aristotle University of Thessaloniki
+  title:
+    el: Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης
+    en: Aristotle University of Thessaloniki
+    fr: Université aristote de thessalonique
+  aliases:
+    - Aristotelian University
+  identifiers:
+    - identifier: 02j61yw88
+      scheme: ror
+    - identifier: grid.4793.9
+      scheme: grid
+    - identifier: 0000 0001 0945 7005
+      scheme: isni
+  types:
+    - education
+    - funder
+  country: GR
+  country_name: Greece
+  location_name: Thessaloniki
+  website: https://www.auth.gr
+  domains:
+    - auth.gr
+  status: active
+- id: 0576by029
+  name: Athena Research and Innovation Center In Information Communication & Knowledge Technologies
+  title:
+    en: Athena Research and Innovation Center In Information Communication & Knowledge Technologies
+  aliases:
+    - Athena RC
+    - Athena RIC
+    - Athena Research Center
+    - Athena Research and Innovation Center
+  identifiers:
+    - identifier: 0576by029
+      scheme: ror
+    - identifier: grid.19843.37
+      scheme: grid
+    - identifier: 0000 0004 0393 5688
+      scheme: isni
+  types:
+    - facility
+  country: GR
+  country_name: Greece
+  location_name: Marousi
+  website: https://www.athenarc.gr/
+  domains:
+    - athena-innovation.gr
+  status: active
+- id: 038sjwq14
+  name: Australian Research Data Commons
+  title:
+    en: Australian Research Data Commons
+  acronym: ARDC
+  identifiers:
+    - identifier: 038sjwq14
+      scheme: ror
+    - identifier: grid.503071.0
+      scheme: grid
+  types:
+    - funder
+    - other
+  country: AU
+  country_name: Australia
+  location_name: Melbourne
+  website: https://ardc.edu.au/
+  status: active
+- id: 05sd8tv96
+  name: Barcelona Supercomputing Center
+  title:
+    en: Barcelona Supercomputing Center
+    es: Centro Nacional de Supercomputación
+  acronym: BSC
+  aliases:
+    - BSC-CNS
+    - Centre Nacional de Supercomputació
+  identifiers:
+    - identifier: 05sd8tv96
+      scheme: ror
+    - identifier: grid.10097.3f
+      scheme: grid
+    - identifier: 0000 0004 0387 1602
+      scheme: isni
+  types:
+    - facility
+    - funder
+  country: ES
+  country_name: Spain
+  location_name: Barcelona
+  website: https://www.bsc.es/
+  domains:
+    - bsc.es
+  status: active
+- id: 02hpadn98
+  name: Bielefeld University
+  title:
+    de: Universität Bielefeld
+    en: Bielefeld University
+  identifiers:
+    - identifier: 02hpadn98
+      scheme: ror
+    - identifier: grid.7491.b
+      scheme: grid
+    - identifier: 0000 0001 0944 9128
+      scheme: isni
+  types:
+    - education
+    - funder
+  country: DE
+  country_name: Germany
+  location_name: Bielefeld
+  website: https://www.uni-bielefeld.de
+  domains:
+    - uni-bielefeld.de
+  status: active
+- id: 05dhe8b71
+  name: British Library
+  title:
+    cy: Llyfrgell Brydeinig
+    en: British Library
+  acronym: BL
+  identifiers:
+    - identifier: 05dhe8b71
+      scheme: ror
+    - identifier: grid.36212.34
+      scheme: grid
+  types:
+    - archive
+    - funder
+  country: GB
+  country_name: United Kingdom
+  location_name: London
+  website: https://www.bl.uk
+  domains:
+    - bl.uk
+  status: active
+- id: 02ex6cf31
+  name: Brookhaven National Laboratory
+  title:
+    en: Brookhaven National Laboratory
+  acronym: BNL
+  aliases:
+    - Office of Science Brookhaven National Laboratory
+    - United States Department of Energy Office of Science Brookhaven National Laboratory
+  identifiers:
+    - identifier: 02ex6cf31
+      scheme: ror
+    - identifier: grid.202665.5
+      scheme: grid
+    - identifier: 0000 0001 2188 4229
+      scheme: isni
+  types:
+    - facility
+    - funder
+  country: US
+  country_name: United States
+  location_name: Upton
+  website: http://www.bnl.gov/world/
+  status: active
+- id: 04m8m1253
+  name: CSC - IT Center for Science (Finland)
+  title:
+    en: CSC - IT Center for Science (Finland)
+    fi: CSC – Tieteen tietotekniikan keskus oy Yhteystiedot
+  acronym: CSC
+  aliases:
+    - Finnish IT center for science
+  identifiers:
+    - identifier: 04m8m1253
+      scheme: ror
+    - identifier: grid.20709.3c
+      scheme: grid
+    - identifier: 0000 0004 0512 9137
+      scheme: isni
+  types:
+    - company
+    - funder
+  country: FI
+  country_name: Finland
+  location_name: Espoo
+  website: https://www.csc.fi/
+  status: active
+- id: 05dxps055
+  name: California Institute of Technology
+  title:
+    en: California Institute of Technology
+    es: Instituto de Tecnología de California
+  acronym: CIT
+  aliases:
+    - Caltech
+  identifiers:
+    - identifier: 05dxps055
+      scheme: ror
+    - identifier: grid.20861.3d
+      scheme: grid
+    - identifier: 0000 0001 0706 8890
+      scheme: isni
+  types:
+    - education
+    - funder
+  country: US
+  country_name: United States
+  location_name: Pasadena
+  website: https://www.caltech.edu
+  domains:
+    - caltech.edu
+  status: active
+- id: 02feahw73
+  name: Centre National de la Recherche Scientifique
+  title:
+    en: French National Centre for Scientific Research
+    fr: Centre National de la Recherche Scientifique
+  acronym: CNRS
+  identifiers:
+    - identifier: 02feahw73
+      scheme: ror
+    - identifier: grid.4444.0
+      scheme: grid
+    - identifier: 0000 0001 2259 7504
+      scheme: isni
+  types:
+    - funder
+    - government
+  country: FR
+  country_name: France
+  location_name: Paris
+  website: https://www.cnrs.fr
+  status: active
+- id: 03bndpq63
+  name: Centre for Research and Technology Hellas
+  title:
+    el: Εθνικό Κέντρο Έρευνας και Τεχνολογικής Ανάπτυξης
+    en: Centre for Research and Technology Hellas
+  acronym: CERTH
+  identifiers:
+    - identifier: 03bndpq63
+      scheme: ror
+    - identifier: grid.423747.1
+      scheme: grid
+    - identifier: 0000 0001 2216 5285
+      scheme: isni
+  types:
+    - facility
+  country: GR
+  country_name: Greece
+  location_name: Thessaloniki
+  website: https://www.certh.gr
+  domains:
+    - certh.gr
+  status: active
+- id: 024d6js02
+  name: Charles University
+  title:
+    en: Charles University
+    sk: Univerzita Karlova
+  aliases:
+    - Charles University in Prague
+    - Karls-Universität Prag
+    - Univerzita Karlova v Praze
+  identifiers:
+    - identifier: 024d6js02
+      scheme: ror
+    - identifier: grid.4491.8
+      scheme: grid
+    - identifier: 0000 0004 1937 116X
+      scheme: isni
+  types:
+    - education
+    - funder
+  country: CZ
+  country_name: Czechia
+  location_name: Prague
+  website: https://www.cuni.cz
+  domains:
+    - cuni.cz
+  status: active
+- id: 03wp25384
+  name: Common Language Resources and Technology Infrastructure
+  title:
+    en: Common Language Resources and Technology Infrastructure
+  acronym: CLARIN
+  aliases:
+    - CLARIN ERIC
+  identifiers:
+    - identifier: 03wp25384
+      scheme: ror
+  types:
+    - funder
+    - other
+  country: NL
+  country_name: The Netherlands
+  location_name: Utrecht
+  website: https://www.clarin.eu
+  status: active
+- id: 035c9qf67
+  name: Couperin
+  title:
+    en: Academic Consortium for Electronic Publications
+    fr: Couperin
+  identifiers:
+    - identifier: 035c9qf67
+      scheme: ror
+    - identifier: grid.452089.2
+      scheme: grid
+    - identifier: 0000 0004 0580 4892
+      scheme: isni
+  types:
+    - nonprofit
+  country: FR
+  country_name: France
+  location_name: Paris
+  website: https://www.couperin.org
+  domains:
+    - couperin.org
+  status: active
+- id: 02twcfp32
+  name: Crossref
+  title:
+    en: Crossref
+  acronym: PILA
+  aliases:
+    - Publishers International Linking Association
+  identifiers:
+    - identifier: 02twcfp32
+      scheme: ror
+    - identifier: grid.466633.2
+      scheme: grid
+    - identifier: 0000 0004 0506 2673
+      scheme: isni
+  types:
+    - nonprofit
+  country: US
+  country_name: United States
+  location_name: Lynnfield
+  website: https://www.crossref.org/
+  domains:
+    - crossref.org
+  status: active
+- id: 01653xx13
+  name: Data Futures GmbH
+  title:
+    de: Data Futures GmbH
+    en: Data Futures GmbH
+  acronym: DF
+  aliases:
+    - datafutures
+  identifiers:
+    - identifier: 01653xx13
+      scheme: ror
+  types:
+    - nonprofit
+  country: DE
+  country_name: Germany
+  location_name: Leipzig
+  website: https://www.data-futures.org
+  status: active
+- id: 04wxnsj81
+  name: DataCite
+  title:
+    en: DataCite
+  identifiers:
+    - identifier: 04wxnsj81
+      scheme: ror
+    - identifier: grid.475826.a
+      scheme: grid
+    - identifier: 0000 0004 9229 9539
+      scheme: isni
+  types:
+    - nonprofit
+  country: DE
+  country_name: Germany
+  location_name: Hanover
+  website: https://www.datacite.org
+  domains:
+    - datacite.org
+  status: active
+- id: 02e2c7k09
+  name: Delft University of Technology
+  title:
+    en: Delft University of Technology
+    nl: Technische Universiteit Delft
+  aliases:
+    - TU Delft
+  identifiers:
+    - identifier: 02e2c7k09
+      scheme: ror
+    - identifier: grid.5292.c
+      scheme: grid
+    - identifier: 0000 0001 2097 4740
+      scheme: isni
+  types:
+    - education
+    - funder
+  country: NL
+  country_name: The Netherlands
+  location_name: Delft
+  website: https://www.tudelft.nl
+  domains:
+    - tudelft.nl
+  status: active
+- id: 05n09v162
+  name: Digital Research Infrastructure for the Arts and Humanities
+  title:
+    en: Digital Research Infrastructure for the Arts and Humanities
+  acronym: DARIAH
+  aliases:
+    - DARIAH ERIC
+    - DARIAH EU
+  identifiers:
+    - identifier: 05n09v162
+      scheme: ror
+    - identifier: 0000 0005 0819 9744
+      scheme: isni
+  types:
+    - funder
+    - other
+  country: FR
+  country_name: France
+  location_name: Paris
+  website: https://www.dariah.eu
+  status: active
+- id: 04j5wtv36
+  name: Directorate-General Joint Research Centre
+  title:
+    de: Gemeinsame Forschungsstelle
+    en: Directorate-General Joint Research Centre
+    fr: Centre commun de recherche
+  acronym: JRC
+  identifiers:
+    - identifier: 04j5wtv36
+      scheme: ror
+    - identifier: grid.489339.c
+      scheme: grid
+    - identifier: 0000 0004 0635 247X
+      scheme: isni
+  types:
+    - funder
+    - government
+  country: BE
+  country_name: Belgium
+  location_name: Brussels
+  website: https://ec.europa.eu/info/departments/joint-research-centre_en
+  status: active
+- id: 056pp6k18
+  name: EIFL
+  title:
+    en: EIFL
+  aliases:
+    - Electronic Information for Libraries
+    - Stichting eIFL.net
+  identifiers:
+    - identifier: 056pp6k18
+      scheme: ror
+    - identifier: 0000 0001 0687 6327
+      scheme: isni
+  types:
+    - nonprofit
+  country: LT
+  country_name: Lithuania
+  location_name: Vilnius
+  website: https://www.eifl.net
+  status: active
+- id: 047h63042
+  name: Eko-Konnect
+  title:
+    en: Eko-Konnect
+  aliases:
+    - Eko-Konnect Research and Education Initiative
+  identifiers:
+    - identifier: 047h63042
+      scheme: ror
+    - identifier: grid.503642.6
+      scheme: grid
+  types:
+    - nonprofit
+  country: NG
+  country_name: Nigeria
+  location_name: Lagos
+  website: https://www.eko-konnect.org.ng/
+  status: active
+- id: 013fhv752
+  name: Elsevier BV (Netherlands)
+  title:
+    en: Elsevier BV (Netherlands)
+  identifiers:
+    - identifier: 013fhv752
+      scheme: ror
+  types:
+    - company
+  country: NL
+  country_name: The Netherlands
+  location_name: Amsterdam
+  website: https://www.elsevier.com
+  domains:
+    - elsevier.com
+  status: active
+- id: 01zjc6908
+  name: European Molecular Biology Laboratory
+  title:
+    en: European Molecular Biology Laboratory
+    fr: Laboratoire Européen de Biologie Moléculaire
+  acronym: EMBL
+  aliases:
+    - EMBL France
+    - EMBL Grenoble
+  identifiers:
+    - identifier: 01zjc6908
+      scheme: ror
+    - identifier: grid.418923.5
+      scheme: grid
+    - identifier: 0000 0004 0638 528X
+      scheme: isni
+  types:
+    - government
+  country: FR
+  country_name: France
+  location_name: Grenoble
+  website: https://www.embl.org/sites/grenoble/
+  status: active
+- id: 01ggx4157
+  name: European Organization for Nuclear Research
+  title:
+    de: Europäische Organisation für Kernforschung
+    en: European Organization for Nuclear Research
+    fr: Organisation européenne pour la recherche nucléaire
+  identifiers:
+    - identifier: 01ggx4157
+      scheme: ror
+    - identifier: grid.9132.9
+      scheme: grid
+    - identifier: 0000 0001 2156 142X
+      scheme: isni
+  types:
+    - facility
+    - funder
+  country: CH
+  country_name: Switzerland
+  location_name: Geneva
+  website: https://home.web.cern.ch
+  domains:
+    - cern.ch
+  status: active
+- id: 0387prb75
+  name: FIZ Karlsruhe – Leibniz Institute for Information Infrastructure
+  title:
+    de: FIZ Karlsruhe - Leibniz-Institut für Informationsinfrastruktur
+    en: FIZ Karlsruhe – Leibniz Institute for Information Infrastructure
+  aliases:
+    - Fachinformationszentrum Karlsruhe
+  identifiers:
+    - identifier: 0387prb75
+      scheme: ror
+    - identifier: grid.434104.6
+      scheme: grid
+    - identifier: 0000 0001 1519 1565
+      scheme: isni
+  types:
+    - nonprofit
+  country: DE
+  country_name: Germany
+  location_name: Eggenstein-Leopoldshafen
+  website: https://www.fiz-karlsruhe.de/en
+  status: active
+- id: 00f7hpc57
+  name: Friedrich-Alexander-Universität Erlangen-Nürnberg
+  title:
+    de: Friedrich-Alexander-Universität Erlangen-Nürnberg
+    en: Friedrich-Alexander-Universität Erlangen-Nürnberg
+  acronym: FAU
+  aliases:
+    - FAU Erlangen-Nürnberg
+    - Friedrich-Alexander-University Erlangen-Nürnberg
+    - University of Erlangen-Nuremberg
+  identifiers:
+    - identifier: 00f7hpc57
+      scheme: ror
+    - identifier: grid.5330.5
+      scheme: grid
+    - identifier: 0000 0001 2107 3311
+      scheme: isni
+  types:
+    - education
+    - funder
+  country: DE
+  country_name: Germany
+  location_name: Erlangen
+  website: https://www.fau.de/
+  domains:
+    - fau.de
+  status: active
+- id: 034thb936
+  name: Fundación Española para la Ciencia y la Tecnología
+  title:
+    en: Spanish Foundation for Science and Technology
+    es: Fundación Española para la Ciencia y Tecnología
+  acronym: FECYT
+  identifiers:
+    - identifier: 034thb936
+      scheme: ror
+    - identifier: grid.424798.4
+      scheme: grid
+    - identifier: 0000 0000 8971 1837
+      scheme: isni
+  types:
+    - funder
+    - nonprofit
+  country: ES
+  country_name: Spain
+  location_name: Madrid
+  website: https://www.fecyt.es
+  domains:
+    - fecyt.es
+  status: active
+- id: 03ztgj037
+  name: German Climate Computing Centre
+  title:
+    de: Deutsches Klimarechenzentrum
+    en: German Climate Computing Centre
+  acronym: DKRZ
+  identifiers:
+    - identifier: 03ztgj037
+      scheme: ror
+    - identifier: grid.424215.4
+      scheme: grid
+    - identifier: 0000 0004 0374 1955
+      scheme: isni
+  types:
+    - facility
+    - funder
+  country: DE
+  country_name: Germany
+  location_name: Hamburg
+  website: https://www.dkrz.de/
+  domains:
+    - dkrz.de
+  status: active
+- id: 00cd95c65
+  name: Gesellschaft für wissenschaftliche Datenverarbeitung mbH Göttingen
+  title:
+    de: Gesellschaft für wissenschaftliche Datenverarbeitung mbH Göttingen
+    en: Gesellschaft für wissenschaftliche Datenverarbeitung mbH Göttingen
+  acronym: GWDG
+  identifiers:
+    - identifier: 00cd95c65
+      scheme: ror
+    - identifier: grid.434972.f
+      scheme: grid
+    - identifier: 0000 0000 9988 0570
+      scheme: isni
+  types:
+    - other
+  country: DE
+  country_name: Germany
+  location_name: Göttingen
+  website: https://www.gwdg.de/
+  status: active
+- id: 00d7xrm67
+  name: Graz University of Technology
+  title:
+    de: Technische Universität Graz
+    en: Graz University of Technology
+  identifiers:
+    - identifier: 00d7xrm67
+      scheme: ror
+    - identifier: grid.410413.3
+      scheme: grid
+    - identifier: 0000 0001 2294 748X
+      scheme: isni
+  types:
+    - education
+    - funder
+  country: AT
+  country_name: Austria
+  location_name: Graz
+  website: https://www.tugraz.at
+  domains:
+    - tugraz.at
+  status: active
+- id: 01zy2cs03
+  name: Helmholtz-Zentrum Dresden-Rossendorf
+  title:
+    de: Helmholtz-Zentrum Dresden-Rossendorf
+    en: Helmholtz-Zentrum Dresden-Rossendorf
+  acronym: HZDR
+  identifiers:
+    - identifier: 01zy2cs03
+      scheme: ror
+    - identifier: grid.40602.30
+      scheme: grid
+    - identifier: 0000 0001 2158 0612
+      scheme: isni
+  types:
+    - facility
+    - funder
+  country: DE
+  country_name: Germany
+  location_name: Dresden
+  website: https://www.hzdr.de
+  status: active
+- id: 02rt9z237
+  name: Hindawi (United Kingdom)
+  title:
+    en: Hindawi (United Kingdom)
+  identifiers:
+    - identifier: 02rt9z237
+      scheme: ror
+    - identifier: grid.509253.8
+      scheme: grid
+    - identifier: 0000 0004 0404 8458
+      scheme: isni
+  types:
+    - company
+  country: GB
+  country_name: United Kingdom
+  location_name: London
+  website: https://www.hindawi.com/
+  status: inactive
+- id: 02kvxyf05
+  name: Institut national de recherche en sciences et technologies du numérique
+  title:
+    en: National Institute for Research in Digital Science and Technology
+    fr: Institut national de recherche en sciences et technologies du numérique
+  acronym: INRIA
+  aliases:
+    - French Institute for Research in Computer Science and Automation
+    - Institut de recherche en informatique et en automatique
+    - Institut national de recherche en informatique et en automatique
+  identifiers:
+    - identifier: 02kvxyf05
+      scheme: ror
+    - identifier: grid.5328.c
+      scheme: grid
+    - identifier: 0000 0001 2164 1438
+      scheme: isni
+  types:
+    - funder
+    - government
+  country: FR
+  country_name: France
+  location_name: Le Chesnay-Rocquencourt
+  website: https://inria.fr
+  domains:
+    - inria.fr
+  status: active
+- id: 005ta0471
+  name: Istituto Nazionale di Fisica Nucleare
+  title:
+    en: National Institute for Nuclear Physics
+    it: Istituto Nazionale di Fisica Nucleare
+  acronym: INFN
+  aliases:
+    - Istituto Nazionale di Fisica Nucleare (Italia)
+  identifiers:
+    - identifier: 005ta0471
+      scheme: ror
+    - identifier: grid.6045.7
+      scheme: grid
+    - identifier: 0000 0004 1757 5281
+      scheme: isni
+  types:
+    - funder
+    - government
+  country: IT
+  country_name: Italy
+  location_name: Rome
+  website: https://home.infn.it
+  status: active
+- id: 01rv9gx86
+  name: Jisc
+  title:
+    en: Jisc
+  aliases:
+    - Joint Information Systems Committee
+  identifiers:
+    - identifier: 01rv9gx86
+      scheme: ror
+    - identifier: grid.426478.b
+      scheme: grid
+    - identifier: 0000 0004 0620 3810
+      scheme: isni
+  types:
+    - funder
+    - nonprofit
+  country: GB
+  country_name: United Kingdom
+  location_name: Bristol
+  website: https://www.jisc.ac.uk/
+  domains:
+    - jisc.ac.uk
+  status: active
+- id: 026vcq606
+  name: KTH Royal Institute of Technology
+  title:
+    en: KTH Royal Institute of Technology
+    fi: Kuninkaallinen teknillinen korkeakoulu
+    sv: Kungliga Tekniska högskolan
+  acronym: KTH
+  aliases:
+    - Royal Institute of Technology
+  identifiers:
+    - identifier: 026vcq606
+      scheme: ror
+    - identifier: grid.5037.1
+      scheme: grid
+    - identifier: 0000 0001 2158 1746
+      scheme: isni
+  types:
+    - education
+    - funder
+  country: SE
+  country_name: Sweden
+  location_name: Stockholm
+  website: https://www.kth.se
+  domains:
+    - kth.se
+  status: active
+- id: 01me6gb93
+  name: Kaunas University of Technology
+  title:
+    en: Kaunas University of Technology
+    lt: Kauno technologijos universitetas
+    pl: Uniwersytet Techniczny w Kownie
+    ru: Каунасский технологический университет
+  acronym: KTU
+  identifiers:
+    - identifier: 01me6gb93
+      scheme: ror
+    - identifier: grid.6901.e
+      scheme: grid
+    - identifier: 0000 0001 1091 4533
+      scheme: isni
+  types:
+    - education
+    - funder
+  country: LT
+  country_name: Lithuania
+  location_name: Kaunas
+  website: http://ktu.edu/en
+  status: active
+- id: 02j46qs45
+  name: Masaryk University
+  title:
+    en: Masaryk University
+    sk: Masarykova univerzita
+  acronym: MU
+  identifiers:
+    - identifier: 02j46qs45
+      scheme: ror
+    - identifier: grid.10267.32
+      scheme: grid
+    - identifier: 0000 0001 2194 0956
+      scheme: isni
+  types:
+    - education
+    - funder
+  country: CZ
+  country_name: Czechia
+  location_name: Brno
+  website: https://www.muni.cz
+  domains:
+    - muni.cz
+  status: active
+- id: 02bfwt286
+  name: Monash University
+  title:
+    en: Monash University
+  identifiers:
+    - identifier: 02bfwt286
+      scheme: ror
+    - identifier: grid.1002.3
+      scheme: grid
+    - identifier: 0000 0004 1936 7857
+      scheme: isni
+  types:
+    - education
+    - funder
+  country: AU
+  country_name: Australia
+  location_name: Melbourne
+  website: https://www.monash.edu
+  status: active
+- id: 033m02g29
+  name: National Hellenic Research Foundation
+  title:
+    el: Εθνικό Ίδρυμα Ερευνών
+    en: National Hellenic Research Foundation
+    fr: Fondation nationale de recherche hellénique
+  acronym: NHRF
+  aliases:
+    - Royal Research Foundation
+  identifiers:
+    - identifier: 033m02g29
+      scheme: ror
+    - identifier: grid.22459.38
+      scheme: grid
+    - identifier: 0000 0001 2232 6894
+      scheme: isni
+  types:
+    - funder
+    - nonprofit
+  country: GR
+  country_name: Greece
+  location_name: Athens
+  website: http://www.eie.gr/index-en.html
+  domains:
+    - eie.gr
+  status: active
+- id: 05tcasm11
+  name: National Infrastructures for Research and Technology -  GRNET S.A
+  title:
+    el: Εθνικό Δίκτυο Υποδομών Τεχνολογίας και Έρευνας Α.Ε. – GRNET
+    en: National Infrastructures for Research and Technology -  GRNET S.A
+  acronym: GRNET
+  aliases:
+    - GRNET S.A
+    - National Infrastructures for Research and Technology
+    - ΕΔΥΤΕ Α.Ε. – GRNET
+    - Εθνικό Δίκτυο Υποδομών Τεχνολογίας και Έρευνα
+  identifiers:
+    - identifier: 05tcasm11
+      scheme: ror
+    - identifier: grid.9067.8
+      scheme: grid
+  types:
+    - company
+  country: GR
+  country_name: Greece
+  location_name: Athens
+  website: https://www.grnet.gr
+  status: active
+- id: 04zaypm56
+  name: National Research Council
+  title:
+    en: National Research Council
+    it: Consiglio Nazionale delle Ricerche
+  acronym: CNR
+  identifiers:
+    - identifier: 04zaypm56
+      scheme: ror
+    - identifier: grid.5326.2
+      scheme: grid
+    - identifier: 0000 0001 1940 4177
+      scheme: isni
+  types:
+    - funder
+    - nonprofit
+  country: IT
+  country_name: Italy
+  location_name: Rome
+  website: https://www.cnr.it
+  domains:
+    - cnr.it
+  status: active
+- id: 04gnjpq42
+  name: National and Kapodistrian University of Athens
+  title:
+    el: Εθνικό και Καποδιστριακό Πανεπιστήμιο Αθηνών
+    en: National and Kapodistrian University of Athens
+    fr: Université nationale et capodistrienne d'athènes
+  aliases:
+    - University of Athens
+  identifiers:
+    - identifier: 04gnjpq42
+      scheme: ror
+    - identifier: grid.5216.0
+      scheme: grid
+    - identifier: 0000 0001 2155 0800
+      scheme: isni
+  types:
+    - education
+    - funder
+  country: GR
+  country_name: Greece
+  location_name: Athens
+  website: https://www.uoa.gr
+  domains:
+    - uoa.gr
+  status: active
+- id: 00rbjv475
+  name: Netherlands eScience Center
+  title:
+    en: Netherlands eScience Center
+  acronym: NLeSC
+  identifiers:
+    - identifier: 00rbjv475
+      scheme: ror
+    - identifier: grid.454309.f
+      scheme: grid
+    - identifier: 0000 0004 5345 7063
+      scheme: isni
+  types:
+    - funder
+    - nonprofit
+  country: NL
+  country_name: The Netherlands
+  location_name: Amsterdam
+  website: https://www.esciencecenter.nl/
+  domains:
+    - esciencecenter.nl
+  status: active
+- id: 000e0be47
+  name: Northwestern University
+  title:
+    en: Northwestern University
+  acronym: NU
+  identifiers:
+    - identifier: 000e0be47
+      scheme: ror
+    - identifier: grid.16753.36
+      scheme: grid
+    - identifier: 0000 0001 2299 3507
+      scheme: isni
+  types:
+    - education
+    - funder
+  country: US
+  country_name: United States
+  location_name: Evanston
+  website: http://www.northwestern.edu/
+  status: active
+- id: 04fa4r544
+  name: ORCID
+  title:
+    en: ORCID
+  aliases:
+    - Open Researcher and Contributor ID
+  identifiers:
+    - identifier: 04fa4r544
+      scheme: ror
+    - identifier: grid.455335.1
+      scheme: grid
+    - identifier: 0000 0004 4663 8501
+      scheme: isni
+  types:
+    - nonprofit
+  country: US
+  country_name: United States
+  location_name: Bethesda
+  website: http://orcid.org/
+  status: active
+- id: 019kf3481
+  name: OpenAIRE Non-Profit Civil Partnership
+  title:
+    en: OpenAIRE Non-Profit Civil Partnership
+  aliases:
+    - OpenAIRE
+    - OpenAIRE AMKE
+    - openaire.eu
+  identifiers:
+    - identifier: 019kf3481
+      scheme: ror
+  types:
+    - nonprofit
+  country: GR
+  country_name: Greece
+  location_name: Marousi
+  website: https://www.openaire.eu
+  status: active
+- id: 008zgvp64
+  name: Public Library of Science
+  title:
+    en: Public Library of Science
+  acronym: PLOS
+  identifiers:
+    - identifier: 008zgvp64
+      scheme: ror
+    - identifier: grid.431302.7
+      scheme: grid
+    - identifier: 0000 0004 0482 455X
+      scheme: isni
+  types:
+    - archive
+  country: US
+  country_name: United States
+  location_name: San Francisco
+  website: https://www.plos.org/
+  status: active
+- id: 043c0p156
+  name: Royal Netherlands Academy of Arts and Sciences
+  title:
+    en: Royal Netherlands Academy of Arts and Sciences
+    nl: Koninklijke Nederlandse Akademie van Wetenschappen
+  acronym: KNAW
+  identifiers:
+    - identifier: 043c0p156
+      scheme: ror
+    - identifier: grid.418101.d
+      scheme: grid
+    - identifier: 0000 0001 2153 6865
+      scheme: isni
+  types:
+    - funder
+    - government
+  country: NL
+  country_name: The Netherlands
+  location_name: Amsterdam
+  website: http://www.knaw.nl/nl
+  status: active
+- id: 02mw21745
+  name: Ruđer Bošković Institute
+  title:
+    en: Ruđer Bošković Institute
+    hr: Institut Ruđer Bošković
+  acronym: IRB
+  aliases:
+    - RBI
+    - Rudjer Boskovic Institute
+  identifiers:
+    - identifier: 02mw21745
+      scheme: ror
+    - identifier: grid.4905.8
+      scheme: grid
+    - identifier: 0000 0004 0635 7705
+      scheme: isni
+  types:
+    - facility
+    - funder
+  country: HR
+  country_name: Croatia
+  location_name: Zagreb
+  website: https://www.irb.hr
+  domains:
+    - irb.hr
+  status: active
+- id: 01pwgd096
+  name: SKA Observatory
+  title:
+    en: SKA Observatory
+  acronym: SKAO
+  identifiers:
+    - identifier: 01pwgd096
+      scheme: ror
+    - identifier: grid.452822.b
+      scheme: grid
+    - identifier: 0000 0004 1784 8366
+      scheme: isni
+  types:
+    - facility
+  country: GB
+  country_name: United Kingdom
+  location_name: Macclesfield
+  website: https://www.skaobservatory.org/
+  status: active
+- id: 009vhk114
+  name: SURF
+  title:
+    en: SURF
+    nl: SURF
+  identifiers:
+    - identifier: 009vhk114
+      scheme: ror
+    - identifier: grid.425959.6
+      scheme: grid
+    - identifier: 0000 0004 0621 6574
+      scheme: isni
+  types:
+    - other
+  country: NL
+  country_name: The Netherlands
+  location_name: Utrecht
+  website: https://www.surf.nl/
+  domains:
+    - surf.nl
+  status: active
+- id: 00k4h2615
+  name: Schloss Dagstuhl – Leibniz Center for Informatics
+  title:
+    de: Schloss Dagstuhl – Leibniz-Zentrum für Informatik
+    en: Schloss Dagstuhl – Leibniz Center for Informatics
+  acronym: IBFI
+  aliases:
+    - International Conference and Research Center for Computer Science
+    - Internationales Begegnungs- und Forschungszentrum für Informatik
+    - Schloss Dagstuhl - LZI
+  identifiers:
+    - identifier: 00k4h2615
+      scheme: ror
+    - identifier: grid.469874.0
+      scheme: grid
+    - identifier: 0000 0001 0009 3196
+      scheme: isni
+  types:
+    - facility
+  country: DE
+  country_name: Germany
+  location_name: Wadern
+  website: https://www.dagstuhl.de/en/
+  status: active
+- id: 03zee5r16
+  name: Sikt – Norwegian Agency for Shared Services in Education and Research
+  title:
+    en: Sikt – Norwegian Agency for Shared Services in Education and Research
+    'no': Sikt – Kunnskapssektorens tenesteleverandør
+  aliases:
+    - Kunnskapssektorens tenesteleverandør
+    - Norwegian Agency for Shared Services in Education and Research
+    - Sikt
+  identifiers:
+    - identifier: 03zee5r16
+      scheme: ror
+  types:
+    - other
+  country: 'NO'
+  country_name: Norway
+  location_name: Trondheim
+  website: https://www.sikt.no
+  status: active
+- id: 04d836q62
+  name: TU Wien
+  title:
+    de: TU Wien
+    en: TU Wien
+  acronym: TUW
+  aliases:
+    - Technische Universität Wien
+    - Vienna University of Technology
+  identifiers:
+    - identifier: 04d836q62
+      scheme: ror
+    - identifier: grid.5329.d
+      scheme: grid
+    - identifier: 0000 0004 1937 0669
+      scheme: isni
+  types:
+    - education
+    - funder
+  country: AT
+  country_name: Austria
+  location_name: Vienna
+  website: https://www.tuwien.at
+  status: active
+- id: 04qtj9h94
+  name: Technical University of Denmark
+  title:
+    da: Danmarks Tekniske Universitet
+    de: Dänemarks Technische Universität
+    en: Technical University of Denmark
+  acronym: DTU
+  identifiers:
+    - identifier: 04qtj9h94
+      scheme: ror
+    - identifier: grid.5170.3
+      scheme: grid
+    - identifier: 0000 0001 2181 8870
+      scheme: isni
+  types:
+    - education
+    - funder
+  country: DK
+  country_name: Denmark
+  location_name: Kongens Lyngby
+  website: https://dtu.dk
+  domains:
+    - dtu.dk
+  status: active
+- id: 04mcehe57
+  name: Tind Technologies (Norway)
+  title:
+    en: Tind Technologies (Norway)
+  identifiers:
+    - identifier: 04mcehe57
+      scheme: ror
+    - identifier: grid.459209.3
+      scheme: grid
+  types:
+    - company
+  country: 'NO'
+  country_name: Norway
+  location_name: Trondheim
+  website: https://tind.io/
+  status: active
+- id: 02tyrky19
+  name: Trinity College Dublin
+  title:
+    en: Trinity College Dublin
+    ga: Coláiste na Tríonóide Baile Átha Cliath
+  acronym: TCD
+  aliases:
+    - College of the Holy and Undivided Trinity of Queen Elizabeth near Dublin
+    - Coláiste na Tríonóide
+    - University of Dublin
+  identifiers:
+    - identifier: 02tyrky19
+      scheme: ror
+    - identifier: grid.8217.c
+      scheme: grid
+    - identifier: 0000 0004 1936 9705
+      scheme: isni
+  types:
+    - education
+    - funder
+  country: IE
+  country_name: Ireland
+  location_name: Dublin
+  website: https://www.tcd.ie/
+  domains:
+    - tcd.ie
+  status: active
+- id: 027thnp44
+  name: Trust IT Services
+  title:
+    en: Trust IT Services
+  identifiers:
+    - identifier: 027thnp44
+      scheme: ror
+    - identifier: grid.426370.4
+      scheme: grid
+  types:
+    - other
+  country: GB
+  country_name: United Kingdom
+  location_name: London
+  website: http://www.trust-itservices.com/
+  status: active
+- id: 017k52s24
+  name: Turkish Academic Network and Information Center
+  title:
+    en: Turkish Academic Network and Information Center
+    tr: Ulusal Akademik Ağ ve Bilgi Merkezi
+  acronym: ULAKBIM
+  identifiers:
+    - identifier: 017k52s24
+      scheme: ror
+    - identifier: grid.509244.e
+      scheme: grid
+    - identifier: 0000 0004 0574 2652
+      scheme: isni
+  types:
+    - facility
+  country: TR
+  country_name: Türkiye
+  location_name: Ankara
+  website: https://ulakbim.tubitak.gov.tr/en
+  status: active
+- id: 001aqnf71
+  name: UK Research and Innovation
+  title:
+    en: UK Research and Innovation
+  acronym: UKRI
+  aliases:
+    - United Kingdom Resarch and Innovation
+  identifiers:
+    - identifier: 001aqnf71
+      scheme: ror
+    - identifier: grid.496779.2
+      scheme: grid
+    - identifier: 0000 0004 9453 5400
+      scheme: isni
+  types:
+    - funder
+    - government
+  country: GB
+  country_name: United Kingdom
+  location_name: Swindon
+  website: https://www.ukri.org
+  domains:
+    - ukri.org
+  status: active
+- id: 03n6nwv02
+  name: Universidad Politécnica de Madrid
+  title:
+    ca: Universitat Politècnica de Madrid
+    en: Universidad Politécnica de Madrid
+    es: Universidad Politécnica de Madrid
+    gl: Universidade Politécnica de Madrid
+  acronym: UPM
+  aliases:
+    - Polytechnic University of Madrid
+    - Technical University of Madrid
+  identifiers:
+    - identifier: 03n6nwv02
+      scheme: ror
+    - identifier: grid.5690.a
+      scheme: grid
+    - identifier: 0000 0001 2151 2978
+      scheme: isni
+  types:
+    - education
+    - funder
+  country: ES
+  country_name: Spain
+  location_name: Madrid
+  website: https://www.upm.es
+  domains:
+    - upm.es
+  status: active
+- id: 04dkp9463
+  name: University of Amsterdam
+  title:
+    en: University of Amsterdam
+    nl: Universiteit van Amsterdam
+  acronym: UvA
+  identifiers:
+    - identifier: 04dkp9463
+      scheme: ror
+    - identifier: grid.7177.6
+      scheme: grid
+    - identifier: 0000 0000 8499 2262
+      scheme: isni
+  types:
+    - education
+    - funder
+  country: NL
+  country_name: The Netherlands
+  location_name: Amsterdam
+  website: https://www.uva.nl
+  domains:
+    - uva.nl
+  status: active
+- id: 02qsmb048
+  name: University of Belgrade
+  title:
+    bs: Univerzitet u Beogradu
+    en: University of Belgrade
+    sr: Универзитет у Београду
+  identifiers:
+    - identifier: 02qsmb048
+      scheme: ror
+    - identifier: grid.7149.b
+      scheme: grid
+    - identifier: 0000 0001 2166 9385
+      scheme: isni
+  types:
+    - education
+    - funder
+  country: RS
+  country_name: Serbia
+  location_name: Belgrade
+  website: http://www.bg.ac.rs/en/
+  status: active
+- id: 01111rn36
+  name: University of Bologna
+  title:
+    ca: Universitat de Bolonya
+    de: Universität Bologna
+    en: University of Bologna
+    fr: Université de Bologne
+    it: Università di Bologna
+  acronym: UNIBO
+  aliases:
+    - Alma Mater Studiorum - Università di Bologna
+  identifiers:
+    - identifier: 01111rn36
+      scheme: ror
+    - identifier: grid.6292.f
+      scheme: grid
+    - identifier: 0000 0004 1757 1758
+      scheme: isni
+  types:
+    - education
+    - funder
+  country: IT
+  country_name: Italy
+  location_name: Bologna
+  website: https://www.unibo.it
+  domains:
+    - unibo.it
+  status: active
+- id: 04ers2y35
+  name: University of Bremen
+  title:
+    de: Universität Bremen
+    en: University of Bremen
+  aliases:
+    - Universitaet Bremen
+  identifiers:
+    - identifier: 04ers2y35
+      scheme: ror
+    - identifier: grid.7704.4
+      scheme: grid
+    - identifier: 0000 0001 2297 4381
+      scheme: isni
+  types:
+    - education
+    - funder
+  country: DE
+  country_name: Germany
+  location_name: Bremen
+  website: https://www.uni-bremen.de/
+  status: active
+- id: 02qjrjx09
+  name: University of Cyprus
+  title:
+    el: Πανεπιστήμιο Κύπρου
+    en: University of Cyprus
+  acronym: UCY
+  identifiers:
+    - identifier: 02qjrjx09
+      scheme: ror
+    - identifier: grid.6603.3
+      scheme: grid
+    - identifier: 0000 0001 2116 7908
+      scheme: isni
+  types:
+    - education
+    - funder
+  country: CY
+  country_name: Cyprus
+  location_name: Nicosia
+  website: https://www.ucy.ac.cy
+  domains:
+    - ucy.ac.cy
+  status: active
+- id: 01nrxwf90
+  name: University of Edinburgh
+  title:
+    en: University of Edinburgh
+    gd: Oilthigh Dhùn Èideann
+  identifiers:
+    - identifier: 01nrxwf90
+      scheme: ror
+    - identifier: grid.4305.2
+      scheme: grid
+    - identifier: 0000 0004 1936 7988
+      scheme: isni
+  types:
+    - education
+    - funder
+  country: GB
+  country_name: United Kingdom
+  location_name: Edinburgh
+  website: https://www.ed.ac.uk
+  domains:
+    - ed.ac.uk
+  status: active
+- id: 00vtgdb53
+  name: University of Glasgow
+  title:
+    cy: Prifysgol Glasgow
+    en: University of Glasgow
+    gd: Oilthigh Ghlaschu
+  aliases:
+    - Glasgow University
+  identifiers:
+    - identifier: 00vtgdb53
+      scheme: ror
+    - identifier: grid.8756.c
+      scheme: grid
+    - identifier: 0000 0001 2193 314X
+      scheme: isni
+  types:
+    - education
+    - funder
+  country: GB
+  country_name: United Kingdom
+  location_name: Glasgow
+  website: http://www.gla.ac.uk/
+  status: active
+- id: 01y9bpm73
+  name: University of Göttingen
+  title:
+    de: Georg-August-Universität Göttingen
+    en: University of Göttingen
+  acronym: GAU
+  identifiers:
+    - identifier: 01y9bpm73
+      scheme: ror
+    - identifier: grid.7450.6
+      scheme: grid
+    - identifier: 0000 0001 2364 4210
+      scheme: isni
+  types:
+    - education
+    - funder
+  country: DE
+  country_name: Germany
+  location_name: Göttingen
+  website: http://www.uni-goettingen.de/en/1.html
+  status: active
+- id: 040af2s02
+  name: University of Helsinki
+  title:
+    en: University of Helsinki
+    fi: Helsingin Yliopisto
+    sv: Helsingfors Universitet
+  acronym: UH
+  identifiers:
+    - identifier: 040af2s02
+      scheme: ror
+    - identifier: grid.7737.4
+      scheme: grid
+    - identifier: 0000 0004 0410 2071
+      scheme: isni
+  types:
+    - education
+    - funder
+  country: FI
+  country_name: Finland
+  location_name: Helsinki
+  website: https://www.helsinki.fi/
+  domains:
+    - helsinki.fi
+  status: active
+- id: 0546hnb39
+  name: University of Konstanz
+  title:
+    de: Universität Konstanz
+    en: University of Konstanz
+  identifiers:
+    - identifier: 0546hnb39
+      scheme: ror
+    - identifier: grid.9811.1
+      scheme: grid
+    - identifier: 0000 0001 0658 7699
+      scheme: isni
+  types:
+    - education
+    - funder
+  country: DE
+  country_name: Germany
+  location_name: Konstanz
+  website: https://www.uni-konstanz.de
+  domains:
+    - uni-konstanz.de
+  status: active
+- id: 05g3mes96
+  name: University of Latvia
+  title:
+    en: University of Latvia
+    lt: Latvijos universitetas
+    lv: Latvijas Universitāte
+    ru: Латвийский университет
+  acronym: LU
+  identifiers:
+    - identifier: 05g3mes96
+      scheme: ror
+    - identifier: grid.9845.0
+      scheme: grid
+    - identifier: 0000 0001 0775 3222
+      scheme: isni
+  types:
+    - education
+    - funder
+  country: LV
+  country_name: Latvia
+  location_name: Riga
+  website: https://www.lu.lv
+  status: active
+- id: 05njb9z20
+  name: University of Ljubljana
+  title:
+    en: University of Ljubljana
+    sl: Univerza v Ljubljani
+  acronym: UL
+  identifiers:
+    - identifier: 05njb9z20
+      scheme: ror
+    - identifier: grid.8954.0
+      scheme: grid
+    - identifier: 0000 0001 0721 6013
+      scheme: isni
+  types:
+    - education
+    - funder
+  country: SI
+  country_name: Slovenia
+  location_name: Ljubljana
+  website: http://www.uni-lj.si/
+  status: active
+- id: 036x5ad56
+  name: University of Luxembourg
+  title:
+    de: Universität Luxemburg
+    en: University of Luxembourg
+    fr: Université du Luxembourg
+  identifiers:
+    - identifier: 036x5ad56
+      scheme: ror
+    - identifier: grid.16008.3f
+      scheme: grid
+    - identifier: 0000 0001 2295 9843
+      scheme: isni
+  types:
+    - education
+    - funder
+  country: LU
+  country_name: Luxembourg
+  location_name: Luxembourg
+  website: https://www.uni.lu
+  domains:
+    - uni.lu
+  status: active
+- id: 03a62bv60
+  name: University of Malta
+  title:
+    en: University of Malta
+  aliases:
+    - L-Università ta' Malta
+  identifiers:
+    - identifier: 03a62bv60
+      scheme: ror
+    - identifier: grid.4462.4
+      scheme: grid
+    - identifier: 0000 0001 2176 9482
+      scheme: isni
+  types:
+    - education
+    - funder
+  country: MT
+  country_name: Malta
+  location_name: Msida
+  website: https://www.um.edu.mt
+  domains:
+    - um.edu.mt
+  status: active
+- id: 037wpkx04
+  name: University of Minho
+  title:
+    en: University of Minho
+    pt: Universidade do Minho
+  identifiers:
+    - identifier: 037wpkx04
+      scheme: ror
+    - identifier: grid.10328.38
+      scheme: grid
+    - identifier: 0000 0001 2159 175X
+      scheme: isni
+  types:
+    - education
+    - funder
+  country: PT
+  country_name: Portugal
+  location_name: Braga
+  website: https://www.uminho.pt
+  domains:
+    - uminho.pt
+  status: active
+- id: 00pd74e08
+  name: University of Münster
+  title:
+    de: Universität Münster
+    en: University of Münster
+  acronym: UM
+  aliases:
+    - Universitaet Muenster
+    - University of Muenster
+    - Westfälische Wilhelms-Universität Münster
+  identifiers:
+    - identifier: 00pd74e08
+      scheme: ror
+    - identifier: grid.5949.1
+      scheme: grid
+    - identifier: 0000 0001 2172 9288
+      scheme: isni
+  types:
+    - education
+    - funder
+  country: DE
+  country_name: Germany
+  location_name: Münster
+  website: https://www.uni-muenster.de
+  status: active
+- id: 0130frc33
+  name: University of North Carolina at Chapel Hill
+  title:
+    en: University of North Carolina at Chapel Hill
+    es: Universidad de Carolina del Norte en Chapel Hill
+    fr: Université de la Caroline du Nord à Chapel Hill
+  acronym: UNC
+  aliases:
+    - UNC-Chapel Hill
+  identifiers:
+    - identifier: 0130frc33
+      scheme: ror
+    - identifier: grid.10698.36
+      scheme: grid
+    - identifier: 0000 0001 2248 3208
+      scheme: isni
+  types:
+    - education
+    - funder
+  country: US
+  country_name: United States
+  location_name: Chapel Hill
+  website: https://www.unc.edu
+  domains:
+    - unc.edu
+  status: active
+- id: 00240q980
+  name: University of Padua
+  title:
+    ca: Universitat de Pàdua
+    de: Universität Padua
+    en: University of Padua
+    fr: Université de padoue
+    it: Università degli Studi di Padova
+    sl: Univerza v Padovi
+  acronym: UNIPD
+  aliases:
+    - University of Padova
+    - Università di Padova
+  identifiers:
+    - identifier: 00240q980
+      scheme: ror
+    - identifier: grid.5608.b
+      scheme: grid
+    - identifier: 0000 0004 1757 3470
+      scheme: isni
+  types:
+    - education
+    - funder
+  country: IT
+  country_name: Italy
+  location_name: Padua
+  website: https://www.unipd.it
+  domains:
+    - unipd.it
+  status: active
+- id: 03fc1k060
+  name: University of Salento
+  title:
+    de: Universität Salento
+    en: University of Salento
+    fr: Université du salento
+    it: Università degli Studi di Lecce
+  aliases:
+    - Università del Salento
+  identifiers:
+    - identifier: 03fc1k060
+      scheme: ror
+    - identifier: grid.9906.6
+      scheme: grid
+    - identifier: 0000 0001 2289 7785
+      scheme: isni
+  types:
+    - education
+    - funder
+  country: IT
+  country_name: Italy
+  location_name: Lecce
+  website: https://unisalento.it
+  domains:
+    - unisalento.it
+  status: active
+- id: 03z77qz90
+  name: University of Tartu
+  title:
+    en: University of Tartu
+    et: Tartu Ülikool
+    ru: Тартуский университет
+  acronym: UT
+  identifiers:
+    - identifier: 03z77qz90
+      scheme: ror
+    - identifier: grid.10939.32
+      scheme: grid
+    - identifier: 0000 0001 0943 7661
+      scheme: isni
+  types:
+    - education
+    - funder
+  country: EE
+  country_name: Estonia
+  location_name: Tartu
+  website: https://ut.ee
+  domains:
+    - ut.ee
+  status: active
+- id: 048tbm396
+  name: University of Turin
+  title:
+    ca: Universitat de Torí
+    de: Universität Turin
+    en: University of Turin
+    fr: Université de Turin
+    it: Università degli Studi di Torino
+  acronym: UNITO
+  identifiers:
+    - identifier: 048tbm396
+      scheme: ror
+    - identifier: grid.7605.4
+      scheme: grid
+    - identifier: 0000 0001 2336 6580
+      scheme: isni
+  types:
+    - education
+    - funder
+  country: IT
+  country_name: Italy
+  location_name: Turin
+  website: https://www.unito.it
+  domains:
+    - unito.it
+  status: active
+- id: 03prydq77
+  name: University of Vienna
+  title:
+    de: Universität Wien
+    en: University of Vienna
+    hr: Sveučilište u Beču
+    hu: Bécsi Egyetem
+    sl: Univerza na Dunaju
+  identifiers:
+    - identifier: 03prydq77
+      scheme: ror
+    - identifier: grid.10420.37
+      scheme: grid
+    - identifier: 0000 0001 2286 1424
+      scheme: isni
+  types:
+    - education
+    - funder
+  country: AT
+  country_name: Austria
+  location_name: Vienna
+  website: https://www.univie.ac.at
+  domains:
+    - univie.ac.at
+  status: active
+- id: 039bjqg32
+  name: University of Warsaw
+  title:
+    en: University of Warsaw
+    pl: Uniwersytet Warszawski
+  acronym: UW
+  identifiers:
+    - identifier: 039bjqg32
+      scheme: ror
+    - identifier: grid.12847.38
+      scheme: grid
+    - identifier: 0000 0004 1937 1290
+      scheme: isni
+  types:
+    - education
+    - funder
+  country: PL
+  country_name: Poland
+  location_name: Warsaw
+  website: http://en.uw.edu.pl/
+  domains:
+    - fuw.edu.pl
+  status: active
+- id: 02crff812
+  name: University of Zurich
+  title:
+    de: Universität Zürich
+    en: University of Zurich
+    fr: Université de Zurich
+    it: Università di Zurigo
+  acronym: UZH
+  identifiers:
+    - identifier: 02crff812
+      scheme: ror
+    - identifier: grid.7400.3
+      scheme: grid
+    - identifier: 0000 0004 1937 0650
+      scheme: isni
+  types:
+    - education
+    - funder
+  country: CH
+  country_name: Switzerland
+  location_name: Zurich
+  website: https://uzh.ch/de.html
+  domains:
+    - uzh.ch
+  status: active
+- id: 00g30e956
+  name: Universität Hamburg
+  title:
+    de: Universität Hamburg
+    en: University of Hamburg
+  acronym: UHH
+  aliases:
+    - Hamburg University
+  identifiers:
+    - identifier: 00g30e956
+      scheme: ror
+    - identifier: grid.9026.d
+      scheme: grid
+    - identifier: 0000 0001 2287 2617
+      scheme: isni
+  types:
+    - education
+    - funder
+  country: DE
+  country_name: Germany
+  location_name: Hamburg
+  website: http://www.uni-hamburg.de
+  status: active
+- id: 006rqpt26
+  name: West and Central African Research and Education Network
+  title:
+    en: West and Central African Research and Education Network
+  acronym: WACREN
+  identifiers:
+    - identifier: 006rqpt26
+      scheme: ror
+    - identifier: grid.463700.6
+      scheme: grid
+  types:
+    - other
+  country: GH
+  country_name: Ghana
+  location_name: Accra
+  website: http://www.wacren.net/
+  status: active
