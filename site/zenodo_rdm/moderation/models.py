@@ -41,6 +41,11 @@ class LinkDomain(db.Model, Timestamp):
         db.session.add(ld)
         return ld
 
+    @property
+    def domain_name(self):
+        """Return the domain in display order."""
+        return ".".join(reversed(self.domain.strip(".").split(".")))
+
     @classmethod
     def lookup_domain(cls, url):
         """Lookup the status of a URL's domain."""

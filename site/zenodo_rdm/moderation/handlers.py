@@ -87,7 +87,10 @@ class BaseModerationHandler:
             action_ctx = {
                 "user_id": user.id,
                 "record_pid": obj.pid.pid_value,
-                "results": {name: asdict(result) for name, result in results.items()},
+                "results": {
+                    name: {"label": self.rules[name].label, **asdict(result)}
+                    for name, result in results.items()
+                },
                 "evaluation": evaluation,
             }
             current_app.logger.debug("Moderation score calculated", extra=action_ctx)

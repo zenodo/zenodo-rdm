@@ -34,6 +34,8 @@ class RuleResult:
 class Rule:
     """Base class for moderation scoring rules."""
 
+    label: str
+
     def __call__(self, identity, draft=None, record=None) -> RuleResult:
         """Resolve the draft/record and delegate to ``evaluate``."""
         return self.evaluate(identity, record if record is not None else draft)

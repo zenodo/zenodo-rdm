@@ -19,11 +19,11 @@ from zenodo_rdm.moderation.percolator import (
 )
 from zenodo_rdm.moderation.proxies import current_scores
 from zenodo_rdm.moderation.rules import (
-    FilesRule,
-    LinksRule,
+    FileRule,
+    LinkRule,
     MatchQueryRule,
-    TextSanitizationRule,
-    VerifiedUserRule,
+    MetadataSpamIndicatorsRule,
+    OwnerVerifiedRule,
     extract_emojis,
     extract_links,
 )
@@ -148,7 +148,7 @@ def banned_domain(db):
     return domain
 
 
-def test_links_rule_flags_excess_links_and_banned_domains(
+def test_link_rule_flags_excess_links_and_banned_domains(
     running_app, db, banned_domain, minimal_record
 ):
     """A description full of links to a banned domain is scored as spam."""
@@ -161,7 +161,7 @@ def test_links_rule_flags_excess_links_and_banned_domains(
     item = records_service.create(system_identity, data)
     record = records_service.publish(system_identity, item.id)._record
 
-    result = LinksRule()(system_identity, record=record)
+    result = LinkRule()(system_identity, record=record)
 
     excess = [r for r in result.reasons if r.code == "excess_description_links"]
     assert len(excess) == 1
@@ -171,9 +171,13 @@ def test_links_rule_flags_excess_links_and_banned_domains(
     assert domains
     assert all(r.status == "spam" for r in domains)
     assert all(r.score == current_scores.spam_link for r in domains)
+    assert all(r.domain == "spam.example" for r in domains)
+    assert all(r.label.endswith("domain spam.example") for r in domains)
 
 
-def test_text_sanitization_rule_flags_excess_emoji(running_app, db, minimal_record):
+def test_metadata_spam_indicators_rule_flags_excess_emoji(
+    running_app, db, minimal_record
+):
     """A description with more than three emoji is flagged."""
     data = {
         **minimal_record,
@@ -186,7 +190,7 @@ def test_text_sanitization_rule_flags_excess_emoji(running_app, db, minimal_reco
     item = records_service.create(system_identity, data)
     record = records_service.publish(system_identity, item.id)._record
 
-    result = TextSanitizationRule()(system_identity, record=record)
+    result = MetadataSpamIndicatorsRule()(system_identity, record=record)
 
     by_code = {r.code: r for r in result.reasons}
     assert by_code["excess_emoji"].count >= 4
@@ -219,7 +223,7 @@ def verified_owner(UserFixture, app, db):
     )
 
 
-def test_verified_user_rule_unverified_owner(
+def test_owner_verified_rule_unverified_owner(
     running_app, db, unverified_owner, minimal_record
 ):
     """An unverified owner adds the unverified-user score."""
@@ -227,13 +231,13 @@ def test_verified_user_rule_unverified_owner(
     item = records_service.create(unverified_owner.identity, data)
     record = records_service.publish(unverified_owner.identity, item.id)._record
 
-    reason = VerifiedUserRule()(unverified_owner.identity, record=record).reasons[0]
+    reason = OwnerVerifiedRule()(unverified_owner.identity, record=record).reasons[0]
 
     assert reason.verified is False
     assert reason.score == current_scores.unverified_user
 
 
-def test_verified_user_rule_verified_owner(
+def test_owner_verified_rule_verified_owner(
     running_app, db, verified_owner, minimal_record
 ):
     """A verified owner subtracts via the verified-user score."""
@@ -241,7 +245,7 @@ def test_verified_user_rule_verified_owner(
     item = records_service.create(verified_owner.identity, data)
     record = records_service.publish(verified_owner.identity, item.id)._record
 
-    reason = VerifiedUserRule()(verified_owner.identity, record=record).reasons[0]
+    reason = OwnerVerifiedRule()(verified_owner.identity, record=record).reasons[0]
 
     assert reason.verified is True
     assert reason.score == current_scores.verified_user
@@ -263,13 +267,13 @@ def _publish_with_files(identity, data, files):
     return records_service.publish(identity, recid)._record
 
 
-def test_files_rule_flags_spam_files(running_app, db, minimal_record):
+def test_file_rule_flags_spam_files(running_app, db, minimal_record):
     """A few small files with a spam extension add the spam-files score."""
     record = _publish_with_files(
         system_identity, minimal_record, [("malware.pdf", b"x" * 10)]
     )
 
-    result = FilesRule()(system_identity, record=record)
+    result = FileRule()(system_identity, record=record)
 
     assert any(r.code == "file_stats" for r in result.reasons)
     spam = [r for r in result.reasons if r.code == "spam_files"]
@@ -278,12 +282,12 @@ def test_files_rule_flags_spam_files(running_app, db, minimal_record):
     assert "pdf" in spam[0].extensions
 
 
-def test_files_rule_flags_ham_files(running_app, db, minimal_record):
+def test_file_rule_flags_ham_files(running_app, db, minimal_record):
     """Many files indicate a genuine record and add the ham-files score."""
     files = [(f"data{i}.txt", b"content") for i in range(5)]
     record = _publish_with_files(system_identity, minimal_record, files)
 
-    result = FilesRule()(system_identity, record=record)
+    result = FileRule()(system_identity, record=record)
 
     ham = [r for r in result.reasons if r.code == "ham_files"]
     assert len(ham) == 1

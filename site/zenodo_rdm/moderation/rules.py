@@ -58,8 +58,10 @@ def extract_links(text):
 #
 # Rules
 #
-class LinksRule(Rule):
+class LinkRule(Rule):
     """Score based on links found in record metadata."""
+
+    label = "Links"
 
     @dataclass(frozen=True)
     class Excess(Reason):
@@ -98,8 +100,8 @@ class LinksRule(Rule):
             reasons.append(
                 self.Domain(
                     score=domain.score if domain.score is not None else default,
-                    label=f"link to {'safe' if is_safe else 'spam'} domain {domain.domain}",
-                    domain=domain.domain,
+                    label=f"link to {'safe' if is_safe else 'spam'} domain {domain.domain_name}",
+                    domain=domain.domain_name,
                     status="safe" if is_safe else "spam",
                 )
             )
@@ -107,8 +109,10 @@ class LinksRule(Rule):
         return RuleResult(reasons=reasons)
 
 
-class TextSanitizationRule(Rule):
+class MetadataSpamIndicatorsRule(Rule):
     """Score based on excessive emoji and HTML tag usage in metadata text."""
+
+    label = "Metadata spam indicators"
 
     @dataclass(frozen=True)
     class Emoji(Reason):
@@ -146,8 +150,10 @@ class TextSanitizationRule(Rule):
         )
 
 
-class VerifiedUserRule(Rule):
+class OwnerVerifiedRule(Rule):
     """Adjust score based on the verification status of the owner."""
+
+    label = "Owner verified"
 
     @dataclass(frozen=True)
     class Verification(Reason):
@@ -178,8 +184,10 @@ class VerifiedUserRule(Rule):
         )
 
 
-class FilesRule(Rule):
+class FileRule(Rule):
     """Score based on the number, size, and type of files on the record."""
+
+    label = "Files"
 
     @dataclass(frozen=True)
     class Stats(Reason):
@@ -247,6 +255,8 @@ class FilesRule(Rule):
 
 class MatchQueryRule(Rule):
     """Score based on matched percolate queries against the document."""
+
+    label = "Match query"
 
     @dataclass(frozen=True)
     class Match(Reason):

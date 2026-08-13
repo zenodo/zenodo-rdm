@@ -39,3 +39,17 @@ def test_lookup_domain(domains, domain, expected_status):
         assert LinkDomain.lookup_domain(domain) is None
     else:
         assert LinkDomain.lookup_domain(domain).status == expected_status
+
+
+@pytest.mark.parametrize(
+    "stored,expected",
+    [
+        (".io.blog", "blog.io"),
+        (".io.blog.spam", "spam.blog.io"),
+        (".ch.edu", "edu.ch"),
+        (".cam", "cam"),
+    ],
+)
+def test_domain_name(stored, expected):
+    """Domain names are exposed in display order."""
+    assert LinkDomain(domain=stored).domain_name == expected

@@ -118,7 +118,8 @@ def _render_breakdown(results):
             f"<li>{reason['score']:+} {escape(reason['label'])}</li>"
             for reason in drivers
         )
-        groups.append(f"<li>{name} ({result['score']})<ul>{items}</ul></li>")
+        label = escape(result.get("label", name))
+        groups.append(f"<li>{label} ({result['score']})<ul>{items}</ul></li>")
     return f"<ul>{''.join(groups)}</ul>" if groups else ""
 
 

@@ -3,11 +3,11 @@
 """Moderation config."""
 
 from .rules import (
-    FilesRule,
-    LinksRule,
+    FileRule,
+    LinkRule,
     MatchQueryRule,
-    TextSanitizationRule,
-    VerifiedUserRule,
+    MetadataSpamIndicatorsRule,
+    OwnerVerifiedRule,
 )
 
 MODERATION_SCORES = {
@@ -41,18 +41,18 @@ MODERATION_EXEMPT_USERS = []
 """List of users exempt from moderation."""
 
 MODERATION_RECORD_SCORE_RULES = {
-    "verified_user_rule": VerifiedUserRule(),
-    "links_rule": LinksRule(),
-    "files_rule": FilesRule(),
-    "text_sanitization_rule": TextSanitizationRule(),
+    "owner_verified_rule": OwnerVerifiedRule(),
+    "link_rule": LinkRule(),
+    "file_rule": FileRule(),
+    "metadata_spam_indicators_rule": MetadataSpamIndicatorsRule(),
     "match_query_rule": MatchQueryRule(),
 }
 """Scoring rules for record moderation."""
 
 MODERATION_COMMUNITY_SCORE_RULES = {
-    "links_rule": LinksRule(),
-    "text_sanitization_rule": TextSanitizationRule(),
-    "verified_user_rule": VerifiedUserRule(),
+    "link_rule": LinkRule(),
+    "metadata_spam_indicators_rule": MetadataSpamIndicatorsRule(),
+    "owner_verified_rule": OwnerVerifiedRule(),
     "match_query_rule": MatchQueryRule(),
 }
 """Scoring rules for communtiy moderation."""
