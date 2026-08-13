@@ -367,6 +367,12 @@ class LegacyFileService(FileService):
             )
             permission_action_prefix = ""
 
+        # Check file existence before permissions (as upstream does), since
+        # file-conditional generators (e.g. IfTransferType) deny on a missing
+        # file and would turn a 404 into a 403.
+        if file_key and file_key not in record.files:
+            raise FileKeyNotFoundError(id_, file_key)
+
         self.require_permission(
             identity,
             action,
@@ -375,9 +381,6 @@ class LegacyFileService(FileService):
             permission_action_prefix=permission_action_prefix,
             **kwargs,
         )
-
-        if file_key and file_key not in record.files:
-            raise FileKeyNotFoundError(id_, file_key)
 
         return record
 
@@ -409,6 +412,8 @@ class LegacyFileService(FileService):
                 )
                 .filter(
                     FileInstance.id == file_id,
+                    # Soft-deleted files leave behind non-head object versions
+                    ObjectVersion.is_head.is_(True),
                     PersistentIdentifier.pid_type == "recid",
                     PersistentIdentifier.pid_value == pid_value,
                     PersistentIdentifier.object_type == "rec",

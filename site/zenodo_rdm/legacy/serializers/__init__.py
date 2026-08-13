@@ -8,6 +8,7 @@ from marshmallow import fields, missing, post_dump
 from .schemas import (
     LegacyFileListSchema,
     LegacyFileSchema,
+    LegacyFilesRESTListSchema,
     LegacyFilesRESTSchema,
     LegacySchema,
     ZenodoSchema,
@@ -78,5 +79,5 @@ class LegacyFilesRESTJSONSerializer(MarshmallowSerializer):
         super().__init__(
             format_serializer_cls=JSONSerializer,
             object_schema_cls=LegacyFilesRESTSchema,
-            list_schema_cls=BaseListSchema,
+            list_schema_cls=LegacyFilesRESTListSchema,
         )
