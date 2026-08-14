@@ -1,3 +1,4 @@
+
 <div align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://about.zenodo.org/static/img/logos/zenodo-white-border.svg">
