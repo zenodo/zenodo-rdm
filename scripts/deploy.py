@@ -25,7 +25,7 @@ DEPLOYMENTS = {
 # CronJobs run with their image pinned in the manifest, so they go stale unless
 # bumped here together with the deployments on every deploy.
 CRONJOBS = {
-    "export-all-xml": ["terminal"],
+    "metadata-export": ["terminal"],
     "stats-agg-file-download": ["terminal"],
     "stats-agg-record-view": ["terminal"],
 }
@@ -94,7 +94,7 @@ for name, (kind, containers) in RESOURCES.items():
     print()
     res = subprocess.run(
         # oc set image deployment/web web=my/repo:v1.0 copy-web-assets=my/repo:v1.0
-        # oc set image cronjob/export-all-xml terminal=my/repo:v1.0
+        # oc set image cronjob/metadata-export terminal=my/repo:v1.0
         [
             "oc",
             "set",
