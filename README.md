@@ -25,7 +25,7 @@ invenio-cli run
 To update dependencies you need to:
 
 1. Run `invenio-cli packages lock`
-2. (Optional) Use [`changelog.py`](https://github.com/slint/changelog.py) to generate the commit message via `changelog.py --package-filter "^invenio" --show-major-bumps --since HEAD`
+2. (Optional) Use [`changelog.py`](https://github.com/slint/changelog.py) to generate the commit message via `changelog-py --package-filter "^invenio" --show-major-bumps --since HEAD`
 3. Commit the updated `uv.lock`
 
 > [!TIP]
