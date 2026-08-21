@@ -89,31 +89,37 @@ def _write_record(record, formats, archives, deleted_writer):
         return
 
     if record.get("deletion_status", {}).get("is_deleted", False):
-        tombstone = record.get("tombstone", {})
-        removal_reason = tombstone.get("removal_reason", {}).get("id")
-        deleted_writer.writerow(
-            [
+        try:
+            tombstone = record.get("tombstone") or {}
+            removal_reason = (tombstone.get("removal_reason") or {}).get("id")
+            parent = record.get("parent") or {}
+            row = [
                 record_id,
                 record["pids"]["doi"]["identifier"],
-                record.get("parent", {}).get("id"),
-                record.get("parent", {})
-                .get("pids", {})
-                .get("doi", {})
-                .get("identifier"),
+                parent.get("id"),
+                (parent.get("pids") or {}).get("doi", {}).get("identifier"),
                 tombstone.get("note"),
                 removal_reason,
                 tombstone.get("removal_date"),
                 tombstone.get("citation_text") if removal_reason != "spam" else None,
             ]
-        )
+        except Exception:
+            current_app.logger.exception(
+                f"Could not export deleted record: {record_id}"
+            )
+            return
+
+        deleted_writer.writerow(row)
         return
 
     for format in formats:
         try:
             content = SERIALIZERS[format](record)
         except Exception:
-            current_app.logger.exception(f"Could not serialize record: {record_id}")
-            raise
+            current_app.logger.exception(
+                f"Could not serialize record {record_id} as {format}"
+            )
+            continue
 
         info = tarfile.TarInfo(f"{record_id}.{format}")
         info.size = len(content)
