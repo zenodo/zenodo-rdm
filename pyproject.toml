@@ -53,9 +53,10 @@ dev = [
 
 [project.optional-dependencies]
 sentry = [
-    "sentry-sdk>=1.45,<2.0.0",
+    "invenio-logging[sentry]",
 ]
 xrootd = [
     "invenio-xrootd",
     "requests-kerberos==0.14.0",
+    "xrootd==5.9.6",
 ]
