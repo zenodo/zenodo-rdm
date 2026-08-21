@@ -42,5 +42,5 @@ Tests can be run by activating the `uv` virtual env first:
 ```bash
 cd zenodo-rdm
 source .venv/bin/activate
-(zenodo-rdm-app)$ ./run-tests.sh
+(zenodo-rdm-app)$ ./run-tests.sh  
 ```
