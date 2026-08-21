@@ -68,17 +68,26 @@ def _log_progress(processed, total, started, errors, completed=False):
     rate = processed / elapsed
     if completed:
         current_app.logger.info(
-            f"Exporter completed: processed {processed:_}/{total:_} records in "
-            f"{_format_duration(elapsed)} at {rate:,.1f} records/s with {errors:_} errors"
+            "Exporter completed: processed %s/%s records in %s at %s records/s "
+            "with %s errors",
+            f"{processed:_}",
+            f"{total:_}",
+            _format_duration(elapsed),
+            f"{rate:,.1f}",
+            f"{errors:_}",
         )
         return
 
     percentage = processed / total * 100 if total else 100
     remaining = max(total - processed, 0) / rate if rate else 0
     current_app.logger.info(
-        f"Processed {processed:_}/{total:_} records ({percentage:.1f}%) at "
-        f"{rate:,.1f} records/s; ETA {_format_duration(remaining)}; "
-        f"errors: {errors:_}"
+        "Processed %s/%s records (%.1f%%) at %s records/s; ETA %s; errors: %s",
+        f"{processed:_}",
+        f"{total:_}",
+        percentage,
+        f"{rate:,.1f}",
+        _format_duration(remaining),
+        f"{errors:_}",
     )
 
 
@@ -147,7 +156,7 @@ def _write_record(record, formats, archives, deleted_writer):
             ]
         except Exception:
             current_app.logger.exception(
-                f"Could not export deleted record: {record_id}"
+                "Could not export deleted record: %s", record_id
             )
             return 1
 
@@ -160,7 +169,7 @@ def _write_record(record, formats, archives, deleted_writer):
             content = SERIALIZERS[format](record)
         except Exception:
             current_app.logger.exception(
-                f"Could not serialize record {record_id} as {format}"
+                "Could not serialize record %s as %s", record_id, format
             )
             errors += 1
             continue
