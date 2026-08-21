@@ -47,9 +47,9 @@ def export_records(formats, community_slug):
         bucket_id = current_app.config["EXPORTER_BUCKET_UUID"]
         bucket = Bucket.get(bucket_id)
         if bucket:
-            current_app.logger.info(f"Exporter bucket found: {bucket_id}")
+            current_app.logger.info("Exporter bucket found: %s", bucket_id)
         else:
-            current_app.logger.info(f"Creating exporter bucket: {bucket_id}")
+            current_app.logger.info("Creating exporter bucket: %s", bucket_id)
             bucket = Bucket(
                 id=bucket_id,
                 default_location=Location.get_default().id,
@@ -73,7 +73,7 @@ def export_records(formats, community_slug):
                     key=key,
                     mimetype=EXPORT_MIMETYPE,
                 )
-                current_app.logger.info(f"Creating object version: {version}")
+                current_app.logger.info("Creating object version: %s", version)
                 with path.open("rb") as stream:
                     version.set_contents(stream, size=path.stat().st_size)
                 db.session.add(version)
@@ -93,7 +93,7 @@ def export_records(formats, community_slug):
                 )
                 for version in versions[keep:]:
                     current_app.logger.info(
-                        f"Removing previous object version: {version}"
+                        "Removing previous object version: %s", version
                     )
                     version.remove()
                 db.session.commit()
