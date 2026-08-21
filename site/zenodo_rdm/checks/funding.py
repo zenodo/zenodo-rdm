@@ -173,7 +173,7 @@ class FundingCheck(Check):
         if not award_descriptions:
             return get_updated_result(
                 check_result,
-                message="No award found for the project or record.",
+                message="No award or no award description found for the project or record.",
                 success=False,
             ), {"input_hash": input_hash}
         if len(award_descriptions) > 1:
