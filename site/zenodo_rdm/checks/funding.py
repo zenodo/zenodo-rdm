@@ -8,6 +8,8 @@
 import hashlib
 import json
 
+import requests
+from flask import current_app
 from invenio_access.permissions import system_identity
 from invenio_checks.base import Check, CheckResult
 from invenio_checks.models import CheckConfig
@@ -184,7 +186,22 @@ class FundingCheck(Check):
         try:
             response = run_funding_relevance_workflow(check_metadata, award_descriptions[0])
 
+        except (RuntimeError, requests.ConnectionError, requests.HTTPError):
+            return get_updated_result(
+                check_result,
+                message="Funding validation service unavailable.",
+                success=False,
+            ), {}
+        except requests.Timeout:
+            return get_updated_result(
+                check_result,
+                message="Funding validation service timed out, please try again.",
+                success=False,
+            ), {}
         except Exception:
+            current_app.logger.exception(
+                "Unexpected error running funding relevance workflow"
+            )
             return get_updated_result(
                 check_result,
                 message="Funding validation service unavailable.",
