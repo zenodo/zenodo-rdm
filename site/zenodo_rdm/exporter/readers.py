@@ -11,7 +11,7 @@ from invenio_rdm_records.proxies import current_rdm_records_service
 
 
 def read_records(community_slug):
-    """Return a lazy stream of records to export."""
+    """Return the total and a lazy stream of records to export."""
     community_id = None
     if community_slug:
         community_id = (
@@ -29,18 +29,16 @@ def read_records(community_slug):
     records = current_rdm_records_service
     params = {"allversions": True, "include_deleted": True}
     records.require_permission(identity, "search")
-    result = (
-        records._search(
-            "scan",
-            identity,
-            params,
-            None,
-            q=f"parent.communities.ids:{community_id}" if community_id else "",
-        )
-        .params(scroll="15m")
-        .scan()
+    search = records._search(
+        "scan",
+        identity,
+        params,
+        None,
+        q=f"parent.communities.ids:{community_id}" if community_id else "",
     )
-    return records.result_list(
+    total = search[:0].extra(track_total_hits=True).execute().hits.total.value
+    result = search.params(scroll="15m").scan()
+    hits = records.result_list(
         records,
         identity,
         result,
@@ -50,3 +48,4 @@ def read_records(community_slug):
         expandable_fields=records.expandable_fields,
         expand=False,
     ).hits
+    return total, hits

@@ -32,7 +32,7 @@ def test_write_export_files(app, tmp_path):
     ]
 
     with app.app_context():
-        paths = write_archives(tmp_path, ("json",), records)
+        paths = write_archives(tmp_path, ("json",), records, len(records))
 
     assert [path.name for path in paths] == [
         "records-json.tar.gz",
@@ -62,7 +62,7 @@ def test_write_consumes_records_once_for_all_outputs(app, tmp_path):
         }
 
     with app.app_context():
-        paths = write_archives(tmp_path, ("json", "xml"), records())
+        paths = write_archives(tmp_path, ("json", "xml"), records(), 1)
 
     assert iterations == ["started"]
     assert _tar_members(paths[0]) == {}
@@ -97,7 +97,7 @@ def test_write_continues_after_record_errors(app, tmp_path, minimal_record, capl
     ]
 
     with app.app_context():
-        paths = write_archives(tmp_path, ("json", "xml"), records)
+        paths = write_archives(tmp_path, ("json", "xml"), records, len(records))
 
     json_members = _tar_members(paths[0])
     xml_members = _tar_members(paths[1])
@@ -108,3 +108,16 @@ def test_write_continues_after_record_errors(app, tmp_path, minimal_record, capl
     with gzip.open(paths[2], mode="rt") as stream:
         rows = list(csv.reader(stream))
     assert rows[1][0:2] == ["deleted", "10.5281/zenodo.1"]
+
+
+def test_write_logs_progress_and_rate(app, tmp_path, caplog):
+    """Progress logs include totals, throughput, and an ETA."""
+    records = ({"id": str(index)} for index in range(1000))
+    caplog.set_level("INFO")
+
+    with app.app_context():
+        write_archives(tmp_path, ("json",), records, 2000)
+
+    assert "Processed 1_000/2_000 records (50.0%) at" in caplog.text
+    assert "records/s; ETA" in caplog.text
+    assert "Exporter completed: processed 1_000/2_000 records" in caplog.text
