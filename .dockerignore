@@ -1,2 +1,33 @@
-# Ignore local virtualenv (if present)
-.venv/
+# Version control
+.git
+
+# Python
+.venv
+**/__pycache__
+*.py[cod]
+.pytest_cache
+.ruff_cache
+.mypy_cache
+
+# Node (the image installs its own; source trees are never needed)
+node_modules
+**/node_modules
+
+# Local dev databases and instance state
+*.db
+var/
+tmp/
+
+# Not part of the runtime image — only `site` and `legacy` are workspace members
+migrator/
+benchmark/
+docs/
+.github/
+
+# Nix dev environment
+flake.nix
+flake.lock
+
+# OS / editor cruft
+.DS_Store
+*.log

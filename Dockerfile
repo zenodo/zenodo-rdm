@@ -1,106 +1,123 @@
-# Dockerfile that builds a fully functional image of your app.
+# syntax=docker/dockerfile:1
 #
-# This image installs all Python dependencies for your application. It's based
-# on Almalinux (https://github.com/inveniosoftware/docker-invenio)
-# and includes Pip, Pipenv, Node.js, NPM and some few standard libraries
-# Invenio usually needs.
+# Dockerfile that builds a fully functional image of the Zenodo app.
+#
+# The Invenio base image provides Python 3.14, Node.js, pnpm, uv and the common
+# system libraries and instance layout used by Invenio applications.
+#
+# Build:
+#   docker build -t zenodo:latest .
 
-FROM registry.cern.ch/inveniosoftware/almalinux:1
+ARG BUILD_PLATFORM=linux/amd64
+ARG BUILD_EXTRAS="--extra sentry --extra xrootd"
+ARG PNPM_VERSION=11.15.1
 
+FROM --platform=${BUILD_PLATFORM} ghcr.io/inveniosoftware/invenio:debian-python3.14 AS base
 
-RUN dnf install -y epel-release
+# --- Python dependencies ---
+# Export dependencies separately from the application packages. Version-only
+# changes produce the same output, allowing BuildKit to reuse the install layer.
+FROM base AS python-requirements
+ARG BUILD_EXTRAS
+RUN --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv export --frozen --no-dev --no-emit-workspace \
+        --no-header --no-annotate ${BUILD_EXTRAS} \
+        --output-file=/python-requirements.txt >/dev/null
 
-# Pin Python version: changing .python-version busts the Docker layer cache
-# and forces dnf update/reinstall to run, ensuring we get the expected version.
-COPY .python-version .python-version
-RUN dnf update -y && \
-    dnf reinstall -y python3 python3-devel python3-libs pip
+# --- Frontend dependencies ---
+FROM base AS frontend-dependencies
+ARG PNPM_VERSION
+WORKDIR /frontend
+RUN npm install --global pnpm@${PNPM_VERSION}
+COPY package.json pnpm-lock.yaml ./
+RUN --mount=type=cache,target=/opt/.cache/pnpm-store \
+    pnpm install --frozen-lockfile --ignore-scripts \
+        --config.node-linker=hoisted --shamefully-hoist \
+        --store-dir=/opt/.cache/pnpm-store
 
-# XRootD
-ARG xrootd_version="5.5.5"
-# Repo required to find all the releases of XRootD
-RUN dnf config-manager --add-repo https://cern.ch/xrootd/xrootd.repo
-RUN if [ ! -z "$xrootd_version" ] ; then XROOTD_V="-$xrootd_version" ; else XROOTD_V="" ; fi && \
-    echo "Will install xrootd version: $XROOTD_V (latest if empty)" && \
-    dnf install -y xrootd"$XROOTD_V" python3-xrootd"$XROOTD_V"
-# /XRootD
+# --- Application image ---
+FROM base
 
-# Kerberos
-# CRB (Code Ready Builder): equivalent repository to well-known CentOS PowerTools
-RUN dnf install -y yum-utils
-RUN dnf config-manager --set-enabled crb
-# `krb5-devel` required by requests-kerberos
-RUN dnf install -y krb5-workstation krb5-libs krb5-devel
+# Additional build and runtime libraries needed by Zenodo.
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install --yes --no-install-recommends \
+        cmake \
+        krb5-user \
+        libkrb5-dev \
+        libvips-dev \
+        libxmlsec1-dev \
+        libxmlsec1-openssl \
+        pkg-config \
+        uuid-dev
+
+# Kerberos configuration (requests-kerberos / XRootD auth)
 COPY ./krb5.conf /etc/krb5.conf
-# /Kerberos
 
-# VIPS
-# libvips is not available in EPEL so we install the Remi repository configuration package
-# See: https://github.com/libvips/libvips/issues/1184
-RUN dnf install -y http://rpms.remirepo.net/enterprise/remi-release-9.rpm
-RUN dnf install -y vips
-# /VIPS
+# The base image creates the instance layout and the UID 1000/GID 0 user.
+RUN mkdir -p ${INVENIO_INSTANCE_PATH}/assets
 
-# Python and uv configuration
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
+    UV_PYTHON=3.14 \
     UV_CACHE_DIR=/opt/.cache/uv \
     UV_COMPILE_BYTECODE=1 \
-    UV_FROZEN=1 \
     UV_LINK_MODE=copy \
-    UV_NO_MANAGED_PYTHON=1 \
-    UV_SYSTEM_PYTHON=1 \
-    # Tell uv to use system Python
-    UV_PROJECT_ENVIRONMENT=/usr/ \
-    UV_PYTHON_DOWNLOADS=never \
     UV_REQUIRE_HASHES=1 \
     UV_VERIFY_HASHES=1
 
-# Get latest version of uv
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+ARG BUILD_EXTRAS
 
-# Install Python dependencies using uv
-ARG BUILD_EXTRAS="--extra sentry --extra xrootd"
+# --- Python installation ---
+COPY --from=python-requirements /python-requirements.txt /tmp/python-requirements.txt
+# Git requirements are pinned to commits but do not have archive hashes;
+# registry requirements still carry and verify their exported hashes.
 RUN --mount=type=cache,target=/opt/.cache/uv \
-    --mount=type=bind,source=uv.lock,target=uv.lock \
-    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    uv sync --no-dev --no-install-workspace --no-editable $BUILD_EXTRAS \
-        # (py)xrootd is already installed above using dnf
-        --no-install-package=xrootd
+    uv venv && \
+    UV_REQUIRE_HASHES=0 uv pip sync --strict /tmp/python-requirements.txt
 
-COPY site ./site
-COPY legacy ./legacy
-
+# --- Application source ---
+COPY . .
 COPY ./docker/uwsgi/ ${INVENIO_INSTANCE_PATH}
 COPY ./invenio.cfg ${INVENIO_INSTANCE_PATH}
 COPY ./templates/ ${INVENIO_INSTANCE_PATH}/templates/
 COPY ./app_data/ ${INVENIO_INSTANCE_PATH}/app_data/
 COPY ./translations ${INVENIO_INSTANCE_PATH}/translations
-COPY ./ .
 
-# Make sure workspace packages are installed (zenodo-rdm, zenodo-legacy)
+# Install workspace packages (zenodo-rdm, zenodo-legacy)
 RUN --mount=type=cache,target=/opt/.cache/uv \
-    uv sync --frozen --no-dev $BUILD_EXTRAS \
-    # (py)xrootd is already installed above using dnf
-    --no-install-package=xrootd
+    uv sync --locked --no-dev ${BUILD_EXTRAS}
 
-# We're caching on a mount, so for any commands that run after this we
-# don't want to use the cache (for image filesystem permission reasons)
+# Caching is done on a mount; disable it for the remaining filesystem writes.
 ENV UV_NO_CACHE=1
 
-# application build args to be exposed as environment variables
-ARG IMAGE_BUILD_TIMESTAMP
-ARG SENTRY_RELEASE
-
-# Expose random sha to uniquely identify this build
-ENV INVENIO_IMAGE_BUILD_TIMESTAMP="'${IMAGE_BUILD_TIMESTAMP}'"
-ENV SENTRY_RELEASE=${SENTRY_RELEASE}
-
-RUN echo "Image build timestamp $INVENIO_IMAGE_BUILD_TIMESTAMP"
-
+# --- Frontend assets ---
+# Fail if the generated project differs from the one used to install dependencies.
 RUN cp -r ./static/. ${INVENIO_INSTANCE_PATH}/static/ && \
     cp -r ./assets/. ${INVENIO_INSTANCE_PATH}/assets/ && \
-    invenio collect --verbose  && \
-    invenio webpack buildall
+    invenio collect --verbose && \
+    invenio webpack create && \
+    cmp package.json ${INVENIO_INSTANCE_PATH}/assets/package.json
+COPY --from=frontend-dependencies /frontend/node_modules ${INVENIO_INSTANCE_PATH}/assets/node_modules
+# The manifest was verified above. Skip pnpm's dependency check, which would
+# reinstall the copied node_modules because the generated project has no lockfile.
+RUN cd ${INVENIO_INSTANCE_PATH}/assets && \
+    ./node_modules/.bin/patch-package && \
+    PNPM_CONFIG_VERIFY_DEPS_BEFORE_RUN=false invenio webpack build && \
+    rm -rf ${INVENIO_INSTANCE_PATH}/assets
 
-ENTRYPOINT [ "bash", "-l"]
+# --- Build metadata ---
+ARG IMAGE_BUILD_TIMESTAMP
+ARG SENTRY_RELEASE
+ENV INVENIO_IMAGE_BUILD_TIMESTAMP="'${IMAGE_BUILD_TIMESTAMP}'" \
+    SENTRY_RELEASE=${SENTRY_RELEASE}
+RUN echo "Image build timestamp $INVENIO_IMAGE_BUILD_TIMESTAMP"
+
+# OpenShift runs with an arbitrary UID in GID 0, so the instance must be group-writable.
+RUN chown -R invenio:0 ${WORKING_DIR} && chmod -R g=u ${WORKING_DIR}
+
+USER invenio
+EXPOSE 5000
+ENTRYPOINT [ "bash", "-c" ]
