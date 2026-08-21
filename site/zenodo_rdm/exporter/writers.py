@@ -6,6 +6,7 @@ import csv
 import gzip
 import json
 import tarfile
+import time
 from collections.abc import Iterable, Mapping, Sequence
 from contextlib import ExitStack
 from io import BytesIO
@@ -47,10 +48,45 @@ SERIALIZERS = {
 EXPORT_FORMATS = tuple(SERIALIZERS)
 
 
+def _format_duration(seconds):
+    """Format a duration for progress logs."""
+    minutes, seconds = divmod(int(seconds), 60)
+    hours, minutes = divmod(minutes, 60)
+    days, hours = divmod(hours, 24)
+    if days:
+        return f"{days}d {hours}h"
+    if hours:
+        return f"{hours}h {minutes}m"
+    if minutes:
+        return f"{minutes}m {seconds}s"
+    return f"{seconds}s"
+
+
+def _log_progress(processed, total, started, errors, completed=False):
+    """Log export progress and throughput."""
+    elapsed = max(time.monotonic() - started, 1e-9)
+    rate = processed / elapsed
+    if completed:
+        current_app.logger.info(
+            f"Exporter completed: processed {processed:_}/{total:_} records in "
+            f"{_format_duration(elapsed)} at {rate:,.1f} records/s with {errors:_} errors"
+        )
+        return
+
+    percentage = processed / total * 100 if total else 100
+    remaining = max(total - processed, 0) / rate if rate else 0
+    current_app.logger.info(
+        f"Processed {processed:_}/{total:_} records ({percentage:.1f}%) at "
+        f"{rate:,.1f} records/s; ETA {_format_duration(remaining)}; "
+        f"errors: {errors:_}"
+    )
+
+
 def write_archives(
     run_path: Path,
     formats: Sequence[str],
     records: Iterable[Mapping],
+    total: int,
 ) -> list[Path]:
     """Write one set of records to all requested formats."""
     record_paths = {format: run_path / f"records-{format}.tar.gz" for format in formats}
@@ -75,10 +111,15 @@ def write_archives(
         deleted_writer = csv.writer(deleted)
         deleted_writer.writerow(DELETED_HEADER)
 
-        for index, record in enumerate(records):
-            if index % 1000 == 0:
-                current_app.logger.debug(f"Record index: {index:_}")
-            _write_record(record, formats, archives, deleted_writer)
+        started = time.monotonic()
+        processed = 0
+        errors = 0
+        for processed, record in enumerate(records, start=1):
+            errors += _write_record(record, formats, archives, deleted_writer)
+            if processed % 1000 == 0:
+                _log_progress(processed, total, started, errors)
+
+        _log_progress(processed, total, started, errors, completed=True)
 
     return [*record_paths.values(), deleted_path]
 
@@ -86,9 +127,10 @@ def write_archives(
 def _write_record(record, formats, archives, deleted_writer):
     record_id = record.get("id")
     if not record_id:
-        return
+        current_app.logger.error("Could not export record without an id")
+        return 1
 
-    if record.get("deletion_status", {}).get("is_deleted", False):
+    if (record.get("deletion_status") or {}).get("is_deleted", False):
         try:
             tombstone = record.get("tombstone") or {}
             removal_reason = (tombstone.get("removal_reason") or {}).get("id")
@@ -107,11 +149,12 @@ def _write_record(record, formats, archives, deleted_writer):
             current_app.logger.exception(
                 f"Could not export deleted record: {record_id}"
             )
-            return
+            return 1
 
         deleted_writer.writerow(row)
-        return
+        return 0
 
+    errors = 0
     for format in formats:
         try:
             content = SERIALIZERS[format](record)
@@ -119,8 +162,11 @@ def _write_record(record, formats, archives, deleted_writer):
             current_app.logger.exception(
                 f"Could not serialize record {record_id} as {format}"
             )
+            errors += 1
             continue
 
         info = tarfile.TarInfo(f"{record_id}.{format}")
         info.size = len(content)
         archives[format].addfile(info, fileobj=BytesIO(content))
+
+    return errors

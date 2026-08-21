@@ -37,8 +37,8 @@ def export_records(formats, community_slug):
 
     with TemporaryDirectory(dir=staging_path) as run_path:
         # Read records once and write every requested format
-        record_stream = read_records(community_slug)
-        paths = write_archives(Path(run_path), formats, record_stream)
+        total, record_stream = read_records(community_slug)
+        paths = write_archives(Path(run_path), formats, record_stream, total)
 
         prefix = f"{community_slug}/" if community_slug else ""
         files = [(path, f"{prefix}{path.name}") for path in paths]
