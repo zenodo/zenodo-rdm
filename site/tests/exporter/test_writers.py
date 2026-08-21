@@ -67,3 +67,44 @@ def test_write_consumes_records_once_for_all_outputs(app, tmp_path):
     assert iterations == ["started"]
     assert _tar_members(paths[0]) == {}
     assert _tar_members(paths[1]) == {}
+
+
+def test_write_continues_after_record_errors(app, tmp_path, minimal_record, caplog):
+    """Malformed records do not stop other records or formats."""
+    invalid_xml = dict(
+        minimal_record,
+        id="invalid-xml",
+        metadata=dict(
+            minimal_record["metadata"],
+            funding=[
+                {
+                    "funder": {"name": "Test funder"},
+                    "award": {"title": {"en": "Invalid\x00title"}},
+                }
+            ],
+        ),
+    )
+    records = [
+        invalid_xml,
+        {
+            "id": "deleted",
+            "deletion_status": {"is_deleted": True},
+            "pids": {"doi": {"identifier": "10.5281/zenodo.1"}},
+            "parent": None,
+            "tombstone": None,
+        },
+        {"id": "after-error", "metadata": {"title": "Test"}},
+    ]
+
+    with app.app_context():
+        paths = write_archives(tmp_path, ("json", "xml"), records)
+
+    json_members = _tar_members(paths[0])
+    xml_members = _tar_members(paths[1])
+    assert set(json_members) == {"invalid-xml.json", "after-error.json"}
+    assert "invalid-xml.xml" not in xml_members
+    assert "Could not serialize record invalid-xml as xml" in caplog.text
+
+    with gzip.open(paths[2], mode="rt") as stream:
+        rows = list(csv.reader(stream))
+    assert rows[1][0:2] == ["deleted", "10.5281/zenodo.1"]
