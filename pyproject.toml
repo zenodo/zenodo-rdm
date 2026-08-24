@@ -23,18 +23,16 @@ dependencies = [
     "invenio-records-resources",
     "invenio-github>=7.0.0,<8.0.0",
     "invenio-rdm-records",
-    "sword2",
 ]
 
 [tool.uv.sources]
 zenodo-rdm = { workspace = true }
 zenodo-legacy = { workspace = true }
-invenio-swh = { git = "https://github.com/inveniosoftware/invenio-swh", rev = "v0.13.4" }
+invenio-swh = { git = "https://github.com/inveniosoftware/invenio-swh", rev = "v0.13.5" }
 # User profile fixes
 invenio-records-resources = { git = "https://github.com/inveniosoftware/invenio-records-resources", branch = "fix-read-many" }
 invenio-app-rdm = { git = "https://github.com/inveniosoftware/invenio-app-rdm", branch = "feature/orcha" }
 invenio-rdm-records = { git = "https://github.com/inveniosoftware/invenio-rdm-records", branch = "feature/orcha" }
-sword2 = { git = "https://github.com/slint/python-client-sword2", branch = "support-314" }
 # Python 3.14 + xrootdpyfs 3.x support (inveniosoftware/invenio-xrootd#40)
 invenio-xrootd = { git = "https://github.com/ntarocco/invenio-xrootd", branch = "upgrade-xrootdpyf" }
 

@@ -2214,8 +2214,8 @@ wheels = [
 
 [[package]]
 name = "invenio-swh"
-version = "0.13.4"
-source = { git = "https://github.com/inveniosoftware/invenio-swh?rev=v0.13.4#828a3a415cf8e725c369939832b61281c44aec40" }
+version = "0.13.5"
+source = { git = "https://github.com/inveniosoftware/invenio-swh?rev=v0.13.5#d5013c50199a0ae38af1317d39979a602f61d2b9" }
 dependencies = [
     { name = "invenio-access" },
     { name = "invenio-db" },
@@ -4159,8 +4159,8 @@ wheels = [
 
 [[package]]
 name = "sword2"
-version = "0.3.0"
-source = { git = "https://github.com/slint/python-client-sword2?branch=support-314#0643a661639fff9b1c7a688054d8b7a4a07cff5c" }
+version = "0.3.1"
+source = { git = "https://github.com/inveniosoftware/python-client-sword2?rev=0.3.1#7f6b1a22b1bb2bc0c764329f699b00e58439d437" }
 dependencies = [
     { name = "httplib2" },
     { name = "lxml" },
@@ -4624,7 +4624,6 @@ dependencies = [
     { name = "pyinstrument" },
     { name = "pyvips" },
     { name = "sqltap" },
-    { name = "sword2" },
     { name = "uwsgi" },
     { name = "uwsgi-tools" },
     { name = "uwsgitop" },
@@ -4658,14 +4657,13 @@ requires-dist = [
     { name = "invenio-logging", extras = ["sentry"], marker = "extra == 'sentry'" },
     { name = "invenio-rdm-records", git = "https://github.com/inveniosoftware/invenio-rdm-records?branch=feature%2Forcha" },
     { name = "invenio-records-resources", git = "https://github.com/inveniosoftware/invenio-records-resources?branch=fix-read-many" },
-    { name = "invenio-swh", git = "https://github.com/inveniosoftware/invenio-swh?rev=v0.13.4" },
+    { name = "invenio-swh", git = "https://github.com/inveniosoftware/invenio-swh?rev=v0.13.5" },
     { name = "invenio-xrootd", marker = "extra == 'xrootd'", git = "https://github.com/ntarocco/invenio-xrootd?branch=upgrade-xrootdpyf" },
     { name = "nameparser", specifier = ">=1.1.1" },
     { name = "pyinstrument", specifier = ">=5.0.0,<6" },
     { name = "pyvips", specifier = ">=2.2.2,<3.0.0" },
     { name = "requests-kerberos", marker = "extra == 'xrootd'", specifier = "==0.14.0" },
     { name = "sqltap", specifier = ">=0.3.11,<1.0.0" },
-    { name = "sword2", git = "https://github.com/slint/python-client-sword2?branch=support-314" },
     { name = "uwsgi", specifier = ">=2.0" },
     { name = "uwsgi-tools", specifier = ">=1.1.1" },
     { name = "uwsgitop", specifier = ">=0.11" },
