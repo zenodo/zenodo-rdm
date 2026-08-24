@@ -1,3 +1,6 @@
+.dockerignore
+Dockerfile
+
 # Version control
 .git
 

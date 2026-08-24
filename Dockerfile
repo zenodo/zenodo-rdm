@@ -10,7 +10,6 @@
 
 ARG BUILD_PLATFORM=linux/amd64
 ARG BUILD_EXTRAS="--extra sentry --extra xrootd"
-ARG PNPM_VERSION=11.15.1
 
 FROM --platform=${BUILD_PLATFORM} ghcr.io/inveniosoftware/invenio:debian-python3.14 AS base
 
@@ -29,12 +28,10 @@ RUN --mount=type=bind,source=uv.lock,target=uv.lock \
 FROM base AS frontend-dependencies
 ARG PNPM_VERSION
 WORKDIR /frontend
-RUN npm install --global pnpm@${PNPM_VERSION}
 COPY package.json pnpm-lock.yaml ./
-RUN --mount=type=cache,target=/opt/.cache/pnpm-store \
+RUN --mount=type=cache,target=/pnpm/store \
     pnpm install --frozen-lockfile --ignore-scripts \
-        --config.node-linker=hoisted --shamefully-hoist \
-        --store-dir=/opt/.cache/pnpm-store
+        --config.node-linker=hoisted --shamefully-hoist
 
 # --- Application image ---
 FROM base
@@ -100,11 +97,14 @@ RUN cp -r ./static/. ${INVENIO_INSTANCE_PATH}/static/ && \
     invenio collect --verbose && \
     invenio webpack create && \
     cmp package.json ${INVENIO_INSTANCE_PATH}/assets/package.json
+COPY pnpm-lock.yaml ${INVENIO_INSTANCE_PATH}/assets/pnpm-lock.yaml
 COPY --from=frontend-dependencies /frontend/node_modules ${INVENIO_INSTANCE_PATH}/assets/node_modules
-# The manifest was verified above. Skip pnpm's dependency check, which would
-# reinstall the copied node_modules because the generated project has no lockfile.
-RUN cd ${INVENIO_INSTANCE_PATH}/assets && \
-    ./node_modules/.bin/patch-package && \
+# We need to run postinstall, since when we run pnpm install in the
+# "frontend-dependencies" stage, we didn't have the assets dir with the necessary
+# patch-package patches.
+RUN --mount=type=cache,target=/pnpm/store \
+    cd ${INVENIO_INSTANCE_PATH}/assets && \
+    pnpm run postinstall && \
     PNPM_CONFIG_VERIFY_DEPS_BEFORE_RUN=false invenio webpack build && \
     rm -rf ${INVENIO_INSTANCE_PATH}/assets
 
