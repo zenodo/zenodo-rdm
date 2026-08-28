@@ -352,7 +352,6 @@ class LegacyFilesRESTResource(FileResource):
         return commit_file_result.to_dict(), 201
 
     @request_files_view_args
-    @response_handler()
     def delete_object(self):
         """Delete a file as in Files-REST views."""
         bucket_id = resource_requestctx.view_args["bucket_id"]
