@@ -121,6 +121,13 @@ def test_quickstart_workflow(
     assert data["delete_marker"] is False
     assert {"self", "uploads", "version"} <= data["links"].keys()
 
+    # Delete a file with /api/files
+    res = client.delete(
+        f"{bucket_url}/my_third_file.csv",
+        headers=headers,
+    )
+    assert res.status_code == 204
+
     # modify deposit
     deposit = {
         "metadata": {
