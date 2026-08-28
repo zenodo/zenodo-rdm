@@ -123,18 +123,20 @@ class FundingCheck(Check):
 
     def run(self, record, config: CheckConfig, **kwargs):
         """Run the funding relevance check on a record with the given configuration."""
-        def get_updated_result(check_result, message, success):
+        def get_updated_result(check_result, message, success, orcha=False):
             check_result.success = success
             check_result.description = message
             if not success:
-                check_result.errors.append(
-                    {
+                error = {
                         "field": "metadata.funding",
                         "messages": [message],
                         "description": description,
                         "severity": config.severity.error_value,
                     }
-                )
+                if orcha:
+                    error["icon"] = "fire blue"
+                check_result.errors.append(error)
+
             return check_result
 
         params = config.params
@@ -194,7 +196,7 @@ class FundingCheck(Check):
         match = response.get("match")
         if match is not None:
             return get_updated_result(
-                check_result, response.get("message"), match
+                check_result, response.get("message"), match, orcha=True
             ), {
                 "input_hash": input_hash,
                 "workflow_id": response.get("workflow_id")
