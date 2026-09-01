@@ -44,7 +44,6 @@ members = [
 
 [dependency-groups]
 dev = [
-    "pdbpp>=0.11.7",
     "pytest-invenio>=3.0.0,<4.0.0",
     "pytest-mock>=1.6.0",
 ]
