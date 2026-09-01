@@ -4,6 +4,7 @@
 
 from copy import deepcopy
 from os.path import splitext
+from uuid import UUID
 
 from flask import current_app
 from invenio_app_rdm.records_ui.previewer.iiif_simple import (
@@ -386,6 +387,13 @@ class LegacyFileService(FileService):
 
     def get_record_by_bucket_id(self, bucket_id):
         """Get the associated record by its bucket ID."""
+        try:
+            # Files-REST 404s on an unparseable bucket ID; without this the UUID
+            # column coercion raises instead.
+            bucket_id = UUID(bucket_id)
+        except ValueError:
+            raise NoResultFound()
+
         try:
             # Try first the draft
             model_cls = self.record_cls.model_cls
