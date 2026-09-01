@@ -7,6 +7,7 @@ and ``/api/files/<bucket_id>/<key>`` (Files-REST API).
 """
 
 from io import BytesIO
+from uuid import uuid4
 
 DEPOSIT_DATA = {
     "metadata": {
@@ -144,3 +145,12 @@ def test_files_rest_operations(client, deposit_url, headers, files_headers, uplo
     assert res.status_code == 404
     res = client.delete(f"{bucket_url}/data.txt", headers=headers)
     assert res.status_code == 404
+
+
+def test_files_rest_bad_bucket_id(client, files_rest_url):
+    """A bucket ID that isn't a known UUID is a 404, not a 500."""
+    for bucket_id in (uuid4(), "5840260"):
+        res = client.get(f"{files_rest_url}/{bucket_id}")
+        assert res.status_code == 404, res.text
+        res = client.get(f"{files_rest_url}/{bucket_id}/data.xlsx")
+        assert res.status_code == 404, res.text
