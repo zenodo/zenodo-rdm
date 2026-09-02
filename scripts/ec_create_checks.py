@@ -513,12 +513,18 @@ FUNDING_CHECK_CONFIG = {
     "funding_description": "The system compares the record title and description against the official EU grant description.",
 }
 
+COMPARE_METADATA_CHECK_CONFIG = {
+    "compare_metadata_title": "Record's metadata should match content of the uploaded file.",
+    "compare_metadata_description": "The system compares the record metadata against the uploaded file.",
+}
+
 
 def create_eu_checks():
     eu_comm = community_service.record_cls.pid.resolve("eu")
     create_metadata_checks(eu_comm)
     create_file_format_checks(eu_comm)
     create_funding_check(eu_comm)
+    create_compare_metadata_check(eu_comm)
     print("EU Open Research Repository community checks created/updated successfully.")
 
     # Create checks for sub-communities
@@ -674,6 +680,29 @@ def create_funding_check(comm):
         f"Funding check created/updated successfully for community {comm.slug}."
     )
 
+
+def create_compare_metadata_check(comm):
+    existing_check = CheckConfig.query.filter_by(
+        community_id=comm.id, check_id="compare_metadata"
+    ).one_or_none()
+    if existing_check:
+        existing_check.params = COMPARE_METADATA_CHECK_CONFIG
+        existing_check.target_type = "record"
+    else:
+        db.session.add(
+            CheckConfig(
+                community_id=comm.id,
+                check_id="compare_metadata",
+                params=COMPARE_METADATA_CHECK_CONFIG,
+                target_type="record",
+                severity=Severity.WARN,
+                enabled=True,
+            )
+        )
+    db.session.commit()
+    print(
+        f"Metadata Comparison check created/updated successfully for community {comm.slug}."
+    )
 
 if __name__ == "__main__":
     create_eu_checks()
