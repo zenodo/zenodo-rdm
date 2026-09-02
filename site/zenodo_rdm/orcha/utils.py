@@ -100,3 +100,21 @@ def run_funding_relevance_workflow(metadata, award_description, rule=""):
     # poll for result using a scoped token, until done
     _status, result = _poll_to_return_result(client, workflow_id)
     return result
+
+
+def run_compare_metadata_workflow(pid_value, file_key, metadata):
+    """Run the compare_metadata LLM workflow, returning the result dict or {} on timeout."""
+    client, token = _get_orcha_client_token()
+    file_url = _file_download_url(
+        pid_value, client, key=file_key, identity=system_identity
+    )
+    payload = {
+        "workflow_type": "compare_metadata",
+        "params": {
+            "url": file_url,
+            "metadata": metadata,
+        },
+    }
+    response = _trigger_workflow(client, token, payload)
+    workflow_id = response["public_id"]
+    return _poll_to_return_result(client, workflow_id, poll_until=40)
