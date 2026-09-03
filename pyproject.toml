@@ -1,6 +1,6 @@
 [project]
 name = "zenodo-rdm-app"
-version = "26.1.1"
+version = "27.0.0rc1"
 authors = [
     { name = "CERN" }
 ]
@@ -46,16 +46,16 @@ invenio-records-resources = { git = "https://github.com/inveniosoftware/invenio-
 invenio-xrootd = { git = "https://github.com/ntarocco/invenio-xrootd", branch = "upgrade-xrootdpyf" }
 
 # React18
-invenio-app-rdm = { path = "../invenio-app-rdm", editable = true }
-invenio-rdm-records = { path = "../invenio-rdm-records", editable = true }
-invenio-administration = { path = "../invenio-administration", editable = true }
-invenio-search-ui = { path = "../invenio-search-ui", editable=true }
-invenio-collections = { path = "../invenio-collections", editable=true }
-invenio-communities = { path = "../invenio-communities", editable=true }
-invenio-assets = { path = "../invenio-assets", editable=true }
-invenio-vocabularies = { path = "../invenio-vocabularies", editable=true }
-invenio-requests = { path = "../invenio-requests", editable=true }
-invenio-jobs = { path = "../invenio-jobs", editable=true }
+invenio-app-rdm = { git = "https://github.com/olivergeneser/invenio-app-rdm", branch = "react-18-migration" }
+invenio-rdm-records = { git = "https://github.com/olivergeneser/invenio-rdm-records", branch = "react-18-migration" }
+invenio-administration = { git = "https://github.com/olivergeneser/invenio-administration", branch = "react-18-migration" }
+invenio-search-ui = { git = "https://github.com/olivergeneser/invenio-search-ui", branch = "react-18-migration"}
+invenio-collections = { git = "https://github.com/olivergeneser/invenio-collections", branch = "react-18-migration"}
+invenio-communities = { git = "https://github.com/olivergeneser/invenio-communities", branch = "react-18-migration"}
+invenio-assets = { git = "https://github.com/olivergeneser/invenio-assets", branch = "react-18-migration"}
+invenio-vocabularies = { git = "https://github.com/olivergeneser/invenio-vocabularies", branch = "react-18-migration"}
+invenio-requests = { git = "https://github.com/olivergeneser/invenio-requests", branch = "react-18-migration"}
+invenio-jobs = { git = "https://github.com/olivergeneser/invenio-jobs", branch = "react-18-migration"}
 #react-searchkit = { path = "../react-searchkit" }
 #react-invenio-forms = { path = "../react-invenio-forms" }
 
