@@ -7,9 +7,9 @@ import { Grid, Header, List, Checkbox } from "semantic-ui-react";
 
 export const Filter = withState(
   ({
-    currentResultsState,
-    updateQueryState,
-    currentQueryState,
+    currentResultsState = null,
+    updateQueryState = null,
+    currentQueryState = null,
     recordPID,
     recordParentPID,
   }) => {
@@ -71,12 +71,6 @@ Filter.propTypes = {
   currentResultsState: PropTypes.object,
   updateQueryState: PropTypes.func,
   currentQueryState: PropTypes.object,
-  recordPID: PropTypes.object.isRequired,
-  recordParentPID: PropTypes.object.isRequired,
-};
-
-Filter.defaultProps = {
-  currentResultsState: null,
-  updateQueryState: null,
-  currentQueryState: null,
+  recordPID: PropTypes.string.isRequired,
+  recordParentPID: PropTypes.string.isRequired,
 };

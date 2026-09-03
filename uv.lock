@@ -1463,7 +1463,8 @@ wheels = [
 
 [[package]]
 name = "invenio-administration"
-source = { editable = "../invenio-administration" }
+version = "7.2.0"
+source = { git = "https://github.com/olivergeneser/invenio-administration?branch=react-18-migration#50439352d7f2878cf449720c78773a302a4ed858" }
 dependencies = [
     { name = "flask-menu" },
     { name = "flask-principal" },
@@ -1475,28 +1476,6 @@ dependencies = [
     { name = "invenio-search-ui" },
     { name = "invenio-theme" },
 ]
-
-[package.metadata]
-requires-dist = [
-    { name = "flask-menu", specifier = ">=0.5.0" },
-    { name = "flask-principal", specifier = ">=0.4.0" },
-    { name = "invenio-access", marker = "extra == 'tests'", specifier = ">=7.0.0,<8.0.0" },
-    { name = "invenio-accounts", specifier = ">=9.0.0,<10.0.0" },
-    { name = "invenio-app", marker = "extra == 'tests'", specifier = ">=3.0.0,<4.0.0" },
-    { name = "invenio-base", specifier = ">=2.3.0,<3.0.0" },
-    { name = "invenio-db", extras = ["mysql", "postgresql"], specifier = ">=2.2.0,<3.0.0" },
-    { name = "invenio-i18n", specifier = ">=4.0.0,<5.0.0" },
-    { name = "invenio-records-resources", specifier = ">=11.0.0,<12.0.0" },
-    { name = "invenio-search", extras = ["elasticsearch7"], marker = "extra == 'elasticsearch7'", specifier = ">=3.0.0,<4.0.0" },
-    { name = "invenio-search", extras = ["opensearch1"], marker = "extra == 'opensearch1'", specifier = ">=3.0.0,<4.0.0" },
-    { name = "invenio-search", extras = ["opensearch2"], marker = "extra == 'opensearch2'", specifier = ">=3.0.0,<4.0.0" },
-    { name = "invenio-search-ui", specifier = ">=5.0.0,<6.0.0" },
-    { name = "invenio-theme", specifier = ">=5.0.0,<6.0.0" },
-    { name = "pytest-black", marker = "extra == 'tests'", specifier = ">=0.6.0" },
-    { name = "pytest-invenio", marker = "extra == 'tests'", specifier = ">=4.0.0,<5.0.0" },
-    { name = "sphinx", marker = "extra == 'tests'", specifier = ">=4.5" },
-]
-provides-extras = ["elasticsearch7", "opensearch1", "opensearch2", "tests"]
 
 [[package]]
 name = "invenio-app"
@@ -1520,7 +1499,8 @@ wheels = [
 
 [[package]]
 name = "invenio-app-rdm"
-source = { editable = "../invenio-app-rdm" }
+version = "15.0.0b6.dev0"
+source = { git = "https://github.com/olivergeneser/invenio-app-rdm?branch=react-18-migration#91e84bd9b0115bb606a6b5de678dc332e53b6f15" }
 dependencies = [
     { name = "cairosvg" },
     { name = "invenio-access" },
@@ -1569,78 +1549,15 @@ profiler = [
     { name = "flask-multiprofiler" },
 ]
 
-[package.metadata]
-requires-dist = [
-    { name = "cairosvg", specifier = ">=2.5.2,<3.0.0" },
-    { name = "flask-multiprofiler", marker = "extra == 'profiler'", specifier = ">=0.1.0" },
-    { name = "invenio-access", specifier = ">=7.0.0,<8.0.0" },
-    { name = "invenio-accounts", specifier = ">=9.0.0,<10.0.0" },
-    { name = "invenio-app", specifier = ">=3.0.0,<4.0.0" },
-    { name = "invenio-assets", specifier = ">=4.0.0,<5.0.0" },
-    { name = "invenio-audit-logs", specifier = ">=4.0.0,<5.0.0" },
-    { name = "invenio-banners", specifier = ">=8.0.0,<9.0.0" },
-    { name = "invenio-base", specifier = ">=2.1.0,<3.0.0" },
-    { name = "invenio-cache", specifier = ">=3.0.0,<4.0.0" },
-    { name = "invenio-celery", specifier = ">=2.0.0,<3.0.0" },
-    { name = "invenio-collections", specifier = ">=10.0.0,<11.0.0" },
-    { name = "invenio-communities", specifier = ">=29.0.0,<30.0.0" },
-    { name = "invenio-config", specifier = ">=1.0.3,<2.0.0" },
-    { name = "invenio-db", extras = ["mysql", "postgresql"], specifier = ">=2.2.0,<3.0.0" },
-    { name = "invenio-files-rest", specifier = ">=6.0.0,<7.0.0" },
-    { name = "invenio-formatter", specifier = ">=5.0.0,<6.0.0" },
-    { name = "invenio-i18n", specifier = ">=4.0.0,<5.0.0" },
-    { name = "invenio-indexer", specifier = ">=6.0.0,<7.0.0" },
-    { name = "invenio-jsonschemas", specifier = ">=2.0.0,<3.0.0" },
-    { name = "invenio-logging", specifier = ">=4.0.0,<5.0.0" },
-    { name = "invenio-mail", specifier = ">=2.0.0,<3.0.0" },
-    { name = "invenio-oaiserver", specifier = ">=6.0.0,<7.0.0" },
-    { name = "invenio-oauth2server", specifier = ">=6.0.0,<7.0.0" },
-    { name = "invenio-oauthclient", specifier = ">=9.0.0,<10.0.0" },
-    { name = "invenio-pages", specifier = ">=10.0.0,<11.0.0" },
-    { name = "invenio-pidstore", specifier = ">=4.0.0,<5.0.0" },
-    { name = "invenio-previewer", specifier = ">=6.0.0,<7.0.0" },
-    { name = "invenio-rdm-records", specifier = ">=36.0.0,<37.0.0" },
-    { name = "invenio-records", specifier = ">=6.0.0,<7.0.0" },
-    { name = "invenio-records-files", specifier = ">=4.0.0,<5.0.0" },
-    { name = "invenio-records-rest", specifier = ">=6.0.0,<7.0.0" },
-    { name = "invenio-records-ui", specifier = ">=5.0.0,<6.0.0" },
-    { name = "invenio-rest", specifier = ">=4.0.0,<5.0.0" },
-    { name = "invenio-s3", marker = "extra == 's3'", specifier = ">=6.0.0,<7.0.0" },
-    { name = "invenio-saml", marker = "extra == 'saml'", specifier = ">=5.0.0,<6.0.0" },
-    { name = "invenio-search", extras = ["elasticsearch7"], marker = "extra == 'elasticsearch7'", specifier = ">=3.0.0,<4.0.0" },
-    { name = "invenio-search", extras = ["opensearch1"], marker = "extra == 'opensearch1'", specifier = ">=3.0.0,<4.0.0" },
-    { name = "invenio-search", extras = ["opensearch2"], marker = "extra == 'opensearch2'", specifier = ">=3.0.0,<4.0.0" },
-    { name = "invenio-search-ui", specifier = ">=5.0.0,<6.0.0" },
-    { name = "invenio-sitemap", specifier = ">=0.1.0,<2.0.0" },
-    { name = "invenio-theme", specifier = ">=5.0.0,<6.0.0" },
-    { name = "invenio-userprofiles", specifier = ">=7.0.0,<8.0.0" },
-    { name = "pytest-black", marker = "extra == 'tests'", specifier = ">=0.6.0" },
-    { name = "pytest-invenio", marker = "extra == 'tests'", specifier = ">=4.0.0,<5.0.0" },
-    { name = "sphinx", marker = "extra == 'tests'", specifier = ">=4.5.0" },
-    { name = "time-machine", marker = "extra == 'tests'", specifier = ">=2.12.0,<3.0.0" },
-]
-provides-extras = ["elasticsearch7", "opensearch1", "opensearch2", "profiler", "s3", "saml", "tests"]
-
 [[package]]
 name = "invenio-assets"
-source = { editable = "../invenio-assets" }
+version = "4.2.6"
+source = { git = "https://github.com/olivergeneser/invenio-assets?branch=react-18-migration#ce08a40fd6e8f5b29f979475b21987a6fc0db9b6" }
 dependencies = [
     { name = "flask-collect-invenio" },
     { name = "flask-webpackext" },
     { name = "invenio-base" },
 ]
-
-[package.metadata]
-requires-dist = [
-    { name = "flask-collect-invenio", specifier = ">=1.4.0,<2.0.0" },
-    { name = "flask-webpackext", specifier = ">=2.1.0,<3.0.0" },
-    { name = "invenio-base", specifier = ">=2.0.0,<3.0.0" },
-    { name = "mock", marker = "extra == 'tests'", specifier = ">=1.3.0" },
-    { name = "pytest-black-ng", marker = "extra == 'tests'", specifier = ">=0.4.0" },
-    { name = "pytest-invenio", marker = "extra == 'tests'", specifier = ">=3.0.0,<4.0.0" },
-    { name = "sphinx", marker = "extra == 'tests'", specifier = ">=4.5" },
-]
-provides-extras = ["docs", "tests"]
 
 [[package]]
 name = "invenio-audit-logs"
@@ -1738,30 +1655,18 @@ wheels = [
 
 [[package]]
 name = "invenio-collections"
-source = { editable = "../invenio-collections" }
+version = "10.0.3"
+source = { git = "https://github.com/olivergeneser/invenio-collections?branch=react-18-migration#b5ebbaa6a532113dcfda87fe1bd32640bd539ba9" }
 dependencies = [
     { name = "invenio-administration" },
     { name = "invenio-records-resources" },
     { name = "invenio-search-ui" },
 ]
 
-[package.metadata]
-requires-dist = [
-    { name = "invenio-administration", specifier = ">=7.0.0,<8.0.0" },
-    { name = "invenio-app", marker = "extra == 'tests'", specifier = ">=3.0.0,<4.0.0" },
-    { name = "invenio-db", extras = ["mysql", "postgresql"], marker = "extra == 'tests'", specifier = ">=2.2.0,<3.0.0" },
-    { name = "invenio-records-resources", specifier = ">=11.0.0,<12.0.0" },
-    { name = "invenio-search", extras = ["opensearch2"], marker = "extra == 'opensearch2'", specifier = ">=3.0.0,<4.0.0" },
-    { name = "invenio-search-ui", specifier = ">=5.0.0,<6.0.0" },
-    { name = "pytest-black", marker = "extra == 'tests'", specifier = ">=0.6.0" },
-    { name = "pytest-invenio", marker = "extra == 'tests'", specifier = ">=4.0.0,<5.0.0" },
-    { name = "sphinx", marker = "extra == 'tests'", specifier = ">=4.5" },
-]
-provides-extras = ["opensearch2", "tests"]
-
 [[package]]
 name = "invenio-communities"
-source = { editable = "../invenio-communities" }
+version = "29.3.0"
+source = { git = "https://github.com/olivergeneser/invenio-communities?branch=react-18-migration#a07767c9e637826661c8c82fc48e4e941c09b30c" }
 dependencies = [
     { name = "invenio-administration" },
     { name = "invenio-collections" },
@@ -1771,26 +1676,6 @@ dependencies = [
     { name = "invenio-search-ui" },
     { name = "invenio-vocabularies" },
 ]
-
-[package.metadata]
-requires-dist = [
-    { name = "faker", marker = "extra == 'tests'", specifier = ">=2.0.3" },
-    { name = "invenio-administration", specifier = ">=7.0.0,<8.0.0" },
-    { name = "invenio-app", marker = "extra == 'tests'", specifier = ">=3.0.0,<4.0.0" },
-    { name = "invenio-collections", specifier = ">=10.0.0,<11.0.0" },
-    { name = "invenio-db", extras = ["mysql", "postgresql"], marker = "extra == 'tests'", specifier = ">=2.2.0,<3.0.0" },
-    { name = "invenio-oaiserver", specifier = ">=6.0.0,<7.0.0" },
-    { name = "invenio-records-resources", specifier = ">=11.0.0,<12.0.0" },
-    { name = "invenio-requests", specifier = ">=15.0.0,<16.0.0" },
-    { name = "invenio-search", extras = ["opensearch1"], marker = "extra == 'opensearch1'", specifier = ">=3.0.0,<4.0.0" },
-    { name = "invenio-search", extras = ["opensearch2"], marker = "extra == 'opensearch2'", specifier = ">=3.0.0,<4.0.0" },
-    { name = "invenio-search-ui", specifier = ">=5.0.0,<6.0.0" },
-    { name = "invenio-vocabularies", specifier = ">=14.0.0,<15.0.0" },
-    { name = "pytest-black", marker = "extra == 'tests'", specifier = ">=0.6.0" },
-    { name = "pytest-invenio", marker = "extra == 'tests'", specifier = ">=4.0.0,<5.0.0" },
-    { name = "sphinx", marker = "extra == 'tests'", specifier = ">=4.5.0" },
-]
-provides-extras = ["opensearch1", "opensearch2", "tests"]
 
 [[package]]
 name = "invenio-config"
@@ -1943,7 +1828,7 @@ wheels = [
 [[package]]
 name = "invenio-jobs"
 version = "11.1.0"
-source = { registry = "https://pypi.org/simple" }
+source = { git = "https://github.com/olivergeneser/invenio-jobs?branch=react-18-migration#c5ba9abd41d55c783bc8327788835bf991b7f317" }
 dependencies = [
     { name = "invenio-administration" },
     { name = "invenio-base" },
@@ -1951,10 +1836,6 @@ dependencies = [
     { name = "invenio-i18n" },
     { name = "invenio-records-resources" },
     { name = "invenio-users-resources" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/49/72/0ecb510711d4528f4d794b21045f5b93f44c1242e78e3930fff93ae3e003/invenio_jobs-11.1.0.tar.gz", hash = "sha256:aeba1bf52c34af857e1ff352a11d2a9f5327720ac1ee800999e1fffe5bac317a", size = 78494, upload-time = "2026-10-02T12:32:30.684Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/84/5b/7fd54e24e8bc3ffb2a3b26a172864834be688d61abee645ce879eacbb9e5/invenio_jobs-11.1.0-py3-none-any.whl", hash = "sha256:272be33592bd9fc77aba6e2fcdd2e9059349aa360562d45897781676de02353c", size = 213615, upload-time = "2026-10-02T12:32:29.475Z" },
 ]
 
 [[package]]
@@ -2150,7 +2031,8 @@ wheels = [
 
 [[package]]
 name = "invenio-rdm-records"
-source = { editable = "../invenio-rdm-records" }
+version = "36.0.0"
+source = { git = "https://github.com/olivergeneser/invenio-rdm-records?branch=react-18-migration#4b1693e94d7dca41bfb5c4068d6372f46272cdbe" }
 dependencies = [
     { name = "arrow" },
     { name = "babel-edtf" },
@@ -2182,53 +2064,6 @@ dependencies = [
     { name = "pytz" },
     { name = "pyyaml" },
 ]
-
-[package.metadata]
-requires-dist = [
-    { name = "arrow", specifier = ">=0.17.0" },
-    { name = "babel-edtf", specifier = ">=1.2.0" },
-    { name = "citeproc-py", specifier = ">=0.10.7" },
-    { name = "citeproc-py-styles", specifier = ">=0.1.2,<1.0.0" },
-    { name = "commonmeta-py", specifier = ">=0.268,<1.0.0" },
-    { name = "datacite", specifier = ">=1.1.1,<2.0.0" },
-    { name = "dcxml", specifier = ">=0.1.2,<1.0.0" },
-    { name = "faker", specifier = ">=2.0.3" },
-    { name = "flask-iiif", specifier = ">=2.0.0,<3.0.0" },
-    { name = "invenio-administration", specifier = ">=7.0.0,<8.0.0" },
-    { name = "invenio-app", marker = "extra == 'tests'", specifier = ">=3.0.0,<4.0.0" },
-    { name = "invenio-audit-logs", specifier = ">=4.0.0,<5.0.0" },
-    { name = "invenio-base", specifier = ">=2.3.0,<3.0.0" },
-    { name = "invenio-checks", specifier = ">=12.0.0,<13.0.0" },
-    { name = "invenio-collections", specifier = ">=10.0.0,<11.0.0" },
-    { name = "invenio-communities", specifier = ">=29.0.0,<30.0.0" },
-    { name = "invenio-db", extras = ["mysql", "postgresql"], marker = "extra == 'tests'", specifier = ">=2.2.0,<3.0.0" },
-    { name = "invenio-drafts-resources", specifier = ">=11.0.0,<12.0.0" },
-    { name = "invenio-github", marker = "extra == 'tests'", specifier = ">=7.0.0,<8.0.0" },
-    { name = "invenio-i18n", specifier = ">=4.0.0,<5.0.0" },
-    { name = "invenio-jobs", specifier = ">=11.0.0,<12.0.0" },
-    { name = "invenio-oaiserver", specifier = ">=6.0.0,<7.0.0" },
-    { name = "invenio-oauth2server", specifier = ">=6.0.0,<7.0.0" },
-    { name = "invenio-records-resources", specifier = ">=11.0.0,<12.0.0" },
-    { name = "invenio-search", extras = ["elasticsearch7"], marker = "extra == 'elasticsearch7'", specifier = ">=3.0.0,<4.0.0" },
-    { name = "invenio-search", extras = ["opensearch1"], marker = "extra == 'opensearch1'", specifier = ">=3.0.0,<4.0.0" },
-    { name = "invenio-search", extras = ["opensearch2"], marker = "extra == 'opensearch2'", specifier = ">=3.0.0,<4.0.0" },
-    { name = "invenio-stats", specifier = ">=7.0.0,<8.0.0" },
-    { name = "invenio-vcs", marker = "extra == 'tests'", specifier = ">=0.4.0,<1.0.0" },
-    { name = "invenio-vocabularies", specifier = ">=14.0.0,<15.0.0" },
-    { name = "nameparser", specifier = ">=1.1.1" },
-    { name = "psutil", marker = "extra == 'tests'", specifier = ">=7.0.0" },
-    { name = "pycountry", specifier = ">=22.3.5" },
-    { name = "pydash", specifier = ">=6.0.0,<7.0.0" },
-    { name = "pytest-black", marker = "extra == 'tests'", specifier = ">=0.6.0" },
-    { name = "pytest-invenio", marker = "extra == 'tests'", specifier = ">=4.0.0,<5.0.0" },
-    { name = "pytest-mock", marker = "extra == 'tests'", specifier = ">=1.6.0" },
-    { name = "python-slugify", specifier = ">=8.0.1" },
-    { name = "pytz", specifier = ">=2020.4" },
-    { name = "pyyaml", specifier = ">=5.4.0" },
-    { name = "sphinx", marker = "extra == 'tests'", specifier = ">=4.5.0" },
-    { name = "tripoli", marker = "extra == 'tests'", specifier = ">=2.0.0" },
-]
-provides-extras = ["elasticsearch7", "opensearch1", "opensearch2", "tests"]
 
 [[package]]
 name = "invenio-records"
@@ -2338,29 +2173,13 @@ wheels = [
 
 [[package]]
 name = "invenio-requests"
-source = { editable = "../invenio-requests" }
+version = "15.2.2"
+source = { git = "https://github.com/olivergeneser/invenio-requests?branch=react-18-migration#6a1c4a6ad0bfc9ade0f9033096134ff9a777ae27" }
 dependencies = [
     { name = "invenio-records-resources" },
     { name = "invenio-theme" },
     { name = "invenio-users-resources" },
 ]
-
-[package.metadata]
-requires-dist = [
-    { name = "invenio-app", marker = "extra == 'tests'", specifier = ">=3.0.0,<4.0.0" },
-    { name = "invenio-db", extras = ["mysql", "postgresql"], marker = "extra == 'tests'", specifier = ">=2.2.0,<3.0.0" },
-    { name = "invenio-records-resources", specifier = ">=11.0.0,<12.0.0" },
-    { name = "invenio-search", extras = ["elasticsearch7"], marker = "extra == 'elasticsearch7'", specifier = ">=3.0.0,<4.0.0" },
-    { name = "invenio-search", extras = ["opensearch1"], marker = "extra == 'opensearch1'", specifier = ">=3.0.0,<4.0.0" },
-    { name = "invenio-search", extras = ["opensearch2"], marker = "extra == 'opensearch2'", specifier = ">=3.0.0,<4.0.0" },
-    { name = "invenio-theme", specifier = ">=5.0.0,<6.0.0" },
-    { name = "invenio-users-resources", specifier = ">=13.0.0,<14.0.0" },
-    { name = "pytest-black", marker = "extra == 'tests'", specifier = ">=0.6.0" },
-    { name = "pytest-invenio", marker = "extra == 'tests'", specifier = ">=4.0.0,<5.0.0" },
-    { name = "sphinx", marker = "extra == 'tests'", specifier = ">=4.5.0" },
-    { name = "time-machine", marker = "extra == 'tests'", specifier = ">=2.19.0,<3.0.0" },
-]
-provides-extras = ["elasticsearch7", "opensearch1", "opensearch2", "tests"]
 
 [[package]]
 name = "invenio-rest"
@@ -2401,27 +2220,14 @@ opensearch2 = [
 
 [[package]]
 name = "invenio-search-ui"
-source = { editable = "../invenio-search-ui" }
+version = "5.0.3"
+source = { git = "https://github.com/olivergeneser/invenio-search-ui?branch=react-18-migration#dc1b9ea4a98d6b4d398e2c86ee7e74d0191f40fc" }
 dependencies = [
     { name = "babel" },
     { name = "invenio-assets" },
     { name = "invenio-base" },
     { name = "invenio-i18n" },
 ]
-
-[package.metadata]
-requires-dist = [
-    { name = "babel", specifier = ">=2.8" },
-    { name = "invenio-assets", specifier = ">=4.0.0,<5.0.0" },
-    { name = "invenio-base", specifier = ">=2.0.0,<3.0.0" },
-    { name = "invenio-db", marker = "extra == 'tests'", specifier = ">=2.2.0,<3.0.0" },
-    { name = "invenio-i18n", specifier = ">=4.0.0,<5.0.0" },
-    { name = "invenio-records", marker = "extra == 'tests'", specifier = ">=6.0.0,<7.0.0" },
-    { name = "pytest-black", marker = "extra == 'tests'", specifier = ">=0.6.0" },
-    { name = "pytest-invenio", marker = "extra == 'tests'", specifier = ">=4.0.0,<5.0.0" },
-    { name = "sphinx", marker = "extra == 'tests'", specifier = ">=4.5" },
-]
-provides-extras = ["tests"]
 
 [[package]]
 name = "invenio-sitemap"
@@ -2521,7 +2327,8 @@ wheels = [
 
 [[package]]
 name = "invenio-vocabularies"
-source = { editable = "../invenio-vocabularies" }
+version = "14.5.0"
+source = { git = "https://github.com/olivergeneser/invenio-vocabularies?branch=react-18-migration#df2da89e4ea8490c6716a5fb0b085dfee372cc5a" }
 dependencies = [
     { name = "invenio-administration" },
     { name = "invenio-i18n" },
@@ -2533,33 +2340,6 @@ dependencies = [
     { name = "regex" },
     { name = "sparqlwrapper" },
 ]
-
-[package.metadata]
-requires-dist = [
-    { name = "invenio-administration", specifier = ">=7.0.0,<8.0.0" },
-    { name = "invenio-app", marker = "extra == 'tests'", specifier = ">=3.0.0,<4.0.0" },
-    { name = "invenio-db", extras = ["mysql", "postgresql"], marker = "extra == 'tests'", specifier = ">=2.2.0,<3.0.0" },
-    { name = "invenio-i18n", specifier = ">=4.0.0,<5.0.0" },
-    { name = "invenio-jobs", specifier = ">=11.0.0,<12.0.0" },
-    { name = "invenio-oaipmh-scythe", marker = "extra == 'oaipmh'", specifier = ">=0.13.0" },
-    { name = "invenio-records-resources", specifier = ">=11.0.0,<12.0.0" },
-    { name = "invenio-search", extras = ["elasticsearch7"], marker = "extra == 'elasticsearch7'", specifier = ">=3.0.0,<4.0.0" },
-    { name = "invenio-search", extras = ["opensearch1"], marker = "extra == 'opensearch1'", specifier = ">=3.0.0,<4.0.0" },
-    { name = "invenio-search", extras = ["opensearch2"], marker = "extra == 'opensearch2'", specifier = ">=3.0.0,<4.0.0" },
-    { name = "lxml", specifier = ">=4.5.0" },
-    { name = "pycountry", specifier = ">=24.0.0" },
-    { name = "pytest-black", marker = "extra == 'tests'", specifier = ">=0.6.0" },
-    { name = "pytest-httpserver", marker = "extra == 'tests'", specifier = ">=1.0.10" },
-    { name = "pytest-invenio", marker = "extra == 'tests'", specifier = ">=4.0.0,<5.0.0" },
-    { name = "pyyaml", specifier = ">=5.4.1" },
-    { name = "rdflib", marker = "extra == 'rdf'", specifier = ">=7.0.0" },
-    { name = "regex", specifier = ">=2024.7.24" },
-    { name = "s3fs", marker = "extra == 's3fs'", specifier = ">=2024.6.1" },
-    { name = "sparqlwrapper", specifier = ">=2.0.0" },
-    { name = "sparqlwrapper", marker = "extra == 'sparql'", specifier = ">=2.0.0" },
-    { name = "sphinx", marker = "extra == 'tests'", specifier = ">=4.5" },
-]
-provides-extras = ["elasticsearch7", "mysql", "oaipmh", "opensearch1", "opensearch2", "postgresql", "rdf", "s3fs", "sparql", "sqlite", "tests"]
 
 [[package]]
 name = "invenio-webhooks"
@@ -5015,6 +4795,7 @@ dependencies = [
     { name = "invenio-collections" },
     { name = "invenio-communities" },
     { name = "invenio-github" },
+    { name = "invenio-jobs" },
     { name = "invenio-rdm-records" },
     { name = "invenio-records-resources" },
     { name = "invenio-requests" },
@@ -5052,19 +4833,20 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "github3-py", specifier = ">=3.0.0" },
-    { name = "invenio-administration", editable = "../invenio-administration" },
-    { name = "invenio-app-rdm", extras = ["opensearch2", "profiler"], editable = "../invenio-app-rdm" },
-    { name = "invenio-assets", editable = "../invenio-assets" },
-    { name = "invenio-collections", editable = "../invenio-collections" },
-    { name = "invenio-communities", editable = "../invenio-communities" },
+    { name = "invenio-administration", git = "https://github.com/olivergeneser/invenio-administration?branch=react-18-migration" },
+    { name = "invenio-app-rdm", extras = ["opensearch2", "profiler"], git = "https://github.com/olivergeneser/invenio-app-rdm?branch=react-18-migration" },
+    { name = "invenio-assets", git = "https://github.com/olivergeneser/invenio-assets?branch=react-18-migration" },
+    { name = "invenio-collections", git = "https://github.com/olivergeneser/invenio-collections?branch=react-18-migration" },
+    { name = "invenio-communities", git = "https://github.com/olivergeneser/invenio-communities?branch=react-18-migration" },
     { name = "invenio-github", specifier = ">=7.0.0,<8.0.0" },
+    { name = "invenio-jobs", git = "https://github.com/olivergeneser/invenio-jobs?branch=react-18-migration" },
     { name = "invenio-logging", extras = ["sentry"], marker = "extra == 'sentry'" },
-    { name = "invenio-rdm-records", editable = "../invenio-rdm-records" },
+    { name = "invenio-rdm-records", git = "https://github.com/olivergeneser/invenio-rdm-records?branch=react-18-migration" },
     { name = "invenio-records-resources", git = "https://github.com/inveniosoftware/invenio-records-resources?branch=fix-read-many" },
-    { name = "invenio-requests", editable = "../invenio-requests" },
-    { name = "invenio-search-ui", editable = "../invenio-search-ui" },
+    { name = "invenio-requests", git = "https://github.com/olivergeneser/invenio-requests?branch=react-18-migration" },
+    { name = "invenio-search-ui", git = "https://github.com/olivergeneser/invenio-search-ui?branch=react-18-migration" },
     { name = "invenio-swh", git = "https://github.com/inveniosoftware/invenio-swh?rev=v0.13.5" },
-    { name = "invenio-vocabularies", editable = "../invenio-vocabularies" },
+    { name = "invenio-vocabularies", git = "https://github.com/olivergeneser/invenio-vocabularies?branch=react-18-migration" },
     { name = "invenio-xrootd", marker = "extra == 'xrootd'", specifier = ">=3.0.0,<4.0.0" },
     { name = "nameparser", specifier = ">=1.1.1" },
     { name = "pyinstrument", specifier = ">=5.0.0,<6" },
