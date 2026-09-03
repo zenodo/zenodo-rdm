@@ -1926,8 +1926,7 @@ wheels = [
 
 [[package]]
 name = "invenio-jobs"
-version = "11.0.4"
-source = { registry = "https://pypi.org/simple" }
+source = { editable = "../invenio-jobs" }
 dependencies = [
     { name = "invenio-administration" },
     { name = "invenio-base" },
@@ -1936,10 +1935,25 @@ dependencies = [
     { name = "invenio-records-resources" },
     { name = "invenio-users-resources" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/a2/f8/425f03fe5d5b63351c0e235af20e69021817d380014052a48c4fb8692cc3/invenio_jobs-11.0.4.tar.gz", hash = "sha256:de70d11a0d46dbb28d3d5c6e1056f2f5f861966148bb45d3ebb04fb2eff5e37c", size = 78282, upload-time = "2026-08-31T15:03:00.273Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/19/6d/52a661f54eaa62db2b731d2b425d3b9362e691a4f69e3d048e42c333b7c6/invenio_jobs-11.0.4-py3-none-any.whl", hash = "sha256:dfe68e1a322e5e606b1095dc9435a6da1801a91bf70d9b1621b8890d5ee688e0", size = 212928, upload-time = "2026-08-31T15:02:59.068Z" },
+
+[package.metadata]
+requires-dist = [
+    { name = "invenio-administration", specifier = ">=7.0.0,<8.0.0" },
+    { name = "invenio-app", marker = "extra == 'tests'", specifier = ">=3.0.0,<4.0.0" },
+    { name = "invenio-base", specifier = ">=2.3.0,<3.0.0" },
+    { name = "invenio-celery", specifier = ">=2.0.0,<3.0.0" },
+    { name = "invenio-db", extras = ["mysql", "postgresql"], marker = "extra == 'tests'", specifier = ">=2.2.0,<3.0.0" },
+    { name = "invenio-i18n", specifier = ">=4.0.0,<5.0.0" },
+    { name = "invenio-records-resources", specifier = ">=11.0.0,<12.0.0" },
+    { name = "invenio-search", extras = ["elasticsearch7"], marker = "extra == 'elasticsearch7'", specifier = ">=3.0.0,<4.0.0" },
+    { name = "invenio-search", extras = ["opensearch1"], marker = "extra == 'opensearch1'", specifier = ">=3.0.0,<4.0.0" },
+    { name = "invenio-search", extras = ["opensearch2"], marker = "extra == 'opensearch2'", specifier = ">=3.0.0,<4.0.0" },
+    { name = "invenio-users-resources", specifier = ">=13.0.0,<14.0.0" },
+    { name = "pytest-black", marker = "extra == 'tests'", specifier = ">=0.6.0" },
+    { name = "pytest-invenio", marker = "extra == 'tests'", specifier = ">=4.0.0,<5.0.0" },
+    { name = "sphinx", marker = "extra == 'tests'", specifier = ">=4.5.0" },
 ]
+provides-extras = ["elasticsearch7", "opensearch1", "opensearch2", "tests"]
 
 [[package]]
 name = "invenio-jsonschemas"
@@ -4950,6 +4964,7 @@ dependencies = [
     { name = "invenio-collections" },
     { name = "invenio-communities" },
     { name = "invenio-github" },
+    { name = "invenio-jobs" },
     { name = "invenio-rdm-records" },
     { name = "invenio-records-resources" },
     { name = "invenio-requests" },
@@ -4993,6 +5008,7 @@ requires-dist = [
     { name = "invenio-collections", editable = "../invenio-collections" },
     { name = "invenio-communities", editable = "../invenio-communities" },
     { name = "invenio-github", specifier = ">=7.0.0,<8.0.0" },
+    { name = "invenio-jobs", editable = "../invenio-jobs" },
     { name = "invenio-logging", extras = ["sentry"], marker = "extra == 'sentry'" },
     { name = "invenio-rdm-records", editable = "../invenio-rdm-records" },
     { name = "invenio-records-resources", git = "https://github.com/inveniosoftware/invenio-records-resources?branch=fix-read-many" },

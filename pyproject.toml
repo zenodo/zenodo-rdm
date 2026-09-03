@@ -31,6 +31,7 @@ dependencies = [
     "invenio-assets",
     "invenio-vocabularies",
     "invenio-requests",
+    "invenio-jobs",
     # "react-searchkit",
     # "react-invenio-forms",
 ]
@@ -54,6 +55,7 @@ invenio-communities = { path = "../invenio-communities", editable=true }
 invenio-assets = { path = "../invenio-assets", editable=true }
 invenio-vocabularies = { path = "../invenio-vocabularies", editable=true }
 invenio-requests = { path = "../invenio-requests", editable=true }
+invenio-jobs = { path = "../invenio-jobs", editable=true }
 #react-searchkit = { path = "../react-searchkit" }
 #react-invenio-forms = { path = "../react-invenio-forms" }
 
