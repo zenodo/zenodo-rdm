@@ -1,0 +1,6 @@
+minimumReleaseAgeExclude:
+  - react-invenio-forms
+  - react-overridable
+  - react-searchkit
+  - postcss-selector-parser
+  - postcss

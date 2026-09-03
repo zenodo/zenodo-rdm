@@ -1,21 +1,11 @@
 {
-  "name": "invenio-assets",
-  "version": "4.2.6",
-  "private": true,
   "author": "CERN <info@inveniosoftware.org>",
-  "scripts": {
-    "build": "NODE_PRESERVE_SYMLINKS=1 NODE_ENV=production rspack --mode production --config ./build/rspack.config.js",
-    "postinstall": "patch-package",
-    "start": "NODE_PRESERVE_SYMLINKS=1 NODE_ENV=development rspack --mode development --watch --config ./build/rspack.config.js"
-  },
   "dependencies": {
     "@artsy/fresnel": "^6.1.0",
     "@babel/runtime": "^7.9.0",
-    "@ckeditor/ckeditor5-build-classic": "^16.0.0",
-    "@ckeditor/ckeditor5-react": "^2.1.0",
-    "@microlink/react-json-view": "^1.21.3",
+    "@hugerte/hugerte-react": "^2.0.2",
+    "@microlink/react-json-view": "^1.31.20",
     "@semantic-ui-react/css-patch": "^1.0.0",
-    "@tinymce/tinymce-react": "^4.3.0",
     "@uppy/aws-s3-multipart": "^3.12.0",
     "@uppy/core": "^3.13.1",
     "@uppy/dashboard": "^3.9.1",
@@ -35,8 +25,9 @@
     "axios": "^1.7.7",
     "flightjs": "~1.5.1",
     "font-awesome": "~4.5.0",
-    "formik": "^2.2.9",
+    "formik": "^2.4.9",
     "hash-wasm": "^4.12.0",
+    "hugerte": "^1.0.11",
     "i18next": "^20.3.0",
     "i18next-browser-languagedetector": "^6.1.0",
     "jquery": "^3.3.1",
@@ -51,15 +42,14 @@
     "prop-types": "^15.7.2",
     "qs": "^6.9.1",
     "query-string": "^7.0.0",
-    "react": "^16.13.0",
+    "react": "^18.3.1",
     "react-copy-to-clipboard": "^5.0.0",
     "react-dnd": "^11.1.0",
     "react-dnd-html5-backend": "^11.1.0",
-    "react-dom": "^16.13.0",
+    "react-dom": "^18.3.1",
     "react-dropzone": "^11.0.0",
     "react-i18next": "^11.11.0",
     "react-invenio-forms": "^5.0.0-alpha.2",
-    "react-json-view": "^1.21.3",
     "react-overridable": "^1.0.0",
     "react-redux": "^7.2.0",
     "react-router-dom": "^6.3.0",
@@ -69,13 +59,13 @@
     "redux-thunk": "^2.3.0",
     "replaywebpage": "^2.3.16",
     "select2": "~4.0.2",
-    "semantic-ui-css": "^2.4.1",
+    "semantic-ui-css": "^2.5.0",
     "semantic-ui-less": "^2.4.1",
     "semantic-ui-react": "^3.0.0-beta.2",
-    "tinymce": "^6.7.2",
     "video.js": "^8.6.1",
     "yup": "^0.32.11"
   },
+  "description": "Invenio assets",
   "devDependencies": {
     "@inveniosoftware/eslint-config-invenio": "^2.0.0",
     "@rspack/cli": "^2.0.0",
@@ -105,9 +95,17 @@
     "webpack-bundle-analyzer": "^4.0.0",
     "webpack-bundle-tracker": "^1.0.0"
   },
-  "peerDependencies": {},
   "engines": {
     "node": ">=18",
     "npm": ">=8"
-  }
+  },
+  "name": "invenio-assets",
+  "peerDependencies": {},
+  "private": true,
+  "scripts": {
+    "build": "NODE_PRESERVE_SYMLINKS=1 rspack --mode production --config ./build/rspack.config.js",
+    "postinstall": "patch-package",
+    "start": "NODE_PRESERVE_SYMLINKS=1 rspack --mode development --watch --config ./build/rspack.config.js"
+  },
+  "version": "4.2.6"
 }

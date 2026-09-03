@@ -28,7 +28,7 @@ RUN --mount=type=bind,source=uv.lock,target=uv.lock \
 FROM base AS frontend-dependencies
 ARG PNPM_VERSION
 WORKDIR /frontend
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN --mount=type=cache,target=/pnpm/store \
     --mount=type=cache,target=/pnpm/cache \
     pnpm install --frozen-lockfile --ignore-scripts \
