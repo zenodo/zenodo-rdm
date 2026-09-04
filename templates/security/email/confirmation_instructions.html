@@ -9,7 +9,8 @@
         </tr>
         <tr>
             <td style="padding:5px 15px 10px 15px;">
-                <p>{{ _('Hello, @%(username)s!', username=user.username) }}</p>
+                {% set name = "@" ~ user.username if user.username is not none else "Zenodo user" %}
+                <p>{{ _('Hello, %(name)s!', name=name) }}</p>
                 <p>{{ _('You have received this message because your email address has been registered with Zenodo.') }} </p>
                 <p>{{ _('Verify yourself and confirm your email by clicking below.') }}</p>
             </td>
