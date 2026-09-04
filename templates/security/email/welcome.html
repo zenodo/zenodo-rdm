@@ -9,7 +9,8 @@
         </tr>
         <tr>
             <td style="padding:5px 15px 10px 15px;">
-                <p>{{ _('Welcome @%(username)s!', username=user.username) }}</p>
+                {% set name = "@" ~ user.username if user.username is not none else "Zenodo user" %}
+                <p>{{ _('Hello, %(name)s!', name=name) }}</p>
                 <p>{{ _('Your Zenodo account has been created.')}} </p>
                 <p>{{_('We are excited to have you get started!') }} </p>
             </td>

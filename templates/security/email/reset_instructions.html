@@ -9,7 +9,8 @@
         </tr>
         <tr>
             <td style="padding:5px 15px 10px 15px;">
-                <p>{{ _('Hello, @%(username)s!', username=user.username) }}</p>
+                {% set name = "@" ~ user.username if user.username is not none else "Zenodo user" %}
+                <p>{{ _('Hello, %(name)s!', name=name) }}</p>
                 <p>{{ _('There was a request to reset your password.') }}</p>
                 <p>{{ _('If you did not make this request then please ignore this message.') }}</p>
                 <p>{{ _('Otherwise, please press the button below to change your password.') }}</p>
