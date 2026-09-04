@@ -9,7 +9,7 @@
         </tr>
         <tr>
             <td style="padding:5px 15px 10px 15px;">
-                <p>{{ _('Welcome %(username)s!', username= (user.user_profile.get('full_name') or user.username)) }}</p>
+                <p>{{ _('Welcome @%(username)s!', username=user.username) }}</p>
                 <p>{{ _('Your Zenodo account has been created.')}} </p>
                 <p>{{_('We are excited to have you get started!') }} </p>
             </td>
