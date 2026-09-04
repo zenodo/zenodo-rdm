@@ -155,6 +155,22 @@ NASA_HELIO_RULES = {
         #         }
         #     ],
         # },
+        # Temporary, until the above is done
+        {
+            "id": "funding:exists",
+            "title": "Record funding",
+            "message": "Submissions must have a NASA grant/award",
+            "description": 'Please add at least one relevant NASA entity as a funder.',
+            "level": "error",
+            "checks": [
+                {
+                    "type": "list",
+                    "operator": "exists",
+                    "path": "metadata.funding",
+                    "predicate": {},
+                }
+            ],
+        },
         {
             "id": "license:exists",
             "title": "Record license",
@@ -234,13 +250,13 @@ NASA_HELIO_RULES = {
     ]
 }
 
-FILE_FORMAT_CONFIG = {
-    "closed_format_description": "Using closed or proprietary formats hinders reusability and preservation of published files. <a href='https://zenodo.org/communities/__COMMUNITY_SLUG__/curation-policy' target='_blank'  rel='noopener noreferrer'>Learn more</a>",
+NASA_FILE_FORMAT_CONFIG = {
+    "closed_format_description": "Please reformat datasets to be in a scientific format or include those versions in your submission, e.g, CSV, CDF, netCDF4, FITS, HDF5, ASDF, Zarr.",
 }
 
 def create_metadata_checks(config, comm):
     existing_check = CheckConfig.query.filter_by(
-        community_id=comm.id, check_id="metadata"
+        community_id=comm.id, check_id="metadata", target_type="record"
     ).one_or_none()
     if existing_check:  # If it exists, delete it first
         # Delete all CheckRun rows that reference this CheckConfig
@@ -251,6 +267,7 @@ def create_metadata_checks(config, comm):
     check_config = CheckConfig(
         community_id=comm.id,
         check_id="metadata",
+        target_type="record",
         params=config,
         severity=Severity.INFO,
         enabled=True,
@@ -265,16 +282,13 @@ def create_file_format_checks(config, comm):
         community_id=comm.id, check_id="file_formats"
     ).one_or_none()
 
-    ffconfig = deepcopy(FILE_FORMAT_CONFIG)
-    ffconfig["closed_format_description"] = ffconfig["closed_format_description"].replace("__COMMUNITY_SLUG__", comm.slug)
-
     if existing_check:  # If it exists, update it
-        existing_check.params = ffconfig
+        existing_check.params = NASA_FILE_FORMAT_CONFIG
     else:  # ...create it
         check_config = CheckConfig(
             community_id=comm.id,
             check_id="file_formats",
-            params=ffconfig,
+            params=NASA_FILE_FORMAT_CONFIG,
             severity=Severity.INFO,
             enabled=True,
         )
