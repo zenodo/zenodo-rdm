@@ -15,31 +15,10 @@
   "funding": _("Funding"),
 } %}
 
-{% macro render_value(value, field=none) %}
-  {%- if value is none or value == "" -%}
-    —
-  {%- elif value is mapping -%}
-    {{ value.values() | select | join(", ") }}
-  {%- elif value is iterable and value is not string -%}
-    <ul class="rel-ml-1">
-      {% for item in value %}
-        {%- if item -%}
-          <li>
-            {%- if field == "funding" -%}
-              {{ item | format_funding_item }}
-            {%- elif item is mapping -%}
-              {{ item.values() | select | join(", ") }}
-            {%- else -%}
-              {{ item }}
-            {%- endif -%}
-          </li>
-        {%- endif -%}
-      {% endfor %}
-    </ul>
-  {%- else -%}
-    {{ value }}
-  {%- endif -%}
-{% endmacro %}
+<style>
+  .diff-removed { color: #9f3a38; background: #fff6f6; text-decoration: none; }
+  .diff-added { color: #1a7734; background: #fcfff5; text-decoration: none; }
+</style>
 
 <div class="ui column stackable grid">
   <div class="ten wide column">
@@ -69,47 +48,42 @@
             {% elif status == "ERROR" %}
                 <p>Could not complete this check within the maximum number of retries.</p>
             {% else %}
-                <p>{{ check.result.description }}</p>
-                {% set describes_file = check.result.describes_file %}
-                {% set message = check.result.message %}
-                {% set comparisons = check.result.comparisons %}
+              <p>{{ check.result.description }}</p>
 
-
-                {% if comparisons %}
-                  {% for comparison in comparisons %}
-                    {% set field = comparison.field %}
-                    {% set label = field_labels.get(field, field) %}
-                    <div class="ui divider"></div>
-                    <div class="ui grid rel-mb-2">
-                      <div class="row">
-                        <div class="sixteen wide column">
-                          <strong>{{ label }}</strong>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="eight wide column">
-                          <p class="text-muted"><small>{{ _("Current") }}</small></p>
-                          {{ render_value(comparison.current, field) }}
-                        </div>
-                        <div class="eight wide column">
-                          <p class="text-muted"><small>{{ _("Suggested") }}</small></p>
-                          {{ render_value(comparison.suggested, field) }}
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="sixteen wide column">
-                          <p>{{ comparison.rationale }}</p>
-                        </div>
-                      </div>
+              {% for comparison in check.result.comparisons %}
+                {% set field = comparison.field %}
+                {% set label = field_labels.get(field, field) %}
+                {% set current_html, suggested_html = comparison | diff_comparison %}
+                <div class="ui divider"></div>
+                <div class="ui grid rel-mb-2">
+                  <div class="row">
+                    <div class="sixteen wide column">
+                      <strong>{{ label }}</strong>
                     </div>
+                  </div>
+                  <div class="row">
+                    <div class="eight wide column">
+                      <p class="text-muted"><small>{{ _("Current") }}</small></p>
+                      {{ current_html }}
+                    </div>
+                    <div class="eight wide column">
+                      <p class="text-muted"><small>{{ _("Suggested") }}</small></p>
+                      {{ suggested_html }}
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="sixteen wide column">
+                      <p>{{ comparison.rationale }}</p>
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
 
-                  {% endfor %}
-                {% endif %}
             {% endif %}
           </div>
-
         </div>
       </div>
+
     {% endfor %}
     </div>
   </div>

@@ -13,37 +13,10 @@ from dataclasses import dataclass, field
 
 import bleach
 import requests
-from flask import current_app
-from flask_babel import gettext as _
 from invenio_checks.base import Check, CheckResult
 from invenio_checks.models import CheckConfig
-from invenio_checks.utils import translate_field
 
 from zenodo_rdm.orcha.utils import run_compare_metadata_workflow
-
-
-def format_funding_item(item):
-    """Format a funding comparison entry, e.g. 'Award: X (Y), Funder: Z'."""
-    if not item:
-        return ""
-
-    parts = []
-
-    title = translate_field(item.get("award_title"))
-    number = item.get("award_number")
-
-    if title and number:
-        parts.append(_("Award: %(title)s (%(number)s)", title=title, number=number))
-    elif title:
-        parts.append(_("Award: %(title)s", title=title))
-    elif number:
-        parts.append(_("Award: %(number)s", number=number))
-
-    funder = item.get("funder_name") or item.get("funder_id")
-    if funder:
-        parts.append(_("Funder: %(funder)s", funder=funder))
-
-    return ", ".join(parts)
 
 
 @dataclass
@@ -199,19 +172,13 @@ class MetadataComparisonCheck(Check):
         except requests.Timeout:
             msg = "Metadata comparison service timed out, please try again."
             return get_updated_result(check_result, msg, False), {}
-        except Exception:
-            current_app.logger.exception(
-                "Unexpected error running metadata comparison workflow"
-            )
-            msg = "Metadata comparison service unavailable."
-            return get_updated_result(check_result, msg, False), {}
 
         if status == "error":
             msg = "Error running the metadata comparison check. Please try again later."
             return get_updated_result(check_result, msg, False), {}
         if status == "timeout":
             msg = "Metadata comparison service timed out, please try again."
-            return get_updated_result(check_result, msg, False)
+            return get_updated_result(check_result, msg, False), {}
 
         describes_file = result.get("describes_file")
         decision = result.get("decision", "")
