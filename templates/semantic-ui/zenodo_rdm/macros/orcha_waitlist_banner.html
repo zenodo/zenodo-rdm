@@ -1,0 +1,27 @@
+{#
+  SPDX-FileCopyrightText: 2026 CERN
+  SPDX-License-Identifier: GPL-3.0-or-later
+#}
+{% macro orcha_waitlist_banner(community_ui) %}
+    {%- if show_orcha_waitlist_banner(community_ui) -%}
+        <div class="ui container">
+            <div class="ui info message rel-mb-1 rel-mt-1">
+                <div class="header">
+                    Help us test the new AI-assisted deposit form!
+                </div>
+                <p>
+                    We are looking for users to test new AI-assisted features in the Zenodo deposit form. Help us improve the deposit experience and speed up metadata entry.
+                </p>
+                <a href="{{ url_for('zenodo_orcha_waitlist.waitlist') }}" target="_blank">
+                    👉 Join as a tester and share your feedback!
+                </a>
+                <form class="rel-mt-1" method="post" action="{{ url_for('zenodo_orcha_waitlist.dismiss') }}">
+                    <input type="hidden" name="next" value="{{ request.full_path }}">
+                    <button type="submit" class="ui basic mini button">
+                        {{ _("Don't show again") }}
+                    </button>
+                </form>
+            </div>
+        </div>
+    {%- endif -%}
+{% endmacro %}
