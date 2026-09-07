@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """ZenodoRDM Checks module."""
 
-from zenodo_rdm.checks.compare_metadata import format_funding_item
+from zenodo_rdm.checks.checks_diff import diff_comparison
 
 
 class ZenodoChecks:
@@ -16,4 +16,4 @@ class ZenodoChecks:
     def init_app(self, app):
         """Flask application initialization."""
         app.extensions["zenodo-checks"] = self
-        app.jinja_env.filters["format_funding_item"] = format_funding_item
+        app.jinja_env.filters["diff_comparison"] = diff_comparison
