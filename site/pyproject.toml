@@ -97,6 +97,9 @@ funding = "zenodo_rdm.checks.funding:FundingCheck"
 eu_records_curation = "zenodo_rdm.curation.jobs:EURecordCuration"
 export_records = "zenodo_rdm.exporter.jobs:ExportRecords"
 
+[project.entry-points."invenio_users_resources.moderation.actions"]
+block = "zenodo_rdm.moderation.actions:on_block_notify"
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"

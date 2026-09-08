@@ -140,6 +140,8 @@ def app_config(app_config):
         ),
     }
 
+    app_config["MAIL_DEFAULT_SUPPORT"] = "Zenodo Support <support@zenodo.org>"
+
     return app_config
 
 
