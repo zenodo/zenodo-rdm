@@ -3,6 +3,8 @@
 """Orcha related helpers."""
 import time
 
+import requests
+from flask import current_app
 from invenio_app_rdm.orcha.views import _orcha_client, _workflow_token
 
 FUNDING_CHECK_INSTRUCTIONS = """
@@ -19,19 +21,53 @@ FUNDING_CHECK_INSTRUCTIONS = """
 
 def run_funding_relevance_workflow(metadata, award_description, rule=""):
     """Run the funding relevance LLM workflow, returning the result dict or {} on timeout."""
-    client = _orcha_client()
-    token = _workflow_token(client)
-    response = client.trigger_workflow(
-        payload={
-            "workflow_type": "check_funding_relevance",
-            "params": {
-                "metadata": metadata,
-                "award_description": award_description,
-                "rule": rule or FUNDING_CHECK_INSTRUCTIONS,
+    try:
+        client = _orcha_client()
+        token = _workflow_token(client)
+    except RuntimeError as e:
+        current_app.logger.error("Orcha misconfiguration: %s", e)
+        raise
+
+    try:
+        response = client.trigger_workflow(
+            payload={
+                "workflow_type": "check_funding_relevance",
+                "params": {
+                    "metadata": metadata,
+                    "award_description": award_description,
+                    "rule": rule or FUNDING_CHECK_INSTRUCTIONS,
+                },
             },
-        },
-        token=token,
-    )
+            token=token,
+        )
+    except requests.ConnectionError:
+        current_app.logger.error("Cannot reach Orcha at %s", client.base_url)
+        raise
+    except requests.Timeout:
+        current_app.logger.error(
+            "Orcha request timed out (base_url=%s)", client.base_url
+        )
+        raise
+    except requests.HTTPError as e:
+        status = (
+            e.response.status_code
+            if e.response is not None
+            else "(missing status code)"
+        )
+        body = e.response.text if e.response is not None else ""
+        if status in (401, 403):
+            current_app.logger.error(
+                "Orcha auth failure (HTTP %s), check tenant config",
+                status,
+            )
+        elif status in (400, 422):
+            current_app.logger.error(
+                "Orcha rejected funding check payload (HTTP %s): %s", status, body
+            )
+        else:
+            current_app.logger.error("Orcha failed HTTP %s: %s", status, body)
+        raise
+
     workflow_id = response["public_id"]
     # poll for result using a scoped token
     workflow_token = _workflow_token(client, workflow_id)
