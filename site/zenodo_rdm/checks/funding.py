@@ -133,6 +133,7 @@ class FundingCheck(Check):
                         "messages": [message],
                         "description": description,
                         "severity": config.severity.error_value,
+                        "origin": "orcha",
                     }
                 )
             return check_result
