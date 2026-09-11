@@ -15,7 +15,6 @@ dependencies = [
     "pyinstrument>=5.0.0,<6",
     "sqltap>=0.3.11,<1.0.0",
     "zammad-py>=3.0.0,<4.0.0",
-    # TODO: Use 3.2.0?
     "pyvips>=2.2.2,<3.0.0",
     "invenio-swh",
     "uwsgi>=2.0",
@@ -45,7 +44,6 @@ members = [
 
 [dependency-groups]
 dev = [
-    # TODO: Use 4.0.2?
     "pytest-invenio>=3.0.0,<4.0.0",
     "pytest-mock>=1.6.0",
 ]
@@ -56,8 +54,6 @@ sentry = [
 ]
 xrootd = [
     "invenio-xrootd",
-    # TODO: Use 0.15.0?
     "requests-kerberos==0.14.0",
-    # TODO: Use 6.1.1?
     "xrootd==5.9.6",
 ]
