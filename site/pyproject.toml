@@ -22,6 +22,7 @@ zenodo_rdm_stats = "zenodo_rdm.stats.ext:ZenodoStats"
 zenodo_rdm_curation = "zenodo_rdm.curation.ext:ZenodoCuration"
 zenodo_rdm_exporter = "zenodo_rdm.exporter.ext:ZenodoExporter"
 zenodo_rdm_theme = "zenodo_rdm.theme.ext:ZenodoTheme"
+zenodo_rdm_checks = "zenodo_rdm.checks.ext:ZenodoChecks"
 
 [project.entry-points."invenio_base.api_apps"]
 zenodo_rdm_legacy = "zenodo_rdm.legacy.ext:ZenodoLegacy"
@@ -92,6 +93,7 @@ subcommunity_member = "zenodo_rdm.subcommunities.checks:CommunityMembershipCheck
 subcommunity_validation = "zenodo_rdm.subcommunities.checks:SubcommunityValidationCheck"
 subcommunity_record_metadata = "zenodo_rdm.subcommunities.checks:SubcommunityRecordCheck"
 funding = "zenodo_rdm.checks.funding:FundingCheck"
+compare_metadata = "zenodo_rdm.checks.compare_metadata:MetadataComparisonCheck"
 
 [project.entry-points."invenio_jobs.jobs"]
 eu_records_curation = "zenodo_rdm.curation.jobs:EURecordCuration"
