@@ -89,3 +89,9 @@ result
 
 # Keys
 *.pem
+
+# Locust
+benchmark/accounts.csv
+benchmark/session_cache.json
+benchmark/results/*
+!benchmark/results/.gitkeep
