@@ -41,7 +41,7 @@ zenodo-rdm = { workspace = true }
 zenodo-legacy = { workspace = true }
 invenio-swh = { git = "https://github.com/inveniosoftware/invenio-swh", rev = "v0.13.5" }
 # User profile fixes
-invenio-records-resources = { git = "https://github.com/inveniosoftware/invenio-records-resources", branch = "fix-read-many" }
+#invenio-records-resources = { git = "https://github.com/inveniosoftware/invenio-records-resources", branch = "fix-read-many" }
 # Python 3.14 + xrootdpyfs 3.x support (inveniosoftware/invenio-xrootd#40)
 invenio-xrootd = { git = "https://github.com/ntarocco/invenio-xrootd", branch = "upgrade-xrootdpyf" }
 
@@ -68,6 +68,7 @@ invenio-assets = { git = "https://github.com/olivergeneser/invenio-assets", bran
 invenio-vocabularies = { git = "https://github.com/olivergeneser/invenio-vocabularies", branch = "react-18-migration"}
 invenio-requests = { git = "https://github.com/olivergeneser/invenio-requests", branch = "react-18-migration"}
 invenio-jobs = { git = "https://github.com/olivergeneser/invenio-jobs", branch = "react-18-migration"}
+invenio-records-resources = { git ="https://github.com/slint/invenio-records-resources", branch="file-upload-transaction"}
 #react-searchkit = { path = "../react-searchkit" }
 #react-invenio-forms = { path = "../react-invenio-forms" }
 

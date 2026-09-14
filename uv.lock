@@ -2098,7 +2098,7 @@ wheels = [
 [[package]]
 name = "invenio-records-resources"
 version = "11.0.3"
-source = { git = "https://github.com/inveniosoftware/invenio-records-resources?branch=fix-read-many#a9c6d58d206d39768bec59b5a32e7c5b9b003bf2" }
+source = { git = "https://github.com/slint/invenio-records-resources?branch=file-upload-transaction#f6d50d5a39e157a1f60a1bb91fd4e85af1cc36eb" }
 dependencies = [
     { name = "babel-edtf" },
     { name = "flask-resources" },
@@ -3490,11 +3490,11 @@ wheels = [
 
 [[package]]
 name = "pynpm"
-version = "0.3.1"
+version = "0.3.2"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/2e/8d/f0b57a89849f8548c73722bb296dae2ca01f0ab20c1aa58ee55a7fc67db4/pynpm-0.3.1.tar.gz", hash = "sha256:8c73383b10bf5b57d96a8026619f386e1b81f30b71e125186716af2046332833", size = 4814, upload-time = "2026-07-02T21:13:12.931Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/49/3e/be0f6546cbeb84d9566c749faae3f1092d36261aaa918b9ddf3155a412b4/pynpm-0.3.2.tar.gz", hash = "sha256:bce2121af57c257d68d70b57e72ec9e67d07f01cb9605751e45c972ae6e8ac7f", size = 4848, upload-time = "2026-09-14T08:29:29.708Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/5a/4c/606420c327e81f951b78b18688c2db6055e6f197acf067e8a4b5339f98cd/pynpm-0.3.1-py3-none-any.whl", hash = "sha256:88b5bce96d8aa287b74d9ad8858d319dde36ce83b334bceeb956aef90af44eed", size = 5701, upload-time = "2026-07-02T21:13:11.838Z" },
+    { url = "https://files.pythonhosted.org/packages/26/fa/1fb7f67a31c5fbaaed59523ba22b4bc514fb326985fdb3c050d7c4e997c4/pynpm-0.3.2-py3-none-any.whl", hash = "sha256:1ed2f0df2be17c1f4beb0ecf459bfa1148a4719d5d2a55d757d4bb09a875a191", size = 5734, upload-time = "2026-09-14T08:29:28.852Z" },
 ]
 
 [[package]]
@@ -4778,7 +4778,7 @@ requires-dist = [
     { name = "invenio-jobs", git = "https://github.com/olivergeneser/invenio-jobs?branch=react-18-migration" },
     { name = "invenio-logging", extras = ["sentry"], marker = "extra == 'sentry'" },
     { name = "invenio-rdm-records", git = "https://github.com/olivergeneser/invenio-rdm-records?branch=react-18-migration" },
-    { name = "invenio-records-resources", git = "https://github.com/inveniosoftware/invenio-records-resources?branch=fix-read-many" },
+    { name = "invenio-records-resources", git = "https://github.com/slint/invenio-records-resources?branch=file-upload-transaction" },
     { name = "invenio-requests", git = "https://github.com/olivergeneser/invenio-requests?branch=react-18-migration" },
     { name = "invenio-search-ui", git = "https://github.com/olivergeneser/invenio-search-ui?branch=react-18-migration" },
     { name = "invenio-swh", git = "https://github.com/inveniosoftware/invenio-swh?rev=v0.13.5" },
