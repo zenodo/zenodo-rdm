@@ -60,6 +60,7 @@ def csrf_login(client, account) -> dict[str, str]:
         "/api/login",
         data={"email": email, "password": password},
         name="/login",
+        allow_redirects=False
     )
     response.raise_for_status()
     csrf_token = client.cookies.get("csrftoken")
