@@ -56,7 +56,7 @@ invenio-xrootd = { git = "https://github.com/ntarocco/invenio-xrootd", branch = 
 #invenio-vocabularies = { path = "../invenio-vocabularies", editable = true }
 #invenio-requests = { path = "../invenio-requests", editable = true }
 #invenio-jobs = { path = "../invenio-jobs", editable = true }
-
+#invenio-records-resources = { path ="../invenio-records-resources", editable=true}
 
 invenio-app-rdm = { git = "https://github.com/olivergeneser/invenio-app-rdm", branch = "react-18-migration" }
 invenio-rdm-records = { git = "https://github.com/olivergeneser/invenio-rdm-records", branch = "react-18-migration" }
