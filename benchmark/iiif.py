@@ -1,7 +1,8 @@
-from locust import HttpUser, task, between
-import random
 import json
+import random
 from pathlib import Path
+
+from locust import HttpUser, between, task
 
 cur_dir = Path(__file__).parent
 manifest_path = cur_dir / "manifest.json"
