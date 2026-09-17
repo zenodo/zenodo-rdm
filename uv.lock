@@ -130,11 +130,11 @@ sdist = { url = "https://files.pythonhosted.org/packages/44/1c/577d3ce406e88f370
 
 [[package]]
 name = "billiard"
-version = "4.2.4"
+version = "4.3.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/58/23/b12ac0bcdfb7360d664f40a00b1bda139cbbbced012c34e375506dbd0143/billiard-4.2.4.tar.gz", hash = "sha256:55f542c371209e03cd5862299b74e52e4fbcba8250ba611ad94276b369b6a85f", size = 156537, upload-time = "2025-11-30T13:28:48.52Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/60/a9/b1c91c6866717e68b12331222f294e20df4b7674f58c14639ecd0166549c/billiard-4.3.0.tar.gz", hash = "sha256:3ddeaf82c0373e076c7b450c2fdc7ded6d73981bcfd931da1cdd0c0a03468dc5", size = 160930, upload-time = "2026-09-17T08:38:04.925Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/cb/87/8bab77b323f16d67be364031220069f79159117dd5e43eeb4be2fef1ac9b/billiard-4.2.4-py3-none-any.whl", hash = "sha256:525b42bdec68d2b983347ac312f892db930858495db601b5836ac24e6477cde5", size = 87070, upload-time = "2025-11-30T13:28:47.016Z" },
+    { url = "https://files.pythonhosted.org/packages/60/60/ade6d336983b82fbc330d0d0371f945249b448152852952f643787a3288d/billiard-4.3.0-py3-none-any.whl", hash = "sha256:be3e51fb6202df38e1d67ff0aa3bfa4cdc1838a3c47c36373cc3220c6b787c2a", size = 88116, upload-time = "2026-09-17T08:38:03.233Z" },
 ]
 
 [[package]]
@@ -464,15 +464,16 @@ wheels = [
 
 [[package]]
 name = "click-repl"
-version = "0.3.0"
+version = "0.4.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "click" },
     { name = "prompt-toolkit" },
+    { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/cb/a2/57f4ac79838cfae6912f997b4d1a64a858fb0c86d7fcaae6f7b58d267fca/click-repl-0.3.0.tar.gz", hash = "sha256:17849c23dba3d667247dc4defe1757fff98694e90fe37474f3feebb69ced26a9", size = 10449, upload-time = "2023-06-15T12:43:51.141Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/8e/f5/19bce5e62ee97138752eeef0b91bfa46d880725cc8ec00aa00daa2685410/click_repl-0.4.0.tar.gz", hash = "sha256:52f8962ff0fdae8105d568123b144951257b6bfcfb44ff6f043379c307d0a8ac", size = 15941, upload-time = "2026-09-17T07:22:01.768Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/52/40/9d857001228658f0d59e97ebd4c346fe73e138c6de1bce61dc568a57c7f8/click_repl-0.3.0-py3-none-any.whl", hash = "sha256:fb7e06deb8da8de86180a33a9da97ac316751c094c6899382da7feeeeb51b812", size = 10289, upload-time = "2023-06-15T12:43:48.626Z" },
+    { url = "https://files.pythonhosted.org/packages/e0/ae/63d94d251d2e1a7bf3794ea47cb1c99fe6de055b732ea79d7bcdabef8ff5/click_repl-0.4.0-py3-none-any.whl", hash = "sha256:fee730650f34204f1bd41b8fab46f6b51dda019b4a35ed89ab8553ba31f7d6d3", size = 14976, upload-time = "2026-09-17T07:22:00.429Z" },
 ]
 
 [[package]]
@@ -743,15 +744,15 @@ wheels = [
 
 [[package]]
 name = "docker-services-cli"
-version = "0.12.3"
+version = "0.12.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "check-manifest" },
     { name = "click" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/47/6a/3c367f9156657997af85ac3f1907d20ec35258b0cf38ad3295ef24a13cfd/docker_services_cli-0.12.3.tar.gz", hash = "sha256:e157f16e82cadfd56ef088f85f17cafc7805c2aa7fcfc326aabf377a54680d11", size = 9956, upload-time = "2026-08-25T14:01:44.684Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/6d/39/910e7bfac3648a3235c5dd65686bab4e43cb73c0fa7d10045e81dd5c92a6/docker_services_cli-0.12.4.tar.gz", hash = "sha256:fc43623e54fd45114915d826f921aaa537e2f5d6c7c1c2277ded76ba402a8cbc", size = 10575, upload-time = "2026-09-17T08:10:24.358Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e9/78/31b2b8e823b00c26dba2a2d8e9b84822c42320f27f189e85d1553f5cd402/docker_services_cli-0.12.3-py3-none-any.whl", hash = "sha256:00082dbe0ee1c9a5f10f05bf26159d89fe996458942432f277b8387e1af2bee4", size = 12907, upload-time = "2026-08-25T14:01:43.712Z" },
+    { url = "https://files.pythonhosted.org/packages/84/78/821dd1ccece96e8c600ce052819d1724e6acefc79c2457af50a0d97631f6/docker_services_cli-0.12.4-py3-none-any.whl", hash = "sha256:ce82463cd8d70104e893afe56bb98931692b2b065d9191144a079133f15a9646", size = 13627, upload-time = "2026-09-17T08:10:23.47Z" },
 ]
 
 [[package]]
@@ -770,14 +771,15 @@ wheels = [
 
 [[package]]
 name = "edtf"
-version = "5.0.1"
+version = "5.0.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pyparsing" },
     { name = "python-dateutil" },
 ]
+sdist = { url = "https://files.pythonhosted.org/packages/01/d2/83bc902f7cb1bf5217e7153674c45f299d6c91428516edd9551354a2f9ad/edtf-5.0.2.tar.gz", hash = "sha256:e26bebffb62fdb3013e5978a3bc6abfdc055b93e6e046a18c68d07005e0cd86e", size = 74044, upload-time = "2026-09-17T00:47:59.645Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/76/23/e9f69255f67f55b03e2705bfd7a579a01c26146b9ea98f9cdb07d8156b4d/edtf-5.0.1-py3-none-any.whl", hash = "sha256:d3ed8c1307330d7563ae9efc4193988acddeb60dcfb740d4fe0abe739ef0944a", size = 36776, upload-time = "2026-03-15T03:22:56.53Z" },
+    { url = "https://files.pythonhosted.org/packages/6c/ca/6c97f900a1df1bcd2709c68e3e64800f862d36fcf3d19a4e263e3d17b14b/edtf-5.0.2-py3-none-any.whl", hash = "sha256:edc9c4071f6cd1960561661d02b777dced1e0f3a41ea0e6d644074a804eeb04e", size = 41175, upload-time = "2026-09-17T00:47:43.83Z" },
 ]
 
 [[package]]
@@ -1449,7 +1451,7 @@ wheels = [
 [[package]]
 name = "invenio-administration"
 version = "7.1.1"
-source = { git = "https://github.com/olivergeneser/invenio-administration?branch=react-18-migration#dcba1809c2dc2262c7d4e2b507c04494a58c32ea" }
+source = { git = "https://github.com/olivergeneser/invenio-administration?branch=react-18-migration#8ba6daa49eb5be1961ff4a2fee3d542bacc601ce" }
 dependencies = [
     { name = "flask-menu" },
     { name = "flask-principal" },
@@ -1484,8 +1486,8 @@ wheels = [
 
 [[package]]
 name = "invenio-app-rdm"
-version = "15.0.0b3.dev1"
-source = { git = "https://github.com/olivergeneser/invenio-app-rdm?branch=react-18-migration#869291cd0a71564e1a4d956f16536725f57d7253" }
+version = "15.0.0b4.dev0"
+source = { git = "https://github.com/olivergeneser/invenio-app-rdm?branch=react-18-migration#4c55d596033561c185f6b791626dfbb8fedb1787" }
 dependencies = [
     { name = "cairosvg" },
     { name = "invenio-access" },
@@ -1641,7 +1643,7 @@ wheels = [
 [[package]]
 name = "invenio-collections"
 version = "10.0.3"
-source = { git = "https://github.com/olivergeneser/invenio-collections?branch=react-18-migration#ca2f3ba59f52ae126a37c7b51e219ee1f00a0ebd" }
+source = { git = "https://github.com/olivergeneser/invenio-collections?branch=react-18-migration#bd5fa8306c4d17dc95d47e2cb08806dcddce7a89" }
 dependencies = [
     { name = "invenio-administration" },
     { name = "invenio-records-resources" },
@@ -1651,7 +1653,7 @@ dependencies = [
 [[package]]
 name = "invenio-communities"
 version = "29.1.1"
-source = { git = "https://github.com/olivergeneser/invenio-communities?branch=react-18-migration#64d60d6ce76e81e7a029cb290d99fc79891525fe" }
+source = { git = "https://github.com/olivergeneser/invenio-communities?branch=react-18-migration#17e13e8399d4920c610ad4f3e4ff8afe2c1a66e7" }
 dependencies = [
     { name = "invenio-administration" },
     { name = "invenio-collections" },
@@ -1813,7 +1815,7 @@ wheels = [
 [[package]]
 name = "invenio-jobs"
 version = "11.0.4"
-source = { git = "https://github.com/olivergeneser/invenio-jobs?branch=react-18-migration#273a5c7f5d2be46d64b37aabe7fd427ac8341be1" }
+source = { git = "https://github.com/olivergeneser/invenio-jobs?branch=react-18-migration#2997ef823cdd1866beabcab7580d67e84ee86b70" }
 dependencies = [
     { name = "invenio-administration" },
     { name = "invenio-base" },
@@ -2017,7 +2019,7 @@ wheels = [
 [[package]]
 name = "invenio-rdm-records"
 version = "35.0.2"
-source = { git = "https://github.com/olivergeneser/invenio-rdm-records?branch=react-18-migration#557ecf948a988850fb7d0e03760cb2a26f4fd99e" }
+source = { git = "https://github.com/olivergeneser/invenio-rdm-records?branch=react-18-migration#4b4da1a604932888e1efd316fc60a90410de8a7e" }
 dependencies = [
     { name = "arrow" },
     { name = "babel-edtf" },
@@ -2098,7 +2100,7 @@ wheels = [
 [[package]]
 name = "invenio-records-resources"
 version = "11.0.3"
-source = { git = "https://github.com/slint/invenio-records-resources?branch=file-upload-transaction#106079d34fac35278b4310b12d4a8c4a7bd84111" }
+source = { git = "https://github.com/slint/invenio-records-resources?branch=file-upload-transaction#3ff12b47d50d9b3cc78be86342d04b2edb81710a" }
 dependencies = [
     { name = "babel-edtf" },
     { name = "flask-resources" },
@@ -2159,7 +2161,7 @@ wheels = [
 [[package]]
 name = "invenio-requests"
 version = "15.2.1"
-source = { git = "https://github.com/olivergeneser/invenio-requests?branch=react-18-migration#8d1e03cf3e71e3dba4bca4bc74adc97380e80c96" }
+source = { git = "https://github.com/olivergeneser/invenio-requests?branch=react-18-migration#79102f60bd215b76393dd1215154a17fdd4d7537" }
 dependencies = [
     { name = "invenio-records-resources" },
     { name = "invenio-theme" },
@@ -2206,7 +2208,7 @@ opensearch2 = [
 [[package]]
 name = "invenio-search-ui"
 version = "5.0.3"
-source = { git = "https://github.com/olivergeneser/invenio-search-ui?branch=react-18-migration#c4d2361e7739ab5eac80aeb0f6473c34da7df3b1" }
+source = { git = "https://github.com/olivergeneser/invenio-search-ui?branch=react-18-migration#78ee8a61f3659c8a10569782f49780dbac616231" }
 dependencies = [
     { name = "babel" },
     { name = "invenio-assets" },
@@ -2313,7 +2315,7 @@ wheels = [
 [[package]]
 name = "invenio-vocabularies"
 version = "14.3.2"
-source = { git = "https://github.com/olivergeneser/invenio-vocabularies?branch=react-18-migration#4c355e4990447e313fa716a78182f857614976fc" }
+source = { git = "https://github.com/olivergeneser/invenio-vocabularies?branch=react-18-migration#f487e9ac8d4bba14780d821eff78a121a58661c7" }
 dependencies = [
     { name = "invenio-administration" },
     { name = "invenio-i18n" },
@@ -3235,11 +3237,11 @@ wheels = [
 
 [[package]]
 name = "platformdirs"
-version = "4.11.8"
+version = "4.11.9"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/53/18/f3bb8ef0d3b930692343da8aa4d3cbcd6749477c053959395ac81965a6e9/platformdirs-4.11.8.tar.gz", hash = "sha256:f23abafea7dd4276d1f29104b83598d7dcc567cafd07c9c951e66665645437fc", size = 37182, upload-time = "2026-09-08T22:20:42.866Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/58/b9/8adc4e1b422b27fd88540ec7bf1f406f77ef393ec070e26fc430e914cde8/platformdirs-4.11.9.tar.gz", hash = "sha256:e2c66a8d384596cd98e3c4aea2d761df7bac95d9d8a2cc3946daa8cdafdaebc1", size = 38345, upload-time = "2026-09-16T13:31:45.259Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f4/e1/5b7b8bbb55084d1425bcb9bc823ff519e1b2be05f6ebb0089e2eacc38413/platformdirs-4.11.8-py3-none-any.whl", hash = "sha256:52f2f181bbfde907966932cc8312d967d02976422d66d537ea16092b8e291081", size = 24027, upload-time = "2026-09-08T22:20:41.537Z" },
+    { url = "https://files.pythonhosted.org/packages/f3/94/803ba86705257d7eedddac4b02eb88a7483b1600e9200c1fefc6f1a9a3ff/platformdirs-4.11.9-py3-none-any.whl", hash = "sha256:0a3958f58a9e30321eaef0a424dd0b77cce242886b36b8aa992f9731ef2d59c1", size = 24472, upload-time = "2026-09-16T13:31:44.049Z" },
 ]
 
 [[package]]
@@ -3481,11 +3483,11 @@ crypto = [
 
 [[package]]
 name = "pymysql"
-version = "1.2.0"
+version = "1.2.3"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/c9/bc/1c6a92f385940f727daeecf3bacaf186e03875dff57197801046c583bcf0/pymysql-1.2.0.tar.gz", hash = "sha256:6c7b17ca686988104d7426c27895b455cdeea3e9d3ceb1270f0c3704fead8c33", size = 49021, upload-time = "2026-05-19T08:26:22.302Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b1/d4/c15b459e25a23767d2f4065ef40968920320f04e302889574310c21c96a3/pymysql-1.2.3.tar.gz", hash = "sha256:d5b288529782e536ae171866df3ca9dc4f6cbfb3cc2f18e6f837fbb90dbc262b", size = 50629, upload-time = "2026-09-17T12:22:49.146Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/c4/bd/2534e130295c8cfd4f0a2e31623baab7502278f1e97bcfe61db75656a77f/pymysql-1.2.0-py3-none-any.whl", hash = "sha256:62169ce6d5510f08e140c5e7990ee884a9764024e4a9a27b2cc11f1099322ae0", size = 45716, upload-time = "2026-05-19T08:26:20.974Z" },
+    { url = "https://files.pythonhosted.org/packages/a9/4b/0a906d8184f011ff8dbd4722743783867589b33269d2c5fff238d636fdcb/pymysql-1.2.3-py3-none-any.whl", hash = "sha256:14f1c68e2ed859243ae5ca41ffbe677027fc46bc136a9f0be8a4e928e5e7415a", size = 46740, upload-time = "2026-09-17T12:22:47.826Z" },
 ]
 
 [[package]]
@@ -3517,11 +3519,11 @@ wheels = [
 
 [[package]]
 name = "pyproject-hooks"
-version = "1.3.0"
+version = "1.3.3"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/18/94/21931ee768a9544afa6330a2e790e6ef8ce70568e88d79b15560c3054e91/pyproject_hooks-1.3.0.tar.gz", hash = "sha256:26dfd4229ff1820b7964be33bd3eb64367eb7c841215defe11341450c219ce20", size = 20883, upload-time = "2026-09-15T17:43:43.445Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/6d/5d/f2ddeef4a855a102aaae5e97826a0260007522ab504421b75addfdb1517c/pyproject_hooks-1.3.3.tar.gz", hash = "sha256:defda19b854fa0d3bd4f76ea4ddcba8abd7dcfcdd585a6690ade050744fc5f43", size = 21013, upload-time = "2026-09-16T08:58:03.999Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/58/86/3276e42c9349f2349a8a0fa6abf145c867ed7719a56c907e6ef21edf1462/pyproject_hooks-1.3.0-py3-none-any.whl", hash = "sha256:733909c6ac133d222c0b8cfc11364f19d363793d8fbcd8bb7240c5220af8d35d", size = 10723, upload-time = "2026-09-15T17:43:42.11Z" },
+    { url = "https://files.pythonhosted.org/packages/85/11/044d1ae1b4ec0d7af88ee5bc91e081be1022533032b906a7bdabdbb60977/pyproject_hooks-1.3.3-py3-none-any.whl", hash = "sha256:5fc53fdac9f7bd63fbcdc868fb5f90b4784d78a53a3d3388cd738b807441a20b", size = 10724, upload-time = "2026-09-16T08:58:02.96Z" },
 ]
 
 [[package]]
