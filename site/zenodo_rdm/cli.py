@@ -3,12 +3,15 @@
 """Zenodo RDM cli commands."""
 
 import csv
+from random import randint
 
 import click
 from flask.cli import with_appcontext
 from invenio_access.permissions import system_identity
+from invenio_accounts.models import User
 from invenio_communities.communities.records.api import Community
 from invenio_db import db
+from invenio_github.models import Release, ReleaseStatus, Repository
 from invenio_pidstore.models import PersistentIdentifier
 from invenio_rdm_records.proxies import current_rdm_records_service
 from invenio_rdm_records.records.api import RDMDraft, RDMRecord
@@ -417,3 +420,46 @@ def _add_domains_from_csv(file_path):
             score = entry.get("score") or None
             status = entry.get("status", "banned")
             _create_domain(domain, notes, score, status)
+
+
+@click.group()
+def zenodo_dev():
+    """Zenodo development commands."""
+
+
+@zenodo_dev.command("add-gh-release")
+@click.option(
+    "-r",
+    "--record-public-id",
+    type=str,
+    required=True,
+    help="The pid of the record that you want to add a github release to.",
+)
+@click.option(
+    "-g",
+    "--github-id",
+    required=False,
+    help="The id you want the `Repository` object to have, this id will be used like: `https://127.0.0.1:5000/badge/{YOUR_ID}.svg`",
+)
+@with_appcontext
+def add_gh_release_to_record(record_public_id, github_id):
+    """Creates all the necessary objects in the db to be able to use a github badge.
+
+    Prints a valid url for a badge like: `https://127.0.0.1:5000/badge/{GITHUB_ID}.svg`.
+    """
+    if not github_id:
+        github_id = randint(10000000 ,99999999)
+
+    record = current_rdm_records_service.read(system_identity, record_public_id)._record
+    repo = Repository.create(
+        user_id=User.query.first().id,
+        github_id=github_id,
+        name=f"zenodo/demo-repo-{github_id}",
+    )
+    rel = Release(
+        tag="v1.0", repository=repo, record_id=record.id, status=ReleaseStatus.PUBLISHED
+    )
+    db.session.add(rel)
+    db.session.commit()
+
+    print(f"Badge for the release -> https://127.0.0.1:5000/badge/{github_id}.svg")
