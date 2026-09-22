@@ -3644,7 +3644,7 @@ wheels = [
 
 [[package]]
 name = "pytest-invenio"
-version = "3.4.2"
+version = "4.0.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "check-manifest" },
@@ -3660,9 +3660,9 @@ dependencies = [
     { name = "selenium" },
     { name = "snowballstemmer" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/31/7d/5f98cdd0eb52ba8ec98913f24ef6e1b371d05ef202838b58ffb788f098ec/pytest_invenio-3.4.2.tar.gz", hash = "sha256:8655536540a1585487df319cf3f2491053963f347e8057fb747f1829e980deeb", size = 41027, upload-time = "2025-07-09T06:37:38.114Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/bb/86/30e48972419e9b8aa51d9bd61ee247c076fb500d4bfba23fae5cfb124891/pytest_invenio-4.0.2.tar.gz", hash = "sha256:987074bf8ee7f1c59ef41f96c3725940062a597f322387a59c9d10aeacd40afc", size = 19723, upload-time = "2026-07-02T13:58:14.446Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/26/8e/52dc420b97eff8e52e064d4194ce682ca154988d291115d41ac6603fd112/pytest_invenio-3.4.2-py2.py3-none-any.whl", hash = "sha256:f7be2bca64256e498a71410463f9c0d0da560065590f4eb91745e556bc72a79b", size = 24549, upload-time = "2025-07-09T06:37:37.003Z" },
+    { url = "https://files.pythonhosted.org/packages/1d/6c/91620b499f54ca616cf141475388fb975e34f78fdbcaba9ceda40818ff32/pytest_invenio-4.0.2-py3-none-any.whl", hash = "sha256:85041625a0a4e626649fa1c2a318189b012c8c3223f8783a8534d829af30c4d7", size = 22199, upload-time = "2026-07-02T13:58:13.336Z" },
 ]
 
 [[package]]
@@ -4825,7 +4825,7 @@ provides-extras = ["sentry", "xrootd"]
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "pytest-invenio", specifier = ">=3.0.0,<4.0.0" },
+    { name = "pytest-invenio", specifier = ">=4.0.0,<5.0.0" },
     { name = "pytest-mock", specifier = ">=1.6.0" },
 ]
 

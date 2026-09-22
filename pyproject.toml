@@ -44,7 +44,7 @@ members = [
 
 [dependency-groups]
 dev = [
-    "pytest-invenio>=3.0.0,<4.0.0",
+    "pytest-invenio>=4.0.0,<5.0.0",
     "pytest-mock>=1.6.0",
 ]
 
