@@ -2377,11 +2377,15 @@ wheels = [
 
 [[package]]
 name = "invenio-xrootd"
-version = "2.0.0a2"
-source = { git = "https://github.com/ntarocco/invenio-xrootd?branch=upgrade-xrootdpyf#bd8273d3d06f40fed0e395441697c7e0e38a5dc2" }
+version = "3.0.0"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "invenio-files-rest" },
     { name = "xrootdpyfs" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/87/d9/3da13e6897c0d6b6f3bf64a12df7b441b1b29f6d91d44ad2437cf89df6f8/invenio_xrootd-3.0.0.tar.gz", hash = "sha256:b3bba04bd693001a48844241e6a81221396fd4a9515ca0147866e4796a60f1a3", size = 5307, upload-time = "2026-09-24T12:58:50.012Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/48/e3/115e4303b0bcc21f20547717d227bcd7b7b0090191c0cff476215f8a74d0/invenio_xrootd-3.0.0-py3-none-any.whl", hash = "sha256:9695a61f8fa5ca8320931273613ed3fdc2dc5e9a551f825021194c2fbe57ad8a", size = 6975, upload-time = "2026-09-24T12:58:49.173Z" },
 ]
 
 [[package]]
@@ -4748,14 +4752,14 @@ wheels = [
 
 [[package]]
 name = "xrootdpyfs"
-version = "3.0.0a1"
+version = "3.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "xrootd" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/d9/51/4773e2b8bd69481e96ec9b95639ad9d4b58396083b25e42ab0a757c45807/xrootdpyfs-3.0.0a1.tar.gz", hash = "sha256:853d8632081168d8653f6b9d48d89aea48b85fb4dec2d987ce62425194cf7cd7", size = 26773, upload-time = "2026-07-17T11:48:45.735Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/37/9c/5c0be64fe69013dcd35a6f211c76f75096f1c3b53691d23d79217190fa5a/xrootdpyfs-3.0.0.tar.gz", hash = "sha256:75a5d08c79b95acf3c576e03c43196e8e5cf56039986425e62045532948c05e2", size = 26783, upload-time = "2026-09-24T11:41:51.746Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/6b/f2/9d7546775099ea01fbe48bb52f5841d3fdf5c0ddbf8a8cb2e015c3ba1041/xrootdpyfs-3.0.0a1-py3-none-any.whl", hash = "sha256:4f8b38fa1b7bb929be6ebe08062e03e827dcee31fc7043e7fff32631c558ba1c", size = 30251, upload-time = "2026-07-17T11:48:44.829Z" },
+    { url = "https://files.pythonhosted.org/packages/e6/7a/56061028531911ac0fa4efe14ed5d7dcc8a497e4f8de97ab3bcb3831176c/xrootdpyfs-3.0.0-py3-none-any.whl", hash = "sha256:54632b01c03985a92097410008e525a8f54a1db56d17cbdd0038d6b2ff276c61", size = 30222, upload-time = "2026-09-24T11:41:50.786Z" },
 ]
 
 [[package]]
@@ -4828,7 +4832,7 @@ requires-dist = [
     { name = "invenio-rdm-records", git = "https://github.com/inveniosoftware/invenio-rdm-records?branch=feature%2Forcha" },
     { name = "invenio-records-resources", git = "https://github.com/inveniosoftware/invenio-records-resources?branch=fix-read-many" },
     { name = "invenio-swh", git = "https://github.com/inveniosoftware/invenio-swh?rev=v0.13.5" },
-    { name = "invenio-xrootd", marker = "extra == 'xrootd'", git = "https://github.com/ntarocco/invenio-xrootd?branch=upgrade-xrootdpyf" },
+    { name = "invenio-xrootd", marker = "extra == 'xrootd'", specifier = "==3.0.0" },
     { name = "nameparser", specifier = ">=1.1.1" },
     { name = "pyinstrument", specifier = ">=5.0.0,<6" },
     { name = "pyvips", specifier = ">=2.2.2,<3.0.0" },
