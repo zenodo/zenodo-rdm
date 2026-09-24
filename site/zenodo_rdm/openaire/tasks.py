@@ -9,6 +9,7 @@ from celery import shared_task
 from flask import current_app
 from invenio_access.permissions import system_identity
 from invenio_cache import current_cache
+from invenio_db import db
 from invenio_rdm_records.proxies import current_rdm_records_service as records_service
 from werkzeug.local import LocalProxy
 
@@ -59,6 +60,9 @@ def openaire_direct_index(record_id, retry=True):
         # Serialize record for OpenAIRE indexing
         serializer = OpenAIREV1Serializer()
         serialized_record = serializer.dump_obj(record.data)
+
+        # Done with the database before the http request
+        db.session.commit()
 
         # Build the request
         base_url = current_app.config["OPENAIRE_API_URL"]
