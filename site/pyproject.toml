@@ -8,6 +8,7 @@ requires-python = "~=3.14.0"
 zenodo-admin = "zenodo_rdm.cli:zenodo_admin"
 moderation = "zenodo_rdm.cli:moderation_cli"
 exporter = "zenodo_rdm.exporter.cli:exporter"
+zenodo-dev = "zenodo_rdm.cli:zenodo_dev"
 
 [project.entry-points."invenio_base.blueprints"]
 zenodo_rdm = "zenodo_rdm.theme.views:create_blueprint"
