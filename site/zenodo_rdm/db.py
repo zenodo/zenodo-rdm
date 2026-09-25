@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright (C) 2025 CERN.
 #
@@ -15,8 +14,21 @@ def routed_bind(session, *args, **kwargs):
 
     Routes unauthenticated/anonymous GET and HEAD requests of configured endpoints to
     the configured read replica SQLAlchemy bind.
+
+    Falls back to the primary database (by returning ``None``) when outside a
+    request/app context, for non-read HTTP methods, for authenticated users, for
+    endpoints not listed in ``ZENODO_READ_REPLICA_ENDPOINTS``, or when the read
+    replica bind is not configured.
     """
-    if request and request.method in ["GET", "HEAD"]:
-        read_endpoints = current_app.config.get("ZENODO_READ_REPLICA_ENDPOINTS", [])
-        if current_user.is_anonymous and request.endpoint in read_endpoints:
-            return session._db.engines["read_replica"]
+    if not current_app or not request:
+        return None
+
+    if request.method not in ["GET", "HEAD"]:
+        return None
+    read_endpoints = current_app.config.get("ZENODO_READ_REPLICA_ENDPOINTS", [])
+    if request.endpoint not in read_endpoints:
+        return None
+    if not current_user.is_anonymous:
+        return None
+
+    return session._db.engines.get("read_replica")
