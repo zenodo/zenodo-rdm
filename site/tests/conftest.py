@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: 2022 CERN
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Pytest fixtures."""
-
 from collections import namedtuple
 
 import pytest
