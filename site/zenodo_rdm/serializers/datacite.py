@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2024 CERN
+# SPDX-FileCopyrightText: 2024-2026 CERN
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Zenodo datacite serializer."""
 
@@ -21,7 +21,8 @@ class ZenodoDataciteSchema(DATACITE_SCHEMA):
     def get_related_identifiers(self, obj):
         """Get related identifiers."""
         ret = super().get_related_identifiers(obj) or []
-        swhid = obj.get("swh", {}).get("swhid")
+        swh = obj.get("swh") or {}
+        swhid = swh.get("swhid")
         if swhid:
             _url = f"{current_app.config['SWH_UI_BASE_URL']}/{swhid}"
             ret.append(

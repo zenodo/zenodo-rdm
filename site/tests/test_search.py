@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2025 CERN
+# SPDX-FileCopyrightText: 2025-2026 CERN
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Test search API page size validation."""
 
@@ -54,3 +54,39 @@ def test_authenticated_page_size_validation(client_with_login, search_url):
             }
         ],
     }
+
+
+@pytest.mark.parametrize(
+    "content_type",
+    [
+        "application/dcat+xml",
+        "application/json",
+        'application/ld+json;profile=\\"https://datapackage.org/profiles/2.0/datapackage.json\\"',
+        "application/ld+json",
+        "application/linkset+json",
+        "application/marcxml+xml",
+        "application/vnd.citationstyles.csl+json",
+        "application/vnd.datacite.datacite+json",
+        "application/vnd.datacite.datacite+xml",
+        "application/vnd.geo+json",
+        "application/vnd.inveniordm.v1.full+csv",
+        "application/vnd.inveniordm.v1.simple+csv",
+        "application/vnd.inveniordm.v1+json",
+        "application/vnd.zenodo.v1+json",
+        "application/x-bibtex",
+        "application/x-datacite+xml",
+        "application/x-dc+xml",
+        "text/x-bibliography",
+    ],
+)
+def test_search_serializers(
+    publish_record, minimal_record, client, search_url, content_type
+):
+    """Searching for records with a serializer format in the accept headers works."""
+    record = publish_record(dict(minimal_record, files={"enabled": False}))
+    record_doi = record["pids"]["doi"]["identifier"]
+
+    res = client.get(f"{search_url}", headers={"Accept": content_type})
+    assert res.status_code == 200
+    if content_type != "application/vnd.geo+json":
+        assert record_doi in res.text
