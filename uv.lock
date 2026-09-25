@@ -1718,7 +1718,7 @@ wheels = [
 
 [[package]]
 name = "invenio-db"
-version = "2.6.1"
+version = "2.7.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "alembic" },
@@ -1729,9 +1729,9 @@ dependencies = [
     { name = "sqlalchemy-continuum" },
     { name = "sqlalchemy-utils" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/22/46/900e32dc7ec32555ff3f4a3862dc30eae4234462d561864f4d45b977c6df/invenio_db-2.6.1.tar.gz", hash = "sha256:680ebb52f3a687a563aef3636de13bd1e8a66b7b50c733a8835aef7bf7eabef5", size = 14029, upload-time = "2026-09-25T20:47:37.483Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/1d/57/4d010891a4ac13d837637ea48318c20f928120d5ec0ea9a7ce165de9a670/invenio_db-2.7.0.tar.gz", hash = "sha256:4b12847a6d28ddf1a1e7b6739390ae2a9fd071e4b0bd26a0369d11877d81bd70", size = 14643, upload-time = "2026-11-24T13:51:05.215Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/78/15/9a60039f30270130232d88324f0bc0453e3dc474bb77d8a7293812fa444e/invenio_db-2.6.1-py3-none-any.whl", hash = "sha256:9c5f7c6f01cf3d1c963c6355b8d68dbc2016b1f033ccf054e3fc0fe53ab4384a", size = 18898, upload-time = "2026-09-25T20:47:36.352Z" },
+    { url = "https://files.pythonhosted.org/packages/35/78/96cadb599ef3b7df6c34b5c789140d4b0cecffd75471ff8c628c59e01cd5/invenio_db-2.7.0-py3-none-any.whl", hash = "sha256:d4aa2f2fc304dd7b727bed6ac50425c1501bca50ca2361ba6dfe1dc6dc668245", size = 19553, upload-time = "2026-11-24T13:51:04.426Z" },
 ]
 
 [package.optional-dependencies]
@@ -3318,6 +3318,15 @@ wheels = [
 ]
 
 [[package]]
+name = "pkgconfig"
+version = "1.6.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/52/fd/0adde075cd3bfecd557bc7d757e00e231d34d8a6edb4c8d1642759254c21/pkgconfig-1.6.0.tar.gz", hash = "sha256:4a5a6631ce937fafac457104a40d558785a658bbdca5c49b6295bc3fd651907f", size = 5691, upload-time = "2026-03-06T11:26:01.194Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/75/6f/f7ec07fba48f07c555cc4099481df644fbbc12067879072c17ac229f6556/pkgconfig-1.6.0-py3-none-any.whl", hash = "sha256:98e71754855e9563838d952a160eb577edabb57782e49853edb5381927e6bea1", size = 7086, upload-time = "2026-03-06T11:26:07.688Z" },
+]
+
+[[package]]
 name = "platformdirs"
 version = "4.14.7"
 source = { registry = "https://pypi.org/simple" }
@@ -3805,6 +3814,7 @@ version = "2.2.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cffi" },
+    { name = "pkgconfig" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/7b/88/f73dae807ec68b228fba72507105e3ba80a561dc0bade0004ce24fd118fc/pyvips-2.2.3.tar.gz", hash = "sha256:43bceced0db492654c93008246a58a508e0373ae1621116b87b322f2ac72212f", size = 56626, upload-time = "2024-04-28T11:19:58.158Z" }
 
