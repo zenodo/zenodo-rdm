@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2024 CERN
+# SPDX-FileCopyrightText: 2024-2026 CERN
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Zenodo codemeta serializer."""
 
@@ -27,7 +27,8 @@ class ZenodoCodemetaSchema(CodemetaSchema):
         if doi:
             doi_url = to_url(normalize_doi(doi), "doi")
             ret.append({"@type": "doi", "value": doi, "propertyID": doi_url})
-        swhid = obj.get("swh", {}).get("swhid")
+        swh = obj.get("swh") or {}
+        swhid = swh.get("swhid")
         if swhid:
             swh_url = f"{current_app.config['SWH_UI_BASE_URL']}/{swhid}"
             ret.append({"@type": "swhid", "value": swhid, "propertyID": swh_url})

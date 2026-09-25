@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2024 CERN
+# SPDX-FileCopyrightText: 2024-2026 CERN
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Zenodo CFF serializer."""
 
@@ -15,7 +15,8 @@ class ZenodoCFFSchema(CFFSchema):
     def get_identifiers(self, obj):
         """Get identifiers."""
         ret = super().get_identifiers(obj) or []
-        swhid = obj.get("swh", {}).get("swhid")
+        swh = obj.get("swh") or {}
+        swhid = swh.get("swhid")
         if swhid:
             ret.append({"value": swhid, "type": "swh"})
         return ret or missing

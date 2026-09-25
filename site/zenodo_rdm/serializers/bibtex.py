@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2024 CERN
+# SPDX-FileCopyrightText: 2024-2026 CERN
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Zenodo bibtex serializer."""
 
@@ -15,7 +15,8 @@ class ZenodoBibtexSchema(BibTexSchema):
 
     def get_swhid(self, obj):
         """Get swhid."""
-        return obj.get("swh", {}).get("swhid") or missing
+        swh = obj.get("swh") or {}
+        return swh.get("swhid") or missing
 
 
 class ZenodoBibtexSerializer(MarshmallowSerializer):

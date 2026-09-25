@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2022 CERN
+# SPDX-FileCopyrightText: 2022-2026 CERN
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Pytest fixtures."""
 
@@ -423,6 +423,8 @@ def resource_type_v(app, resource_type_type):
                 "subtype": "image-photo",
                 "type": "image",
             },
+            "title": {"en": "Photo"},
+            "tags": ["depositable", "linkable"],
         },
     )
 
