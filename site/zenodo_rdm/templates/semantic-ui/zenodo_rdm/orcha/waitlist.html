@@ -1,0 +1,83 @@
+{#
+  SPDX-FileCopyrightText: 2026 CERN
+  SPDX-License-Identifier: GPL-3.0-or-later
+#}
+{%- extends config.BASE_TEMPLATE %}
+
+{# Prevent page from beeing indexed #}
+{%- set meta_robot_tags = [{"name": "robots", "content": "noindex, nofollow"}]%}
+
+{%- block page_body %}
+<div class="ui container rel-pt-3 rel-pb-3">
+    <div class="ui one column grid">
+        <div class="row">
+            <div class="sixteen wide mobile wide tablet ten wide computer column col-md-12">
+                {%- if already_joined %}
+                    <div class="ui positive message">
+                        <p>You are already on the waitlist.</p>
+                    </div>
+                {%- endif %}
+                <h1 class="ui header">
+                    Help us test the new AI-assisted deposit form
+                </h1>
+                <p>
+                    As part of the <a href="https://about.zenodo.org/projects/airdec/" target="_blank">AIRDEC project</a>, we are developing and testing new AI-assisted features for the Zenodo <a href="https://zenodo.org/uploads/new" target="_blank">deposit form</a>. These features are designed to make depositing research outputs easier and faster by automatically extracting and suggesting metadata from uploaded <strong>PDF files</strong>.
+
+                </p>
+                <p>
+                    <strong>We are looking for 100 users to test the new features and provide feedback based on their experience.</strong>
+                </p>
+                <p>
+                    <strong>Opening and testing period</strong>
+                    <br>
+                    Opening date: 30 October 2026 <br>
+                    Testing period: Until February 2027
+                </p>
+                <p>
+                    Our goal is to make the deposit process approximately 50% <strong>faster</strong> by reducing the amount of manual metadata entry required.
+                </p>
+                <p>
+                    <strong>What is being tested?</strong><br>
+                    The new AI-assisted functionality will provide automated metadata extraction and suggestions for the following fields in the deposit form:"
+                </p>
+                <ul>
+                    <li>Title</li>
+                    <li>Description</li>
+                    <li>Copyright</li>
+                    <li>License</li>
+                    <li>Authors</li>
+                    <li>Publication date</li>
+                    <li>Funding / Grants</li>
+                </ul>
+                <p>
+                    The testing will be available for PDF files only. <br><br>
+                    The AI integration will analyse the uploaded PDF and provide suggestions for the relevant metadata fields. You can then review, accept, modify, or replace these suggestions before completing your deposit.
+                </p>
+                <p>
+                    <strong>How to provide feedback</strong><br>
+                    You will have the opportunity to provide feedback in the comments box close to the AI suggestion. Providing feedback is optional, but we will be grateful if you could help us in identifying incorrect suggestions, missing information, or aspects that could be improved.
+                    SCREENSHOT COMMENT BOX
+                    <br><br>
+                    At the end of the form, you can also provide additional comments about your overall experience.
+                </p>
+                <p>
+                    <strong>How is my data used by AI?</strong><br>
+                    For details on how AI is used across Zenodo, please see our dedicated <a href="https://about.zenodo.org/ai-usage-notice/" target="_blank">AI usage notice</a> page.
+                </p>
+                <p>
+                    <strong>Your feedback matters</strong><br>
+                    Your feedback will help us evaluate the quality, usefulness, speed, and usability of the new AI-assisted deposit features and identify areas for improvement before further development and rollout.
+                </p>
+                <strong>Thank you for helping us improve Zenodo !</strong><br><br>
+                {%- if not already_joined %}
+                    <form action="{{ url_for('zenodo_orcha_waitlist.waitlist') }}" method="post">
+                        <button type="submit" class="ui primary button">
+                            Join the waitlist
+                        </button>
+                    </form>
+                {%- endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{%- endblock page_body %}

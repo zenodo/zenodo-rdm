@@ -1,0 +1,30 @@
+{#
+  SPDX-FileCopyrightText: 2022 CERN.
+  SPDX-FileCopyrightText: 2025 Graz University of Technology.
+  SPDX-License-Identifier: MIT
+#}
+
+{% extends "invenio_communities/details/base.html" %}
+
+{%- set title = community_ui["metadata"]["title"] + _(" requests") -%}
+{% set active_community_header_menu_item = 'requests' %}
+
+{%- block javascript %}
+{{ super() }}
+{{ webpack['invenio-communities-requests.js'] }}
+{%- endblock javascript %}
+
+
+{%- block page_body %}
+{{ super() }}
+  {%- block requests_body %}
+  {% from "zenodo_rdm/macros/orcha_waitlist_banner.html" import orcha_waitlist_banner with context%}
+  {{ orcha_waitlist_banner() }}
+  <div
+    id="communities-request-search-root"
+    class="rel-m-2"
+    data-community='{{ community_ui | tojson }}'
+    data-invenio-search-config='{{ search_app_communities_requests_config(app_id="InvenioCommunities.RequestSearch", endpoint=community_ui["links"]["requests"]) | tojson }}'>
+  </div>
+  {%- endblock requests_body %}
+{%- endblock page_body %}
