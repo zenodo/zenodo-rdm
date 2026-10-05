@@ -53,7 +53,7 @@ class AuthorSchema(Schema):
         elif family_name and given_name:
             name = f"{family_name}, {given_name}"
         else:
-            name = family_name or given_name
+            name = family_name or given_name or original.get("alias")
         in_data["name"] = name
         return in_data
 
