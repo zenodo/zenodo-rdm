@@ -14,10 +14,9 @@ class QuotaIncreasePolicy(BasePolicy):
     description = _("You can increase the quota of your drafts.")
 
     def is_allowed(self, identity, record=None):
-        """Only owners can increase the quota."""
-        # disabled to allow any user, kept to be quickly re-enabled if needed
-        # if not identity.user.verified_at:
-        #     return False
+        """Only verified owners can increase the quota."""
+        if not getattr(getattr(identity, "user", None), "verified_at", None):
+            return False
 
         if record:
             is_record_owner = (
