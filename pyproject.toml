@@ -7,7 +7,7 @@ authors = [
 license = "GPL-3.0-or-later"
 requires-python = "~=3.14.0"
 dependencies = [
-    "invenio-app-rdm[opensearch2,profiler]==15.0.0b4.dev0",
+    "invenio-app-rdm[opensearch2,profiler]==15.0.0b5.dev0",
     "zenodo-legacy",
     "zenodo-rdm",
     "github3.py>=3.0.0",
@@ -51,7 +51,7 @@ sentry = [
     "invenio-logging[sentry]",
 ]
 xrootd = [
-    "invenio-xrootd==3.0.0",
+    "invenio-xrootd>=3.0.0,<4.0.0",
     "requests-kerberos==0.14.0",
     "xrootd==5.9.6",
 ]
