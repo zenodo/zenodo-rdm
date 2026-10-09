@@ -138,7 +138,15 @@ SUPPORT_ISSUE_CATEGORIES = [
     {
         "key": "ownership-transfer",
         "title": "Transfer ownership",
-        "description": "",
+        "description": (
+            '<div class="ui warning visible message">'
+            '<div class="header">Transferring ownership</div>'
+            "<ul>"
+            '<li><strong>Transfer ownership of community:</strong> Follow the <a href="https://help.zenodo.org/docs/communities/manage-members/transfer-ownership/">steps here</a> to transfer community ownership.</li>'
+            '<li><strong>Transfer ownership of record:</strong> Consider sharing access with <a href="https://help.zenodo.org/docs/share/user-sharing/">another user</a>, or via <a href="https://help.zenodo.org/docs/share/link-sharing/">link sharing</a>.</li>'
+            "</ul>"
+            "</div>"
+        ),
     },
     {
         "key": "access-blocked-403",
