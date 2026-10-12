@@ -9,6 +9,12 @@ and ``/api/files/<bucket_id>/<key>`` (Files-REST API).
 from io import BytesIO
 from uuid import uuid4
 
+from invenio_db import db
+from invenio_files_rest.models import Bucket, FileInstance
+from invenio_files_rest.storage.pyfs import PyFSFileStorage
+
+from zenodo_rdm.legacy import upload
+
 DEPOSIT_DATA = {
     "metadata": {
         "upload_type": "dataset",
@@ -154,3 +160,195 @@ def test_files_rest_bad_bucket_id(client, files_rest_url):
         assert res.status_code == 404, res.text
         res = client.get(f"{files_rest_url}/{bucket_id}/data.xlsx")
         assert res.status_code == 404, res.text
+
+
+def _api_app(app):
+    """The REST API app, which the UI app mounts under ``/api``."""
+    return app.wsgi_app.mounts["/api"]
+
+
+def _detached_file_instances():
+    return FileInstance.query.filter(
+        FileInstance.readable.is_(False), ~FileInstance.objects.any()
+    ).count()
+
+
+def _list_keys(client, bucket_url, headers):
+    res = client.get(bucket_url, headers=headers)
+    assert res.status_code == 200, res.text
+    return [f["key"] for f in res.json["contents"]]
+
+
+def test_files_rest_failed_transfer_leaves_no_file(
+    client, deposit_url, headers, files_headers, uploader
+):
+    """A dropped connection while streaming removes the initialized file."""
+    client = uploader.api_login(client)
+    res = client.post(deposit_url, json=DEPOSIT_DATA, headers=headers)
+    assert res.status_code == 201, res.json
+    bucket_url = res.json["links"]["bucket"]
+
+    res = client.put(
+        f"{bucket_url}/data.txt",
+        headers=files_headers,
+        data=BytesIO(b"1, 2, 3"),
+        # The body ends before the announced length, as on a dropped connection.
+        environ_overrides={"CONTENT_LENGTH": "100"},
+    )
+    assert res.status_code == 400, res.text
+    assert _list_keys(client, bucket_url, headers) == []
+    assert _detached_file_instances() == 0
+
+
+def test_files_rest_size_limit_leaves_no_file(
+    client, deposit_url, headers, files_headers, uploader
+):
+    """A file over the bucket limit is rejected before streaming, without leftovers."""
+    client = uploader.api_login(client)
+    res = client.post(deposit_url, json=DEPOSIT_DATA, headers=headers)
+    assert res.status_code == 201, res.json
+    bucket_url = res.json["links"]["bucket"]
+    bucket = Bucket.get(bucket_url.rsplit("/", 1)[-1])
+    bucket.max_file_size = 3
+    db.session.commit()
+
+    res = client.put(
+        f"{bucket_url}/data.txt", headers=files_headers, data=BytesIO(b"1, 2, 3")
+    )
+    assert res.status_code == 400, res.text
+    assert _list_keys(client, bucket_url, headers) == []
+    assert _detached_file_instances() == 0
+
+
+def test_files_rest_failed_commit_leaves_no_file(
+    client, deposit_url, headers, files_headers, uploader, monkeypatch
+):
+    """A file rejected at commit time is deleted again."""
+    monkeypatch.setitem(
+        _api_app(client.application).config,
+        "RECORDS_RESOURCES_ALLOW_EMPTY_FILES",
+        False,
+    )
+    client = uploader.api_login(client)
+    res = client.post(deposit_url, json=DEPOSIT_DATA, headers=headers)
+    assert res.status_code == 201, res.json
+    bucket_url = res.json["links"]["bucket"]
+
+    res = client.put(f"{bucket_url}/empty.txt", headers=files_headers, data=b"")
+    assert res.status_code == 400, res.text
+    assert _list_keys(client, bucket_url, headers) == []
+    assert _detached_file_instances() == 0
+
+    # The key is free again for a proper upload.
+    res = client.put(
+        f"{bucket_url}/empty.txt", headers=files_headers, data=BytesIO(b"abc")
+    )
+    assert res.status_code == 201, res.json
+    assert _list_keys(client, bucket_url, headers) == ["empty.txt"]
+
+
+def test_files_rest_failed_replace_keeps_old_file(
+    client, deposit_url, headers, files_headers, uploader
+):
+    """A replacement that fails mid-transfer leaves the old file in place."""
+    client = uploader.api_login(client)
+    res = client.post(deposit_url, json=DEPOSIT_DATA, headers=headers)
+    assert res.status_code == 201, res.json
+    bucket_url = res.json["links"]["bucket"]
+    res = client.put(
+        f"{bucket_url}/data.txt", headers=files_headers, data=BytesIO(b"1, 2, 3")
+    )
+    assert res.status_code == 201, res.json
+
+    res = client.put(
+        f"{bucket_url}/data.txt",
+        headers=files_headers,
+        data=BytesIO(b"4, 5"),
+        environ_overrides={"CONTENT_LENGTH": "100"},
+    )
+    assert res.status_code == 400, res.text
+    res = client.get(f"{bucket_url}/data.txt")
+    assert res.data == b"1, 2, 3"
+    assert _detached_file_instances() == 0
+
+
+def test_killed_upload_keeps_old_file(
+    client, deposit_url, headers, files_headers, uploader, monkeypatch
+):
+    """A request that dies mid-transfer leaves the record untouched."""
+    client = uploader.api_login(client)
+    res = client.post(deposit_url, json=DEPOSIT_DATA, headers=headers)
+    assert res.status_code == 201, res.json
+    bucket_url = res.json["links"]["bucket"]
+    res = client.put(
+        f"{bucket_url}/data.txt", headers=files_headers, data=BytesIO(b"1, 2, 3")
+    )
+    assert res.status_code == 201, res.json
+
+    # A killed worker runs no cleanup.
+    monkeypatch.setattr(upload, "_discard_file", lambda *args: None)
+    res = client.put(
+        f"{bucket_url}/data.txt",
+        headers=files_headers,
+        data=BytesIO(b"4, 5"),
+        environ_overrides={"CONTENT_LENGTH": "100"},
+    )
+    assert res.status_code == 400, res.text
+    res = client.get(f"{bucket_url}/data.txt")
+    assert res.data == b"1, 2, 3"
+    assert _detached_file_instances() == 1
+
+
+def test_failed_discard_is_retried_by_task(
+    client, deposit_url, headers, files_headers, uploader, monkeypatch
+):
+    """If the inline cleanup fails, the cleanup task removes the file instance."""
+
+    def fail(*args):
+        raise OSError("storage unavailable")
+
+    monkeypatch.setattr(upload, "discard_failed_upload", fail)
+    client = uploader.api_login(client)
+    res = client.post(deposit_url, json=DEPOSIT_DATA, headers=headers)
+    assert res.status_code == 201, res.json
+    bucket_url = res.json["links"]["bucket"]
+
+    res = client.put(
+        f"{bucket_url}/data.txt",
+        headers=files_headers,
+        data=BytesIO(b"1, 2, 3"),
+        environ_overrides={"CONTENT_LENGTH": "100"},
+    )
+    assert res.status_code == 400, res.text
+    assert _detached_file_instances() == 0
+
+
+def test_uploads_hold_no_transaction_while_streaming(
+    client, deposit_url, headers, files_headers, uploader, monkeypatch
+):
+    """Bytes are written to storage outside of any DB transaction."""
+    in_transaction = []
+    save = PyFSFileStorage.save
+
+    def spy(self, *args, **kwargs):
+        in_transaction.append(db.session().in_transaction())
+        return save(self, *args, **kwargs)
+
+    monkeypatch.setattr(PyFSFileStorage, "save", spy)
+    client = uploader.api_login(client)
+    res = client.post(deposit_url, json=DEPOSIT_DATA, headers=headers)
+    assert res.status_code == 201, res.json
+    links = res.json["links"]
+
+    res = client.put(
+        f"{links['bucket']}/put.txt", headers=files_headers, data=BytesIO(b"abc")
+    )
+    assert res.status_code == 201, res.json
+    res = client.post(
+        links["files"],
+        data={"name": "post.txt", "file": (BytesIO(b"abc"), "post.txt")},
+        content_type="multipart/form-data",
+    )
+    assert res.status_code == 201, res.json
+
+    assert in_transaction == [False, False]

@@ -29,10 +29,6 @@ from invenio_records_resources.resources.files.resource import (
     set_max_content_length,
 )
 from invenio_records_resources.resources.records.headers import etag_headers
-from invenio_records_resources.services.errors import (
-    FailedFileUploadException,
-    FileKeyNotFoundError,
-)
 from invenio_records_resources.services.uow import UnitOfWork
 from sqlalchemy.orm.exc import NoResultFound
 from werkzeug.utils import secure_filename
@@ -43,6 +39,7 @@ from .serializers import (
     LegacyFilesRESTJSONSerializer,
     LegacyJSONSerializer,
 )
+from .upload import upload_file
 
 
 class LegacyRecordResourceConfig(RDMRecordResourceConfig):
@@ -186,22 +183,7 @@ class LegacyDraftFilesResource(FileResource):
             resource_requestctx.data["request_data"].get("name", file.filename)
         )
 
-        with UnitOfWork() as uow:
-            self.service.init_files(g.identity, pid_value, [{"key": key}], uow=uow)
-            set_content_result = self.service.set_file_content(
-                g.identity, pid_value, key, file, uow=uow
-            )
-            if set_content_result.to_dict().get("errors"):
-                raise FailedFileUploadException(
-                    recid=pid_value,
-                    file=set_content_result.to_dict(),
-                    file_key=key,
-                )
-            commit_file_result = self.service.commit_file(
-                g.identity, pid_value, key, uow=uow
-            )
-            uow.commit()
-
+        commit_file_result = upload_file(self.service, g.identity, pid_value, key, file)
         return commit_file_result.to_dict(), 201
 
     @request_draft_files_view_args
@@ -243,38 +225,15 @@ def _create_or_update_file(
     identity=None,
 ):
     """Create or update a draft/record file."""
-    identity = identity or g.identity
-    with UnitOfWork() as uow:
-        # If the file exists already, delete first
-        try:
-            read_file_result = files_service.read_file_metadata(
-                identity, pid_value, key
-            )
-            if read_file_result:
-                files_service.delete_file(identity, pid_value, key, uow=uow)
-        except FileKeyNotFoundError:
-            pass
-
-        files_service.init_files(identity, pid_value, [{"key": key}], uow=uow)
-        set_content_result = files_service.set_file_content(
-            identity,
-            pid_value,
-            key,
-            stream,
-            content_length=content_length,
-            uow=uow,
-        )
-        if set_content_result.to_dict().get("errors"):
-            raise FailedFileUploadException(
-                recid=pid_value,
-                file=set_content_result.to_dict(),
-                file_key=key,
-            )
-        commit_file_result = files_service.commit_file(
-            identity, pid_value, key, uow=uow
-        )
-        uow.commit()
-    return commit_file_result
+    return upload_file(
+        files_service,
+        identity or g.identity,
+        pid_value,
+        key,
+        stream,
+        content_length,
+        replace=True,
+    )
 
 
 class LegacyFilesRESTResourceConfig(RDMDraftFilesResourceConfig):
