@@ -3300,6 +3300,15 @@ wheels = [
 ]
 
 [[package]]
+name = "pkgconfig"
+version = "1.6.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/52/fd/0adde075cd3bfecd557bc7d757e00e231d34d8a6edb4c8d1642759254c21/pkgconfig-1.6.0.tar.gz", hash = "sha256:4a5a6631ce937fafac457104a40d558785a658bbdca5c49b6295bc3fd651907f", size = 5691, upload-time = "2026-03-06T11:26:01.194Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/75/6f/f7ec07fba48f07c555cc4099481df644fbbc12067879072c17ac229f6556/pkgconfig-1.6.0-py3-none-any.whl", hash = "sha256:98e71754855e9563838d952a160eb577edabb57782e49853edb5381927e6bea1", size = 7086, upload-time = "2026-03-06T11:26:07.688Z" },
+]
+
+[[package]]
 name = "platformdirs"
 version = "4.12.4"
 source = { registry = "https://pypi.org/simple" }
@@ -3787,6 +3796,7 @@ version = "2.2.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cffi" },
+    { name = "pkgconfig" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/7b/88/f73dae807ec68b228fba72507105e3ba80a561dc0bade0004ce24fd118fc/pyvips-2.2.3.tar.gz", hash = "sha256:43bceced0db492654c93008246a58a508e0373ae1621116b87b322f2ac72212f", size = 56626, upload-time = "2024-04-28T11:19:58.158Z" }
 
@@ -4783,14 +4793,14 @@ wheels = [
 
 [[package]]
 name = "xrootdpyfs"
-version = "3.0.1"
+version = "3.1.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "xrootd" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/d7/c5/4c95c94904be4d40285581681ea466d29aaa6810a75b0b7fa527967e8f42/xrootdpyfs-3.0.1.tar.gz", hash = "sha256:5979eff01192c747a6a05bbf74def08679e173c3cf9223c68187294aefe4f4b3", size = 26789, upload-time = "2026-10-09T08:47:47.896Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/07/34/9cf06f4fdf4f0970150879f23d0262627fc00ead9dfbd68b13a8248005f1/xrootdpyfs-3.1.0.tar.gz", hash = "sha256:c2b40aad6875b7eb866db4eb053ff6f7f799193224bae606fee6b8af24a864af", size = 26799, upload-time = "2026-10-12T13:24:04.239Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/3a/51/bd0c6481357c3e9724021cb81c5d2e9b9b9bddae057c0efbac16ae476705/xrootdpyfs-3.0.1-py3-none-any.whl", hash = "sha256:839c7db4fa202a18e89e23eda1148143522fd703e01c4833889a5646b231e2b9", size = 30236, upload-time = "2026-10-09T08:47:47.022Z" },
+    { url = "https://files.pythonhosted.org/packages/0c/46/036466b7180f7675c5e2ffa26dae8a61004225dbd798650216edd6a754e7/xrootdpyfs-3.1.0-py3-none-any.whl", hash = "sha256:d3c2893d1efb5b816aa20875b00d316609a4b248201b0bddf225ba1fc5847b5c", size = 30248, upload-time = "2026-10-12T13:24:03.289Z" },
 ]
 
 [[package]]
@@ -4817,7 +4827,7 @@ source = { editable = "site" }
 
 [[package]]
 name = "zenodo-rdm-app"
-version = "26.7.1"
+version = "26.7.2"
 source = { virtual = "." }
 dependencies = [
     { name = "github3-py" },
