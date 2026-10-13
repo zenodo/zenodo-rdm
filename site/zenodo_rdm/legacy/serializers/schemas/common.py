@@ -377,8 +377,12 @@ class MetadataSchema(Schema):
 
             geometry = feature.get("geometry", {})
             coordinates = geometry.get("coordinates")
-            if coordinates:
-                # In rmd coordinates have the format [long, lat]
+            if (
+                geometry.get("type") == "Point"
+                and coordinates
+                and len(coordinates) >= 2
+            ):
+                # Only points map to legacy lon/lat; RDM uses [lon, lat].
                 legacy_loc["lon"] = coordinates[0]
                 legacy_loc["lat"] = coordinates[1]
             legacy_locations.append(legacy_loc)

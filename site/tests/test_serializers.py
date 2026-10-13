@@ -1,6 +1,10 @@
 # SPDX-FileCopyrightText: 2026 CERN
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""Integration tests for serializers."""
+"""Tests for serializers."""
+
+import pytest
+
+from zenodo_rdm.legacy.serializers.schemas.zenodojson import MetadataSchema
 
 
 def test_datacite_serializer(app, publish_record, minimal_record, mocker):
@@ -53,3 +57,48 @@ def test_datacite_serializer(app, publish_record, minimal_record, mocker):
     assert first_related_identifier["relatedIdentifier"] == record_doi
     assert first_related_identifier["relationType"] == "HasVersion"
     assert first_related_identifier["relatedIdentifierType"] == "DOI"
+
+
+@pytest.mark.parametrize(
+    "geometry, expected_coordinates",
+    [
+        ({"type": "Point", "coordinates": [8.55, 47.37]}, {"lon": 8.55, "lat": 47.37}),
+        ({"type": "Point", "coordinates": [0, 0]}, {"lon": 0, "lat": 0}),
+        (
+            {"type": "Point", "coordinates": [8.55, 47.37, 400]},
+            {"lon": 8.55, "lat": 47.37},
+        ),
+        ({"type": "Point", "coordinates": [8.55]}, {}),
+        ({"type": "Point", "coordinates": []}, {}),
+        ({}, {}),
+        (
+            {
+                "type": "Polygon",
+                "coordinates": [[[8, 47], [9, 47], [9, 48], [8, 47]]],
+            },
+            {},
+        ),
+        ({"type": "MultiPoint", "coordinates": [[8, 47], [9, 48]]}, {}),
+    ],
+)
+def test_legacy_locations_preserve_text_and_only_export_point_coordinates(
+    app, geometry, expected_coordinates
+):
+    """Legacy locations retain text without misrepresenting non-point geometry."""
+    metadata = {
+        "locations": {
+            "features": [
+                {
+                    "place": "Zurich",
+                    "description": "Study area",
+                    "geometry": geometry,
+                }
+            ]
+        }
+    }
+    with app.app_context():
+        result = MetadataSchema(only=("locations",)).dump(metadata)
+
+    assert result["locations"] == [
+        {"place": "Zurich", "description": "Study area", **expected_coordinates}
+    ]
