@@ -3,17 +3,16 @@
 """Zenodo-RDM release class."""
 
 import json
-from functools import cached_property
 
-import github3
+import yaml
 from flask import current_app
-from invenio_github.errors import CustomGitHubMetadataError
-from invenio_rdm_records.services.github.metadata import RDMReleaseMetadata
-from invenio_rdm_records.services.github.release import RDMGithubRelease
+from invenio_rdm_records.services.vcs.metadata import RDMReleaseMetadata
+from invenio_rdm_records.services.vcs.release import RDMVCSRelease
+from invenio_vcs.errors import CustomVCSReleaseNoRetryError
 from zenodo_legacy.licenses import legacy_to_rdm
 
-from zenodo_rdm.github.schemas import CitationMetadataSchema
 from zenodo_rdm.legacy.deserializers.schemas import LegacySchema
+from zenodo_rdm.vcs.schemas import CitationMetadataSchema
 
 
 class ZenodoReleaseMetadata(RDMReleaseMetadata):
@@ -33,23 +32,31 @@ class ZenodoReleaseMetadata(RDMReleaseMetadata):
                 if not content:
                     # File does not exists
                     return {}
-                file_data = json.loads(content.decoded.decode("utf-8"))
-            if not file_data.get("license") and self.repo_license:
-                file_data.update({"license": self.repo_license})
+                file_data = json.loads(content.decode("utf-8"))
+            repo_license = self.rdm_release.generic_repo.license_spdx
+            if not file_data.get("license") and repo_license:
+                file_data.update({"license": repo_license})
             legacy_data = {"metadata": file_data}
             rdm_data = LegacySchema().load(legacy_data)
             return rdm_data["metadata"]
         except Exception as exc:
-            current_app.logger.exception(str(exc))
-            raise CustomGitHubMetadataError(
-                file=zenodo_json_file_name, message="Extra metadata load failed."
+            current_app.logger.exception(
+                "Extra metadata load failed for file %s: %s",
+                zenodo_json_file_name,
+                exc,
             )
+            raise CustomVCSReleaseNoRetryError(
+                message="Extra metadata load failed."
+            ) from exc
 
     def load_citation_file(self, citation_file_name):
         """Return the citation file data, or None if it should be skipped."""
         if self.rdm_release.skip_citation_cff:
             return None
-        return super().load_citation_file(citation_file_name)
+        if not citation_file_name:
+            return {}
+        content = self.rdm_release.retrieve_remote_file(citation_file_name)
+        return yaml.safe_load(content.decode("utf-8")) if content is not None else None
 
     def load_citation_metadata(self, data):
         """Load citation metadata for Zenodo using legacy->RDM serialization.
@@ -61,24 +68,29 @@ class ZenodoReleaseMetadata(RDMReleaseMetadata):
             return {}
 
         citation_file_name = current_app.config.get(
-            "GITHUB_CITATION_FILE", "CITATION.cff"
+            "VCS_CITATION_FILE", "CITATION.cff"
         )
 
         try:
-            if not data.get("license") and self.repo_license:
-                data.update({"license": self.repo_license})
+            repo_license = self.rdm_release.generic_repo.license_spdx
+            if not data.get("license") and repo_license:
+                data.update({"license": repo_license})
             legacy_data = {"metadata": CitationMetadataSchema().load(data)}
             rdm_data = LegacySchema().load(legacy_data)
             return rdm_data["metadata"]
         except Exception as exc:
-            current_app.logger.exception(str(exc))
-            raise CustomGitHubMetadataError(
-                file=citation_file_name, message="Citation metadata load failed"
+            current_app.logger.exception(
+                "Citation metadata load failed for file %s: %s",
+                citation_file_name,
+                exc,
             )
+            raise CustomVCSReleaseNoRetryError(
+                message="Citation metadata load failed."
+            ) from exc
 
 
-class ZenodoGithubRelease(RDMGithubRelease):
-    """Zenodo Github release class.
+class ZenodoVCSRelease(RDMVCSRelease):
+    """Zenodo VCS release class.
 
     This class adds Zenodo specific metadata.
 
@@ -98,28 +110,18 @@ class ZenodoGithubRelease(RDMGithubRelease):
     #: Skip ``CITATION.cff`` entirely.
     skip_citation_cff = False
 
-    @cached_property
-    def _default_branch(self):
-        """Resolve the repository's default branch via the GitHub API."""
-        owner = self.repository_payload["owner"]["login"]
-        name = self.repository_payload["name"]
-        return self.gh.api.repository(owner, name).default_branch
-
     def retrieve_remote_file(self, file_name):
         """Retrieve a remote file, honoring ``metadata_from_head``."""
-        if not self.metadata_from_head:
-            return super().retrieve_remote_file(file_name)
-        owner = self.repository_payload["owner"]["login"]
-        name = self.repository_payload["name"]
-        try:
-            return self.gh.api.repository(owner, name).file_contents(
-                path=file_name, ref=self._default_branch
-            )
-        except github3.exceptions.NotFoundError:
-            return None
+        ref_name = (
+            self.generic_repo.default_branch
+            if self.metadata_from_head
+            else self.generic_release.tag_name
+        )
+        return self.provider.retrieve_remote_file(
+            self.generic_repo.id, ref_name, file_name
+        )
 
-    @property
-    def metadata(self):
+    def build_metadata(self):
         """Extracts metadata to create a ZenodoRDM draft."""
         metadata = self.metadata_cls(self)
         output = metadata.default_metadata
@@ -157,8 +159,8 @@ class ZenodoGithubRelease(RDMGithubRelease):
         # Add default license if not yet added
         if not output.get("rights"):
             default_license = "cc-by-4.0"
-            if metadata.repo_license:
-                default_license = metadata.repo_license.lower()
+            if self.generic_repo.license_spdx:
+                default_license = self.generic_repo.license_spdx.lower()
             rdm_license = legacy_to_rdm(default_license) or default_license
             output.update({"rights": [{"id": rdm_license}]})
         return output
