@@ -11,7 +11,6 @@ from invenio_access.permissions import system_identity
 from invenio_accounts.models import User
 from invenio_communities.communities.records.api import Community
 from invenio_db import db
-from invenio_github.models import Release, ReleaseStatus, Repository
 from invenio_pidstore.models import PersistentIdentifier
 from invenio_rdm_records.proxies import current_rdm_records_service
 from invenio_rdm_records.records.api import RDMDraft, RDMRecord
@@ -26,6 +25,7 @@ from invenio_rdm_records.records.models import (
 from invenio_requests.proxies import current_requests_service
 from invenio_requests.records.api import Request
 from invenio_requests.records.models import RequestMetadata
+from invenio_vcs.models import Release, ReleaseStatus, Repository
 
 from zenodo_rdm.api import ZenodoRDMRecord
 from zenodo_rdm.moderation.models import LinkDomain, LinkDomainStatus, ModerationQuery
@@ -439,27 +439,37 @@ def zenodo_dev():
     "-g",
     "--github-id",
     required=False,
-    help="The id you want the `Repository` object to have, this id will be used like: `https://127.0.0.1:5000/badge/{YOUR_ID}.svg`",
+    help="The id you want the `Repository` object to have, this id will be used like: `https://127.0.0.1:5000/badge/github/{YOUR_ID}.svg`",
 )
 @with_appcontext
 def add_gh_release_to_record(record_public_id, github_id):
     """Creates all the necessary objects in the db to be able to use a github badge.
 
-    Prints a valid url for a badge like: `https://127.0.0.1:5000/badge/{GITHUB_ID}.svg`.
+    Prints a valid url for a badge like: `https://127.0.0.1:5000/badge/github/{GITHUB_ID}.svg`.
     """
     if not github_id:
         github_id = randint(10000000 ,99999999)
 
     record = current_rdm_records_service.read(system_identity, record_public_id)._record
     repo = Repository.create(
-        user_id=User.query.first().id,
-        github_id=github_id,
-        name=f"zenodo/demo-repo-{github_id}",
+        enabled_by_user_id=User.query.first().id,
+        provider="github",
+        provider_id=str(github_id),
+        full_name=f"zenodo/demo-repo-{github_id}",
+        default_branch="main",
     )
+    repo.add_user(User.query.first().id)
     rel = Release(
-        tag="v1.0", repository=repo, record_id=record.id, status=ReleaseStatus.PUBLISHED
+        tag="v1.0",
+        provider="github",
+        repository=repo,
+        record_id=record.id,
+        record_is_draft=False,
+        status=ReleaseStatus.PUBLISHED,
     )
     db.session.add(rel)
     db.session.commit()
 
-    click.echo(f"Badge for the release -> https://127.0.0.1:5000/badge/{github_id}.svg")
+    click.echo(
+        f"Badge for the release -> https://127.0.0.1:5000/badge/github/{github_id}.svg"
+    )
