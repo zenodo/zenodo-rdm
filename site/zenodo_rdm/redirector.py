@@ -3,9 +3,13 @@
 """Redirector functions and rules."""
 
 from flask import abort, current_app, request, url_for
+from flask_login import current_user
 from invenio_app_rdm.redirector.resource import RedirectorConfig, RedirectorResource
 from invenio_records_resources.services.base.config import FromConfig
 from invenio_requests.proxies import current_requests_service
+from invenio_vcs.config import get_provider_by_id
+from invenio_vcs.models import Repository
+from invenio_vcs.proxies import current_vcs
 
 ZENODO_TYPE_SUBTYPE_LEGACY = {
     "publications": "publication",
@@ -284,6 +288,87 @@ def redirect_access_request():
         "invenio_app_rdm_requests.read_request",
         request_pid_value=str(request_model.id),
     )
+
+
+####### Legacy GitHub badge redirections #######################
+
+
+def redirect_github_badge_index():
+    """Implements redirector view function for legacy GitHub badge URLs.
+
+    /badge/<int:repo_github_id>.svg -> GET /badge/github/<repo_github_id>.svg
+
+    :return: url for the view 'invenio_vcs_badge.index'
+    :rtype: str
+    """
+    target = url_for(
+        "invenio_vcs_badge.index",
+        provider="github",
+        repo_provider_id=request.view_args["repo_github_id"],
+    )
+    return target
+
+
+def redirect_github_badge_index_legacy():
+    """Implements redirector view function for legacy GitHub badge URLs.
+
+    /badge/<int:user_id>/<path:repo_name>.svg -> GET /badge/github/<repo_provider_id>.svg
+
+    :return: url for the view 'invenio_vcs_badge.index'
+    :rtype: str
+    """
+    repo_name = request.view_args["repo_name"]
+    repo = Repository.query.filter_by(provider="github", name=repo_name).one_or_none()
+    if not repo:
+        abort(404)
+    target = url_for(
+        "invenio_vcs_badge.index", provider="github", repo_provider_id=repo.provider_id
+    )
+    return target
+
+
+def _github_latest_doi_redirect(repo):
+    """Resolve a repository's latest published release to its record URL, or 404."""
+    latest_release = repo.latest_release()
+    if not latest_release:
+        abort(404)
+    provider = get_provider_by_id("github").for_user(current_user.id)
+    release = current_vcs.release_api_class(latest_release, provider)
+    if not release.record_url:
+        abort(404)
+    return release.record_url
+
+
+def redirect_github_latest_doi():
+    """Implements redirector view function for legacy GitHub latest-DOI URLs.
+
+    /latestdoi/<int:github_id> -> GET <latest release record url>
+
+    :return: url for the release's record
+    :rtype: str
+    """
+    github_id = request.view_args["github_id"]
+    repo = Repository.query.filter_by(
+        provider="github", provider_id=str(github_id)
+    ).one_or_none()
+    if not repo:
+        abort(404)
+    return _github_latest_doi_redirect(repo)
+
+
+def redirect_github_latest_doi_legacy():
+    """Implements redirector view function for legacy GitHub latest-DOI URLs.
+
+    /latestdoi/<int:user_id>/<path:repo_name> -> GET <latest release record url>
+
+    :return: url for the release's record
+    :rtype: str
+    """
+    repo_name = request.view_args["repo_name"]
+    repo = Repository.query.filter_by(provider="github", name=repo_name).one_or_none()
+    if not repo:
+        abort(404)
+    return _github_latest_doi_redirect(repo)
 
 
 ####### Zenodo REST API redirections #######################
