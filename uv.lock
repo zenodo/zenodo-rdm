@@ -2015,7 +2015,7 @@ wheels = [
 
 [[package]]
 name = "invenio-previewer"
-version = "6.1.2"
+version = "6.2.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "charset-normalizer" },
@@ -2030,9 +2030,9 @@ dependencies = [
     { name = "nbconvert" },
     { name = "nbformat" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/f1/51/fb3c7174c0b71ded45c91e63808adc03e813c5bd4f1e8d8ab59b97a051b1/invenio_previewer-6.1.2.tar.gz", hash = "sha256:17f67aa17030f6675e336803f7796a2e0d68557007e0e91e6e3631dee4273b1f", size = 74998, upload-time = "2026-10-06T09:51:47.383Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/f2/cf/c4b405f400f4076f1f7b3ccdee5140ee721ddb5a91b0baf713bb4e88da3f/invenio_previewer-6.2.0.tar.gz", hash = "sha256:9f1bb281355bf57eecb08d1e8797f8402c1a6f8c2aa2a699457cc256dcba34bf", size = 75150, upload-time = "2026-10-15T13:13:38.248Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/79/bd/a0ef7d726c3fbf16289fb0ea173dbfb42f06dfd3c36160ecb2b1d76c42ff/invenio_previewer-6.1.2-py3-none-any.whl", hash = "sha256:b5d606e4093342b02cf5036c27ecb7c3436985187010de888655da13068bc745", size = 201782, upload-time = "2026-10-06T09:51:46.3Z" },
+    { url = "https://files.pythonhosted.org/packages/29/e4/8fc33a30f79ed3d6f2a1a2d56e3d8b662cdabbd1475b8313f750f118c241/invenio_previewer-6.2.0-py3-none-any.whl", hash = "sha256:807fce056c5fbc022fe1b4d4e10df184bff1013d12a4a1a9297a8c30c7448254", size = 201948, upload-time = "2026-10-15T13:13:36.968Z" },
 ]
 
 [[package]]
@@ -3310,11 +3310,11 @@ wheels = [
 
 [[package]]
 name = "pluggy"
-version = "1.6.0"
+version = "1.7.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/f9/e2/3e91f31a7d2b083fe6ef3fa267035b518369d9511ffab804f839851d2779/pluggy-1.6.0.tar.gz", hash = "sha256:7dcc130b76258d33b90f61b658791dede3486c3e6bfb003ee5c9bfb396dd22f3", size = 69412, upload-time = "2025-05-15T12:30:07.975Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/bf/db/7fc19e6f2dc92a966727031389fc2e08b558f0f25eb7403c1119ad4713cd/pluggy-1.7.0.tar.gz", hash = "sha256:d1eaa46ebb595891b860ab086b4d09c8588af65ebd4361b8e8f4bb8920b90ba8", size = 123304, upload-time = "2026-10-15T09:50:58.343Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/54/20/4d324d65cc6d9205fabedc306948156824eb9f0ee1633355a8f7ec5c66bf/pluggy-1.6.0-py3-none-any.whl", hash = "sha256:e920276dd6813095e9377c0bc5566d94c932c33b27a3e3945d8389c374dd4746", size = 20538, upload-time = "2025-05-15T12:30:06.134Z" },
+    { url = "https://files.pythonhosted.org/packages/40/9e/2b38731e0fc536806f16490e1a12d7f0dc2a1235aa8cc07bcc75416a7daa/pluggy-1.7.0-py3-none-any.whl", hash = "sha256:7dd7b0d8832ba3cb632c306926ded123429211b83641b35dc5c41ad2d34f9bec", size = 27082, upload-time = "2026-10-15T09:50:56.808Z" },
 ]
 
 [[package]]
