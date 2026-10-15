@@ -20,6 +20,10 @@ from .redirector import (
     redirect_deposit_new_view,
     redirect_deposit_own_view,
     redirect_formats_to_media_files_view,
+    redirect_github_badge_index,
+    redirect_github_badge_index_legacy,
+    redirect_github_latest_doi,
+    redirect_github_latest_doi_legacy,
     redirect_licenses,
     redirect_record_file_preview_view,
     redirect_record_thumbnail_view,
@@ -345,6 +349,26 @@ REDIRECTOR_RULES = {
         "source": "/account/settings/sharedlinks/accessrequest/<number>",
         "rule_options": {"strict_slashes": False},
         "target": redirect_access_request,
+    },
+    "redirect_github_badge_index": {
+        "source": "/badge/<int:repo_github_id>.svg",
+        "rule_options": {"strict_slashes": False},
+        "target": redirect_github_badge_index,
+    },
+    "redirect_github_badge_index_legacy": {
+        "source": "/badge/<int:user_id>/<path:repo_name>.svg",
+        "rule_options": {"strict_slashes": False},
+        "target": redirect_github_badge_index_legacy,
+    },
+    "redirect_github_latest_doi": {
+        "source": "/latestdoi/<int:github_id>",
+        "rule_options": {"strict_slashes": False},
+        "target": redirect_github_latest_doi,
+    },
+    "redirect_github_latest_doi_legacy": {
+        "source": "/latestdoi/<int:user_id>/<path:repo_name>",
+        "rule_options": {"strict_slashes": False},
+        "target": redirect_github_latest_doi_legacy,
     },
 }
 
