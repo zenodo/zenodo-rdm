@@ -1,0 +1,24 @@
+{#
+  SPDX-FileCopyrightText: 2025 CERN
+  SPDX-License-Identifier: GPL-3.0-or-later
+#}
+{% if has_draft %}
+<div class="ui warning message">
+    <div class="header"><i class="attention icon"></i> Editing in progress</div>
+    <p>You're viewing checks and feedback results for unpublished changes.</p>
+    {% if is_published %}
+    <p>The published version available to users may differ from what's shown here.</p>
+    {% endif %}
+</div>
+{% endif %}
+
+<div class="ui info message">
+    <div class="header">What is this about?</div>
+    <p>This check uses AI to compare the metadata you submitted against the content of the file
+        in the deposit. All submissions to the EU Open Research Repository (or one of the EU
+        project communities) are subject to the checks.</p>
+    <h5 class="ui header">How do I fix warnings/errors?</h5>
+    <p>Go to the "Record" tab and click the orange "Edit" button. Update the relevant fields if
+        you agree with the suggestions shown on this page.</p>
+    <a href="/communities/eu/pages/open-science" target="_blank"><strong>Learn more</strong></a>
+</div>
