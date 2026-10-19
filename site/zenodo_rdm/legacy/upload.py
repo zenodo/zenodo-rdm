@@ -28,7 +28,6 @@ from uuid import UUID
 from flask import current_app
 from invenio_db import db
 from invenio_files_rest.errors import FileSizeError, InvalidKeyError
-from invenio_files_rest.limiters import FileSizeLimit
 from invenio_files_rest.models import Bucket, FileInstance, ObjectVersion
 from invenio_files_rest.storage import FileStorage
 from invenio_records_resources.services.errors import FailedFileUploadException
@@ -48,7 +47,7 @@ class _PreparedFile:
     file_instance_id: UUID
     uri: str
     storage: FileStorage
-    size_limit: int | FileSizeLimit | None
+    size_limit: int | None
 
 
 def upload_file(
@@ -56,7 +55,9 @@ def upload_file(
 ):
     """Upload a file, attaching it to the record only once its bytes are stored."""
     # Short transaction: create the detached file instance.
-    prepared = _prepare_file(files_service, identity, pid_value, key, replace)
+    prepared = _prepare_file(
+        files_service, identity, pid_value, key, content_length, replace
+    )
 
     # No transaction: stream the bytes to storage.
     try:
@@ -82,7 +83,7 @@ def upload_file(
         raise
 
 
-def _prepare_file(files_service, identity, pid_value, key, replace):
+def _prepare_file(files_service, identity, pid_value, key, content_length, replace):
     """Create the file instance to stream into, without attaching it."""
     with UnitOfWork() as uow:
         record = files_service.record_cls.pid.resolve(pid_value, registered_only=False)
@@ -95,6 +96,18 @@ def _prepare_file(files_service, identity, pid_value, key, replace):
         if not replace and key in record.files:
             raise InvalidKeyError(description=f"File with key {key} already exists.")
         bucket = record.files.bucket
+        # A replaced file's space is freed on attach, so it counts as available.
+        replaced_size = 0
+        if replace and key in record.files:
+            obj = record.files[key].object_version
+            replaced_size = obj.file.size if obj and obj.file else 0
+        space_left = None
+        if bucket.quota_size:
+            space_left = bucket.quota_size - bucket.size + replaced_size
+        limits = [x for x in (space_left, bucket.max_file_size) if x is not None]
+        size_limit = min(limits, default=None)
+        if content_length and size_limit is not None and content_length > size_limit:
+            raise FileSizeError(description="File size limit exceeded.")
         file_instance = FileInstance.create()
         storage = file_instance.storage(
             default_location=bucket.location.uri,
@@ -106,7 +119,7 @@ def _prepare_file(files_service, identity, pid_value, key, replace):
             file_instance_id=file_instance.id,
             uri=uri,
             storage=storage,
-            size_limit=bucket.size_limit,
+            size_limit=size_limit,
         )
         uow.commit()
     return prepared
