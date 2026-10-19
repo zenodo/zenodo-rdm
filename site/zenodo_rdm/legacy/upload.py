@@ -95,12 +95,14 @@ def _prepare_file(files_service, identity, pid_value, key, content_length, repla
         )
         if not replace and key in record.files:
             raise InvalidKeyError(description=f"File with key {key} already exists.")
-        bucket = record.files.bucket
+
         # A replaced file's space is freed on attach, so it counts as available.
         replaced_size = 0
         if replace and key in record.files:
             obj = record.files[key].object_version
             replaced_size = obj.file.size if obj and obj.file else 0
+
+        bucket = record.files.bucket
         space_left = None
         if bucket.quota_size:
             space_left = bucket.quota_size - bucket.size + replaced_size
@@ -108,12 +110,13 @@ def _prepare_file(files_service, identity, pid_value, key, content_length, repla
         size_limit = min(limits, default=None)
         if content_length and size_limit is not None and content_length > size_limit:
             raise FileSizeError(description="File size limit exceeded.")
+
         file_instance = FileInstance.create()
         storage = file_instance.storage(
             default_location=bucket.location.uri,
             default_storage_class=bucket.default_storage_class,
         )
-        uri, _, _ = storage.initialize()
+        uri = storage.fileurl
         file_instance.set_uri(uri, 0, None, readable=False, writable=True)
         prepared = _PreparedFile(
             file_instance_id=file_instance.id,
@@ -132,6 +135,7 @@ def _attach_file(
     with UnitOfWork() as uow:
         record_cls = files_service.record_cls
         record = record_cls.pid.resolve(pid_value, registered_only=False)
+
         # Bucket first, in the same order as the upstream staged upload.
         db.session.query(Bucket).filter_by(
             id=record.files.bucket_id
@@ -140,6 +144,7 @@ def _attach_file(
             id=record.id
         ).populate_existing().with_for_update().one()
         record = record_cls.pid.resolve(pid_value, registered_only=False)
+
         if replace and key in record.files:
             files_service.delete_file(identity, pid_value, key, uow=uow)
         files_service.init_files(identity, pid_value, [{"key": key}], uow=uow)
@@ -148,9 +153,11 @@ def _attach_file(
             identity, "set_content_files", record=record, file_key=key
         )
 
+        # Checked again, now that the bucket is locked and the old file deleted.
         bucket = record.files.bucket
         if bucket.size_limit and size > bucket.size_limit:
             raise FileSizeError(description="File size limit exceeded.")
+
         file_instance = db.session.get(FileInstance, prepared.file_instance_id)
         file_instance.set_uri(prepared.uri, size, checksum)
         obj = record.files[key].object_version

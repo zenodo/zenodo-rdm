@@ -6,6 +6,7 @@ Covers ``/api/deposit/depositions/<id>/files`` (old-style deposit files API)
 and ``/api/files/<bucket_id>/<key>`` (Files-REST API).
 """
 
+import os
 from io import BytesIO
 from uuid import uuid4
 
@@ -416,3 +417,28 @@ def test_uploads_hold_no_transaction_while_streaming(
     assert res.status_code == 201, res.json
 
     assert in_transaction == [False, False]
+
+
+def test_prepare_leaves_nothing_on_storage(
+    client, deposit_url, headers, files_headers, uploader, monkeypatch
+):
+    """The file is only created on storage by the transfer, after prepare commits."""
+    on_storage = []
+    save = PyFSFileStorage.save
+
+    def spy(self, *args, **kwargs):
+        on_storage.append(os.path.exists(self.fileurl))
+        return save(self, *args, **kwargs)
+
+    monkeypatch.setattr(PyFSFileStorage, "save", spy)
+    client = uploader.api_login(client)
+    res = client.post(deposit_url, json=DEPOSIT_DATA, headers=headers)
+    assert res.status_code == 201, res.json
+
+    res = client.put(
+        f"{res.json['links']['bucket']}/data.txt",
+        headers=files_headers,
+        data=BytesIO(b"abc"),
+    )
+    assert res.status_code == 201, res.json
+    assert on_storage == [False]
