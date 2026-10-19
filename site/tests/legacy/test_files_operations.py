@@ -212,10 +212,15 @@ def test_files_rest_size_limit_leaves_no_file(
     bucket.max_file_size = 3
     db.session.commit()
 
+    data = BytesIO(b"1, 2, 3")
     res = client.put(
-        f"{bucket_url}/data.txt", headers=files_headers, data=BytesIO(b"1, 2, 3")
+        f"{bucket_url}/data.txt",
+        headers=files_headers,
+        input_stream=data,
+        content_length=7,
     )
     assert res.status_code == 400, res.text
+    assert data.tell() == 0
     assert _list_keys(client, bucket_url, headers) == []
     assert _detached_file_instances() == 0
 
@@ -270,6 +275,65 @@ def test_files_rest_failed_replace_keeps_old_file(
     res = client.get(f"{bucket_url}/data.txt")
     assert res.data == b"1, 2, 3"
     assert _detached_file_instances() == 0
+
+
+def test_files_rest_replace_near_quota(
+    client, deposit_url, headers, files_headers, uploader
+):
+    """The replaced file's size doesn't count against the bucket quota."""
+    client = uploader.api_login(client)
+    res = client.post(deposit_url, json=DEPOSIT_DATA, headers=headers)
+    assert res.status_code == 201, res.json
+    bucket_url = res.json["links"]["bucket"]
+    bucket = Bucket.get(bucket_url.rsplit("/", 1)[-1])
+    bucket.quota_size = 10
+    db.session.commit()
+    res = client.put(
+        f"{bucket_url}/data.txt", headers=files_headers, data=BytesIO(b"1, 2, 3")
+    )
+    assert res.status_code == 201, res.json
+
+    res = client.put(
+        f"{bucket_url}/data.txt", headers=files_headers, data=BytesIO(b"4, 5, 6")
+    )
+    assert res.status_code == 201, res.json
+    res = client.get(f"{bucket_url}/data.txt")
+    assert res.data == b"4, 5, 6"
+    assert Bucket.get(bucket.id).size == 7
+
+    res = client.put(
+        f"{bucket_url}/data.txt", headers=files_headers, data=BytesIO(b"7, 8, 9!!")
+    )
+    assert res.status_code == 201, res.json
+    res = client.get(f"{bucket_url}/data.txt")
+    assert res.data == b"7, 8, 9!!"
+    assert Bucket.get(bucket.id).size == 9
+
+    # Over the quota even with the old file's space, so rejected before streaming.
+    data = BytesIO(b"1, 2, 3, 45")
+    res = client.put(
+        f"{bucket_url}/data.txt",
+        headers=files_headers,
+        input_stream=data,
+        content_length=11,
+    )
+    assert res.status_code == 400, res.text
+    assert data.tell() == 0
+    res = client.get(f"{bucket_url}/data.txt")
+    assert res.data == b"7, 8, 9!!"
+    assert Bucket.get(bucket.id).size == 9
+    assert _detached_file_instances() == 0
+
+    # Deleting the file frees its space for a new one.
+    res = client.delete(f"{bucket_url}/data.txt", headers=headers)
+    assert res.status_code == 204, res.text
+    assert Bucket.get(bucket.id).size == 0
+    res = client.put(
+        f"{bucket_url}/other.txt", headers=files_headers, data=BytesIO(b"1234567890")
+    )
+    assert res.status_code == 201, res.json
+    assert _list_keys(client, bucket_url, headers) == ["other.txt"]
+    assert Bucket.get(bucket.id).size == 10
 
 
 def test_killed_upload_keeps_old_file(
