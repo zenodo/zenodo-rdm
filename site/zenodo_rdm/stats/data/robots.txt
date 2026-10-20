@@ -1,0 +1,425 @@
+# Zenodo instance-specific robots not covered by counter-robots. Matched case-insensitively.
+0000-0ff1-ce00-000000000000
+AICCorpusBot
+AMBRO Corpus
+AURA-Research-Scanner
+AWCrawler
+Academic PDF discovery script
+Academic-Research-Study
+AcademicBot
+AcademicCorpusPipeline
+AcademicHarvester
+AcademicRetrievalSystem
+AcademicRhetoricalStyleStudy
+AdaptaBot
+AfterQuery
+Apodex-Data-Crawler
+AppleNewsBot
+AppleWebKit 537\.36
+AppleWebit\/
+Argiloteca
+AutonomousResearchLinkCheck
+BacklinksBot
+BacklinksExtendedBot
+BaiduSpider
+BatteryDataCommonsBot
+Biblionix-Pro
+BlackHorizonLab
+Bonfire ActivityPub
+Bridgy
+BuildAtlasNewsBot
+CCDR-TierB-PublicTests
+CCF-Architecture-Paper-Downloader
+CDT-Retriever
+CMS-Checker
+CUCH\.org Archive Bot
+Camoufox
+Cardyb
+CarringtonApp
+Catodon\/
+CenturyResearch
+Chrome/0\.A\.B\.C
+CitationDataPipeline
+Claw-Talent-Bot
+CloudRaider
+Cloudinary
+Codex ADHD OA collector
+Codex literature transcription
+Codex second-pass link extraction
+CodexPublicPdfResearch
+CopyvioDetector/
+CoreAutoPDFPretrainingBot
+CorpusT-TRACE-Scraper
+CossackCorpusBot
+CragCrawler
+CragIngestor
+CuvierBot
+CyntrBot
+DBC Link Checker
+DFT-paper-corpus
+DSM-Crawler
+DataCarrier
+DatasetAgent
+EPiServer Link Checker
+EarthAI
+EpilepsyScholarBeastAgent
+EventNotifications-Repro
+F-UJI
+FFZBot
+FWC-PaperDownloader
+FacebookExternalHit
+FidoraCollector
+FintechResearch
+Firefox\/[0-9.]+ Mobile Safari\/
+FishDatasetBuilder
+FobizzBot
+GCombinator
+GMSaimi
+GUT-TOE-v210-public-source-validation
+GeistHaus-PageFetcher
+GenQA-BashRead/
+GitHub-repo-finder
+GloogleCrawler
+Google-AMPHTML
+Google-Actions
+Google-Jetski-Antigravity
+Google-Lens
+Google-Sites-Thumbnails
+GoogleBot
+HKH-Research-Scraper
+HN-archiver
+HN-serendipity-research
+HTML Proofer/
+HackerNewsAggregator
+Headland-NRM-Backfill
+HeavyMetalIndex
+Hermes
+Hermes DOAJ helper
+HindsiteWorker
+HyveHeim-Research
+IDSHealthPrognosticsBot
+IS_OPU_UA_LinkValidator
+ImageMetaBot
+InfiniteInquiry
+InsuranceResearch
+IntermediaryBacklinkVerifier
+InvestmentCommunicationResearch
+JarvisSearch-Crawler
+KGDB-Scraper
+KGP-Legacy-Citation-Harvest
+KHTML,likeGecko
+KilnAI-Harvester
+Kimi-Agent
+LawPaperCollector
+LeonWebIntel
+LinkChecker
+LinkID-FreshnessChecker
+LinkPreview\/
+LinkRing
+MacroscopeTextCachePipeline
+MarkdownWorker
+Master-JARVIS
+MedCorpus-OA-Research
+MedData-OASweep
+MedDataCorpus
+MiniSearchCrawler/
+ModelContextProtocol
+Mozilla/5\.0 \(research\)
+Mozilla\/5\.0 \(mailto:None\)
+Mozilla\/5\.0 \(research use\)
+NMA Harvesting module
+Narratell-Corpus-Discovery
+NaturaGalleriaResearch
+News Explorer\/
+Nextcloud Server Crawler
+Nextcloud-Server-Crawler
+NexusMind
+NobleBlocks
+NuclearVLMResearch
+NuggetsBot
+OR-CO-paper-collector
+OWLer
+OhDear\.app
+OpenAI Zenodo seed dataset provenance backfill
+OpenAccessPdfCollector
+OpenAlex-RAG-Crawler
+OpenArx Research Indexer
+OpenNutriCompositionCrawler
+OpenSourceBooks-Bot
+OpenSourceCorpusScraper
+PDFBot
+PEARL-Platform
+PM-Audit
+Palo Alto Networks
+Paper2Bench
+PaperReprobe
+PdfFetcher
+PerovskitePipeline
+PetrionResearch
+PhoenixBot
+PithIntegrityBot
+PlagiarismDetector
+PlantClassificationBot
+Pleroma
+PortOfRotterdam-ResearchAgent
+PostGooBot
+PostPrint
+PremiumChecker
+PresentationCrawler
+ProposalFoundry
+PublicationFetcher
+PyAlex-Summarizer
+QibooImageBot
+RAG-Everything
+RELIT-OA-DOI-Recovery
+RGUARD Web
+RGuard\/Chromium
+RSRC Enricher
+RedditApp\/
+ReproCheck
+Research Bot
+Research PDF Downloader
+ResearchCouncil
+SINTA-public-academic-export
+SLMHighYieldMiner
+ScanSci PDF
+ScholarOkinaBot
+ScholarlyPDFRetriever
+SciEnvi Knowledge Bot
+SciLink-Verify-Research
+SciPapersMetadataBot
+SentinelWealthEducationLibrary
+Seraphim-Harvester
+SerpMinerBot
+Shap-User
+Sharkey\/
+ShixueZhouxun
+ShortLinkTranslate
+SiftBot
+SkillsRep-Scanner
+SkytabBot
+SmartBotCrawler
+SokoCrawler
+SoothBot
+SpaceCowboys Android RSS Reader
+SpectraCorpusFetcher
+Stage3BrowserValidation
+SuperGraphify
+TH_Koeln_Institution_Search_Bot
+TaskMemoryBot
+TeraWatch
+Terra ?Cotta
+TextLM-Crawler
+ThinkBot
+TradeResearchDigest
+UdV-AI-Research
+Unite-ResolveUrl
+UrbanSpatialIntelligenceSurvey
+UrlDownloadabilityBot
+UseAI\/
+VerifyCollectionBot
+Vertix oa-fetch
+WP-URLDetails
+WaisearchBot
+WaterlightResearch
+WeatherEducation
+WebCrawler\/
+WebFetchTool
+WebFiddle
+WebexTeams
+WooEnterpriseBot
+XWikiLinkChecker
+ZDRAV-grab-pdfs
+ZaatiAI
+Zoom [0-9]+\.[0-9]+\.[0-9]+
+[Pp]aper2[Bb]ench-resource-verifier
+\(academic research\)
+^AI4Mater\/
+^AI\-Marketing\-Research\-Radar
+^AML-Research-Downloader\/
+^Akkoma 
+^Alexandria\/
+^AlloyFetcher/
+^Amethyst\/
+^Anthill
+^AstroHelix
+^AzureStorage
+^BionoteInsight
+^ChartSmashAiModel
+^Claw-Enrichment-Engine
+^CloudflareBrowserRenderingCrawler
+^Codex literature review/
+^CognitoLitReview
+^Cyrate
+^DeepSeek Chat\/
+^DouyinRecommendationDatasetDownloader/
+^EGLinker WEB
+^ESGResearch
+^FBE-Research-Radar\/
+^Focusopia
+^GDPval-research
+^GUT-TOE-
+^GeoHazardPaperBot
+^Ghost\(
+^Google$
+^GoogleAgent-URLContext
+^GrafPinCorpusBot
+^Hypothesis\/
+^IQEdge-Books-Scraper/
+^IRReportingResearch
+^Jalios JCMS
+^KGDB\-PDFCollector
+^KGRR\-WorldMap
+^Learnmore/
+^LessWrong-LinkPreviewBot/
+^LitReviewAgent
+^Local-Deep-Research/
+^Malware\.HiperLinks\.com\.br
+^Medusa-PRD-source-complete-bridge-acquisition/
+^MicroalgaeLLM-DataPipeline/
+^Misskey\/
+^Mozilla\/5\.0 Google$
+^Mozilla\/6\.0 
+^OSINT-Collector
+^PARJ\/
+^PC-Research 
+^PEH-DocSite
+^Paper2Bench-resource-verifier\/
+^Photon\/
+^PromptingBot/
+^RSSPoller\/
+^ReadYou\/
+^Replicrack
+^ResearchTracker\/
+^Reviews-corpus
+^SCU-research-data
+^SMEET-dataset-discovery
+^SPEX-LLM-Wiki
+^Saga\-Sami\-Corpus
+^SciSearcher
+^Selfoss\/
+^SurliBot
+^Swiftype
+^Syntelly-Crawler
+^TYPO3
+^TestSearchSpider
+^Thinkers\/
+^TreeGenes\-metadata
+^VetKB/
+^VietFlood/
+^Vizzit
+^Webex$
+^WordPress
+^[Cc]odex[- ]
+^academic-search-agent
+^agent-dyad-map
+^ai4reproducibility/
+^amazon-Q
+^amazon-Quick-on-behalf-of
+^amazon-kendra
+^amilabs-interleaved-research/
+^antara\-indexer
+^anthropie-audit\/
+^brain2-source-audit/
+^corpus\-research\-extractor
+^depaza-search/
+^econ-impact-eval/
+^endo-lab-fulltext/
+^gccit-datasources
+^glp1r_corpus
+^keg\-research
+^lipid\-agent
+^lit-monitor/
+^litwatch\/
+^lychee\/
+^maitham\-local\-research\-library
+^make-lab-map/
+^mistralai\-api
+^morpho/
+^mouseion/
+^mwmbl\/
+^naruq-stream-research/
+^openalex-non-pubmed-fulltext/
+^paper2bench-resource-verifier/
+^quant-papers-downloader/
+^research-agent/
+^research\-corpus
+^researcher-collector\/
+^sci-olmo-lit
+^scraper\/
+^shanshuoti
+^supply-chain-survey/
+^topic-subscriptions\/
+^yushi-podcast-catalog\/
+^zotero-extra-public-pdf-recovery/
+academic paper corpus
+academic-research-platform
+academic-style-lab
+affiliation-completion
+agentic-search/
+amb-indexer
+amberlink
+anandokade007@gmail\.com
+applect-dataset-downloader
+archive-spam-check
+asis-verification
+automated fetch
+avoindata\.suomi\.fi archiver
+battery-data-standard-dataset-probe
+biotools-linter
+chunrui1992@gmail\.com
+claudepot-ingest
+codex-dataset-fetch
+codex-local-paper-fetcher
+compatible; Bot\/1
+compatible; GoogleSites
+cryptomining-dataset-v1
+cyy-collection
+ePassports Oracle Lab
+ennepo\/
+facebookexternalhit
+ghost-couple-research
+github\.com\/pypi\/camo
+gkg-science
+gmn-followup-source-audit
+gzip\(gfe\)
+htmltest
+intel-collector
+knowledge-base-open-access-downloader
+l5[-_]paper[-_]intelligence
+lattice-corpus
+linkChecker\/
+literature-collection
+litrecherche
+llmxive-dataset-resolver
+llmxive-test
+lychee
+mailto:cont_system@nii\.ac\.jp
+neophi-fulltext
+neuroaida
+news-compass
+openalex
+openalex-downloader
+origin-saas-candidate-verifier
+pageburst
+paper-digest
+pashto-resource-review
+people-animal-vehicle-catalog-preview
+piiksi
+privatesage\.com
+promise-checker
+reccoon-data-access-probe
+research-opju-collector
+research-script
+rnd-ingest
+scholar-go-spn-client
+scientific-search
+service-research-openalex
+studio-two-analysis
+trees-corpus
+vision-lake
+whid/fra1
+wikiexpert\.ai
+wp-admin\/install\.php
+yangzhai-agent
+zodiac-codex-evidence-audit

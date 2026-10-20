@@ -1,0 +1,25 @@
+# Zenodo instance-specific datacenter/hosting ASNs not in the counter-robots
+# generated list (genuine hosting the external sources miss). One ASN per line.
+906      # DMIT Cloud Services
+4847     # China Networks Inter-Exchange
+10692    # DLS Internet Services, Inc
+23724    # IDC, China Telecommunications Corporat
+26356    # CRUSOE ENERGY SYSTEMS LLC
+33425    # CoreWeave, Inc
+38136    # Akari Networks
+51847    # Nearoute Limited
+59592    # intercolo GmbH
+132510   # IDC ShanXi China Mobile communications
+134756   # CHINANET Nanjing Jishan IDC network
+134761   # CHINANET NINGXIA province ZHONGWEI IDC
+134972   # IKUUU NETWORK LTD
+137409   # GSL Networks Pty LTD
+137702   # Nanjing, Jiangsu Province, P.R.China.
+138997   # Eons Data Communications Limited
+139490   # Aspt Networks Pvt Ltd
+199404   # WHG Hosting Services Ltd
+205759   # Ghosty Networks LLC
+208677   # Cloud.ru
+393577   # Tritan Development
+396073   # Majestic Hosting Solutions, LLC
+396982   # Google LLC
