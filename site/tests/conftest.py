@@ -87,7 +87,7 @@ def app_config(app_config):
             label=("DOI"),
         ),
         # DOI provider for externally managed DOIs
-        providers.ExternalPIDProvider(
+        zenodo_providers.ZenodoExternalPIDProvider(
             "external",
             "doi",
             validators=[providers.BlockedPrefixes(config_names=["DATACITE_PREFIX"])],
