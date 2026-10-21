@@ -23,10 +23,7 @@ from invenio_rdm_records.cli import create_records_custom_field
 from invenio_rdm_records.proxies import current_rdm_records_service as records_service
 from invenio_rdm_records.services.pids import providers
 from invenio_records_resources.proxies import current_service_registry
-from invenio_records_resources.services.records.queryparser import (
-    QueryParser,
-    SearchFieldTransformer,
-)
+from invenio_records_resources.services.records.queryparser import QueryParser
 from invenio_vocabularies.contrib.awards.api import Award
 from invenio_vocabularies.contrib.funders.api import Funder
 from invenio_vocabularies.proxies import current_service as vocabulary_service
@@ -38,7 +35,11 @@ from zenodo_rdm.custom_fields import CUSTOM_FIELDS, CUSTOM_FIELDS_UI, NAMESPACES
 from zenodo_rdm.generators import media_files_management_action
 from zenodo_rdm.legacy.requests.record_upgrade import LegacyRecordUpgrade
 from zenodo_rdm.permissions import ZenodoRDMRecordPermissionPolicy
-from zenodo_rdm.queryparser import ZENODO_LEGACY_SEARCH_MAP
+from zenodo_rdm.queryparser import (
+    ZENODO_LEGACY_SEARCH_MAP,
+    ZenodoDraftsQueryParser,
+    ZenodoSearchFieldTransformer,
+)
 from zenodo_rdm.resources import record_serializers
 from zenodo_rdm.serializers import ZenodoDataciteJSONSerializer
 
@@ -132,12 +133,21 @@ def app_config(app_config):
     app_config["TILES_GENERATION_ENABLED "] = False
 
     # Wire the production legacy-search query parser so tests exercise
-    # ZENODO_LEGACY_SEARCH_MAP end-to-end.
-    app_config["RDM_SEARCH"] = {
-        **app_config.get("RDM_SEARCH", {}),
-        "query_parser_cls": QueryParser.factory(
+    # ZENODO_LEGACY_SEARCH_MAP and the internal notes restrictions end-to-end.
+    query_parser_cls = QueryParser.factory(
+        mapping=ZENODO_LEGACY_SEARCH_MAP,
+        tree_transformer_cls=ZenodoSearchFieldTransformer,
+    )
+    for key in ("RDM_SEARCH", "RDM_SEARCH_VERSIONING", "COMMUNITIES_RECORDS_SEARCH"):
+        app_config[key] = {
+            **app_config.get(key, {}),
+            "query_parser_cls": query_parser_cls,
+        }
+    app_config["RDM_SEARCH_DRAFTS"] = {
+        **app_config.get("RDM_SEARCH_DRAFTS", {}),
+        "query_parser_cls": ZenodoDraftsQueryParser.factory(
             mapping=ZENODO_LEGACY_SEARCH_MAP,
-            tree_transformer_cls=SearchFieldTransformer,
+            tree_transformer_cls=ZenodoSearchFieldTransformer,
         ),
     }
 
