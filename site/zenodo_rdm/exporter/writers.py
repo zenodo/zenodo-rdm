@@ -133,6 +133,22 @@ def write_archives(
     return [*record_paths.values(), deleted_path]
 
 
+def _prefix_bad_characters(citation_text):
+    """Prefix characters that can be executed as formulas in spreadsheet software."""
+    if citation_text and citation_text.startswith(
+        (
+            "=",
+            "+",
+            "-",
+            "@",
+            "\t",
+            "\r",
+        )
+    ):
+        return f"'{citation_text}"
+    return citation_text
+
+
 def _write_record(record, formats, archives, deleted_writer):
     record_id = record.get("id")
     if not record_id:
@@ -144,6 +160,7 @@ def _write_record(record, formats, archives, deleted_writer):
             tombstone = record.get("tombstone") or {}
             removal_reason = (tombstone.get("removal_reason") or {}).get("id")
             parent = record.get("parent") or {}
+            citation = _prefix_bad_characters(tombstone.get("citation_text"))
             row = [
                 record_id,
                 record["pids"]["doi"]["identifier"],
@@ -152,7 +169,7 @@ def _write_record(record, formats, archives, deleted_writer):
                 tombstone.get("note"),
                 removal_reason,
                 tombstone.get("removal_date"),
-                tombstone.get("citation_text") if removal_reason != "spam" else None,
+                citation if removal_reason != "spam" else None,
             ]
         except Exception:
             current_app.logger.exception(
