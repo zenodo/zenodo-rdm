@@ -1,0 +1,12 @@
+{#
+  SPDX-FileCopyrightText: 2026 CERN
+  SPDX-License-Identifier: GPL-3.0-or-later
+#}
+{%- extends "invenio_app_rdm/records/deposit.html" %}
+
+{%- block page_body %}
+{{ super() }}
+<div id="orcha-waitlist-banner-config" hidden
+     data-show='{{ show_orcha_waitlist_banner(community_ui, require_community_param=True) | tojson }}'>
+</div>
+{%- endblock page_body %}
