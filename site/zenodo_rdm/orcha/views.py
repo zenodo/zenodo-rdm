@@ -6,7 +6,6 @@ from flask import (
     Blueprint,
     abort,
     current_app,
-    redirect,
     render_template,
     request,
 )
@@ -67,11 +66,6 @@ def _set_dismiss_cookie(response):
     return response
 
 
-def _is_safe_next(next_url) -> bool:
-    """Only allow redirecting to relative paths on this site."""
-    return bool(next_url) and next_url.startswith("/") and not next_url.startswith("//")
-
-
 class OrchaWaitlist(MethodView):
     """Explanation page and opt-in for the waitlist."""
 
@@ -97,17 +91,16 @@ class OrchaWaitlist(MethodView):
         if not current_user.has_role(WAITLIST_ROLE_NAME):
             datastore.add_role_to_user(current_user, role)
             datastore.commit()
-        return _set_dismiss_cookie(redirect(request.url))
+        return render_template(
+            "zenodo_rdm/orcha/waitlist.html",
+            already_joined=True,
+            just_joined=True,
+        )
 
 
 def dismiss_banner():
     """Stop showing the waitlist banner in this browser."""
-    next_url = request.form.get("next")
-    if _is_safe_next(next_url):
-        response = redirect(next_url)
-    else:
-        response = current_app.response_class(status=204)
-    return _set_dismiss_cookie(response)
+    return _set_dismiss_cookie(current_app.response_class(status=204))
 
 
 def create_blueprint(app):

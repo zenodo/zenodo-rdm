@@ -5,7 +5,7 @@
 {% macro orcha_waitlist_banner(community_ui) %}
     {%- if show_orcha_waitlist_banner(community_ui) -%}
         <div class="ui container">
-            <div class="ui info message rel-mb-1 rel-mt-1">
+            <div id="orcha-waitlist-banner" class="ui info message rel-mb-1 rel-mt-1">
                 <div class="header">
                     Help us test the new AI-assisted deposit form!
                 </div>
@@ -15,12 +15,12 @@
                 <a href="{{ url_for('zenodo_orcha_waitlist.waitlist') }}" target="_blank">
                     👉 Join as a tester and share your feedback!
                 </a>
-                <form class="rel-mt-1" method="post" action="{{ url_for('zenodo_orcha_waitlist.dismiss') }}">
-                    <input type="hidden" name="next" value="{{ request.full_path }}">
-                    <button type="submit" class="ui basic mini button">
+                <div class="rel-mt-1">
+                    <button type="button" class="ui basic mini button"
+                            data-dismiss-url="{{ url_for('zenodo_orcha_waitlist.dismiss') }}">
                         {{ _("Don't show again") }}
                     </button>
-                </form>
+                </div>
             </div>
         </div>
     {%- endif -%}

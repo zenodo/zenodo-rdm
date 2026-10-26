@@ -1,5 +1,5 @@
 {#
-  SPDX-FileCopyrightText: 2024 CERN
+  SPDX-FileCopyrightText: 2024-2026 CERN
   SPDX-License-Identifier: GPL-3.0-or-later
 #}
 {% extends "invenio_communities/base.html" %}
@@ -17,9 +17,16 @@
 {%- block javascript %}
 {{ super() }}
 {{ webpack['invenio-communities-header.js'] }}
+{%- if active_community_header_menu_item == 'requests' and show_orcha_waitlist_banner(community_ui) %}
+{{ webpack['zenodo-rdm-orcha-waitlist-banner.js'] }}
+{%- endif %}
 {%- endblock javascript %}
 
 {%- block page_body %}
   {% set community_menu_active = True %}
   {% include "invenio_communities/details/header.html" %}
+  {%- if active_community_header_menu_item == 'requests' %}
+    {% from "zenodo_rdm/macros/orcha_waitlist_banner.html" import orcha_waitlist_banner with context %}
+    {{ orcha_waitlist_banner(community_ui) }}
+  {%- endif %}
 {%- endblock page_body %}

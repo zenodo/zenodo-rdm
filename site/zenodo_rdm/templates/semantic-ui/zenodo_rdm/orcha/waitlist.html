@@ -14,7 +14,10 @@
             <div class="sixteen wide mobile wide tablet ten wide computer column col-md-12">
                 {%- if already_joined %}
                     <div class="ui positive message">
-                        <p>You are already on the waitlist.</p>
+                        {%- if just_joined %}
+                            <div class="header">Thank you for joining the waitlist!</div>
+                        {%- endif %}
+                        <p>You are on the waitlist for early access to AI-assisted features. We give access in the order users joined, and we will email you instructions to get started once the features are available on your account.</p>
                     </div>
                 {%- endif %}
                 <h1 class="ui header">

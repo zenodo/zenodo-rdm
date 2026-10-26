@@ -4,6 +4,7 @@
 
 BASE_URL = "https://127.0.0.1:5000"
 WAITLIST_URL = f"{BASE_URL}/ai-assist-features-waitlist"
+DISMISS_URL = f"{WAITLIST_URL}/dismiss"
 
 
 def _login(client, user_id):
@@ -45,7 +46,11 @@ def test_verified_user_can_see_with_waitlist_enabled(
     app.config["RDM_ORCHA_WAITLIST_ENABLED"] = True
     verified_user.login(client)
     assert client.get(WAITLIST_URL).status_code == 200
-    assert client.post(WAITLIST_URL).status_code == 302
+    res = client.post(WAITLIST_URL)
+    assert res.status_code == 200
+    assert "Thank you for joining the waitlist!" in res.text
+    assert "dismissed_orcha-waitlist-2026" not in res.headers.get("Set-Cookie", "")
+    assert verified_user.user.has_role("orcha-waitlist")
 
 
 def test_user_on_waitlist_still_sees_page(client, app, orcha_waitlisted_user):
@@ -53,3 +58,12 @@ def test_user_on_waitlist_still_sees_page(client, app, orcha_waitlisted_user):
     app.config["RDM_ORCHA_WAITLIST_ENABLED"] = True
     orcha_waitlisted_user.login(client)
     assert client.get(WAITLIST_URL).status_code == 200
+
+
+def test_dismiss_banner_sets_cookie(client, app, verified_user):
+    """Dismissing the banner is a background call that only sets the cookie."""
+    app.config["RDM_ORCHA_WAITLIST_ENABLED"] = True
+    verified_user.login(client)
+    res = client.post(DISMISS_URL)
+    assert res.status_code == 204
+    assert "dismissed_orcha-waitlist-2026=1" in res.headers["Set-Cookie"]
