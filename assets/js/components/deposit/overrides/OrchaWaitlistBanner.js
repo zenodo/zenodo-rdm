@@ -32,14 +32,14 @@ export class OrchaWaitlistBanner extends Component {
     }
     return (
       <Message info>
-        <Message.Header>Help us test the new AI-assisted deposit form!</Message.Header>
+        <Message.Header>
+          Help us test AI-assisted features in Zenodo!
+        </Message.Header>
         <p>
-          We are looking for users to test new AI-assisted features in the Zenodo
-          deposit form. Help us improve the deposit experience and speed up metadata
-          entry.
+         We are currently developing optional AI-assisted features to make uploading and curating records on Zenodo easier. Join the waitlist to get early access and help us improve them with your feedback.
         </p>
         <a href="/ai-assist-features-waitlist" target="_blank">
-          👉 Join as a tester and share your feedback!
+          Join as a tester
         </a>
         <div className="rel-mt-1">
           <Button type="button" basic size="mini" onClick={this.handleDismiss}>

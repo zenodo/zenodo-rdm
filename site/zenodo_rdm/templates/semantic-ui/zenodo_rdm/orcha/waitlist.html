@@ -21,61 +21,50 @@
                     </div>
                 {%- endif %}
                 <h1 class="ui header">
-                    Help us test the new AI-assisted deposit form
+                    Early access to AI-assisted features in Zenodo
                 </h1>
                 <p>
-                    As part of the <a href="https://about.zenodo.org/projects/airdec/" target="_blank">AIRDEC project</a>, we are developing and testing new AI-assisted features for the Zenodo <a href="/uploads/new" target="_blank">deposit form</a>. These features are designed to make depositing research outputs easier and faster by automatically extracting and suggesting metadata from uploaded <strong>PDF files</strong>.
+                    We have heard from many of you how time-consuming and error-prone it can be to describe your uploads in our form, whether that means filling-out many authors or copying text out of a PDF one field at a time. We have been designing and developing optional features for AI-assisted submission and curation that take on some of this work, so that describing and curating records takes less time and the resulting metadata is more accurate.
+                </p>
+                <p>
+                    We are now enabling these features for users who would like to try them early, and with their feedback guide how the features develop before we offer them more widely. We would especially value feedback from researchers who upload regularly and from Zenodo community curators.
+                </p>
+                <p>
+                    If you are interested, you can join our waitlist below. We give access to users on the waitlist gradually and in the order they joined, starting with metadata suggestions in the upload form at the end of November 2026, followed by features for community curators later on.
+                </p>
+                
+                <h2>What we are working on</h2>
+                <p>
+                    In the <a href="/uploads/new" target="_blank">upload form</a>, you will be able to ask Zenodo to read an uploaded PDF and suggest values for fields such as the title, description, authors, etc. These suggestions appear only when you request them, and you can accept, edit or discard each one before you publish.
+                </p>
+                <p>
+                    We are also exploring features for community curators, such as highlighting missing information in a submission or checking whether it matches a community's scope and requirements, so that curators can spend more of their time on decisions that need their expertise. These curation features are still at an early stage of development and will become available to testers later on.
+                </p>
 
-                </p>
+                <h2>Our approach to AI</h2>
                 <p>
-                    <strong>We are looking for 100 users to test the new features and provide feedback based on their experience.</strong>
-                </p>
-                <p>
-                    <strong>Opening and testing period</strong>
-                    <br>
-                    Opening date: 30 October 2026 <br>
-                    Testing period: Until February 2027
-                </p>
-                <p>
-                    Our goal is to make the deposit process approximately 50% <strong>faster</strong> by reducing the amount of manual metadata entry required.
-                </p>
-                <p>
-                    <strong>What is being tested?</strong><br>
-                    The new AI-assisted functionality will provide automated metadata extraction and suggestions for the following fields in the deposit form:
+                    We adopt AI tools selectively, where they support our mission of providing a repository open and free to all researchers, and we hold them to strict standards for data privacy, user control and human oversight. Each of these features is optional, both during testing and once they become more widely available. You will need to turn them on yourself, and if you do not, Zenodo works as it does today. In practice, this means that:
                 </p>
                 <ul>
-                    <li>Title</li>
-                    <li>Description</li>
-                    <li>Copyright</li>
-                    <li>License</li>
-                    <li>Authors</li>
-                    <li>Publication date</li>
-                    <li>Funding / Grants</li>
+                    <li>AI models run in our data centre at CERN, where Zenodo is hosted.</li>
+                    <li>We use only open-source models, and no data is sent to commercial cloud providers or external APIs.</li>
+                    <li>Your uploaded files are not used to train models.</li>
+                    <li>AI tools never act as authors or make decisions on their own; you review every suggestion and remain responsible for what you publish.</li>
                 </ul>
+
                 <p>
-                    The testing will be available for PDF files only. <br><br>
-                    The AI integration will analyse the uploaded PDF and provide suggestions for the relevant metadata fields. You can then review, accept, modify, or replace these suggestions before completing your deposit.
+                    AI suggestions can be inaccurate or incomplete, so please review them as carefully as metadata you enter yourself. For full details, see our <a href="https://about.zenodo.org/ai-usage-notice/" target="_blank">AI usage notice</a>.
                 </p>
+
+                <h2>How the waitlist works</h2>
                 <p>
-                    <strong>How to provide feedback</strong><br>
-                    You will have the opportunity to provide feedback in the comments box close to the AI suggestion. Providing feedback is optional, but we will be grateful if you could help us in identifying incorrect suggestions, missing information, or aspects that could be improved.
-                    <img src="{{ url_for('static', filename='images/waitlist_comment_example.png') }}" alt="example comment box">
-                    <br><br>
-                    At the end of the form, you can also provide additional comments about your overall experience.
-                </p>
-                <p>
-                    <strong>How is my data used by AI?</strong><br>
-                    For details on how AI is used across Zenodo, please see our dedicated <a href="https://about.zenodo.org/ai-usage-notice/" target="_blank">AI usage notice</a> page.
-                </p>
-                <p>
-                    <strong>Your feedback matters</strong><br>
-                    Your feedback will help us evaluate the quality, usefulness, speed, and usability of the new AI-assisted deposit features and identify areas for improvement before further development and rollout.
+                    Once you join the waitlist, you keep your place on it. As the features develop, we give access in waves, inviting users from the waitlist in the order they joined, with the first wave starting at the end of November 2026. When you are included in a wave, the features become available on your account and you will start receiving our emails for testers, with instructions for getting started and for sending feedback, and news as the features develop. You can unsubscribe from these emails and the early access to these features at any time.
                 </p>
                 <strong>Thank you for helping us improve Zenodo !</strong><br><br>
                 {%- if not already_joined %}
                     <form action="{{ url_for('zenodo_orcha_waitlist.waitlist') }}" method="post">
                         <button type="submit" class="ui primary button">
-                            Join the waitlist
+                            Join as a tester
                         </button>
                     </form>
                 {%- endif %}
