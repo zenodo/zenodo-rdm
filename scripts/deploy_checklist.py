@@ -40,6 +40,10 @@ ENVS = [
 # The OpenSearch mapping engine Zenodo runs; os-v1 / v7 mapping changes are ignored.
 ENGINE = "os-v2"
 
+REPO = "https://github.com/zenodo/zenodo-rdm"
+# This repo's own package in uv.lock; its version bump is the release itself.
+APP = "zenodo-rdm-app"
+
 
 def _web(repo_url):
     """Normalize a git remote URL to an https GitHub web base, or None."""
@@ -75,13 +79,33 @@ _VERSION = re.compile(r"-v\d+\.\d+\.\d+$")
 _REVISION = re.compile(r"^[0-9a-f]{6,}$")
 
 
+def _shipped(path):
+    """Skip test fixtures, which packages also keep under alembic/ and mappings/."""
+    return "tests" not in PurePosixPath(path).parts
+
+
+def _is_recipe(path):
+    name = PurePosixPath(path).name
+    return name.endswith(".py") and bool(_REVISION.match(name.split("_", 1)[0]))
+
+
+def _alembic(p):
+    """The package's changed Alembic recipes (`<revision>_<slug>.py`)."""
+    return [f for f in p.get("alembic") or [] if _shipped(f) and _is_recipe(f)]
+
+
 def _mappings(p):
     """The package's changed mapping files under the engine we run (ENGINE)."""
     out = []
     for f in p.get("mappings") or []:
         parts = PurePosixPath(f).parts
         i = parts.index("mappings") if "mappings" in parts else -1
-        if 0 <= i < len(parts) - 1 and parts[i + 1] == ENGINE:
+        if (
+            0 <= i < len(parts) - 1
+            and parts[i + 1] == ENGINE
+            and f.endswith(".json")
+            and _shipped(f)
+        ):
             out.append(f)
     return out
 
@@ -117,11 +141,8 @@ def alembic_upgrades(packages):
     """
     revs = set()
     for p in packages:
-        for f in p.get("alembic") or []:
-            fname = PurePosixPath(f).name
-            rev = fname.split("_", 1)[0]
-            if not fname.endswith(".py") or not _REVISION.match(rev):
-                continue
+        for f in _alembic(p):
+            rev = PurePosixPath(f).name.split("_", 1)[0]
             revs.add(f"{PurePosixPath(f).parts[0]}@{rev}")
     return sorted(revs)
 
@@ -131,17 +152,20 @@ def changes_to_check(packages):
         return p.get("bump") == "major"
 
     inv_major = [p for p in packages if is_major(p) and p.get("matched_filter")]
-    other_major = [p for p in packages if is_major(p) and not p.get("matched_filter")]
-    alembic = [p for p in packages if p.get("alembic")]
+    other_major = [
+        p
+        for p in packages
+        if is_major(p) and not p.get("matched_filter") and p["name"] != APP
+    ]
+    alembic = [(p, _alembic(p)) for p in packages]
+    alembic = [(p, a) for p, a in alembic if a]
     mappings = [(p, _mappings(p)) for p in packages]
     mappings = [(p, m) for p, m in mappings if m]
 
-    lines = ["### What to check"]
     if not (inv_major or other_major or alembic or mappings):
-        lines.append(
-            "- Nothing flagged automatically. Still skim the diff before you sign off."
-        )
-        return lines
+        return []
+
+    lines = ["### What to check"]
 
     if inv_major:
         lines.append("- ⚠️ Major `invenio-*` bumps in...")
@@ -151,14 +175,43 @@ def changes_to_check(packages):
         lines += [f"    - {p['name']} {p['prev']} → {p['cur']}" for p in other_major]
     if alembic:
         lines.append("- DB migration (Alembic recipe) changes in...")
-        for p in alembic:
+        for p, a in alembic:
             lines.append(f"    - {p['name']}")
-            lines += [f"        - {_file_link(p, f)}" for f in p["alembic"]]
+            lines += [f"        - {_file_link(p, f)}" for f in a]
     if mappings:
         lines.append("- Mapping changes in...")
         for p, m in mappings:
             lines.append(f"    - {p['name']}")
             lines += [f"        - {_file_link(p, f)}" for f in m]
+    return lines
+
+
+def _steps(env, image_tag, index_cmds, alembic_revs):
+    terminal = f"- [ ] `./scripts/deploy.py {env} {image_tag} terminal`"
+    if env == "prod":
+        return [
+            (
+                "- 📝 Otherwise, deploy to `terminal`, then paste and run the steps "
+                "you confirmed on QA:"
+            ),
+            terminal,
+        ]
+    lines = [
+        (
+            "- 📝 Otherwise, deploy to `terminal` first, then run the rest from "
+            "`oc rsh deployment/terminal`:"
+        ),
+        terminal,
+    ]
+    if alembic_revs:
+        lines.append("- [ ] Alembic")
+        lines += [f"    - [ ] `invenio alembic upgrade {r}`" for r in alembic_revs]
+    if index_cmds:
+        lines.append("- [ ] Index update")
+        lines += [f"    - [ ] `{c}`" for c in index_cmds]
+        lines.append("- [ ] Reindex")
+        lines.append("    - [ ] `invenio rdm rebuild-all-indices -o <model>` 📝")
+    lines.append("- [ ] Config / vocabularies / fixtures / custom fields 📝")
     return lines
 
 
@@ -171,32 +224,10 @@ def env_section(name, host, env, image_tag, index_cmds, alembic_revs, author):
         "#### Pre-deploy steps",
         f"- [ ] No pre-deploy steps needed, confirmed by @{author}",
     ]
-    if env == "prod":
-        lines.append(
-            "- 📝 Otherwise, deploy to `terminal`, then paste and run the steps "
-            "you confirmed on QA:"
-        )
-        lines.append(f"- [ ] `./scripts/deploy.py {env} {image_tag} terminal`")
-    else:
-        lines.append(
-            "- 📝 Otherwise, deploy to `terminal` first, then run the rest from "
-            "`oc rsh deployment/terminal`:"
-        )
-        lines.append(f"- [ ] `./scripts/deploy.py {env} {image_tag} terminal`")
-        lines.append("- [ ] Config changes 📝")
-        lines.append("- [ ] Alembic")
-        if alembic_revs:
-            lines += [f"    - [ ] `invenio alembic upgrade {r}`" for r in alembic_revs]
-        else:
-            lines.append("    - [ ] `invenio alembic upgrade <module>@<rev>` 📝")
-        lines.append("- [ ] Index update")
-        if index_cmds:
-            lines += [f"    - [ ] `{c}`" for c in index_cmds]
-        else:
-            lines.append("    - [ ] `invenio index update --no-check <index>` 📝")
-        lines.append("- [ ] Reindex")
-        lines.append("    - [ ] `invenio rdm rebuild-all-indices -o <model>` 📝")
-        lines.append("- [ ] Vocabularies / fixtures / custom fields 📝")
+    # Without detected migrations the step placeholders are just noise; whoever
+    # finds a manual step adds it under the sign-off.
+    if index_cmds or alembic_revs:
+        lines += _steps(env, image_tag, index_cmds, alembic_revs)
     sentry_env = "production" if env == "prod" else env
     sentry = (
         f"https://zenodo-sentry.web.cern.ch/sentry/zenodo-rdm/releases/"
@@ -288,18 +319,23 @@ def main():
     version = args.version
     image_tag = version.lstrip("v")  # deploy.py / the image tag drops the leading "v"
     prev = args.since or data.get("since") or ""
-    rng = f"`{prev}..{version}`" if prev else f"`{version}`"
+    rng = (
+        f"[`{prev}..{version}`]({REPO}/compare/{prev}...{version})"
+        if prev
+        else f"`{version}`"
+    )
 
     index_cmds = index_update_cmds(packages)
     alembic_revs = alembic_upgrades(packages)
 
-    body = [
-        f"Auto-generated from {rng}.",
-        "Run the checklist on QA first, then copy the confirmed steps into Prod.",
-        "",
-        *changes_to_check(packages),
-        "",
-    ]
+    body = [f"Auto-generated from {rng}."]
+    if index_cmds or alembic_revs:
+        body.append(
+            "Run the checklist on QA first, then copy the confirmed steps into Prod."
+        )
+    body.append("")
+    if check := changes_to_check(packages):
+        body += [*check, ""]
     for name, host, env in ENVS:
         body += env_section(
             name, host, env, image_tag, index_cmds, alembic_revs, args.author
