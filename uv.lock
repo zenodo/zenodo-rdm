@@ -2331,15 +2331,15 @@ wheels = [
 
 [[package]]
 name = "invenio-userprofiles"
-version = "7.0.2"
+version = "7.0.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "invenio-accounts" },
     { name = "invenio-i18n" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ec/3e/24cb57aa31099595b63583376324a0c9dd545017ef4f64bac5c9cac65901/invenio_userprofiles-7.0.2.tar.gz", hash = "sha256:962b9740b7e37a0b844753c4ad6c2e40e938c871168bc436edc9bc5b7a61f579", size = 36548, upload-time = "2026-08-04T13:53:48.539Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/37/67/b389db68c735e9f5ab48fba40139e37721a5c8e8d5a971266b5107879021/invenio_userprofiles-7.0.3.tar.gz", hash = "sha256:a435bab844c2aec8f436388bc1faaed1adafda9e2b4f5e445f7fe261d565aaa3", size = 36562, upload-time = "2026-10-27T09:24:16.763Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/c1/99/7ee8ce1ab97fa27cb1899fba775bad1ce5abd0265ac24d15ad2f1d290a16/invenio_userprofiles-7.0.2-py3-none-any.whl", hash = "sha256:913471bc31505e1e2e0ccfbeaaf9ca265cde4f7dd35dc63ab64a9e8c1b702763", size = 121595, upload-time = "2026-08-04T13:53:47.55Z" },
+    { url = "https://files.pythonhosted.org/packages/15/d8/b7b7da61dce5cf7d664ba5b42b7d6ce165cef90a70efef272bdbc3cc080a/invenio_userprofiles-7.0.3-py3-none-any.whl", hash = "sha256:1c88c795c5fc29349f08db5b69f12b30e32186335b829b81e06fba97b69389ca", size = 121616, upload-time = "2026-10-27T09:24:15.767Z" },
 ]
 
 [[package]]
