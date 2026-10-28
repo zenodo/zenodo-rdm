@@ -1,0 +1,75 @@
+{#
+  SPDX-FileCopyrightText: 2026 CERN
+  SPDX-License-Identifier: GPL-3.0-or-later
+#}
+{%- extends config.BASE_TEMPLATE %}
+
+{# Prevent page from being indexed #}
+{%- set meta_robot_tags = [{"name": "robots", "content": "noindex, nofollow"}]%}
+
+{%- block page_body %}
+<div class="ui container rel-pt-3 rel-pb-3">
+    <div class="ui one column grid">
+        <div class="row">
+            <div class="sixteen wide mobile wide tablet ten wide computer column col-md-12">
+                {%- if already_joined %}
+                    <div class="ui positive message">
+                        {%- if just_joined %}
+                            <div class="header">Thank you for joining the waitlist!</div>
+                        {%- endif %}
+                        <p>You are on the waitlist for early access to AI-assisted features. We give access in the order users joined, and we will email you instructions to get started once the features are available on your account.</p>
+                    </div>
+                {%- endif %}
+                <h1 class="ui header">
+                    Early access to AI-assisted features in Zenodo
+                </h1>
+                <p>
+                    We have heard from many of you how time-consuming and error-prone it can be to describe your uploads in our form, whether that means filling-out many authors or copying text out of a PDF one field at a time. We have been designing and developing optional features for AI-assisted submission and curation that take on some of this work, so that describing and curating records takes less time and the resulting metadata is more accurate.
+                </p>
+                <p>
+                    We are now enabling these features for users who would like to try them early, and with their feedback guide how the features develop before we offer them more widely. We would especially value feedback from researchers who upload regularly and from Zenodo community curators.
+                </p>
+                <p>
+                    If you are interested, you can join our waitlist below. We give access to users on the waitlist gradually and in the order they joined, starting with metadata suggestions in the upload form at the end of November 2026, followed by features for community curators later on.
+                </p>
+                
+                <h2>What we are working on</h2>
+                <p>
+                    In the <a href="/uploads/new" target="_blank">upload form</a>, you will be able to ask Zenodo to read an uploaded PDF and suggest values for fields such as the title, description, authors, etc. These suggestions appear only when you request them, and you can accept, edit or discard each one before you publish.
+                </p>
+                <p>
+                    We are also exploring features for community curators, such as highlighting missing information in a submission or checking whether it matches a community's scope and requirements, so that curators can spend more of their time on decisions that need their expertise. These curation features are still at an early stage of development and will become available to testers later on.
+                </p>
+
+                <h2>Our approach to AI</h2>
+                <p>
+                    We adopt AI tools selectively, where they support our mission of providing a repository open and free to all researchers, and we hold them to strict standards for data privacy, user control and human oversight. Each of these features is optional, both during testing and once they become more widely available. You will need to turn them on yourself, and if you do not, Zenodo works as it does today. In practice, this means that:
+                </p>
+                <ul>
+                    <li>AI models run in our data centre at CERN, where Zenodo is hosted.</li>
+                    <li>We use only open-source models, and no data is sent to commercial cloud providers or external APIs.</li>
+                    <li>Your uploaded files are not used to train models.</li>
+                    <li>AI tools never act as authors or make decisions on their own; you review every suggestion and remain responsible for what you publish.</li>
+                </ul>
+
+                <p>
+                    AI suggestions can be inaccurate or incomplete, so please review them as carefully as metadata you enter yourself. For full details, see our <a href="https://about.zenodo.org/ai-usage-notice/" target="_blank">AI usage notice</a>.
+                </p>
+
+                <h2>How the waitlist works</h2>
+                <p>
+                    Once you join the waitlist, you keep your place on it. As the features develop, we give access in waves, inviting users from the waitlist in the order they joined, with the first wave starting at the end of November 2026. When you are included in a wave, the features become available on your account and you will start receiving our emails for testers, with instructions for getting started and for sending feedback, and news as the features develop. You can unsubscribe from these emails and the early access to these features at any time.
+                </p>
+                <strong>Thank you for helping us improve Zenodo !</strong><br><br>
+                {%- if not already_joined %}
+                    <form action="{{ url_for('zenodo_orcha_waitlist.waitlist') }}" method="post">
+                        <button type="submit" class="ui primary button">
+                            Join as a tester
+                        </button>
+                    </form>
+                {%- endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{%- endblock page_body %}

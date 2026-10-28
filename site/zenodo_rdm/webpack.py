@@ -20,6 +20,7 @@ theme = WebpackThemeBundle(
                 "zenodo-rdm-communities-carousel": "./js/zenodo_rdm/src/communities-carousel.js",
                 "zenodo-rdm-blr-search": "./js/zenodo_rdm/src/blr-related-works/index.js",
                 "zenodo-rdm-branded-community-frontpage": "./js/zenodo_rdm/src/branded-community/index.js",
+                "zenodo-rdm-orcha-waitlist-banner": "./js/zenodo_rdm/src/orcha-waitlist-banner.js",
                 "image-previewer": "./less/zenodo_rdm/previewer/image-previewer.less",
             },
             dependencies={
