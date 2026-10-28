@@ -7,6 +7,8 @@ import gzip
 import json
 import tarfile
 
+import pytest
+
 from zenodo_rdm.exporter.writers import write_archives
 
 
@@ -45,6 +47,38 @@ def test_write_export_files(app, tmp_path):
     with gzip.open(paths[1], mode="rt") as stream:
         rows = list(csv.reader(stream))
     assert rows[1][0:2] == ["deleted", "10.5281/zenodo.1"]
+
+
+@pytest.mark.parametrize(
+    "bad_start_char",
+    [
+        "=",
+        "+",
+        "-",
+        "@",
+        "\t",
+        "\r",
+    ],
+)
+def test_export_file_csv_prefix(app, tmp_path, bad_start_char):
+    """Prefix formula-leading values."""
+    record = [
+        {
+            "id": "deleted",
+            "deletion_status": {"is_deleted": True},
+            "pids": {"doi": {"identifier": "10.5281/zenodo.1"}},
+            "parent": {},
+            "tombstone": {
+                "removal_reason": {"id": "not_spam"},
+                "citation_text": f"{bad_start_char}_BAD_INPUT",
+            },
+        },
+    ]
+    with app.app_context():
+        paths = write_archives(tmp_path, ("json",), record, len(record))
+    with gzip.open(paths[1], mode="rt") as stream:
+        rows = list(csv.reader(stream))
+    assert not rows[1][-1].startswith(bad_start_char)
 
 
 def test_write_consumes_records_once_for_all_outputs(app, tmp_path):
