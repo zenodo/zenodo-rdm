@@ -1,10 +1,23 @@
-# SPDX-FileCopyrightText: 2024 CERN
+# SPDX-FileCopyrightText: 2024-2026 CERN
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Query parsers."""
 
+import json
+from fnmatch import fnmatchcase
+from functools import cache
+
+from invenio_access.permissions import system_permission
 from invenio_communities.communities.records.models import CommunityMetadata
 from invenio_db import db
-from invenio_records_resources.services.records.queryparser import FieldValueMapper
+from invenio_i18n import gettext as _
+from invenio_rdm_records.proxies import current_rdm_records_service
+from invenio_records_resources.services.errors import QuerystringValidationError
+from invenio_records_resources.services.records.queryparser import (
+    FieldValueMapper,
+    QueryParser,
+    SearchFieldTransformer,
+)
+from invenio_search import current_search
 from luqum.tree import Phrase, Word
 
 
@@ -152,3 +165,76 @@ ZENODO_LEGACY_SEARCH_MAP = {
     # New mappings
     "user": "parent.access.owned_by.user",
 }
+
+
+INTERNAL_NOTES_FIELDS = (
+    "internal_notes",
+    "internal_notes.id",
+    "internal_notes.note",
+    "internal_notes.timestamp",
+    "internal_notes.added_by",
+    "internal_notes.added_by.user",
+)
+"""Indexed internal notes fields, which only the system process may search."""
+
+
+def _targets_internal_notes(field_name):
+    """Check if a field name, possibly with wildcards, can match internal notes."""
+    field_name = field_name.replace("\\", "")
+    return field_name.startswith("internal_notes") or any(
+        fnmatchcase(field, field_name) for field in INTERNAL_NOTES_FIELDS
+    )
+
+
+def _term_values(node):
+    """Yield the values of all words and phrases below a query node."""
+    if isinstance(node, (Word, Phrase)):
+        yield node.value.strip('"')
+    for child in node.children:
+        yield from _term_values(child)
+
+
+class ZenodoSearchFieldTransformer(SearchFieldTransformer):
+    """Search field transformer that keeps internal notes out of user queries.
+
+    Upstream restricts the exact ``internal_notes.*`` field names through the
+    search mapping. This also covers sub-fields, wildcard field names (e.g.
+    ``*:term`` or ``*.note:term``) and ``_exists_`` checks on notes. Rejected
+    queries fall back to a plain multi-match query on the default fields.
+    """
+
+    def visit_search_field(self, node, context):
+        """Reject internal notes fields for callers other than the system."""
+        targets_notes = _targets_internal_notes(node.name) or (
+            node.name == "_exists_"
+            and any(_targets_internal_notes(v) for v in _term_values(node.expr))
+        )
+        if targets_notes and not system_permission.allows(context["identity"]):
+            raise QuerystringValidationError(
+                _("Invalid search field: %(field_name)s.", field_name=node.name)
+            )
+        yield from super().visit_search_field(node, context)
+
+
+@cache
+def _mapping_default_fields(index_name):
+    """Read the ``index.query.default_field`` setting of an index mapping."""
+    with open(current_search.mappings[index_name]) as fp:
+        return json.load(fp)["settings"]["index.query.default_field"]
+
+
+class ZenodoDraftsQueryParser(QueryParser):
+    """Query parser searching the records default fields on drafts.
+
+    The drafts index does not define ``index.query.default_field``, so terms
+    without a field would match every field, including internal notes. Use
+    the records index default fields instead, unless ``fields`` is given.
+    """
+
+    def __init__(self, *args, **kwargs):
+        """Initialise the parser."""
+        super().__init__(*args, **kwargs)
+        if not self._fields:
+            index_name = current_rdm_records_service.record_cls.index._name
+            self._fields = list(_mapping_default_fields(index_name))
+            self.extra_params["fields"] = self._fields
