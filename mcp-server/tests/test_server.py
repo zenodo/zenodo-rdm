@@ -316,3 +316,37 @@ async def test_upload_dir_restriction(fake, tmp_path):
             )
             assert result.is_error and "ZENODO_UPLOAD_DIR" in result.content[0].text
     assert fake.requests == []
+
+
+async def test_update_sends_vocabulary_ids_only(make_client, fake):
+    expanded = {
+        **RECORD,
+        "is_draft": True,
+        "metadata": {
+            **RECORD["metadata"],
+            "resource_type": {"id": "dataset", "title": {"en": "Dataset"}},
+            "rights": [
+                {
+                    "id": "cc-by-4.0",
+                    "title": {"en": "Creative Commons Attribution 4.0"},
+                    "icon": "cc-by-icon",
+                    "props": {"url": "https://creativecommons.org/licenses/by/4.0/"},
+                },
+                {"title": {"en": "Custom license"}, "link": "https://example.org"},
+            ],
+            "languages": [{"id": "eng", "title": {"en": "English"}}],
+        },
+    }
+    fake.route("GET", "/api/records/123/draft", body=expanded)
+    fake.route("PUT", "/api/records/123/draft", body=expanded)
+    async with make_client(token="secret") as client:
+        await client.call_tool("zenodo_update_draft", {"record": "123", "version": "2"})
+    (body,) = fake.sent("PUT", "/api/records/123/draft")
+    meta = body["metadata"]
+    assert meta["rights"] == [
+        {"id": "cc-by-4.0"},
+        {"title": {"en": "Custom license"}, "link": "https://example.org"},
+    ]
+    assert meta["resource_type"] == {"id": "dataset"}
+    assert meta["languages"] == [{"id": "eng"}]
+    assert meta["creators"] == RECORD["metadata"]["creators"]

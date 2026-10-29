@@ -139,13 +139,51 @@ def _apply_metadata(
     return body
 
 
+# Keys the API adds when it expands a vocabulary reference such as
+# {"id": "cc-by-4.0"} in its responses. Sending them back is rejected.
+_EXPANDED_KEYS = {
+    "title",
+    "description",
+    "icon",
+    "props",
+    "name",
+    "identifiers",
+    "tags",
+    "acronym",
+    "scheme",
+    "subject",
+    "number",
+    "program",
+}
+
+
+def _collapse_vocabularies(value: Any) -> Any:
+    """Reduce expanded vocabulary entries back to ``{"id": ...}``.
+
+    >>> _collapse_vocabularies({"rights": [{"id": "mit", "title": {"en": "MIT"}}]})
+    {'rights': [{'id': 'mit'}]}
+    >>> _collapse_vocabularies({"rights": [{"title": {"en": "Custom"}}]})
+    {'rights': [{'title': {'en': 'Custom'}}]}
+    """
+    if isinstance(value, list):
+        return [_collapse_vocabularies(v) for v in value]
+    if isinstance(value, dict):
+        if isinstance(value.get("id"), str) and _EXPANDED_KEYS & value.keys():
+            return {"id": value["id"]}
+        return {k: _collapse_vocabularies(v) for k, v in value.items()}
+    return value
+
+
 def _editable(body: dict) -> dict:
     """Keep only the parts of a draft that ``PUT /draft`` accepts."""
-    return {
+    out = {
         k: body[k]
         for k in ("metadata", "access", "files", "custom_fields", "pids")
         if k in body
     }
+    if "metadata" in out:
+        out["metadata"] = _collapse_vocabularies(out["metadata"])
+    return out
 
 
 def create_server(
