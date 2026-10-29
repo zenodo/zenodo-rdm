@@ -30,6 +30,8 @@ services:
       service: frontend
     volumes:
       - static_data:/opt/invenio/var/instance/static
+      - uploaded_data:/opt/invenio/var/instance/data
+      - image_tiles:/opt/invenio/var/instance/images
     depends_on:
       - web-ui
       - web-api
