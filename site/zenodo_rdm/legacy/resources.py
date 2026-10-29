@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2022 CERN
+# SPDX-FileCopyrightText: 2022-2026 CERN
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Zenodo legacy resources."""
 
@@ -6,6 +6,7 @@ from functools import partial, wraps
 
 import marshmallow as ma
 from flask import abort, g, jsonify, request
+from flask_principal import PermissionDenied
 from flask_resources import (
     RequestBodyParser,
     ResponseHandler,
@@ -374,9 +375,13 @@ class DraftExtraFormatsResource(FileResource):
         try:
             # If the draft is being edited, add the file to the draft
             record = self.service.read_draft(identity, id_)._record
-        except (NoResultFound, PIDDoesNotExistError):
-            # Else add it to the record directly
-            record = self.service.read(identity, id_)._record
+        except (NoResultFound, PIDDoesNotExistError, PermissionDenied):
+            # Else add it to the record directly. A draft the caller cannot see
+            # is treated as absent, so its existence is not revealed.
+            try:
+                record = self.service.read(identity, id_)._record
+            except (NoResultFound, PermissionDenied):
+                raise PIDDoesNotExistError("recid", id_)
 
         # NOTE: We check the permission here as a "draft", so that we can later use
         # ``system_identity`` for potentially deleting a file from a published record.
