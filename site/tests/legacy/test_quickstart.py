@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2023 CERN
+# SPDX-FileCopyrightText: 2023-2026 CERN
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Test legacy API quickstart."""
 
@@ -18,9 +18,7 @@ def test_quickstart_workflow(
     """Test quickstart workflow."""
     # Try get deposits as anonymous user
     res = client.get(deposit_url)
-    # TODO: Should be:
-    # assert res.status_code == 401
-    assert res.status_code == 403
+    assert res.status_code == 401
 
     # Try get deposits as logged-in user
     client = test_user.api_login(client)

@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2023 CERN
+# SPDX-FileCopyrightText: 2023-2026 CERN
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Test Zenodo-RDM legacy deposit (REST API).
 
@@ -37,7 +37,7 @@ def test_simple_rest_flow(test_app, client, deposit_url, headers, uploader):
     # Try to create deposit as anonymous user (failing)
     with test_app.test_client() as unauth_client:
         response = unauth_client.post(deposit_url, json=test_data, headers=headers)
-        assert response.status_code == 403
+        assert response.status_code == 401
 
     client = uploader.api_login(client)
 
@@ -175,8 +175,7 @@ def test_read_deposit_users(
 
     # Try anonymous user
     res = client.get(deposit_url, headers=headers)
-    # TODO: Should be: 401
-    assert res.status_code == 403, res.json
+    assert res.status_code == 401, res.json
 
     # Try other user
     client = not_owner.api_login(client)
@@ -278,8 +277,7 @@ def test_update_deposit_anonymous(
 
     # Try to udpate a draft with anonymous user
     res = client.put(deposit_url, json=update_metadata, headers=headers)
-    # TODO: Should be: 401
-    assert res.status_code == 403
+    assert res.status_code == 401
 
 
 def test_update_deposit_superuser(
@@ -386,8 +384,7 @@ def test_delete_deposits_anonymous(
         headers=headers,
     )
 
-    # TODO: Should be: 401
-    assert res.status_code == 403, res.json
+    assert res.status_code == 401, res.json
 
 
 def test_delete_deposits_superuser(
