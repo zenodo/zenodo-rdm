@@ -4858,6 +4858,7 @@ source = { virtual = "." }
 dependencies = [
     { name = "github3-py" },
     { name = "invenio-app-rdm", extra = ["opensearch2", "profiler"] },
+    { name = "invenio-db" },
     { name = "invenio-github" },
     { name = "invenio-rdm-records" },
     { name = "invenio-records-resources" },
@@ -4894,6 +4895,7 @@ dev = [
 requires-dist = [
     { name = "github3-py", specifier = ">=3.0.0" },
     { name = "invenio-app-rdm", extras = ["opensearch2", "profiler"], git = "https://github.com/inveniosoftware/invenio-app-rdm?branch=feature%2Forcha" },
+    { name = "invenio-db" },
     { name = "invenio-github", specifier = ">=7.0.0,<8.0.0" },
     { name = "invenio-logging", extras = ["sentry"], marker = "extra == 'sentry'" },
     { name = "invenio-rdm-records", git = "https://github.com/inveniosoftware/invenio-rdm-records?branch=feature%2Forcha" },

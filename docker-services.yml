@@ -47,6 +47,23 @@ services:
       - "${DOCKER_SERVICES_IP_BIND:-127.0.0.1}:5432:5432"
     volumes:
       - ./docker/db/init-readonly-user.sql:/docker-entrypoint-initdb.d/init-readonly-user.sql
+      - ./docker/db/init-replication.sh:/docker-entrypoint-initdb.d/init-replication.sh
+  db-replica:
+    # Streaming (physical) replica of `db` for local read-replica development.
+    # Started automatically by `invenio-cli services setup/start`.
+    image: postgres:15.15
+    restart: "unless-stopped"
+    depends_on:
+      - db
+    environment:
+      - "PGDATA=/var/lib/postgresql/data/pgdata"
+    ports:
+      - "${DOCKER_SERVICES_IP_BIND:-127.0.0.1}:5433:5432"
+    volumes:
+      - db-replica-data:/var/lib/postgresql/data
+      - ./docker/db-replica/replica-entrypoint.sh:/usr/local/bin/replica-entrypoint.sh:ro
+    entrypoint: ["/usr/local/bin/replica-entrypoint.sh"]
+    command: ["postgres"]
   pgadmin:
     image: dpage/pgadmin4:7.7
     restart: "unless-stopped"
@@ -120,3 +137,6 @@ services:
     environment:
       - "CORS=*"
       - "FILESYSTEM_PREFIX=/images/public"
+
+volumes:
+  db-replica-data:
