@@ -252,8 +252,11 @@ def _describe_error(response: httpx.Response, method: str, path: str) -> str:
 
     hint = {
         401: "The token is missing or invalid. Check ZENODO_TOKEN.",
-        403: "The token lacks permission. Writes need the 'deposit:write' scope "
-        "and publishing needs 'deposit:actions'; you can only change your own records.",
+        403: "The token was refused. zenodo.org and sandbox.zenodo.org have "
+        "separate accounts and tokens, so check that ZENODO_TOKEN was created on "
+        "ZENODO_BASE_URL. Otherwise the token lacks a scope (writes need "
+        "'deposit:write', publishing needs 'deposit:actions'), or the record "
+        "belongs to someone else.",
         404: "Nothing exists at this id. Check the id, and note that drafts are "
         "only visible to their owner (use zenodo_list_my_records).",
         429: "Zenodo's rate limit was hit. Wait a minute before retrying.",
