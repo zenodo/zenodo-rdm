@@ -76,6 +76,7 @@ def app_config(app_config):
 
     app_config["SESSION_COOKIE_DOMAIN"] = "127.0.0.1"
     app_config["REST_CSRF_ENABLED"] = False
+    app_config["REST_ENABLE_CORS"] = True
     app_config["DATACITE_ENABLED"] = True
     app_config["RDM_PERSISTENT_IDENTIFIER_PROVIDERS"] = [
         # DataCite DOI provider with fake client

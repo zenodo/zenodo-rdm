@@ -60,8 +60,10 @@ def require_legacy_scopes():
     Meant to be registered as a ``before_request`` hook on the legacy blueprints.
     Bearer tokens are already verified by Invenio-OAuth2Server before the request
     reaches this hook. Users authenticated with a session are not restricted by
-    scopes.
+    scopes. CORS preflight requests carry no credentials, so they are let through.
     """
+    if request.method == "OPTIONS":
+        return
     scopes = LEGACY_ENDPOINT_SCOPES.get(request.endpoint)
     if scopes is None:
         return

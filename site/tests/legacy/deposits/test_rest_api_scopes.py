@@ -7,7 +7,11 @@ from io import BytesIO
 import pytest
 from invenio_oauth2server.models import Token
 
-from zenodo_rdm.legacy.scopes import deposit_actions_scope, deposit_write_scope
+from zenodo_rdm.legacy.scopes import (
+    LEGACY_ENDPOINT_SCOPES,
+    deposit_actions_scope,
+    deposit_write_scope,
+)
 
 WRITE = deposit_write_scope.id
 ACTIONS = deposit_actions_scope.id
@@ -204,3 +208,34 @@ def test_session_login_is_not_scoped(
     )
     assert res.status_code == 201
     assert client.post(links["publish"], headers=headers).status_code == 202
+
+
+def test_scoped_endpoints_exist(app):
+    """Every endpoint in the scope map is a registered API view."""
+    api_app = app.wsgi_app.mounts["/api"]
+    missing = set(LEGACY_ENDPOINT_SCOPES) - set(api_app.view_functions)
+    assert not missing
+
+
+def test_cors_preflight_is_not_scoped(
+    client, deposit_url, headers, test_data, make_token
+):
+    """CORS preflight requests carry no credentials and are not rejected."""
+    full = _auth(headers, make_token([WRITE, ACTIONS]))
+    links = _create(client, deposit_url, full, test_data)
+
+    preflight = {
+        "Origin": "https://example.org",
+        "Access-Control-Request-Method": "POST",
+        "Access-Control-Request-Headers": "authorization, content-type",
+    }
+    for url in [
+        deposit_url,
+        links["self"],
+        links["files"],
+        links["publish"],
+        f"{links['bucket']}/data.txt",
+    ]:
+        res = client.options(url, headers=preflight)
+        assert res.status_code == 200, url
+        assert "Access-Control-Allow-Origin" in res.headers, url
