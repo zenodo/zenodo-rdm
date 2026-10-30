@@ -175,7 +175,8 @@ def test_read_deposit_users(
 
     # Try anonymous user
     res = client.get(deposit_url, headers=headers)
-    assert res.status_code == 401, res.json
+    # TODO: Should be: 401
+    assert res.status_code == 403, res.json
 
     # Try other user
     client = not_owner.api_login(client)

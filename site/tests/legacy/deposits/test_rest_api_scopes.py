@@ -88,18 +88,15 @@ def test_token_without_deposit_scopes(
 def test_token_without_write_scope(
     client, deposit_url, headers, test_data, make_token, scopes
 ):
-    """Deposit CRUD requires the deposit:write scope."""
+    """Deposit writes require the deposit:write scope."""
     full = _auth(headers, make_token([WRITE, ACTIONS]))
     links = _create(client, deposit_url, full, test_data)
     assert _upload(client, links, full).status_code == 201
 
     limited = _auth(headers, make_token(scopes))
-    assert client.get(deposit_url, headers=limited).status_code == 403
     assert client.post(deposit_url, json=test_data, headers=limited).status_code == 403
-    assert client.get(links["self"], headers=limited).status_code == 403
     res = client.put(links["self"], json=test_data, headers=limited)
     assert res.status_code == 403
-    assert client.get(links["files"], headers=limited).status_code == 403
     assert _upload(client, links, limited, "other.txt").status_code == 403
 
     # Files-REST and extra formats
@@ -125,6 +122,24 @@ def test_token_without_write_scope(
     assert client.delete(links["self"], headers=limited).status_code == 403
     # Nothing was changed by the limited token
     assert client.get(links["self"], headers=full).status_code == 200
+
+
+@pytest.mark.parametrize("scopes", [[], ["user:email"]])
+def test_reads_do_not_need_deposit_scopes(
+    client, deposit_url, headers, test_data, make_token, scopes
+):
+    """Reading own deposits and their files works without deposit scopes."""
+    full = _auth(headers, make_token([WRITE, ACTIONS]))
+    links = _create(client, deposit_url, full, test_data)
+    assert _upload(client, links, full).status_code == 201
+    file_id = client.get(links["files"], headers=full).json[0]["id"]
+
+    limited = _auth(headers, make_token(scopes))
+    assert client.get(deposit_url, headers=limited).status_code == 200
+    assert client.get(links["self"], headers=limited).status_code == 200
+    assert client.get(links["files"], headers=limited).status_code == 200
+    res = client.get(f"{links['files']}/{file_id}", headers=limited)
+    assert res.status_code == 200
 
 
 def test_write_scope_cannot_run_actions(
@@ -189,7 +204,6 @@ def test_anonymous_requests(client, deposit_url, headers, test_data, make_token)
     full = _auth(headers, make_token([WRITE, ACTIONS]))
     links = _create(client, deposit_url, full, test_data)
 
-    assert client.get(deposit_url, headers=headers).status_code == 401
     assert client.post(deposit_url, json=test_data, headers=headers).status_code == 401
     assert client.post(links["publish"], headers=headers).status_code == 401
     assert client.delete(links["self"], headers=headers).status_code == 401

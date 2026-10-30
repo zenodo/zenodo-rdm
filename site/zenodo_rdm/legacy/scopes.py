@@ -27,9 +27,7 @@ _actions = (deposit_actions_scope.id,)
 
 LEGACY_ENDPOINT_SCOPES = {
     # Depositions
-    "legacy_records.search_user_records": _write,
     "legacy_records.create": _write,
-    "legacy_records.read_draft": _write,
     "legacy_records.update_draft": _write,
     "legacy_records.delete_draft": _write,
     "legacy_records.publish": _actions,
@@ -37,9 +35,7 @@ LEGACY_ENDPOINT_SCOPES = {
     "legacy_records.discard_draft": _actions,
     "legacy_records.new_version": _actions,
     # Deposition files
-    "legacy_draft_files.search": _write,
     "legacy_draft_files.create": _write,
-    "legacy_draft_files.read": _write,
     "legacy_draft_files.delete": _write,
     # Files-REST
     "legacy_files_rest.set_object": _write,
@@ -50,7 +46,7 @@ LEGACY_ENDPOINT_SCOPES = {
 }
 """OAuth scopes required by each legacy endpoint.
 
-Endpoints not listed here keep relying only on record permissions.
+Endpoints not listed here, such as reads, keep relying only on record permissions.
 """
 
 
