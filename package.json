@@ -38,7 +38,7 @@
     "luxon": "^1.23.0",
     "papaparse": "^5.4.1",
     "path": "^0.12.7",
-    "pdfjs-dist": "^5.0",
+    "pdfjs-dist": "^6.0",
     "prismjs": "^1.15.0",
     "prop-types": "^15.7.2",
     "qs": "^6.9.1",
