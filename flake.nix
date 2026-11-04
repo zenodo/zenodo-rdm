@@ -18,8 +18,8 @@
           packages = with pkgs; [
             uv
 
-            nodejs_22
-            pnpm
+            nodejs_26
+            pnpm_12
             corepack
 
             gcc
