@@ -8,6 +8,7 @@ import urllib
 from flask import current_app
 from invenio_access.permissions import system_identity
 from invenio_communities.proxies import current_communities
+from invenio_vocabularies.contrib.awards.config import awards_ec_ror_id
 from invenio_vocabularies.proxies import current_service as vocab_service
 from requests import Session
 
@@ -149,3 +150,8 @@ def openaire_link(record):
     if doi:
         return f"{openaire_url}/search/result?pid={urllib.parse.quote(str(doi))}"
     return None
+
+
+def filter_ec_awards(stream_entry):
+    """Skip OpenAIRE award entries funded by the European Commission."""
+    return stream_entry.entry.get("funder", {}).get("id") == awards_ec_ror_id
