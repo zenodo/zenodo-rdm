@@ -14,3 +14,10 @@ STATS_PIWIK_EXPORT_ENABLED = False
 STATS_SEARCH_HOST_CONNECTION_OPTIONS = {
     "timeout": 60,
 }
+
+STATS_VISITOR_CLASSIFIER = "zenodo_rdm.stats.visitors:visitor_classifier"
+"""Visitor classifier: COUNTER baseline + extended preset + Zenodo instance lists.
+
+Datacenter detection activates when ``STATS_VISITOR_ASN_DB`` (set in the deployment
+config) points at a GeoLite2-ASN database.
+"""
