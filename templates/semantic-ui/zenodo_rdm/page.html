@@ -1,0 +1,25 @@
+{#
+  SPDX-FileCopyrightText: 2026 CERN
+  SPDX-License-Identifier: GPL-3.0-or-later
+#}
+{#- Zenodo base template: adds link-preview metadata (Open Graph / Twitter). -#}
+{%- extends "invenio_app_rdm/page.html" -%}
+
+{%- block head_meta %}
+  {{ super() }}
+  {#- Record pages already get title/description tags from invenio_app_rdm/records/details/meta.html. -#}
+  {%- if record_ui is not defined %}
+    {%- set og_title = title or config.THEME_SITENAME %}
+    {%- set og_description = description or "Zenodo is a free and open digital archive built by CERN and OpenAIRE, enabling researchers to share and preserve research output in any format and from all fields of research." %}
+    {%- if not description %}<meta name="description" content="{{ og_description }}" />{% endif %}
+    <meta property="og:site_name" content="{{ config.THEME_SITENAME }}" />
+    <meta property="og:title" content="{{ og_title }}" />
+    <meta property="og:description" content="{{ og_description }}" />
+    <meta property="og:url" content="{{ request.base_url }}" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:description" content="{{ og_description }}" />
+  {%- endif %}
+  {%- set og_image = url_for("static", filename="images/zenodo-og.png", _external=True) %}
+  <meta property="og:image" content="{{ og_image }}" />
+  <meta name="twitter:image" content="{{ og_image }}" />
+{%- endblock head_meta %}
