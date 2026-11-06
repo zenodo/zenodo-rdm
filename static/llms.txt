@@ -5,14 +5,14 @@
 Choose the access route that fits the task:
 
 - **Many records, or a whole-repository analysis:** download the metadata dumps. They are public, need no token and cost one request each.
-- **Changes since a dump:** harvest over OAI-PMH using the `from` parameter.
+- **Changes since a dump:** harvest over OAI-PMH, setting `from` to the first day of the month the dump was generated in.
 - **A few known records, or a specific search:** use the REST API. An agent answering one person's question may fetch a few records this way, but collecting many records must go through the dumps or OAI-PMH.
 - **Avoid:** crawling HTML pages or paging through `/search` or `/api/records` to enumerate records. Search stops at 10,000 results per query and has a much lower rate limit than other endpoints.
 
 About the metadata dumps:
 
 - The dumps are `.tar.gz` archives with one file per record, named `<record_id>.json` or `<record_id>.xml`. The full JSON archive is larger than 10 GB, and downloads can be resumed with HTTP range requests.
-- They cover the metadata of all public record versions, and are generated about once a month. Check `created` and `checksum` in the listing at `/api/exporter`, which also shows the retained snapshots.
+- They cover the metadata of all public record versions. Generation starts at the beginning of each month (UTC), so each dump includes records up to the end of the previous month. Its `created` date is when the file was finished, which is a few days later. The listing at `/api/exporter` shows the retained snapshots with their `created` dates and checksums.
 - They do not include file contents. Each JSON record lists its files with their names, sizes and checksums.
 - Remove the identifiers in `records-deleted.csv.gz` from anything you built from an earlier dump.
 - Their JSON uses the InvenioRDM format. To get the same format from the REST API, send `Accept: application/vnd.inveniordm.v1+json`, because the default `application/json` response has a different structure.
