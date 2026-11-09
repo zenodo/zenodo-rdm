@@ -1,13 +1,13 @@
-# SPDX-FileCopyrightText: 2024 CERN
+# SPDX-FileCopyrightText: 2024-2026 CERN
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Moderation config."""
 
 from .rules import (
-    files_rule,
-    links_rule,
-    match_query_rule,
-    text_sanitization_rule,
-    verified_user_rule,
+    FileRule,
+    LinkRule,
+    MatchQueryRule,
+    MetadataSpamIndicatorsRule,
+    OwnerVerifiedRule,
 )
 
 MODERATION_SCORES = {
@@ -41,19 +41,19 @@ MODERATION_EXEMPT_USERS = []
 """List of users exempt from moderation."""
 
 MODERATION_RECORD_SCORE_RULES = {
-    "verified_user_rule": verified_user_rule,
-    "links_rule": links_rule,
-    "files_rule": files_rule,
-    "text_sanitization_rule": text_sanitization_rule,
-    "match_query_rule": match_query_rule,
+    "owner_verified_rule": OwnerVerifiedRule(),
+    "link_rule": LinkRule(),
+    "file_rule": FileRule(),
+    "metadata_spam_indicators_rule": MetadataSpamIndicatorsRule(),
+    "match_query_rule": MatchQueryRule(),
 }
 """Scoring rules for record moderation."""
 
 MODERATION_COMMUNITY_SCORE_RULES = {
-    "links_rule": links_rule,
-    "text_sanitization_rule": text_sanitization_rule,
-    "verified_user_rule": verified_user_rule,
-    "match_query_rule": match_query_rule,
+    "link_rule": LinkRule(),
+    "metadata_spam_indicators_rule": MetadataSpamIndicatorsRule(),
+    "owner_verified_rule": OwnerVerifiedRule(),
+    "match_query_rule": MatchQueryRule(),
 }
 """Scoring rules for communtiy moderation."""
 
