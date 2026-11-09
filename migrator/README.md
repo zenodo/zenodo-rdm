@@ -16,7 +16,7 @@ following configuration in your `invenio.cfg` file:
 # This means that you will run locally the web and worker nodes, and connect
 # to remote instances of DB, OpenSearch and Sentry.
 # logging
-SENTRY_DSN="https://secret12345abcde@locahost.sentry/3"
+SENTRY_DSN="https://secret12345abcde@localhost.sentry/3"
 LOGGING_SENTRY_CELERY = True
 LOGGING_SENTRY_LEVEL = "WARNING"
 SENTRY_ENVIRONMENT = "qa"
