@@ -9,6 +9,7 @@ from invenio_access.permissions import system_identity
 from invenio_rdm_records.proxies import current_rdm_records_service as service
 
 MIMETYPE = "application/custom+xml"
+MISSING = "999999999"
 
 DEPOSIT_DATA = {
     "metadata": {
@@ -39,12 +40,24 @@ def _create_deposit(client, deposit_url, headers, publish=True):
     return recid, links
 
 
-def _formats_responses(client, deposit_url, recid):
-    """Return (status, body) of GET and OPTIONS on the deposit formats URL."""
-    url = f"{deposit_url}/{recid}/formats"
+def _formats_responses(client, base_url, recid):
+    """Return (status, body) of GET and OPTIONS on the formats URL."""
+    url = f"{base_url}/{recid}/formats"
     get = client.get(url, query_string={"mimetype": MIMETYPE})
     options = client.options(url)
     return (get.status_code, get.json), (options.status_code, options.json)
+
+
+@pytest.fixture()
+def records_url(test_app):
+    """Records API URL."""
+    return f"{test_app.config['SITE_API_URL']}/records"
+
+
+@pytest.fixture(params=["deposit_url", "records_url"])
+def formats_base_url(request):
+    """Base URL of the deposit and the record formats endpoints."""
+    return request.getfixturevalue(request.param)
 
 
 @pytest.fixture()
@@ -83,54 +96,54 @@ def objects(client, deposit_url, headers, uploader):
     }
 
 
-def _assert_not_visible(client, deposit_url, recid):
-    """Both GET and OPTIONS answer 404."""
-    for status, _ in _formats_responses(client, deposit_url, recid):
+def _assert_not_visible(client, base_url, recid):
+    """GET and OPTIONS answer exactly like for a non-existing id."""
+    responses = _formats_responses(client, base_url, recid)
+    assert responses == _formats_responses(client, base_url, MISSING)
+    for status, _ in responses:
         assert status == 404
 
 
-def test_anonymous_formats_visibility(client, deposit_url, objects):
+def test_anonymous_formats_visibility(client, formats_base_url, objects):
     """Anonymous callers only see what is public."""
-    _assert_not_visible(client, deposit_url, "999999999")
-    _assert_not_visible(client, deposit_url, objects["unpublished"])
-    _assert_not_visible(client, deposit_url, objects["restricted"])
+    _assert_not_visible(client, formats_base_url, objects["unpublished"])
+    _assert_not_visible(client, formats_base_url, objects["restricted"])
 
     # An open edit draft must be indistinguishable from no draft.
     assert _formats_responses(
-        client, deposit_url, objects["public_with_draft"]
-    ) == _formats_responses(client, deposit_url, objects["public"])
+        client, formats_base_url, objects["public_with_draft"]
+    ) == _formats_responses(client, formats_base_url, objects["public"])
 
 
 def test_anonymous_formats_put_does_not_reveal_draft(client, deposit_url, objects):
-    """Writes on a public record answer the same with or without an edit draft."""
-    statuses = []
-    for recid in (objects["public"], objects["public_with_draft"]):
+    """Writes answer the same with or without an edit draft or a deposit."""
+
+    def put(recid):
         res = client.put(
             f"{deposit_url}/{recid}/formats",
             data=BytesIO(b"x"),
             headers={"Content-Type": MIMETYPE},
         )
-        statuses.append(res.status_code)
-    assert statuses[0] == statuses[1]
-    assert statuses[0] in (401, 403)
+        return res.status_code, res.json
 
-    res = client.put(
-        f"{deposit_url}/{objects['unpublished']}/formats",
-        data=BytesIO(b"x"),
-        headers={"Content-Type": MIMETYPE},
-    )
-    assert res.status_code == 404
+    public = put(objects["public"])
+    assert public == put(objects["public_with_draft"])
+    assert public[0] in (401, 403)
+
+    unpublished = put(objects["unpublished"])
+    assert unpublished == put(MISSING)
+    assert unpublished[0] == 404
 
 
-def test_other_user_formats_visibility(client, deposit_url, objects, test_user):
+def test_other_user_formats_visibility(client, formats_base_url, objects, test_user):
     """Another authenticated user only sees what is public."""
     client = test_user.api_login(client)
 
-    _assert_not_visible(client, deposit_url, objects["unpublished"])
-    _assert_not_visible(client, deposit_url, objects["restricted"])
+    _assert_not_visible(client, formats_base_url, objects["unpublished"])
+    _assert_not_visible(client, formats_base_url, objects["restricted"])
     assert _formats_responses(
-        client, deposit_url, objects["public_with_draft"]
-    ) == _formats_responses(client, deposit_url, objects["public"])
+        client, formats_base_url, objects["public_with_draft"]
+    ) == _formats_responses(client, formats_base_url, objects["public"])
 
 
 def test_owner_sees_draft_formats(client, deposit_url, objects, uploader):
@@ -145,3 +158,11 @@ def test_owner_sees_draft_formats(client, deposit_url, objects, uploader):
     res = client.options(url)
     assert res.status_code == 200
     assert [f["key"] for f in res.json] == [MIMETYPE]
+
+
+def test_owner_sees_restricted_formats(client, formats_base_url, objects, uploader):
+    """The owner still lists the extra formats of their restricted record."""
+    client = uploader.api_login(client)
+
+    res = client.options(f"{formats_base_url}/{objects['restricted']}/formats")
+    assert res.status_code == 200

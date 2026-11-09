@@ -16,7 +16,7 @@ from flask_resources import (
     route,
 )
 from invenio_access.permissions import system_identity
-from invenio_pidstore.errors import PIDDoesNotExistError
+from invenio_pidstore.errors import PIDDoesNotExistError, PIDUnregistered
 from invenio_rdm_records.resources.config import (
     RDMDraftFilesResourceConfig,
     RDMRecordMediaFilesResourceConfig,
@@ -383,6 +383,14 @@ def parse_extra_formats_mimetype(
     return mimetype
 
 
+def _read_visible_record(service, identity, id_):
+    """Read a record, treating a non-visible one as non-existing."""
+    try:
+        return service.read(identity, id_)._record
+    except (NoResultFound, PIDUnregistered, PermissionDenied):
+        raise PIDDoesNotExistError("recid", id_)
+
+
 class DraftExtraFormatsResourceConfig(RDMDraftFilesResourceConfig):
     """Draft extra formats resource config."""
 
@@ -419,10 +427,7 @@ class DraftExtraFormatsResource(FileResource):
         except (NoResultFound, PIDDoesNotExistError, PermissionDenied):
             # Else add it to the record directly. A draft the caller cannot see
             # is treated as absent, so its existence is not revealed.
-            try:
-                record = self.service.read(identity, id_)._record
-            except (NoResultFound, PermissionDenied):
-                raise PIDDoesNotExistError("recid", id_)
+            record = _read_visible_record(self.service, identity, id_)
 
         # NOTE: We check the permission here as a "draft", so that we can later use
         # ``system_identity`` for potentially deleting a file from a published record.
@@ -538,7 +543,7 @@ class RecordExtraFormatsResource(FileResource):
         pid_value = resource_requestctx.view_args["pid_value"]
         key = parse_extra_formats_mimetype(from_query_string=True, from_accept=True)
 
-        record = self.service.read(g.identity, pid_value)._record
+        record = _read_visible_record(self.service, g.identity, pid_value)
         if record.files.enabled is False:
             abort(404)
         item = self.service.files.get_file_content(g.identity, pid_value, key)
@@ -548,7 +553,7 @@ class RecordExtraFormatsResource(FileResource):
     def search(self):
         """Get available extra formats files."""
         pid_value = resource_requestctx.view_args["pid_value"]
-        record = self.service.read(g.identity, pid_value)._record
+        record = _read_visible_record(self.service, g.identity, pid_value)
         if record.files.enabled is False:
             return jsonify([]), 200
         files = self.service.files.list_files(g.identity, pid_value)
