@@ -160,6 +160,6 @@ def test_quickstart_workflow(
     data = res.json
 
     # Assert that a DOI has been assigned.
-    # TODO: Shoule be:
+    # TODO: Should be:
     assert data["doi"] == f"10.5281/zenodo.{record_id}"
     # assert data["pids"]["doi"]["identifier"] == f"10.5281/zenodo.{record_id}"
