@@ -11,8 +11,6 @@ dependencies = [
     "zenodo-legacy",
     "zenodo-rdm",
     "github3.py>=3.0.0",
-    "pyinstrument>=5.0.0,<6",
-    "sqltap>=0.3.11,<1.0.0",
     "zammad-py>=3.0.0,<4.0.0",
     "pyvips>=2.2.2,<3.0.0",
     "invenio-swh",
