@@ -55,7 +55,12 @@ xrootd = [
 
 [tool.codespell]
 # Ref: https://github.com/codespell-project/codespell#using-a-config-file
-skip = '.git*,*.svg,*.lock,*.css,static'
+# names.yaml and affiliations.yaml: proper names (incl. non-English ones) of people and organizations
+skip = '.git*,*.svg,*.lock,*-lock.yaml,*.css,static,.*cache,.venv,.tox,.eggs,*.egg-info,__pycache__,names.yaml,affiliations.yaml'
 check-hidden = true
 # ignore-regex = ''
-# ignore-words-list = ''
+# fo - files_object alias/variable; theses - resource type; ore - Open Research Europe;
+# nwo - funder acronym; sav - SPSS file extension; nam - lorem ipsum;
+# methoden, technik, unter - German in vocabularies/test data;
+# re-use, re-usable, unparseable - acceptable spellings (re-use in CC license text)
+ignore-words-list = 'fo,theses,ore,nwo,sav,nam,methoden,technik,unter,re-use,re-usable,unparseable'
