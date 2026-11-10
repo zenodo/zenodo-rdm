@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 5
 requires-python = "==3.14.*"
 
 [manifest]
@@ -2368,7 +2368,7 @@ wheels = [
 
 [[package]]
 name = "invenio-vcs"
-version = "0.5.3"
+version = "0.6.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "click" },
@@ -2398,9 +2398,9 @@ dependencies = [
     { name = "six" },
     { name = "uritemplate" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/bd/b5/1527f4bf6e617820464de366c4c9b782dd5124701278cf08253788bfa4bd/invenio_vcs-0.5.3.tar.gz", hash = "sha256:b1fc4ea97c1419b4070a92b9c1cd80982237f75e6dbbd96091c2b9879ce6bf35", size = 63336, upload-time = "2026-09-24T07:25:05.089Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/12/a3/7a30bdeb04c00047beaa8909510c87ccf90acc0b5620dc10e0b0d98d9deb/invenio_vcs-0.6.0.tar.gz", hash = "sha256:c8ff8c0499c844426f71b3a7915a2fe3a25b720bb58ea78e21e187cd8fe4357a", size = 63343, upload-time = "2026-11-10T07:03:55.46Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/d3/dd/42c955e731d932191778f2685152df4e088c595466471497dc44cb0f52ef/invenio_vcs-0.5.3-py3-none-any.whl", hash = "sha256:cdcb8c49167ae7dc515a435cf638ec47e30ff888c0069439b0495b70a2c62ca0", size = 100229, upload-time = "2026-09-24T07:25:04.051Z" },
+    { url = "https://files.pythonhosted.org/packages/4d/4b/2ab29cff5fe139034f98a92fe37ef2d2511cc7a03eb9838f996e3feacd02/invenio_vcs-0.6.0-py3-none-any.whl", hash = "sha256:6b9690a1214972de62de9f932d60585f781d18bb4340d10d62d2aadc32857f27", size = 100226, upload-time = "2026-11-10T07:03:54.388Z" },
 ]
 
 [[package]]
