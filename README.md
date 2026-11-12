@@ -12,7 +12,7 @@
 
 - [`uv`](https://docs.astral.sh/uv/getting-started/installation/#standalone-installer)
 - [Docker](https://docs.docker.com/get-docker/)
-- [Node.js 24.x](https://nodejs.org/) and [`pnpm` 11.x](https://pnpm.io/installation)
+- [Node.js 24.x](https://nodejs.org/) and [`pnpm` 12.x](https://pnpm.io/installation)
 - [`libvips-dev`](https://www.libvips.org/install.html)
 
 ### Setup

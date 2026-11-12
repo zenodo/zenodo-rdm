@@ -7,8 +7,12 @@
 
 ARG BUILD_PLATFORM=linux/amd64
 ARG BUILD_EXTRAS="--extra sentry --extra xrootd"
+ARG PNPM_VERSION=latest-12
 
 FROM --platform=${BUILD_PLATFORM} ghcr.io/inveniosoftware/invenio:debian-python3.14 AS base
+
+ARG PNPM_VERSION
+RUN npm install --global pnpm@${PNPM_VERSION}
 
 ENV PNPM_CONFIG_STORE_DIR=/pnpm/store \
     PNPM_CONFIG_CACHE_DIR=/pnpm/cache
@@ -26,7 +30,6 @@ RUN --mount=type=bind,source=uv.lock,target=uv.lock \
 
 # --- Frontend dependencies ---
 FROM base AS frontend-dependencies
-ARG PNPM_VERSION
 WORKDIR /frontend
 COPY package.json pnpm-lock.yaml ./
 RUN --mount=type=cache,target=/pnpm/store \
