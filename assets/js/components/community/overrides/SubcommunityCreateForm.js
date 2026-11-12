@@ -283,11 +283,7 @@ class SubcommunityCreateForm extends Component {
                             acronym: item.acronym,
                             title: item.title_l10n,
                             short_description: item.short_description_l10n,
-                            website:
-                              item.website ||
-                              item.identifiers.find((id) => id.scheme === "url")
-                                ?.identifier ||
-                              "",
+                            website: item.website || "",
                             organizations: item.organizations || [],
                           };
                         })
