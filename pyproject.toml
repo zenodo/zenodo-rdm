@@ -22,6 +22,10 @@ dependencies = [
     "invenio-rdm-records",
 ]
 
+[tool.uv]
+# Temp fix linux
+constraint-dependencies = ["watchdog<7"]
+
 [tool.uv.sources]
 zenodo-rdm = { workspace = true }
 zenodo-legacy = { workspace = true }
