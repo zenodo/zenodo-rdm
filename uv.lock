@@ -4876,7 +4876,7 @@ source = { editable = "site" }
 
 [[package]]
 name = "zenodo-rdm-app"
-version = "28.0.0rc1"
+version = "29.0.0rc1"
 source = { virtual = "." }
 dependencies = [
     { name = "github3-py" },
