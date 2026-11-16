@@ -16,6 +16,7 @@ from flask import (
 )
 from flask.views import MethodView
 from flask_login import current_user
+from invenio_accounts.captcha import is_altcha_enabled, verify_altcha_payload
 from invenio_accounts.sessions import _extract_info_from_useragent
 from invenio_i18n import _
 from marshmallow import ValidationError
@@ -88,7 +89,20 @@ class ZenodoSupport(MethodView):
     def post(self):
         """Receives a form, validates its data and handles it."""
         input_data = {**request.form.to_dict(), "files": request.files.getlist("files")}
+        # The ALTCHA payload is not part of the ticket data.
+        altcha_payload = input_data.pop("altcha", None)
         data = self.validate_form(input_data)
+        # Verified after the schema so that a mistake in the form does not use up
+        # the (single-use) solution. Logged-in users already passed ALTCHA to sign up.
+        if is_altcha_enabled(current_app) and not current_user.is_authenticated:
+            if not verify_altcha_payload(altcha_payload):
+                raise ValidationError(
+                    {
+                        "altcha": [
+                            _("Please complete the verification that you are not a robot.")
+                        ]
+                    }
+                )
         try:
             return self.handle_form(data)
         except RequestException:
