@@ -8,5 +8,15 @@ form.credentials-form {
       width: 100%;
       font-size: @16px;
     }
-  } 
+  }
+}
+
+// ALTCHA widget (floating): hidden until the form is submitted, then shown
+// as a popover anchored to the form submit button.
+altcha-widget {
+  --altcha-max-width: 20rem;
+  --altcha-border-radius: 0.5rem;
+  --altcha-padding: 1rem;
+  --altcha-shadow: drop-shadow(0 0.5rem 1.25rem rgba(0, 0, 0, 0.3));
+  font-size: @16px;
 }
