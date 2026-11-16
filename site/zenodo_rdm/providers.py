@@ -4,10 +4,15 @@
 
 import copy
 
+from invenio_access.permissions import system_identity
+from invenio_db import db
 from invenio_i18n import lazy_gettext as _
+from invenio_pidstore.errors import PIDDoesNotExistError
 from invenio_rdm_records import config as rdm_records_config
+from invenio_rdm_records.proxies import current_rdm_records_service
 from invenio_rdm_records.services.pids import providers as rdm_providers
 from invenio_rdm_records.services.pids.providers.base import PIDProvider
+from sqlalchemy.orm.exc import NoResultFound
 
 from .serializers import ZenodoDataciteJSONSerializer
 
@@ -166,6 +171,60 @@ class LegacyParentDOIProvider(PIDProvider):
         return True, []
 
 
+class ZenodoExternalPIDProvider(rdm_providers.ExternalPIDProvider):
+    """External PID provider with a descriptive "already exists" error."""
+
+    def _existing_record_url(self, identifier, record):
+        """Return the URL of the published record using the identifier, if any."""
+        try:
+            pid = self.get(pid_value=identifier)
+            if not pid.object_uuid or pid.object_uuid == record.id:
+                return None
+            with db.session.no_autoflush:
+                existing = current_rdm_records_service.record_cls.get_record(
+                    pid.object_uuid
+                )
+            # Same link as ``links.self_html`` in API responses (url_for can't be
+            # used here since the UI blueprint isn't registered in the API app).
+            links = current_rdm_records_service.links_item_tpl.expand(
+                system_identity, existing
+            )
+            return links["self_html"]
+        except PIDDoesNotExistError, NoResultFound:
+            return None
+
+    def validate(self, record, identifier=None, provider=None, client=None, **kwargs):
+        """Validate the identifier, naming the existing record on duplicates."""
+        success, errors = super().validate(
+            record, identifier, provider, client=client, **kwargs
+        )
+        if success or not identifier:
+            return success, errors
+
+        url = self._existing_record_url(identifier, record)
+        if not url:
+            return success, errors
+
+        default_msg = str(
+            _(
+                "%(pid_type)s:%(identifier)s already exists.",
+                pid_type=self.pid_type,
+                identifier=identifier,
+            )
+        )
+        new_msg = _(
+            "%(scheme)s %(identifier)s is already used by the record %(url)s.",
+            scheme=self.label,
+            identifier=identifier,
+            url=url,
+        )
+        for error in errors:
+            error["messages"] = [
+                new_msg if str(m) == default_msg else m for m in error["messages"]
+            ]
+        return success, errors
+
+
 RDM_PERSISTENT_IDENTIFIER_PROVIDERS = [
     # DataCite DOI provider
     rdm_providers.DataCitePIDProvider(
@@ -175,7 +234,7 @@ RDM_PERSISTENT_IDENTIFIER_PROVIDERS = [
         serializer=ZenodoDataciteJSONSerializer(),
     ),
     # DOI provider for externally managed DOIs
-    rdm_providers.ExternalPIDProvider(
+    ZenodoExternalPIDProvider(
         "external",
         "doi",
         validators=[rdm_providers.BlockedPrefixes(config_names=["DATACITE_PREFIX"])],
