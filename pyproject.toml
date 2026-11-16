@@ -19,7 +19,6 @@ dependencies = [
     "uwsgi-tools>=1.1.1",
     "invenio-records-resources",
     "invenio-github>=7.0.0,<8.0.0",
-    "invenio-rdm-records",
 ]
 
 [tool.uv]

@@ -1514,7 +1514,7 @@ wheels = [
 [[package]]
 name = "invenio-app-rdm"
 version = "15.0.0b7.dev0"
-source = { git = "https://github.com/inveniosoftware/invenio-app-rdm?branch=feature%2Forcha#ca7566c3516c455888359962ccea02c38fe36cfb" }
+source = { git = "https://github.com/inveniosoftware/invenio-app-rdm?branch=feature%2Forcha#b3f55b028f6f771ddd5935ab2c27340c7b18405b" }
 dependencies = [
     { name = "cairosvg" },
     { name = "invenio-access" },
@@ -1687,7 +1687,7 @@ wheels = [
 
 [[package]]
 name = "invenio-communities"
-version = "30.0.1"
+version = "30.0.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "invenio-administration" },
@@ -1698,9 +1698,9 @@ dependencies = [
     { name = "invenio-search-ui" },
     { name = "invenio-vocabularies" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/78/36/ce428c8b47d7b38a63b5cde8a0eb1d68a73dac69ea672e8074e47d0a371c/invenio_communities-30.0.1.tar.gz", hash = "sha256:c5d0e3166fff647a13d56a46eca413b782d5e7f672e55e794dd7bca328d5b694", size = 463753, upload-time = "2026-11-16T08:28:20.505Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/d9/41/06620464119b2493704b387f13afa1dc4d826cb5306796ea18a5bc57a123/invenio_communities-30.0.2.tar.gz", hash = "sha256:c06d314a7f8f702a2591e0438e7256d39b790c03ad9d8a804d9e532261352f13", size = 463842, upload-time = "2026-11-16T14:05:23.439Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/d8/2f/3826e50e5887a62c976345b7068ecf0b598d0bed24cc320988d199f87081/invenio_communities-30.0.1-py3-none-any.whl", hash = "sha256:d3043d115baefc7524353795829a66e6cdb797d4b8bf2a8bcb07006cb3e76791", size = 851896, upload-time = "2026-11-16T08:28:18.866Z" },
+    { url = "https://files.pythonhosted.org/packages/48/fe/8c1fab3acc73ee2435cb2b94b6343e31e907755df15c144bf9dc4de1ac03/invenio_communities-30.0.2-py3-none-any.whl", hash = "sha256:5cf4a9ddb9b562cd2d67fd303f8869af3c6f2a76fb9e59b7beb81d33faa02599", size = 851935, upload-time = "2026-11-16T14:05:21.718Z" },
 ]
 
 [[package]]
@@ -4865,7 +4865,6 @@ dependencies = [
     { name = "github3-py" },
     { name = "invenio-app-rdm", extra = ["opensearch2", "profiler"] },
     { name = "invenio-github" },
-    { name = "invenio-rdm-records" },
     { name = "invenio-records-resources" },
     { name = "invenio-swh" },
     { name = "pyvips" },
@@ -4899,7 +4898,6 @@ requires-dist = [
     { name = "invenio-app-rdm", extras = ["opensearch2", "profiler"], git = "https://github.com/inveniosoftware/invenio-app-rdm?branch=feature%2Forcha" },
     { name = "invenio-github", specifier = ">=7.0.0,<8.0.0" },
     { name = "invenio-logging", extras = ["sentry"], marker = "extra == 'sentry'" },
-    { name = "invenio-rdm-records" },
     { name = "invenio-records-resources", git = "https://github.com/inveniosoftware/invenio-records-resources?branch=fix-read-many" },
     { name = "invenio-swh", git = "https://github.com/inveniosoftware/invenio-swh?rev=v0.13.5" },
     { name = "invenio-xrootd", marker = "extra == 'xrootd'", specifier = ">=3.0.0,<4.0.0" },
