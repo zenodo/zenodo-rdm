@@ -1,0 +1,16 @@
+allowBuilds:
+  '@fortawesome/fontawesome-free': false
+  '@parcel/watcher': false
+  '@swc/core': false
+strictDepBuilds: false
+# required for pnpm to work with webpack
+# https://github.com/webpack/webpack/issues/5087#issuecomment-1589749984
+nodeLinker: hoisted
+shamefullyHoist: true
+minimumReleaseAgeExclude:
+  - "@inveniosoftware/eslint-config-invenio"
+  - "@inveniosoftware/react-invenio-app-ils"
+  - react-invenio-forms
+  - react-searchkit
+  - react-overridable
+

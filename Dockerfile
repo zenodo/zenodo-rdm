@@ -31,7 +31,7 @@ RUN --mount=type=bind,source=uv.lock,target=uv.lock \
 # --- Frontend dependencies ---
 FROM base AS frontend-dependencies
 WORKDIR /frontend
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN --mount=type=cache,target=/pnpm/store \
     --mount=type=cache,target=/pnpm/cache \
     pnpm install --frozen-lockfile --ignore-scripts \
@@ -91,7 +91,8 @@ RUN mkdir -p ${INVENIO_INSTANCE_PATH}/assets && \
     cp -r ./assets/. ${INVENIO_INSTANCE_PATH}/assets/ && \
     invenio collect --verbose && \
     invenio webpack create && \
-    cmp package.json ${INVENIO_INSTANCE_PATH}/assets/package.json
+    cmp package.json ${INVENIO_INSTANCE_PATH}/assets/package.json && \
+    cmp pnpm-workspace.yaml ${INVENIO_INSTANCE_PATH}/assets/pnpm-workspace.yaml
 COPY pnpm-lock.yaml ${INVENIO_INSTANCE_PATH}/assets/pnpm-lock.yaml
 COPY --from=frontend-dependencies /frontend/node_modules ${INVENIO_INSTANCE_PATH}/assets/node_modules
 
