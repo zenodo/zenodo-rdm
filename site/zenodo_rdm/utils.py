@@ -15,18 +15,18 @@ from invenio_swh.proxies import current_swh_service as service_swh
 from zenodo_rdm.openaire.utils import openaire_link
 
 
-def github_link_render(record):
-    """Entry for GitHub."""
+def _vcs_link_render(record, hostname, release_path_regex, default_title, icon):
+    """Entry for VCS."""
     ret = []
     related_identifiers = record.data["metadata"].get("related_identifiers", [])
     for rel_id in related_identifiers:
         is_url = rel_id["scheme"] == "url"
         is_supplement = rel_id["relation_type"]["id"] == "issupplementto"
         url_parts = urlsplit(rel_id["identifier"])
-        is_github = url_parts.hostname == "github.com"
-        if is_url and is_supplement and is_github:
-            release_info = re.match("\/(?P<repo>.+)\/tree\/(?P<tag>.+)", url_parts.path)
-            title = "Github"
+        is_vcs_host = url_parts.hostname == hostname
+        if is_url and is_supplement and is_vcs_host:
+            release_info = re.match(release_path_regex, url_parts.path)
+            title = default_title
             subtitle = None
             if release_info:
                 title = release_info["repo"]
@@ -38,10 +38,35 @@ def github_link_render(record):
                     title=title,
                     section="Available in",
                     subtitle=subtitle,
-                    icon=url_for("static", filename="images/github.svg"),
+                    icon=url_for("static", filename=icon),
                 )
             )
     return ret
+
+
+def github_link_render(record):
+    """Entry for GitHub."""
+    return _vcs_link_render(
+        record,
+        hostname="github.com",
+        # e.g. /<owner>/<repo>/tree/<tag>
+        release_path_regex=r"/(?P<repo>.+)/tree/(?P<tag>.+)",
+        default_title="Github",
+        icon="images/github.svg",
+    )
+
+
+def gitlab_link_render(record):
+    """Entry for GitLab."""
+    return _vcs_link_render(
+        record,
+        hostname="gitlab.com",
+        # e.g. /<group>/<subgroup>/<project>/-/tags/<tag>. The project path can
+        # contain any number of subgroups, but never a "-" path segment.
+        release_path_regex=r"/(?P<repo>.+?)/-/tags/(?P<tag>.+)",
+        default_title="GitLab",
+        icon="images/gitlab.svg",
+    )
 
 
 def f1000_link_render(record):
