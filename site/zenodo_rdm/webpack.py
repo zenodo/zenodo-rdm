@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2019-2022 CERN
+# SPDX-FileCopyrightText: 2019-2026 CERN
 # SPDX-FileCopyrightText: 2019-2022 Northwestern University
 # SPDX-FileCopyrightText: 2022 TU Wien
 # SPDX-FileCopyrightText: 2022 Graz University of Technology
@@ -23,22 +23,6 @@ theme = WebpackThemeBundle(
                 "zenodo-rdm-orcha-waitlist-banner": "./js/zenodo_rdm/src/orcha-waitlist-banner.js",
                 "image-previewer": "./less/zenodo_rdm/previewer/image-previewer.less",
             },
-            dependencies={
-                "@babel/runtime": "^7.9.0",
-                "formik": "^2.4.9",
-                "i18next": "^20.3.0",
-                "i18next-browser-languagedetector": "^6.1.0",
-                "prop-types": "^15.7.2",
-                "react-i18next": "^11.11.0",
-                "react-invenio-forms": "^5.0.2",
-                "yup": "^0.32.11",
-                "react": "^18.3.1",
-                "react-dom": "^18.3.1",
-                "lodash": "^4.17.0",
-            },
-            # aliases={
-            #     "@translations/zenodo_rdm": "translations",
-            # } TODO
         ),
     },
 )
