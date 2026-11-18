@@ -1,6 +1,9 @@
 # SPDX-FileCopyrightText: 2026 CERN
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+from invenio_checks.models import CheckConfig
+
+from zenodo_rdm.checks.compare_metadata import COMPARE_METADATA_CHECK_CONFIG
 
 BASE_URL = "https://127.0.0.1:5000"
 WAITLIST_URL = f"{BASE_URL}/ai-assist-features-waitlist"
@@ -58,6 +61,43 @@ def test_user_on_waitlist_still_sees_page(client, app, orcha_waitlisted_user):
     app.config["RDM_ORCHA_WAITLIST_ENABLED"] = True
     orcha_waitlisted_user.login(client)
     assert client.get(WAITLIST_URL).status_code == 200
+
+
+def test_joining_waitlist_enables_compare_metadata_check_for_owned_communities(
+    client, app, verified_user, orcha_waitlist_role, owned_community, db
+):
+    """Joining the waitlist auto-configures compare_metadata for owned communities."""
+    app.config["RDM_ORCHA_WAITLIST_ENABLED"] = True
+    verified_user.login(client)
+
+    assert (
+        CheckConfig.query.filter_by(
+            community_id=owned_community.id, check_id="compare_metadata"
+        ).one_or_none()
+        is None
+    )
+
+    res = client.post(WAITLIST_URL)
+    assert res.status_code == 200
+
+    check = CheckConfig.query.filter_by(
+        community_id=owned_community.id, check_id="compare_metadata"
+    ).one_or_none()
+    assert check is not None
+    assert check.enabled is True
+    assert check.params == COMPARE_METADATA_CHECK_CONFIG
+
+
+def test_joining_waitlist_without_owned_communities_does_not_error(
+    client, app, verified_user, orcha_waitlist_role
+):
+    """Joining the waitlist with no owned communities is a no-op, not an error."""
+    app.config["RDM_ORCHA_WAITLIST_ENABLED"] = True
+    verified_user.login(client)
+
+    res = client.post(WAITLIST_URL)
+    assert res.status_code == 200
+    assert verified_user.user.has_role("orcha-waitlist")
 
 
 def test_dismiss_banner_sets_cookie(client, app, verified_user):

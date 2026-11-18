@@ -13,11 +13,16 @@ Usage:
 from copy import deepcopy
 
 from invenio_access.permissions import system_identity
+from invenio_accounts.models import Role
 from invenio_checks.models import CheckConfig, Severity
+from invenio_communities.members.records.models import MemberModel
 from invenio_communities.proxies import current_communities
 from invenio_db import db
 from invenio_search.api import dsl
 from werkzeug.local import LocalProxy
+
+from zenodo_rdm.checks.compare_metadata import enable_compare_metadata_check
+from zenodo_rdm.orcha.views import WAITLIST_ROLE_NAME
 
 community_service = LocalProxy(lambda: current_communities.service)
 
@@ -513,18 +518,11 @@ FUNDING_CHECK_CONFIG = {
     "funding_description": "The system compares the record title and description against the official EU grant description.",
 }
 
-COMPARE_METADATA_CHECK_CONFIG = {
-    "compare_metadata_title": "Record's metadata should match content of the uploaded file.",
-    "compare_metadata_description": "The system compares the record metadata against the uploaded file.",
-}
-
-
 def create_eu_checks():
     eu_comm = community_service.record_cls.pid.resolve("eu")
     create_metadata_checks(eu_comm)
     create_file_format_checks(eu_comm)
     create_funding_check(eu_comm)
-    create_compare_metadata_check(eu_comm)
     print("EU Open Research Repository community checks created/updated successfully.")
 
     # Create checks for sub-communities
@@ -681,28 +679,37 @@ def create_funding_check(comm):
     )
 
 
-def create_compare_metadata_check(comm):
-    existing_check = CheckConfig.query.filter_by(
-        community_id=comm.id, check_id="compare_metadata"
-    ).one_or_none()
-    if existing_check:
-        existing_check.params = COMPARE_METADATA_CHECK_CONFIG
-        existing_check.target_type = "record"
-    else:
-        db.session.add(
-            CheckConfig(
-                community_id=comm.id,
-                check_id="compare_metadata",
-                params=COMPARE_METADATA_CHECK_CONFIG,
-                target_type="record",
-                severity=Severity.WARN,
-                enabled=True,
-            )
-        )
-    db.session.commit()
+def create_compare_metadata_check(community_ids):
+    for community_id in community_ids:
+        enable_compare_metadata_check(community_id)
     print(
-        f"Metadata Comparison check created/updated successfully for community {comm.slug}."
+        f"Metadata Comparison check created/updated successfully for {len(community_ids)} communities."
     )
+
+
+def get_orcha_waitlist_communities():
+    """Return ids of communities with at least one owner on the orcha-waitlist."""
+    role = Role.query.filter_by(name=WAITLIST_ROLE_NAME).one_or_none()
+    if role is None:
+        return []
+
+    waitlisted_user_ids = [u.id for u in role.users]
+    if not waitlisted_user_ids:
+        return []
+
+    owner_community_ids = (
+        db.session.query(MemberModel.community_id)
+        .filter(
+            MemberModel.role == "owner",
+            MemberModel.active.is_(True),
+            MemberModel.user_id.in_(waitlisted_user_ids),
+        )
+        .distinct()
+        .all()
+    )
+    return [community_id for (community_id,) in owner_community_ids]
+
 
 if __name__ == "__main__":
     create_eu_checks()
+    create_compare_metadata_check(get_orcha_waitlist_communities())

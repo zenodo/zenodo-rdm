@@ -14,7 +14,8 @@ from dataclasses import dataclass, field
 import bleach
 import requests
 from invenio_checks.base import Check, CheckResult
-from invenio_checks.models import CheckConfig
+from invenio_checks.models import CheckConfig, Severity
+from invenio_db import db
 
 from zenodo_rdm.orcha.utils import run_compare_metadata_workflow
 
@@ -206,3 +207,33 @@ class MetadataComparisonCheck(Check):
             "workflow_id": result.get("workflow_id"),
             "input_hash": self._get_input_hash(record),
         }
+
+
+COMPARE_METADATA_CHECK_CONFIG = {
+    "compare_metadata_title": MetadataComparisonCheck.default_messages["title"],
+    "compare_metadata_description": MetadataComparisonCheck.default_messages[
+        "description"
+    ],
+}
+
+
+def enable_compare_metadata_check(community_id):
+    """Create or update the compare_metadata CheckConfig for a community."""
+    existing_check = CheckConfig.query.filter_by(
+        community_id=community_id, check_id=MetadataComparisonCheck.id
+    ).one_or_none()
+    if existing_check:
+        existing_check.params = COMPARE_METADATA_CHECK_CONFIG
+        existing_check.target_type = MetadataComparisonCheck.target_type
+    else:
+        db.session.add(
+            CheckConfig(
+                community_id=community_id,
+                check_id=MetadataComparisonCheck.id,
+                params=COMPARE_METADATA_CHECK_CONFIG,
+                target_type=MetadataComparisonCheck.target_type,
+                severity=Severity.WARN,
+                enabled=True,
+            )
+        )
+    db.session.commit()

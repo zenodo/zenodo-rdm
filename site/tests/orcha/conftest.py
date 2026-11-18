@@ -7,6 +7,7 @@ from datetime import datetime
 import pytest
 from invenio_accounts.models import Role
 from invenio_app import factory as app_factory
+from invenio_communities.proxies import current_communities
 
 
 @pytest.fixture(scope="module")
@@ -38,6 +39,20 @@ def orcha_waitlist_role(db):
     db.session.add(role)
     db.session.commit()
     return role
+
+
+@pytest.fixture()
+def owned_community(running_app, community_type_record, verified_user, db):
+    """Community owned by the verified_user fixture, for waitlist hook tests."""
+    data = {
+        "slug": "orcha-waitlist-test",
+        "access": {"visibility": "public", "review_policy": "open"},
+        "metadata": {
+            "title": "Orcha Waitlist Test Community",
+            "type": {"id": "topic"},
+        },
+    }
+    return current_communities.service.create(verified_user.identity, data)
 
 
 @pytest.fixture()
