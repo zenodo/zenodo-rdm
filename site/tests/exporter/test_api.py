@@ -8,9 +8,19 @@ import json
 import tarfile
 from uuid import uuid4
 
+import pytest
 from invenio_files_rest.models import Bucket, ObjectVersion
 
 from zenodo_rdm.exporter.tasks import export_records
+
+
+@pytest.fixture()
+def db(database):
+    """Database with real commits; ``database`` drops the tables after the module."""
+    # pytest-invenio's ``db`` runs each test inside an outer transaction, which
+    # ``read_only_session()`` can't switch to autocommit.
+    yield database
+    database.session.rollback()
 
 
 def test_export_records_from_search_to_storage(

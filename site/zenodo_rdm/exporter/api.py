@@ -7,6 +7,7 @@ from tempfile import TemporaryDirectory
 
 from flask import current_app
 from invenio_db import db
+from invenio_db.utils import read_only_session
 from invenio_files_rest.models import Bucket, Location, ObjectVersion
 
 from zenodo_rdm.exporter.readers import read_records
@@ -36,9 +37,11 @@ def export_records(formats, community_slug):
     staging_path.mkdir(parents=True, exist_ok=True)
 
     with TemporaryDirectory(dir=staging_path) as run_path:
-        # Read records once and write every requested format
-        total, record_stream = read_records(community_slug)
-        paths = write_archives(Path(run_path), formats, record_stream, total)
+        # Read records once and write every requested format. The reads run in
+        # autocommit so the hours-long write doesn't keep a transaction open.
+        with read_only_session():
+            total, record_stream = read_records(community_slug)
+            paths = write_archives(Path(run_path), formats, record_stream, total)
 
         prefix = f"{community_slug}/" if community_slug else ""
         files = [(path, f"{prefix}{path.name}") for path in paths]
