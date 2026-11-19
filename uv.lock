@@ -1450,7 +1450,7 @@ wheels = [
 [[package]]
 name = "invenio-accounts"
 version = "9.2.0"
-source = { git = "https://github.com/Alfred-Jijo/invenio-accounts?branch=182-update-maxmind-db-dependency#81a57e358b04419273c823c87a7ead348296065d" }
+source = { git = "https://github.com/Alfred-Jijo/invenio-accounts?branch=182-update-maxmind-db-dependency#376a403a7c32be0c25e04fb37a53825ef92dc2c9" }
 dependencies = [
     { name = "cryptography" },
     { name = "flask-kvsession-invenio" },
