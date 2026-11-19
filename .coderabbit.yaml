@@ -1,0 +1,91 @@
+# yaml-language-server: $schema=https://www.coderabbit.ai/integrations/schema.v2.json
+#
+# CodeRabbit configuration for Zenodo-RDM.
+#
+# This file holds review *settings* only. Domain-specific review guidance lives
+# as scoped Markdown documents under `.coderabbit/`:
+#   - .coderabbit/instructions/      guidance applied to matching paths
+#   - .coderabbit/pre-merge-checks/  pass/warn checks reported on the PR
+# See https://docs.coderabbit.ai/configuration/documents
+
+language: en-US
+
+tone_instructions: >-
+  Be concise and technical. Skip generic
+  advice, flag only concrete bugs, regressions, permission/security gaps and
+  convention breaks, and say which file or layer the fix belongs in.
+
+reviews:
+  profile: chill
+  high_level_summary: true
+  sequence_diagrams: true
+  estimate_code_review_effort: true
+  # I really want a poem (Oliver)
+  poem: true
+  in_progress_fortune: false
+  collapse_walkthrough: true
+
+  # Generated, binary or vendored content that is not worth reviewing.
+  path_filters:
+    - "!uv.lock"
+    - "!pnpm-lock.yaml"
+    - "!**/node_modules/**"
+    - "!**/*.min.js"
+    - "!**/*.min.css"
+    - "!**/*.mo"
+    - "!static/images/**"
+
+  auto_review:
+    enabled: true
+    drafts: false
+    auto_incremental_review: true
+    base_branches:
+      - "^master$"
+      - "^feature/.*"
+
+  pre_merge_checks:
+    title:
+      mode: warning
+      requirements: >-
+        Follow Conventional Commits 1.0.0
+        (https://www.conventionalcommits.org/en/v1.0.0/).
+    description:
+      mode: warning
+
+  tools:
+    # Python style is enforced by isort (profile=black) + pydocstyle via pytest
+    # in CI (see site/pyproject.toml and legacy/pyproject.toml), and by black in
+    # the migrator's pytest (see migrator/setup.cfg). CodeRabbit has no
+    # black/isort integration, so disable its Python linters to avoid
+    # conflicting advice (e.g. flake8's 79-char limit vs black's 88). They are
+    # on by default.
+    ruff:
+      enabled: false
+    flake8:
+      enabled: false
+    pylint:
+      enabled: false
+    eslint:
+      enabled: true
+    shellcheck:
+      enabled: true
+    hadolint:
+      enabled: true
+    yamllint:
+      enabled: true
+    actionlint:
+      enabled: true
+    gitleaks:
+      enabled: true
+    markdownlint:
+      enabled: true
+    # Prose grammar checks are noisy on vocabulary YAML and code comments.
+    languagetool:
+      enabled: false
+
+chat:
+  auto_reply: true
+
+knowledge_base:
+  code_guidelines:
+    enabled: true
