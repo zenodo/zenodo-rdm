@@ -689,7 +689,7 @@ wheels = [
 
 [[package]]
 name = "dateparser"
-version = "1.2.0"
+version = "1.5.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "python-dateutil" },
@@ -697,9 +697,9 @@ dependencies = [
     { name = "regex" },
     { name = "tzlocal" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/1a/b2/f6b29ab17d7959eb1a0a5c64f5011dc85051ad4e25e401cbddcc515db00f/dateparser-1.2.0.tar.gz", hash = "sha256:7975b43a4222283e0ae15be7b4999d08c9a70e2d378ac87385b1ccf2cffbbb30", size = 307260, upload-time = "2023-11-17T10:47:58.151Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/89/d9/d15e289b14dd41758bcc89ad41cab96647ed221e7d4fa8b0dc27bf089740/dateparser-1.5.1.tar.gz", hash = "sha256:1c3d4a568b4f4d615adfc2945b54596adffc14f955c9b435030b5236226a4366", size = 503120, upload-time = "2026-11-17T12:24:46.565Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a4/29/db12aa4dda81580be1999824a689bd52aa40061fc12c9ccdc3feab5ea718/dateparser-1.2.0-py2.py3-none-any.whl", hash = "sha256:0b21ad96534e562920a0083e97fd45fa959882d4162acc358705144520a35830", size = 294995, upload-time = "2023-11-17T10:47:56.127Z" },
+    { url = "https://files.pythonhosted.org/packages/81/f0/1efe5925fb65ba58628656ae19bea27764f6e6817ecbc756c98746fce8e1/dateparser-1.5.1-py3-none-any.whl", hash = "sha256:1d312d2dbc3cddd61fe96d336af733b54bd01d7beb5657a432c7d1c2a144a5c8", size = 376770, upload-time = "2026-11-17T12:24:44.628Z" },
 ]
 
 [[package]]
@@ -1450,7 +1450,7 @@ wheels = [
 [[package]]
 name = "invenio-accounts"
 version = "9.2.0"
-source = { git = "https://github.com/Alfred-Jijo/invenio-accounts?branch=182-update-maxmind-db-dependency#81a57e358b04419273c823c87a7ead348296065d" }
+source = { git = "https://github.com/Alfred-Jijo/invenio-accounts?branch=182-update-maxmind-db-dependency#376a403a7c32be0c25e04fb37a53825ef92dc2c9" }
 dependencies = [
     { name = "cryptography" },
     { name = "flask-kvsession-invenio" },
@@ -1787,40 +1787,38 @@ wheels = [
 
 [[package]]
 name = "invenio-i18n"
-version = "4.0.2"
+version = "4.0.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "babel" },
     { name = "flask-babel" },
     { name = "invenio-base" },
     { name = "polib" },
-    { name = "pytz" },
     { name = "rich-click" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/bb/30/541dce79ffb7245ef8563fb86b8d66af5898f48c48aa247b2f876e8a842f/invenio_i18n-4.0.2.tar.gz", hash = "sha256:ffb0d12f58bf8d0b807e68e5c538b1ff9c3d5d4d942e2b310802f29b1b363f93", size = 34169, upload-time = "2026-08-04T08:17:13.429Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/de/38/41ad93680c94fe283e7e5771877d5d81bae78246cab02a2c7f0bfa1b87f2/invenio_i18n-4.0.3.tar.gz", hash = "sha256:a6974b35a95301ec37449055a4bf0b202636a3e38925cea63f8ddb8862f788b3", size = 34168, upload-time = "2026-11-19T13:26:10.393Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/0d/53/72990285e566299643cf9634ad77e35d916fb139579c843c30c04c548ffa/invenio_i18n-4.0.2-py3-none-any.whl", hash = "sha256:07714e0d6afbb4a24c534fce3430f7e7d01559e838850809809a0acb18186019", size = 83542, upload-time = "2026-08-04T08:17:11.977Z" },
+    { url = "https://files.pythonhosted.org/packages/74/c5/d6e81913f83ee4462b12758b2c475b4ab8bcb41abd650090b055f24ffa80/invenio_i18n-4.0.3-py3-none-any.whl", hash = "sha256:6f0031220788bbb952ca18969af12ac6865e3c3e48a6cb4480791b044b960af3", size = 83540, upload-time = "2026-11-19T13:26:08.593Z" },
 ]
 
 [[package]]
 name = "invenio-indexer"
-version = "6.0.1"
+version = "6.0.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "invenio-db" },
     { name = "invenio-pidstore" },
     { name = "invenio-records" },
-    { name = "pytz" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/4a/50/2de64257789c7dac573396ad8e612f1482d92d8efdc120de07a398f8fd7d/invenio_indexer-6.0.1.tar.gz", hash = "sha256:504a778ce7e6aa6682c59ba7f3e387af3981586cbb4fe7cde8b18d0c5c01a376", size = 13988, upload-time = "2026-07-16T14:12:14.261Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/1d/01/84df5a5d91b835f85598ae58024684fc58cf80c0e4fbf9323ca8b7d6a6cc/invenio_indexer-6.0.2.tar.gz", hash = "sha256:792754005d70b932a759506babf4d61d9cbe64c8fadd4b6ff2b0ba0407e15efd", size = 13974, upload-time = "2026-11-19T13:09:05.018Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e3/ab/d9125b587e950076d3314b076088fe587d7aa412c0bc26fedf2988637ccd/invenio_indexer-6.0.1-py3-none-any.whl", hash = "sha256:ef6a72279562acddc48ed5fd2e65fd67887897229460572948e0fe64cd4f698e", size = 18037, upload-time = "2026-07-16T14:12:13.394Z" },
+    { url = "https://files.pythonhosted.org/packages/63/43/8c61391c0933829e98d270f2e7e83f725ba27ce1964ed6ab4ef9e382cd03/invenio_indexer-6.0.2-py3-none-any.whl", hash = "sha256:c7ce3acc68529487d2439ed8550907735ee82e97745c87103e6ef9ae6aef1339", size = 18025, upload-time = "2026-11-19T13:09:03.955Z" },
 ]
 
 [[package]]
 name = "invenio-jobs"
 version = "12.0.1"
-source = { git = "https://github.com/sakshamarora1/invenio-jobs?branch=fix%2Fslow_jobs_admin_panel#efeba525c1da1d45d7ef00f20f2ad3fc79e92014" }
+source = { git = "https://github.com/sakshamarora1/invenio-jobs?branch=fix%2Fslow_jobs_admin_panel#9f790e3c52f8fc7f15a7642d8fd6cd641d3b0363" }
 dependencies = [
     { name = "invenio-administration" },
     { name = "invenio-base" },
@@ -3800,11 +3798,11 @@ wheels = [
 
 [[package]]
 name = "pytz"
-version = "2024.1"
+version = "2026.6"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/90/26/9f1f00a5d021fff16dee3de13d43e5e978f3d58928e129c3a62cf7eb9738/pytz-2024.1.tar.gz", hash = "sha256:2a29735ea9c18baf14b448846bde5a48030ed267578472d8955cd0e7443a9812", size = 316214, upload-time = "2024-02-02T01:18:41.693Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/f5/b0/168030b0bfcc334cf09fa3313afdb888d892c8a0027324683d1de0ec277e/pytz-2026.6.tar.gz", hash = "sha256:3b0fc2727707663d6e517936f444fd8a8b240f1fc32f4bf7ee03274245945284", size = 318520, upload-time = "2026-10-29T09:05:47.011Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/9c/3d/a121f284241f08268b21359bd425f7d4825cffc5ac5cd0e1b3d82ffd2b10/pytz-2024.1-py2.py3-none-any.whl", hash = "sha256:328171f4e3623139da4983451950b28e95ac706e13f3f2630a879749e7a8b319", size = 505474, upload-time = "2024-02-02T01:18:37.283Z" },
+    { url = "https://files.pythonhosted.org/packages/b6/25/564f3fc5b70c1398d706c51f2b1470d0ea0b1b2f96fee67877b6f5bdf3b6/pytz-2026.6-py2.py3-none-any.whl", hash = "sha256:7fed3fee8fd6bd4a2b7b75a8d56021d0624127bf69bd5691f115db929ac570b3", size = 506321, upload-time = "2026-10-29T09:05:45.14Z" },
 ]
 
 [[package]]
