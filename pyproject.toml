@@ -19,6 +19,9 @@ dependencies = [
     "uwsgi-tools>=1.1.1",
     "invenio-records-resources",
     "invenio-vcs>=0.4.0,<1.0.0",
+    "invenio-stats",
+    "invenio-accounts",
+    "invenio-jobs",
 ]
 
 [tool.uv]
@@ -32,6 +35,9 @@ invenio-swh = { git = "https://github.com/inveniosoftware/invenio-swh", rev = "v
 # User profile fixes
 invenio-records-resources = { git = "https://github.com/inveniosoftware/invenio-records-resources", branch = "fix-read-many" }
 invenio-app-rdm = { git = "https://github.com/inveniosoftware/invenio-app-rdm", branch = "feature/orcha" }
+invenio-accounts = { git = "https://github.com/Alfred-Jijo/invenio-accounts", branch = "182-update-maxmind-db-dependency" }
+invenio-stats = { git = "https://github.com/Alfred-Jijo/invenio-stats", branch = "182-update-maxmind-db-dependency" }
+invenio-jobs = { git = "https://github.com/sakshamarora1/invenio-jobs", branch = "fix/slow_jobs_admin_panel" }
 
 [tool.uv.workspace]
 members = [
