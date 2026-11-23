@@ -5,7 +5,7 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 """Database helpers."""
 
-from flask import current_app, request
+from flask import current_app, g, request
 from flask_login import current_user
 
 
@@ -28,7 +28,16 @@ def routed_bind(session, *args, **kwargs):
     read_endpoints = current_app.config.get("ZENODO_READ_REPLICA_ENDPOINTS", [])
     if request.endpoint not in read_endpoints:
         return None
-    if not current_user.is_anonymous:
+    # Flask-Login loads the user lazily through this same session, so a nested
+    # call (the user loader's query) must stay on the primary instead of recursing.
+    if g.get("_routing_user_load"):
+        return None
+    g._routing_user_load = True
+    try:
+        is_anonymous = current_user.is_anonymous
+    finally:
+        g._routing_user_load = False
+    if not is_anonymous:
         return None
 
     return session._db.engines.get("read_replica")

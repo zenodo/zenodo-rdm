@@ -7,6 +7,7 @@ import runpy
 from pathlib import Path
 
 import pytest
+from flask import session
 from flask_login import login_user
 from invenio_db.shared import db as shared_db
 
@@ -60,6 +61,15 @@ def test_authenticated_user_stays_on_primary(app, db, users):
     with app.test_request_context("/records/12345"):
         login_user(users[0])
         assert routed_bind(db.session) is None
+
+
+def test_session_user_load_does_not_recurse(app, database):
+    """Loading the user from the session cookie must not re-enter the router."""
+    with app.test_request_context("/records/12345"):
+        # the user loader queries through the routed session
+        session["_user_id"] = "1"
+        session["_fresh"] = True
+        database.session.get_bind()
 
 
 def test_outside_request_stays_on_primary(app, database):
