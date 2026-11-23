@@ -378,6 +378,11 @@ REDIRECTOR_RULES = {
         "rule_options": {"strict_slashes": False},
         "target": redirect_github_latest_doi_legacy,
     },
+    "redirect_github_settings": {
+        "source": "/account/settings/github",
+        "rule_options": {"strict_slashes": False},
+        "target": "/account/settings/vcs/github/",
+    },
 }
 
 
