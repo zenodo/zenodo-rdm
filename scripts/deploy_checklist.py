@@ -31,7 +31,7 @@ from pathlib import PurePosixPath
 # required or uv misreads the trailing ".py" and rejects the URL.
 CHANGELOG = "git+https://github.com/slint/changelog.py.git"
 
-# (section title, hostname, deploy.py env)
+# (section title, hostname, zctl.py env)
 ENVS = [
     ("QA", "sandbox.zenodo.org", "qa"),
     ("Prod", "zenodo.org", "prod"),
@@ -187,7 +187,7 @@ def changes_to_check(packages):
 
 
 def _steps(env, image_tag, index_cmds, alembic_revs):
-    terminal = f"- [ ] `./scripts/deploy.py {env} {image_tag} terminal`"
+    terminal = f"- [ ] `./zctl.py {env} deploy {image_tag} terminal`"
     if env == "prod":
         return [
             (
@@ -236,7 +236,7 @@ def env_section(name, host, env, image_tag, index_cmds, alembic_revs, author):
     lines += [
         "",
         "#### Deploy",
-        f"- [ ] `./scripts/deploy.py {env} {image_tag}`",
+        f"- [ ] `./zctl.py {env} deploy {image_tag}`",
         "",
         "#### Post-deploy",
         f"- [ ] [Monitor Sentry for the release]({sentry})",
@@ -317,7 +317,7 @@ def main():
     packages = data.get("packages", [])
 
     version = args.version
-    image_tag = version.lstrip("v")  # deploy.py / the image tag drops the leading "v"
+    image_tag = version.lstrip("v")  # zctl.py / the image tag drops the leading "v"
     prev = args.since or data.get("since") or ""
     rng = (
         f"[`{prev}..{version}`]({REPO}/compare/{prev}...{version})"
