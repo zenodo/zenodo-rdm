@@ -1,5 +1,4 @@
 {%- extends config.ACCOUNTS_COVER_TEMPLATE %}
-
 {% from "invenio_accounts/_macros.html" import render_field, form_errors %}
 
 {% macro render_field_info(message, tooltip) %}
@@ -63,7 +62,7 @@
 
       {%- block registration_form_fields scoped %}
         {{ render_field(form.email, icon="user icon", autofocus=True, errormsg=False) }}
-        {{ render_field_info(_('Please use an institutional email address'), _('An institutional email address helps us verify your account and prevents our spam filtering system from automatically blocking your account.')) }}  
+        {{ render_field_info(_('Please use an institutional email address'), _('An institutional email address helps us verify your account and prevents our spam filtering system from automatically blocking your account.')) }}
 
       {{ render_field(form.password, icon="lock icon", errormsg=False) }}
 
@@ -72,8 +71,13 @@
       {%- endif %}
       {%- endblock registration_form_fields %}
 
-      {%- if form.recaptcha %}
-      <div class="form-group form-group-lg">{{ form.recaptcha() }}</div>
+      {%- if form.altcha %}
+      <div class="field{% if form.altcha.errors %} error{% endif %}">
+        {{ form.altcha() }}
+        {%- for error in form.altcha.errors %}
+        <div class="ui pointing red basic label">{{ error }}</div>
+        {%- endfor %}
+      </div>
       {%- endif %}
 
       <button type="submit" class="ui left labeled icon fluid button warning">
@@ -108,3 +112,10 @@
   </div>
 </div>
 {% endblock page_body %}
+
+{%- block javascript %}
+  {{ super() }}
+  {%- if config.ACCOUNTS_ALTCHA_ENABLED %}
+    {{ webpack['invenio-accounts-altcha.js'] }}
+  {%- endif %}
+{%- endblock javascript %}

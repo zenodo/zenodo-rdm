@@ -131,6 +131,9 @@
             data-description-max-length = '{{ config.SUPPORT_DESCRIPTION_MAX_LENGTH }}';
             data-api-endpoint = '{{ config.SUPPORT_ENDPOINT }}';
             data-initial-values='{{ initial_values | tojson }}';
+            {%- if config.ACCOUNTS_ALTCHA_ENABLED and not is_user_authenticated %}
+            data-altcha-challenge='{{ url_for("invenio_accounts.altcha_challenge") }}'
+            {%- endif %}
         >
         </div>
     {% endblock %}
@@ -140,5 +143,8 @@
 
 {% block javascript %}
     {{ super() }}
+    {%- if config.ACCOUNTS_ALTCHA_ENABLED and not current_user.is_authenticated %}
+    {{ webpack['invenio-accounts-altcha.js'] }}
+    {%- endif %}
     {{ webpack['zenodo-rdm-support.js'] }}
 {% endblock %}

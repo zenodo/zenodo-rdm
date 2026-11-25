@@ -14,6 +14,7 @@ const descriptionMaxLength = parseInt(domContainer.dataset.descriptionMaxLength)
 const descriptionMinLength = parseInt(domContainer.dataset.descriptionMinLength);
 const apiEndpoint = domContainer.dataset.apiEndpoint;
 const isUserAuthenticated = JSON.parse(domContainer.dataset.isAuthenticated);
+const altchaChallenge = domContainer.dataset.altchaChallenge;
 const initialValues = JSON.parse(domContainer.dataset.initialValues || "{}");
 
 ReactDOM.render(
@@ -29,6 +30,7 @@ ReactDOM.render(
     descriptionMinLength={descriptionMinLength}
     apiEndpoint={apiEndpoint}
     initialValues={initialValues}
+    altchaChallenge={altchaChallenge}
   />,
   rootContainer
 );

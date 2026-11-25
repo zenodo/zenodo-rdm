@@ -14,10 +14,10 @@ import _set from "lodash/set";
 
 import CategoryDropdown from "./CategoryDropdown";
 import FileUploader from "./FileUploader";
+import AltchaField from "./AltchaField";
 
 // TODO translations
 // TODO implement error notification
-// TODO implement recaptcha
 // TODO required fields are highlighted by the component and not Formik
 
 const requestConfig = {
@@ -70,6 +70,8 @@ class SupportForm extends Component {
       errorStatus: null,
       responseData: null,
       activeCategory: matchedCategory,
+      // Changing the key gives the ALTCHA widget a fresh challenge (solutions are single-use).
+      altchaKey: 0,
     };
   }
 
@@ -122,6 +124,9 @@ class SupportForm extends Component {
         // Highlight errors using formik
         formikBag.setErrors(deserializedErrors);
       }
+      // The solution may have been used up: ask for a new one.
+      formikBag.setFieldValue("altcha", "");
+      this.setState((state) => ({ altchaKey: state.altchaKey + 1 }));
 
       this.setState({ errorStatus: error.status });
     }
@@ -138,6 +143,7 @@ class SupportForm extends Component {
       userMail = "",
       maxFileSize = 1000 * 1000 * 10,
       initialValues = {},
+      altchaChallenge,
     } = this.props;
 
     const formInitialValues = {
@@ -148,6 +154,7 @@ class SupportForm extends Component {
       description: initialValues.description || "",
       sysInfo: false,
       files: [],
+      altcha: "",
     };
 
     const sysInfo = `Browser: ${userBrowser} Operating System: ${userPlatform}`;
@@ -158,6 +165,7 @@ class SupportForm extends Component {
       errorStatus,
       responseData,
       activeCategory,
+      altchaKey,
     } = this.state;
 
     if (responseData) {
@@ -297,6 +305,10 @@ class SupportForm extends Component {
                 </div>
               </div>
 
+              {altchaChallenge && (
+                <AltchaField key={altchaKey} challenge={altchaChallenge} />
+              )}
+
               <Modal.Actions className="label-padding">
                 <Button
                   type="submit"
@@ -346,6 +358,7 @@ SupportForm.propTypes = {
   maxFileSize: PropTypes.number,
   apiEndpoint: PropTypes.string.isRequired,
   initialValues: PropTypes.object,
+  altchaChallenge: PropTypes.string,
 };
 
 export default SupportForm;
