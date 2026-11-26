@@ -318,7 +318,9 @@ def redirect_github_badge_index_legacy():
     :rtype: str
     """
     repo_name = request.view_args["repo_name"]
-    repo = Repository.query.filter_by(provider="github", name=repo_name).one_or_none()
+    repo = Repository.query.filter_by(
+        provider="github", full_name=repo_name
+    ).one_or_none()
     if not repo:
         abort(404)
     target = url_for(
@@ -365,7 +367,9 @@ def redirect_github_latest_doi_legacy():
     :rtype: str
     """
     repo_name = request.view_args["repo_name"]
-    repo = Repository.query.filter_by(provider="github", name=repo_name).one_or_none()
+    repo = Repository.query.filter_by(
+        provider="github", full_name=repo_name
+    ).one_or_none()
     if not repo:
         abort(404)
     return _github_latest_doi_redirect(repo)
