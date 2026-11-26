@@ -3,11 +3,9 @@
 """Redirector functions and rules."""
 
 from flask import abort, current_app, request, url_for
-from flask_login import current_user
 from invenio_app_rdm.redirector.resource import RedirectorConfig, RedirectorResource
 from invenio_records_resources.services.base.config import FromConfig
 from invenio_requests.proxies import current_requests_service
-from invenio_vcs.config import get_provider_by_id
 from invenio_vcs.models import Repository
 from invenio_vcs.proxies import current_vcs
 
@@ -334,8 +332,7 @@ def _github_latest_doi_redirect(repo):
     latest_release = repo.latest_release()
     if not latest_release:
         abort(404)
-    provider = get_provider_by_id("github").for_user(current_user.id)
-    release = current_vcs.release_api_class(latest_release, provider)
+    release = current_vcs.release_api_class(latest_release)
     if not release.record_url:
         abort(404)
     return release.record_url
