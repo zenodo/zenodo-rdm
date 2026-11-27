@@ -54,3 +54,14 @@ awards:
         writer:
           type: awards-service
       type: async
+
+# This is used to generate subjects_mesh.yaml
+subjects:
+  readers:
+    - type: csv
+  transformers:
+    - type: mesh-subjects
+  writers:
+    - type: yaml
+      args:
+        filepath: app_data/vocabularies/subjects_mesh.yaml
