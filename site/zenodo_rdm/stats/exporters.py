@@ -9,6 +9,7 @@ import requests
 from dateutil.parser import parse as dateutil_parse
 from flask import current_app, url_for
 from invenio_cache import current_cache
+from invenio_db.utils import read_only_session
 from invenio_pidstore.errors import PIDDeletedError
 from invenio_search import current_search_client
 from invenio_search.utils import build_alias_name
@@ -51,48 +52,53 @@ class PiwikExporter:
         token_auth = current_app.config["STATS_PIWIK_EXPORTER"].get("token_auth", None)
         chunk_size = current_app.config["STATS_PIWIK_EXPORTER"].get("chunk_size", 0)
 
-        for event_chunk in chunkify(events, chunk_size):
-            query_strings = []
-            for event in event_chunk:
-                if "recid" not in event:
-                    continue
-                try:
-                    query_string = self._build_query_string(event)
-                    query_strings.append(query_string)
-                except PIDDeletedError:
-                    pass
+        # Record lookups run in autocommit so the Piwik requests between them
+        # don't keep a transaction open.
+        with read_only_session():
+            for event_chunk in chunkify(events, chunk_size):
+                query_strings = []
+                for event in event_chunk:
+                    if "recid" not in event:
+                        continue
+                    try:
+                        query_string = self._build_query_string(event)
+                        query_strings.append(query_string)
+                    except PIDDeletedError:
+                        pass
 
-            # Check and bail if the bookmark has progressed, e.g. from another
-            # duplicate task or manual run of the exporter.
-            bookmark = current_cache.get("piwik_export:bookmark")
-            if event_chunk[-1].timestamp < bookmark:
-                return
+                # Check and bail if the bookmark has progressed, e.g. from another
+                # duplicate task or manual run of the exporter.
+                bookmark = current_cache.get("piwik_export:bookmark")
+                if event_chunk[-1].timestamp < bookmark:
+                    return
 
-            payload = {"requests": query_strings, "token_auth": token_auth}
-            res = requests.post(url, json=payload, timeout=60)
+                payload = {"requests": query_strings, "token_auth": token_auth}
+                res = requests.post(url, json=payload, timeout=60)
 
-            # Failure: not 200 or not "success"
-            content = res.json() if res.ok else None
-            if res.status_code == 200 and content.get("status") == "success":
-                if content.get("invalid") != 0:
+                # Failure: not 200 or not "success"
+                content = res.json() if res.ok else None
+                if res.status_code == 200 and content.get("status") == "success":
+                    if content.get("invalid") != 0:
+                        msg = "Invalid events in Piwik export request."
+                        info = {
+                            "begin_event_timestamp": event_chunk[0].timestamp,
+                            "end_event_timestamp": event_chunk[-1].timestamp,
+                            "invalid_events": content.get("invalid"),
+                        }
+                        current_app.logger.warning(msg, extra=info)
+                    elif update_bookmark is True:
+                        current_cache.set(
+                            "piwik_export:bookmark",
+                            event_chunk[-1].timestamp,
+                            timeout=-1,
+                        )
+                else:
                     msg = "Invalid events in Piwik export request."
                     info = {
                         "begin_event_timestamp": event_chunk[0].timestamp,
                         "end_event_timestamp": event_chunk[-1].timestamp,
-                        "invalid_events": content.get("invalid"),
                     }
-                    current_app.logger.warning(msg, extra=info)
-                elif update_bookmark is True:
-                    current_cache.set(
-                        "piwik_export:bookmark", event_chunk[-1].timestamp, timeout=-1
-                    )
-            else:
-                msg = "Invalid events in Piwik export request."
-                info = {
-                    "begin_event_timestamp": event_chunk[0].timestamp,
-                    "end_event_timestamp": event_chunk[-1].timestamp,
-                }
-                raise PiwikExportRequestError(msg, export_info=info)
+                    raise PiwikExportRequestError(msg, export_info=info)
 
     def _build_query_string(self, event):
         siteurl = current_app.config["SITE_UI_URL"]
