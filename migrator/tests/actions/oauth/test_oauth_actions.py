@@ -995,7 +995,7 @@ def disconnect_orcid_oauth_application_tx():
 
 
 class TestOAuthLinkedAccountDisconnectAction:
-    """Disonnect an OAuth account action tests."""
+    """Disconnect an OAuth account action tests."""
 
     def test_matches_with_valid_data(self):
         full = [
@@ -1155,7 +1155,7 @@ def disconnect_gh_token_oauth_app_tx():
 
 
 class TestOAuthGHDisconnectToken:
-    """Disonnect an OAuth account action tests."""
+    """Disconnect an OAuth account action tests."""
 
     def test_matches_with_valid_data(self):
         assert (

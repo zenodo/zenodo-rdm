@@ -76,7 +76,7 @@ function initCommunityCarousel() {
       // Transition-end event handler, runs once when slides-container transition is finished
       const transitionEndHandler = (direction) => {
         if (direction === "left") {
-          // Tranlate the slides-container such that the active item will be
+          // Translate the slides-container such that the active item will be
           // in center once the previously active item is removed, then remove that item
           slidesContainer.style.transitionDuration = "0s";
           slidesContainer.style.transform = "translateX(0px)";

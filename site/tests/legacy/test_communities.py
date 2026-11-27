@@ -67,5 +67,5 @@ def test_autoaccept_owned_communities(
     data = res.json
     assert data["metadata"]["communities"] == [{"id": community["slug"]}]
 
-    # Cehck that the custom field has been cleared
+    # Check that the custom field has been cleared
     assert "legacy:communities" not in data.get("custom_fields", {})

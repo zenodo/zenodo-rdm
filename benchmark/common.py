@@ -120,7 +120,7 @@ def cached_csrf_login(client, account) -> dict[str, str]:
 
 def record_id_pool() -> list[int]:
     """Return a list of random ids between 0 and 200,
-    this is the number of records created on seting up the
+    this is the number of records created on setting up the
     project locally, so it will always have this number of records.
 
     TODO: Later we can select length and pre-defined ids.

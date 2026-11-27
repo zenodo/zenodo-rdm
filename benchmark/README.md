@@ -77,7 +77,7 @@ If you have lots of ram you can edit `_SIZE_TIERS` in the `common.py` file to up
 Then change this line:
 ```python
     @task(1)  # Be careful with this one you can crash your own computer
-# to thid:
+# to this:
     @task(10)  # Be careful with this one you can crash your own computer
 ```
 

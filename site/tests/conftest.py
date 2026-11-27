@@ -484,7 +484,7 @@ def resource_type_v(app, resource_type_type):
 
 @pytest.fixture(scope="module")
 def languages_type(app):
-    """Lanuage vocabulary type."""
+    """Language vocabulary type."""
     return vocabulary_service.create_type(system_identity, "languages", "lng")
 
 
