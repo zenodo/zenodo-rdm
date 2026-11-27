@@ -7,6 +7,10 @@ services:
     extends:
       file: docker-services.yml
       service: db
+  db-replica:
+    extends:
+      file: docker-services.yml
+      service: db-replica
   mq:
     extends:
       file: docker-services.yml
@@ -122,3 +126,4 @@ volumes:
   uploaded_data:
   archived_data:
   image_tiles:
+  db-replica-data:
