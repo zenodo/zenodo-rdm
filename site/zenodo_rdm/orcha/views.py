@@ -11,6 +11,10 @@ from flask import (
 )
 from flask.views import MethodView
 from flask_login import current_user, login_required
+from invenio_communities.members.records.models import MemberModel
+from invenio_db import db
+
+from zenodo_rdm.checks.compare_metadata import enable_compare_metadata_check
 
 # Testing `invenio roles create orcha-waitlist`
 WAITLIST_ROLE_NAME = "orcha-waitlist"
@@ -91,11 +95,27 @@ class OrchaWaitlist(MethodView):
         if not current_user.has_role(WAITLIST_ROLE_NAME):
             datastore.add_role_to_user(current_user, role)
             datastore.commit()
+            _enable_compare_metadata_for_owned_communities(current_user.id)
         return render_template(
             "zenodo_rdm/orcha/waitlist.html",
             already_joined=True,
             just_joined=True,
         )
+
+
+def _enable_compare_metadata_for_owned_communities(user_id):
+    """Configure the compare_metadata check for communities the user owns."""
+    owned_community_ids = (
+        db.session.query(MemberModel.community_id)
+        .filter(
+            MemberModel.role == "owner",
+            MemberModel.active.is_(True),
+            MemberModel.user_id == user_id,
+        )
+        .distinct()
+    )
+    for (community_id,) in owned_community_ids:
+        enable_compare_metadata_check(community_id)
 
 
 def dismiss_banner():
